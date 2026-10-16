@@ -3,23 +3,6 @@
 
 /* --- View scaffolding -------------------------------------------------------- */
 
-.view-title {
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.view-toolbar {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-  margin-block-end: var(--sp-4);
-}
-
-.toolbar-spacer {
-  flex: 1 1 auto;
-}
-
 .rules-last-run {
   font-size: 0.875rem;
   color: var(--muted);
@@ -68,7 +51,7 @@
 
 .heatmap-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: var(--sp-2);
 }
 
@@ -78,7 +61,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--sp-1);
-  min-height: 44px;
+  min-height: 64px;
   padding: var(--sp-2);
   border: 1px solid var(--border);
   border-radius: var(--r-1);
@@ -186,21 +169,6 @@
   color: var(--text);
 }
 
-/* --- Forms (shared engineering validation helpers) ------------------------------ */
-
-.field-error {
-  display: block;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--sev-severe);
-}
-
-.field-hint {
-  display: block;
-  font-size: 0.8125rem;
-  color: var(--muted);
-}
-
 /* --- Filter bar ------------------------------------------------------------------- */
 
 .filter-bar {
@@ -290,25 +258,4 @@
 
 .sizing-result {
   margin-block-start: var(--sp-3);
-}
-
-/* Tab structure: IW.ui.tabs wraps a tablist (.tabs-nav) and panels (.tabs-panels)
-   inside a single .tabs wrapper; orient the wrapper vertically. */
-.tabs {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-  border-block-end: none;
-  overflow-x: visible;
-}
-
-.tabs-nav {
-  display: flex;
-  gap: var(--sp-1);
-  border-block-end: 1px solid var(--border);
-  overflow-x: auto;
-}
-
-.tab-panel {
-  padding: var(--sp-3) 0 0;
 }

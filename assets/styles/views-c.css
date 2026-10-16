@@ -1,23 +1,6 @@
 /* views-c.css — styles for views: ingest, recommendations, reports, glossary, admin (owned by T10).
    Logical properties only (RTL-safe); report sheet is a white A4 preview. */
 
-/* --- Tabs (ui.tabs structure: .tabs > .tabs-nav + .tabs-panels) -------------- */
-
-.tabs {
-  display: block;
-}
-
-.tabs-nav {
-  display: flex;
-  gap: var(--sp-1);
-  border-block-end: 1px solid var(--border);
-  overflow-x: auto;
-}
-
-.tab-panel {
-  padding-block-start: var(--sp-4);
-}
-
 /* --- Ingest ------------------------------------------------------------------- */
 
 .drop-zone {
@@ -46,11 +29,6 @@
 .drop-zone:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 2px;
-}
-
-.field-hint {
-  font-size: 0.8125rem;
-  color: var(--muted);
 }
 
 .checkbox-row {
@@ -160,16 +138,21 @@
   min-block-size: 60vh;
 }
 
-.report {
-  width: 210mm;
-  max-width: 100%;
-  box-sizing: border-box;
+/* A4 report sheet preview on screen. */
+.print-root {
+  max-inline-size: 210mm;
   margin-inline: auto;
-  padding: 20mm;
-  background: #ffffff;
-  color: #1a2430;
+  box-sizing: border-box;
+  padding: 12mm;
+  background: var(--surface);
   box-shadow: var(--shadow-1);
   border: 1px solid var(--border);
+}
+
+.report {
+  max-width: 100%;
+  background: #ffffff;
+  color: #1a2430;
 }
 
 .report h1,
@@ -333,12 +316,15 @@
 }
 
 @media print {
+  .print-root,
   .report {
     width: auto;
     max-width: none;
+    max-inline-size: none;
     padding: 0;
     box-shadow: none;
     border: none;
+    background: #ffffff;
   }
 }
 

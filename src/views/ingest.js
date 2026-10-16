@@ -72,7 +72,7 @@
       function fmtNum(v, dec) { return (i18n && i18n.formatNumber) ? i18n.formatNumber(v, { maximumFractionDigits: dec === undefined ? 2 : dec }) : String(v); }
 
       var view = el('div', { class: 'view view-ingest' });
-      view.appendChild(el('h1', { text: t('ingest.title') }));
+      view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('ingest.title') })));
 
       // --- Sync queue --------------------------------------------------------
       var queueCard = el('section', { class: 'card' });
@@ -516,6 +516,8 @@
           var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
           a.href = url;
           a.download = 'integritywatch-backup-' + stamp + '.json';
+          a.style.position = 'fixed';
+          a.style.insetInlineStart = '-9999px';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);

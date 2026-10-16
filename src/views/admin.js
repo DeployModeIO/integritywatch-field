@@ -57,7 +57,7 @@
       var bus = ctx.bus;
 
       var view = el('div', { class: 'view view-admin' });
-      view.appendChild(el('h1', { text: t('admin.title') }));
+      view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('admin.title') })));
 
       var grid = el('div', { class: 'admin-grid' });
 
@@ -231,6 +231,8 @@
           var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
           a.href = url;
           a.download = 'integritywatch-backup-' + stamp + '.json';
+          a.style.position = 'fixed';
+          a.style.insetInlineStart = '-9999px';
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);

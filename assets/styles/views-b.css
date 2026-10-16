@@ -32,35 +32,6 @@
   border-color: var(--border);
 }
 
-.view-header {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-  width: 100%;
-  margin-block-end: var(--sp-3);
-}
-
-.section-title {
-  font-size: 1rem;
-  margin-block-end: var(--sp-3);
-}
-
-/* Modal positioning for ui.dialog: components.css .dialog has no backdrop or
-   fixed positioning, so dialogs would render in flow at the end of the body. */
-.dialog {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  margin: auto;
-}
-
-/* --- Pipelines ---------------------------------------------------------------- */
-
-.filter-bar {
-  margin-block-end: var(--sp-3);
-}
-
 .notice {
   display: flex;
   align-items: center;
@@ -137,8 +108,9 @@
 }
 
 .map-svg {
-  width: 100%;
-  height: auto;
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 220px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-2);

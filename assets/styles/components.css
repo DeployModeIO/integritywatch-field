@@ -55,6 +55,8 @@
 }
 
 .card {
+  display: block;
+  inline-size: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-2);
@@ -62,10 +64,78 @@
   box-shadow: var(--shadow-1);
 }
 
+.card > h2,
+.card > h3 {
+  margin-block: 0 var(--sp-2);
+  font-size: 1.0625rem;
+}
+
+.card + .card {
+  margin-block-start: var(--sp-3);
+}
+
 .grid-bento {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: var(--sp-3);
+}
+
+/* Listings of cards/panels (detail panels, glossaries, admin sections). */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--sp-3);
+}
+
+/* Page header: title on the start, actions pushed to the end. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.page-header .actions {
+  margin-inline-start: auto;
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+/* Page toolbar: filters and compact inline controls. */
+.page-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: end;
+  margin-block-end: var(--sp-3);
+}
+
+.page-toolbar .select,
+.page-toolbar .input {
+  inline-size: auto;
+  min-inline-size: 10rem;
+}
+
+/* Two-column form grid (>=700px collapses to one column below). */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-3);
+}
+
+.form-grid .field {
+  margin: 0;
+}
+
+.form-grid .span-2 {
+  grid-column: 1 / -1;
 }
 
 /* --- Buttons --------------------------------------------------------------- */
@@ -159,6 +229,19 @@
 .input[aria-invalid="true"],
 .select[aria-invalid="true"] {
   border-color: var(--sev-severe);
+}
+
+.field-error {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--sev-severe);
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--muted);
 }
 
 /* --- Tables ----------------------------------------------------------------- */
@@ -378,20 +461,34 @@ table.data tbody tr:hover {
 /* --- Dialog ------------------------------------------------------------------- */
 
 .dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  z-index: 950;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 640px;
-  max-height: 85vh;
-  overflow: hidden;
+  max-block-size: calc(100dvh - 2 * var(--sp-4));
+  overflow: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-2);
   box-shadow: var(--shadow-1);
 }
 
+/* Backdrop behind the centered modal card. */
+.dialog::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(16, 24, 32, 0.45);
+}
+
 .dialog-header {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);
@@ -406,12 +503,15 @@ table.data tbody tr:hover {
 }
 
 .dialog-body {
+  flex: 1 1 auto;
+  min-block-size: 0;
   padding: var(--sp-4);
   overflow-y: auto;
 }
 
 .dialog-actions {
   display: flex;
+  flex: none;
   justify-content: flex-end;
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
@@ -419,18 +519,6 @@ table.data tbody tr:hover {
 }
 
 /* --- Toast --------------------------------------------------------------------- */
-
-.toast-region {
-  position: fixed;
-  inset-block-end: var(--sp-4);
-  inset-inline-end: var(--sp-4);
-  z-index: 1100;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  width: max-content;
-  max-width: 360px;
-}
 
 .toast {
   display: flex;
@@ -489,12 +577,10 @@ table.data tbody tr:hover {
 /* --- Empty state ---------------------------------------------------------------- */
 
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  justify-items: center;
   gap: var(--sp-2);
-  padding: var(--sp-6);
+  padding: var(--sp-5);
   text-align: center;
   color: var(--muted);
 }

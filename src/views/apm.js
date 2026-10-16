@@ -342,9 +342,10 @@
         var events = res[1] || [];
         var threshold = (typeof res[2] === 'number') ? res[2] : 90;
         container.textContent = '';
-        container.appendChild(el('div', { class: 'row view-header' },
+        container.appendChild(el('div', { class: 'page-header' },
           el('h1', { text: t('apm.title') }),
-          el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(null); } } }, icon('plus', 18), el('span', { text: t('apm.newAsset') }))));
+          el('div', { class: 'actions' },
+            el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(null); } } }, icon('plus', 18), el('span', { text: t('apm.newAsset') })))));
 
         var byAsset = {};
         events.forEach(function (e) { (byAsset[e.assetId] = byAsset[e.assetId] || []).push(e); });
@@ -433,11 +434,13 @@
     function renderDetail(asset, events, recs, threshold) {
       var locked = isOperatorLocked();
       var backBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { navigate('#/apm'); } } }, icon('chevron-right', 18), el('span', { text: t('common.back') }));
-      container.appendChild(el('div', { class: 'row view-header' }, backBtn, el('h1', { text: (asset.code || asset.id) + ' — ' + (asset.name || '') })));
       var editBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { openAssetForm(asset); } } }, icon('edit', 18), el('span', { text: t('common.edit') }));
       var delBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { deleteAsset(asset); } } }, icon('trash', 18), el('span', { text: t('common.delete') }));
       delBtn.disabled = locked;
-      container.appendChild(el('div', { class: 'row view-header' }, editBtn, delBtn));
+      container.appendChild(el('div', { class: 'page-header' },
+        backBtn,
+        el('h1', { text: (asset.code || asset.id) + ' — ' + (asset.name || '') }),
+        el('div', { class: 'actions' }, editBtn, delBtn)));
 
       // Ficha
       container.appendChild(el('section', { class: 'card' },
@@ -470,7 +473,7 @@
       // Events
       var eventsHost = el('div');
       container.appendChild(el('section', { class: 'card' },
-        el('div', { class: 'row view-header' },
+        el('div', { class: 'row' },
           el('h2', { class: 'section-title', text: t('apm.events') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openEventForm(asset); } } }, icon('plus', 18), el('span', { text: t('apm.newEvent') }))),
         eventsHost));

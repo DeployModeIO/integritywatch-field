@@ -207,10 +207,11 @@
         if (!_session || !_session.active) { return; }
         var systems = res[0] || [];
         container.textContent = '';
-        var header = el('div', { class: 'row view-header' },
+        var header = el('div', { class: 'page-header' },
           el('h1', { text: t('pipelines.title') }),
-          el('button', { class: 'btn btn-primary', on: { click: function () { openSystemForm(null); } } },
-            icon('plus', 18), el('span', { text: t('pipelines.newSystem') })));
+          el('div', { class: 'actions' },
+            el('button', { class: 'btn btn-primary', on: { click: function () { openSystemForm(null); } } },
+              icon('plus', 18), el('span', { text: t('pipelines.newSystem') }))));
         container.appendChild(header);
 
         var search = el('input', { class: 'input', attrs: { type: 'search', placeholder: t('common.search'), 'aria-label': t('common.search') } });
@@ -313,11 +314,13 @@
       var locked = isOperatorLocked();
 
       var backBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { navigate('#/pipelines'); } } }, icon('chevron-right', 18), el('span', { text: t('common.back') }));
-      container.appendChild(el('div', { class: 'row view-header' }, backBtn, el('h1', { text: system.name || system.id })));
       var editSysBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { openSystemForm(system); } } }, icon('edit', 18), el('span', { text: t('common.edit') }));
       var delSysBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { deleteSystem(system); } } }, icon('trash', 18), el('span', { text: t('common.delete') }));
       delSysBtn.disabled = locked;
-      container.appendChild(el('div', { class: 'row view-header' }, editSysBtn, delSysBtn));
+      container.appendChild(el('div', { class: 'page-header' },
+        backBtn,
+        el('h1', { text: system.name || system.id }),
+        el('div', { class: 'actions' }, editSysBtn, delSysBtn)));
 
       // Ficha
       var mat = (root.IW.data && root.IW.data.materials && root.IW.data.materials.byId) ? root.IW.data.materials.byId(system.material) : null;
@@ -363,7 +366,7 @@
       // Assets table (sortable by stationKm)
       var assetsHost = el('div');
       container.appendChild(el('section', { class: 'card' },
-        el('div', { class: 'row view-header' },
+        el('div', { class: 'row' },
           el('h2', { class: 'section-title', text: t('pipelines.lineAssets') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(system, null, assets); } } }, icon('plus', 18), el('span', { text: t('pipelines.newLineAsset') }))),
         assetsHost));
@@ -384,7 +387,7 @@
       // Inspections
       var inspHost = el('div');
       container.appendChild(el('section', { class: 'card' },
-        el('div', { class: 'row view-header' },
+        el('div', { class: 'row' },
           el('h2', { class: 'section-title', text: t('pipelines.inspections') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openInspectionForm(system, assets, null); } } }, icon('plus', 18), el('span', { text: t('pipelines.newInspection') }))),
         inspHost));
@@ -444,7 +447,7 @@
       typeSel.addEventListener('change', applyFilters);
       sevSel.addEventListener('change', applyFilters);
 
-      return el('div', { class: 'row filter-bar' },
+      return el('div', { class: 'page-toolbar' },
         el('span', { class: 'pill', text: t('common.filter') }), typeSel, sevSel);
     }
 

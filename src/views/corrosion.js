@@ -766,15 +766,15 @@
   function buildDetail(h, mp, readings, coupons, existingCodes) {
     var frag = document.createDocumentFragment();
 
-    var toolbar = h.ui.el('div', { class: 'view-toolbar' });
-    toolbar.appendChild(h.ui.el('a', { class: 'btn btn-ghost', attrs: { href: '#/corrosion' }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/corrosion'); } } }, h.ui.icon('chevron-right', 18), h.ui.el('span', { text: h.t('common.back') })));
-    toolbar.appendChild(h.ui.el('h1', { class: 'view-title', text: mp.code }));
-    var spacer = h.ui.el('span', { class: 'toolbar-spacer' });
-    toolbar.appendChild(spacer);
-    toolbar.appendChild(h.ui.el('button', { class: 'btn', on: { click: function () { openMpForm(h, mp, existingCodes, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('edit', 18), h.ui.el('span', { text: h.t('common.edit') })));
-    toolbar.appendChild(h.ui.el('button', { class: 'btn btn-danger', on: { click: function () { deleteMp(h, mp, function () { h.navigate('#/corrosion'); }); } } }, h.ui.icon('trash', 18), h.ui.el('span', { text: h.t('common.delete') })));
-    toolbar.appendChild(h.ui.el('a', { class: 'btn', attrs: { href: '#/reports/dossier/' + encodeURIComponent(mp.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/reports/dossier/' + encodeURIComponent(mp.id)); } } }, h.ui.icon('reports', 18), h.ui.el('span', { text: h.t('corrosion.pointDossier') })));
-    frag.appendChild(toolbar);
+    var header = h.ui.el('div', { class: 'page-header' });
+    header.appendChild(h.ui.el('a', { class: 'btn btn-ghost', attrs: { href: '#/corrosion' }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/corrosion'); } } }, h.ui.icon('chevron-right', 18), h.ui.el('span', { text: h.t('common.back') })));
+    header.appendChild(h.ui.el('h1', { text: mp.code }));
+    var actions = h.ui.el('div', { class: 'actions' });
+    actions.appendChild(h.ui.el('button', { class: 'btn', on: { click: function () { openMpForm(h, mp, existingCodes, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('edit', 18), h.ui.el('span', { text: h.t('common.edit') })));
+    actions.appendChild(h.ui.el('button', { class: 'btn btn-danger', on: { click: function () { deleteMp(h, mp, function () { h.navigate('#/corrosion'); }); } } }, h.ui.icon('trash', 18), h.ui.el('span', { text: h.t('common.delete') })));
+    actions.appendChild(h.ui.el('a', { class: 'btn', attrs: { href: '#/reports/dossier/' + encodeURIComponent(mp.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/reports/dossier/' + encodeURIComponent(mp.id)); } } }, h.ui.icon('reports', 18), h.ui.el('span', { text: h.t('corrosion.pointDossier') })));
+    header.appendChild(actions);
+    frag.appendChild(header);
 
     // Ficha técnica.
     var ficha = card(h, 'corrosion.points');
@@ -877,12 +877,12 @@
   function buildList(h, points, latest, existingCodes) {
     var frag = document.createDocumentFragment();
 
-    var toolbar = h.ui.el('div', { class: 'view-toolbar' });
-    toolbar.appendChild(h.ui.el('h1', { class: 'view-title', text: h.t('corrosion.title') }));
-    var spacer = h.ui.el('span', { class: 'toolbar-spacer' });
-    toolbar.appendChild(spacer);
-    toolbar.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { openMpForm(h, null, existingCodes, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newPoint') })));
-    frag.appendChild(toolbar);
+    var header = h.ui.el('div', { class: 'page-header' });
+    header.appendChild(h.ui.el('h1', { text: h.t('corrosion.title') }));
+    var actions = h.ui.el('div', { class: 'actions' });
+    actions.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { openMpForm(h, null, existingCodes, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newPoint') })));
+    header.appendChild(actions);
+    frag.appendChild(header);
 
     var state = { q: '', sector: 'all', system: '', sensor: '' };
 

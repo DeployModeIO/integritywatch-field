@@ -40,6 +40,24 @@ body {
   margin-inline-start: auto;
 }
 
+/* Header selects stay compact; never stretch to full width (components.css sets 100%). */
+.app-header__controls .select,
+.app-header .select {
+  inline-size: auto;
+  min-inline-size: 7rem;
+}
+
+/* Hamburger only shows below the desktop breakpoint (900px). */
+.hamburger {
+  display: none;
+}
+
+@media (max-width: 899.98px) {
+  .hamburger {
+    display: inline-flex;
+  }
+}
+
 .app-brand {
   display: inline-flex;
   align-items: center;
@@ -103,6 +121,13 @@ body {
   color: var(--text);
 }
 
+/* Visual separator between nav groups. */
+.nav-group + .nav-group {
+  margin-block-start: var(--sp-2);
+  padding-block-start: var(--sp-2);
+  border-block-start: 1px solid var(--border);
+}
+
 .app-main {
   grid-area: main;
   min-width: 0;
@@ -114,15 +139,24 @@ body {
   grid-area: footer;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--sp-2);
+  row-gap: var(--sp-1);
   padding: var(--sp-2) var(--sp-3);
   background: var(--surface);
   border-block-start: 1px solid var(--border);
   font-size: 0.8125rem;
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.app-footer .disclaimer {
+  margin: 0;
+}
+
+.app-footer .standard-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
 }
 
 /* Desktop: full-width sidebar with visible labels. */
@@ -152,4 +186,36 @@ body {
 
 .app-sidebar[data-open] .app-sidebar__label {
   display: inline;
+}
+
+/* Alias so body.nav-open (set by shell.js) mirrors the data-open drawer state. */
+body.nav-open .app-sidebar {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: 900;
+  width: 240px;
+  box-shadow: var(--shadow-1);
+}
+
+body.nav-open .app-sidebar .app-sidebar__label {
+  display: inline;
+}
+
+/* Toast stack lives above everything and never intercepts pointer events. */
+.toast-region {
+  position: fixed;
+  inset-block-end: var(--sp-3);
+  inset-inline-end: var(--sp-3);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: max-content;
+  max-width: 360px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
 }

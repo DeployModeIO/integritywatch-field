@@ -15,12 +15,24 @@
     return (i18n && typeof i18n.t === 'function') ? i18n.t(key) : fallback;
   }
 
-  function bootError(err) {
-    if (typeof document === 'undefined') { return; }
+  // Fixed-position banner for boot-time errors/notices: body is a grid, so an
+  // in-flow banner would be auto-placed into the 240px sidebar cell.
+  function fixedBanner(text) {
     var banner = document.createElement('div');
     banner.className = 'error-banner';
     banner.setAttribute('role', 'alert');
-    banner.textContent = tSafe('common.bootError', 'Boot error') + ': ' + (err && err.message ? err.message : String(err));
+    banner.textContent = text;
+    banner.style.position = 'fixed';
+    banner.style.insetBlockStart = 'var(--sp-3)';
+    banner.style.insetInlineStart = 'var(--sp-3)';
+    banner.style.insetInlineEnd = 'var(--sp-3)';
+    banner.style.zIndex = '1100';
+    return banner;
+  }
+
+  function bootError(err) {
+    if (typeof document === 'undefined') { return; }
+    var banner = fixedBanner(tSafe('common.bootError', 'Boot error') + ': ' + (err && err.message ? err.message : String(err)));
     if (document.body) { document.body.appendChild(banner); }
   }
 
@@ -35,10 +47,7 @@
     if (ui && typeof ui.toast === 'function') {
       try { ui.toast(message, { severity: 'warning' }); return; } catch (e) { /* fall through to banner */ }
     }
-    var banner = document.createElement('div');
-    banner.className = 'error-banner';
-    banner.setAttribute('role', 'alert');
-    banner.textContent = message;
+    var banner = fixedBanner(message);
     if (document.body) { document.body.appendChild(banner); }
   }
 

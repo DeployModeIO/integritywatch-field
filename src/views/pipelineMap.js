@@ -86,16 +86,16 @@
   }
 
   function buildShape(sev) {
-    if (sev === 'low') { return svgEl('circle', { r: 10, class: shapeClass(sev) }); }
-    if (sev === 'moderate') { return svgEl('rect', { x: -9, y: -9, width: 18, height: 18, class: shapeClass(sev) }); }
-    if (sev === 'high') { return svgEl('polygon', { points: '0,-11 10,9 -10,9', class: shapeClass(sev) }); }
+    if (sev === 'low') { return svgEl('circle', { r: 14, class: shapeClass(sev) }); }
+    if (sev === 'moderate') { return svgEl('rect', { x: -13, y: -13, width: 26, height: 26, class: shapeClass(sev) }); }
+    if (sev === 'high') { return svgEl('polygon', { points: '0,-14 13,12 -13,12', class: shapeClass(sev) }); }
     if (sev === 'severe') {
       var g = svgEl('g', { class: 'map-node-severe' });
-      g.appendChild(svgEl('circle', { r: 12, class: 'map-node--severe-bg' }));
-      g.appendChild(svgEl('path', { d: 'M-8,-8 L8,8 M-8,8 L8,-8', class: 'map-node map-node--severe' }));
+      g.appendChild(svgEl('circle', { r: 14, class: 'map-node--severe-bg' }));
+      g.appendChild(svgEl('path', { d: 'M-9,-9 L9,9 M-9,9 L9,-9', class: 'map-node map-node--severe' }));
       return g;
     }
-    return svgEl('circle', { r: 10, class: shapeClass('none') });
+    return svgEl('circle', { r: 14, class: shapeClass('none') });
   }
 
   function buildLegend(t) {
@@ -345,7 +345,7 @@
         }
         typeSel.addEventListener('change', apply);
         sevSel.addEventListener('change', apply);
-        container.appendChild(el('div', { class: 'row filter-bar' },
+        container.appendChild(el('div', { class: 'page-toolbar' },
           el('span', { class: 'pill', text: t('common.filter') }), typeSel, sevSel));
 
         var host = el('div');

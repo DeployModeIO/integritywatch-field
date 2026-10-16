@@ -90,7 +90,7 @@
       };
 
       var view = el('div', { class: 'view view-reports' });
-      view.appendChild(el('h1', { text: t('reports.title') }));
+      view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('reports.title') })));
 
       var typeSelect = el('select', { class: 'select', attrs: { 'aria-label': t('reports.title') } });
       [['quarterly', 'reports.quarterly'], ['dossier', 'reports.dossier'], ['datasheet', 'reports.datasheet']].forEach(function (p) {
@@ -143,7 +143,9 @@
         if (!host) {
           host = document.createElement('div');
           host.id = 'print-host';
-          document.body.appendChild(host);
+          // Mount inside the view container (main.app-main), never on body: body is
+          // a grid whose auto-placement would pin the host into the 240px sidebar cell.
+          container.appendChild(host);
         }
         host.textContent = '';
         return host;

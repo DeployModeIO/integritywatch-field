@@ -29,6 +29,8 @@
   var _themeBtn = null;
   var _hamburger = null;
   var _brandEl = null;
+  var _brandNameEl = null;
+  var _navEl = null;
   var _skipLinkEl = null;
   var _runRulesLabel = null;
   var _disclaimerEl = null;
@@ -66,6 +68,12 @@
     return document.createTextNode('');
   }
 
+  function brandMark() {
+    var n = icon('brand', 28);
+    if (n && n.nodeType) { n.setAttribute('class', 'app-brand__mark'); }
+    return n;
+  }
+
   function buildSectorOptions() {
     if (!_sectorSelect) { return; }
     _sectorSelect.textContent = '';
@@ -86,12 +94,16 @@
     }, icon('menu', 22));
     header.appendChild(_hamburger);
 
-    _brandEl = el('span', { class: 'brand', text: t('common.appName') });
+    _brandEl = el('a', { class: 'app-brand', attrs: { href: '#/dashboard' } },
+      brandMark(),
+      _brandNameEl = el('span', { class: 'app-brand__name', text: t('common.appName') }));
     header.appendChild(_brandEl);
+
+    var controls = el('div', { class: 'app-header__controls' });
 
     _sectorSelect = el('select', { class: 'select', attrs: { id: 'sector-select', name: 'sector-select', 'aria-label': t('common.sector') }, on: { change: onSectorChange } });
     buildSectorOptions();
-    header.appendChild(_sectorSelect);
+    controls.appendChild(_sectorSelect);
 
     _localeSelect = el('select', { class: 'select', attrs: { id: 'locale-select', name: 'locale-select', 'aria-label': t('common.language') }, on: { change: onLocaleChange } });
     var locales = (_i18n && typeof _i18n.listLocales === 'function') ? _i18n.listLocales() : [];
@@ -100,37 +112,39 @@
     });
     var currentLocale = (_i18n && typeof _i18n.getLocale === 'function') ? _i18n.getLocale() : 'en';
     _localeSelect.value = currentLocale;
-    header.appendChild(_localeSelect);
+    controls.appendChild(_localeSelect);
 
     _themeIconSpan = el('span', { class: 'theme-icon', attrs: { 'aria-hidden': 'true' } });
-    _themeBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.theme') }, on: { click: onThemeToggle } }, _themeIconSpan);
-    header.appendChild(_themeBtn);
+    _themeBtn = el('button', { class: 'btn btn-ghost touch', attrs: { id: 'theme-toggle', 'aria-label': t('common.theme') }, on: { click: onThemeToggle } }, _themeIconSpan);
+    controls.appendChild(_themeBtn);
 
-    _badgeEl = el('button', { class: 'btn btn-ghost badge-recs', attrs: { 'aria-label': t('rules.title') }, on: { click: function () { navigateTo('#/recommendations'); } } },
+    _badgeEl = el('button', { class: 'btn btn-ghost touch badge-recs', attrs: { 'aria-label': t('rules.title') }, on: { click: function () { navigateTo('#/recommendations'); } } },
       icon('alert-critical', 18),
       _badgeCount = el('span', { class: 'badge-count', text: '0' }));
     _badgeEl.hidden = true;
-    header.appendChild(_badgeEl);
+    controls.appendChild(_badgeEl);
 
     _rulesStatus = el('span', { class: 'rules-status', text: t('rules.lastRun') + ': ' + t('common.none') });
-    header.appendChild(_rulesStatus);
+    controls.appendChild(_rulesStatus);
 
     _runRulesLabel = el('span', { text: t('dashboard.runRules') });
-    header.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { runRules(false); } } },
+    controls.appendChild(el('button', { class: 'btn btn-primary', attrs: { id: 'run-rules' }, on: { click: function () { runRules(false); } } },
       icon('play', 18), _runRulesLabel));
 
+    header.appendChild(controls);
     return header;
   }
 
   function buildNav() {
-    var nav = el('nav', { class: 'sidebar', attrs: { id: 'app-nav', 'aria-label': t('a11y.openNav') } });
+    var nav = el('nav', { class: 'app-sidebar', attrs: { id: 'app-nav', 'aria-label': t('common.appName') } });
+    _navEl = nav;
     NAV_GROUPS.forEach(function (g) {
       var group = el('div', { class: 'nav-group' });
       g.items.forEach(function (item) {
         var viewId = item[0];
-        var a = el('a', { class: 'nav-item', attrs: { href: item[2] }, dataset: { view: viewId } },
-          icon(item[1], 20),
-          _navLabels[viewId] = el('span', { text: t('nav.' + viewId) }));
+        var a = el('a', { class: 'app-sidebar__item', attrs: { href: item[2] }, dataset: { view: viewId } },
+          el('span', { class: 'icon' }, icon(item[1], 20)),
+          _navLabels[viewId] = el('span', { class: 'app-sidebar__label', text: t('nav.' + viewId) }));
         _navLinks[viewId] = a;
         group.appendChild(a);
       });
@@ -159,18 +173,42 @@
     _skipLinkEl = el('a', { class: 'skip-link', attrs: { href: '#main' }, text: t('a11y.skipLink') });
     _root.appendChild(_skipLinkEl);
     _root.appendChild(buildHeader());
-    var layout = el('div', { class: 'layout' });
-    layout.appendChild(buildNav());
-    layout.appendChild(el('main', { class: 'main', attrs: { id: 'main', tabindex: '-1' } }));
-    _root.appendChild(layout);
+    _root.appendChild(buildNav());
+    _root.appendChild(el('main', { class: 'app-main', attrs: { id: 'main', tabindex: '-1' } }));
     _root.appendChild(buildFooter());
-    _root.appendChild(el('div', { class: 'toast-region', attrs: { id: 'toast-region' } }));
+    _root.appendChild(el('div', { class: 'toast-region', attrs: { id: 'toast-region', 'aria-live': 'polite' } }));
+  }
+
+  function setNavOpen(open) {
+    if (!_navEl || !_hamburger) { return; }
+    if (open) {
+      _navEl.setAttribute('data-open', '');
+      document.body.classList.add('nav-open');
+    } else {
+      _navEl.removeAttribute('data-open');
+      document.body.classList.remove('nav-open');
+    }
+    _hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    _hamburger.setAttribute('aria-label', t(open ? 'a11y.closeNav' : 'a11y.openNav'));
   }
 
   function toggleNav() {
-    var open = document.body.classList.toggle('nav-open');
-    _hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    _hamburger.setAttribute('aria-label', t(open ? 'a11y.closeNav' : 'a11y.openNav'));
+    if (!_navEl) { return; }
+    setNavOpen(!_navEl.hasAttribute('data-open'));
+  }
+
+  function closeNavOnEscape(ev) {
+    if (ev && ev.key === 'Escape' && _navEl && _navEl.hasAttribute('data-open')) {
+      setNavOpen(false);
+      if (_hamburger) { _hamburger.focus(); }
+    }
+  }
+
+  function closeNavOnOutside(ev) {
+    if (!_navEl || !_navEl.hasAttribute('data-open')) { return; }
+    if (_hamburger && _hamburger.contains(ev.target)) { return; }
+    if (_navEl.contains(ev.target)) { return; }
+    setNavOpen(false);
   }
 
   function navigateTo(hash) {
@@ -216,7 +254,7 @@
   // Re-render only the localized chrome texts without rebuilding the shell, so
   // sector selection, scroll position and the rules scheduler survive a locale switch.
   function refreshChrome() {
-    if (_brandEl) { _brandEl.textContent = t('common.appName'); }
+    if (_brandNameEl) { _brandNameEl.textContent = t('common.appName'); }
     if (_skipLinkEl) { _skipLinkEl.textContent = t('a11y.skipLink'); }
     Object.keys(_navLabels).forEach(function (k) {
       _navLabels[k].textContent = t('nav.' + k);
@@ -225,10 +263,13 @@
       buildSectorOptions();
       _sectorSelect.setAttribute('aria-label', t('common.sector'));
     }
-    if (_localeSelect) { _localeSelect.setAttribute('aria-label', t('common.language')); }
+    if (_localeSelect) {
+      _localeSelect.setAttribute('aria-label', t('common.language'));
+      _localeSelect.value = (_i18n && typeof _i18n.getLocale === 'function') ? _i18n.getLocale() : 'en';
+    }
     if (_themeBtn) { _themeBtn.setAttribute('aria-label', t('common.theme')); }
     if (_hamburger) {
-      var open = document.body.classList.contains('nav-open');
+      var open = !!(document.body && document.body.classList.contains('nav-open'));
       _hamburger.setAttribute('aria-label', t(open ? 'a11y.closeNav' : 'a11y.openNav'));
     }
     if (_badgeEl) { _badgeEl.setAttribute('aria-label', t('rules.title')); }
@@ -321,25 +362,33 @@
   }
 
   function bindEvents() {
-    if (!_bus || typeof _bus.on !== 'function') { return; }
-    _bus.on('route:changed', function (data) {
-      var viewId = data && data.viewId;
-      Object.keys(_navLinks).forEach(function (k) {
-        if (k === viewId) { _navLinks[k].setAttribute('aria-current', 'page'); }
-        else { _navLinks[k].removeAttribute('aria-current'); }
-      });
-    });
-    _bus.on('theme:changed', function () { updateThemeIcon(); });
-    _bus.on('locale:changed', function () { refreshChrome(); });
-    _bus.on('sw:update', function () {
-      if (ui() && typeof ui().toast === 'function') {
-        ui().toast(t('common.updateAvailable'), {
-          severity: 'info',
-          timeoutMs: 0,
-          action: { labelKey: 'common.reload', onClick: function () { if (typeof location !== 'undefined') { location.reload(); } } }
+    if (_bus && typeof _bus.on === 'function') {
+      _bus.on('route:changed', function (data) {
+        var viewId = data && data.viewId;
+        Object.keys(_navLinks).forEach(function (k) {
+          if (k === viewId) { _navLinks[k].setAttribute('aria-current', 'page'); }
+          else { _navLinks[k].removeAttribute('aria-current'); }
         });
-      }
-    });
+        setNavOpen(false);
+      });
+      _bus.on('theme:changed', function () { updateThemeIcon(); });
+      _bus.on('locale:changed', function () { refreshChrome(); });
+      _bus.on('sw:update', function () {
+        if (ui() && typeof ui().toast === 'function') {
+          ui().toast(t('common.updateAvailable'), {
+            severity: 'info',
+            timeoutMs: 0,
+            action: { labelKey: 'common.reload', onClick: function () { if (typeof location !== 'undefined') { location.reload(); } } }
+          });
+        }
+      });
+    }
+  }
+
+  function bindChromeEvents() {
+    if (typeof document === 'undefined') { return; }
+    document.addEventListener('keydown', closeNavOnEscape);
+    document.addEventListener('click', closeNavOnOutside);
   }
 
   function mount(opts) {
@@ -349,6 +398,7 @@
     _bus = opts.bus;
     _i18n = opts.i18n;
     buildShell();
+    bindChromeEvents();
     bindEvents();
     updateThemeIcon();
     loadSettings();

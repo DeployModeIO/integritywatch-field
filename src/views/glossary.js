@@ -41,7 +41,7 @@
       var state = { query: '', category: 'all' };
 
       var view = el('div', { class: 'view view-glossary' });
-      view.appendChild(el('h1', { text: t('glossary.title') }));
+      view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('glossary.title') })));
 
       var searchInput = el('input', { class: 'input', attrs: { type: 'search', placeholder: t('glossary.searchPlaceholder'), 'aria-label': t('glossary.searchPlaceholder') } });
       var catSelect = el('select', { class: 'select', attrs: { 'aria-label': t('glossary.category') } });

@@ -63,7 +63,7 @@
       var state = { status: 'all', severity: 'all', recs: [], entities: {} };
 
       var view = el('div', { class: 'view view-recommendations' });
-      view.appendChild(el('h1', { text: t('rules.title') }));
+      view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('rules.title') })));
 
       // Toolbar: filters + run now.
       var statusSelect = el('select', { class: 'select', attrs: { 'aria-label': t('rules.filterStatus') } });

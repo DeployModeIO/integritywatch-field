@@ -263,23 +263,18 @@
 
     var frag = document.createDocumentFragment();
 
-    var title = h.ui.el('h1', { class: 'view-title', text: h.t('dashboard.title') });
-    frag.appendChild(title);
+    var header = h.ui.el('div', { class: 'page-header' });
+    header.appendChild(h.ui.el('h1', { text: h.t('dashboard.title') }));
 
-    // Toolbar: sector view + last run + run rules.
-    var toolbar = h.ui.el('div', { class: 'view-toolbar' });
-    toolbar.appendChild(h.ui.el('span', { class: 'pill', text: h.t('dashboard.sectorView') + ': ' + (h.sector ? h.t('common.' + h.sector) : h.t('common.all')) }));
-    var spacer = h.ui.el('span', { class: 'toolbar-spacer' });
-    toolbar.appendChild(spacer);
-    toolbar.appendChild(h.ui.el('span', {
+    // Actions: sector view + last run (the run-rules trigger lives in the global header).
+    var actions = h.ui.el('div', { class: 'actions' });
+    actions.appendChild(h.ui.el('span', { class: 'pill', text: h.t('dashboard.sectorView') + ': ' + (h.sector ? h.t('common.' + h.sector) : h.t('common.all')) }));
+    actions.appendChild(h.ui.el('span', {
       class: 'rules-last-run',
       text: h.t('dashboard.lastRulesRun') + ': ' + (data.lastRulesRunISO ? fmtDate(data.lastRulesRunISO, { dateStyle: 'short', timeStyle: 'short' }) : h.t('common.none'))
     }));
-    toolbar.appendChild(h.ui.el('button', {
-      class: 'btn btn-primary',
-      on: { click: function () { runRules(h); } }
-    }, h.ui.icon('play', 18), h.ui.el('span', { text: h.t('dashboard.runRules') })));
-    frag.appendChild(toolbar);
+    header.appendChild(actions);
+    frag.appendChild(header);
 
     // KPI bento grid.
     var grid = h.ui.el('div', { class: 'grid-bento' });
@@ -294,31 +289,6 @@
     frag.appendChild(buildFeed(h, c.feed));
 
     return frag;
-  }
-
-  function runRules(h) {
-    var engine = root.IW.rules && root.IW.rules.engine;
-    if (!engine || typeof engine.sweep !== 'function') {
-      if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'warning' }); }
-      return Promise.resolve();
-    }
-    var keys = ['residualBandPct', 'availabilityThresholdPct', 'stuckSensorCount', 'zScoreThreshold'];
-    return Promise.all(keys.map(function (k) { return h.repos.meta.get(k).catch(function () { return undefined; }); }))
-      .then(function (vals) {
-        var settings = {};
-        if (typeof vals[0] === 'number') { settings.residualBandPct = vals[0]; }
-        if (typeof vals[1] === 'number') { settings.availabilityThresholdPct = vals[1]; }
-        if (typeof vals[2] === 'number') { settings.stuckSensorCount = vals[2]; }
-        if (typeof vals[3] === 'number') { settings.zScoreThreshold = vals[3]; }
-        return engine.sweep(h.repos, settings, 'local');
-      })
-      .then(function () {
-        // Data:changed events from the sweep trigger the live re-render.
-      })
-      .catch(function (err) {
-        if (typeof console !== 'undefined' && typeof console.error === 'function') { console.error('sweep failed:', err); }
-        if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
-      });
   }
 
   function loadingNode(h) {

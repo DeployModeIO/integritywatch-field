@@ -55,7 +55,8 @@
     edit: wrap('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>'),
     trash: wrap('<path d="M4 6h16M9 6V4h6v2M6 6l1 14h10l1-14"/><path d="M10 11v5M14 11v5"/>'),
     play: wrap('<path d="M7 5l12 7-12 7z"/>'),
-    menu: wrap('<path d="M4 6h16M4 12h16M4 18h16"/>')
+    menu: wrap('<path d="M4 6h16M4 12h16M4 18h16"/>'),
+    brand: wrap('<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>')
   };
 
   var SEVERITY_SHAPE = {

@@ -127,6 +127,22 @@ table {
   color: var(--accent-text);
 }
 
+.fileguard-banner {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--sev-moderate-bg);
+  color: var(--text);
+  border-block-end: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
