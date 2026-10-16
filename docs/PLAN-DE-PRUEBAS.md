@@ -176,5 +176,6 @@ Los cuatro scripts quedan instalados en `tools/tests/` y se re-ejecutan con un c
 - Suite `node --test`: **281/281** · 4 scripts P0 verdes · 0 bugs abiertos.
 - **Pendiente con el usuario (T12 UAT):** los 6 guiones de la sección 4 (T12) para validar el flujo real
   en campo — la guía `docs/GUIA-DE-USO.md` sirve como guion.
-- **Opcional (P2):** Electron (`npm start` + `.exe`), multi-pestaña, flujo de actualización del service worker.
+- **P2 Electron: HECHO (2026-10-16)** — `.exe` portable de **71 MB** construido (`electron/dist/IntegrityWatch Field 1.0.0.exe`, no versionado: `dist/` está en `.gitignore`) y **probado**: smoke en dev (`playwright-core._electron`) + smoke del empaquetado por CDP (título, nav de 10 ítems, heatmap, clic de navegación, 0 errores de consola). Evidencias: `p2-electron-dev.png`, `p2-electron-exe.png`. Notas: sin firma digital → SmartScreen avisará; las 18 vulnerabilidades reportadas por npm están en devDependencies (herramientas de build), no en la app empaquetada.
+- **Opcional restante (P2):** multi-pestaña, flujo de actualización del service worker en cliente real.
 - **Accesibilidad (P1 residual):** auditoría con lector de pantalla (NVDA) y lighthouse completo.

@@ -118,6 +118,12 @@ saber programar. La aplicación funciona **100 % sin internet** y todos tus dato
 **Cargar la campaña mensual de cupones**: Ingesta → CSV → archivo → validar → importar → Corrosión →
 asignar Rol/Par a los cupones nuevos → Ejecutar reglas → revisar Recomendaciones.
 
+**Precargar ductos de combustibles (GLP, gasolinas 93/97, diésel, kerosene doméstico, Jet A-1)**:
+Ingesta → pestaña **JSON** → elige `datos-prueba/precarga-ductos-combustibles.json` → modo **merge** →
+Importar. Quedan cargados **6 poliductos (408 km) con 51 activos, 15 inspecciones, 6 puntos de corrosión,
+3 PSV de GLP y 4 activos APM**; el mapa muestra los colores/formatos de severidad y el Panel suma los
+KPIs. No borra nada de lo que ya tengas.
+
 **Programar una inspección RBI**: APM → activo → ajusta POF/COF → «reprogramar» próxima inspección
 (la fecha sugerida cambia según el riesgo).
 
