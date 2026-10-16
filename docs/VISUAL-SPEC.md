@@ -170,3 +170,71 @@ el diseño, el código y los textos son propios y viven en este repositorio.
 observable en catálogos de soluciones industriales; cada principio se tradujo a tokens y clases
 propias (`.app-sidebar__group-label`, `.kpi-context`, ritmo de `table.data`) y se validó con la
 suite (`node --test`), el e2e y el quality gate (capturas `docs/evidence/p0-locale-*.png`).
+
+## 8. Estándar internacional aplicado (EE.UU. / Reino Unido / Brasil)
+
+**Objetivo.** Fijar un conjunto de glifos de equipos *oil & gas* —uno por familia de equipo— y una
+regla de color de seguridad, anclados en prácticas reconocidas de tres mercados de operación
+frecuentes en un activo de ductos y bombeo. La base de estándares es la siguiente (patrones
+públicos; no se reproduce ningún texto normativo).
+
+### 8.1. EE.UU. / internacional
+
+| Referencia | Alcance | Traducción a esta UI |
+| --- | --- | --- |
+| **ISA-101** (HMI de alto rendimiento) | símbolos consistentes, sin decoración; color reservado para lo anormal | iconografía de trazo 2 px 24×24, monocroma (hereda `currentColor`); el color de estado no compite con el color de marca |
+| **API RP 1165** (displays de SCADA de ductos) | displays de control de ductos legibles y estandarizados | un glifo por familia de equipo y símbolos estables entre pantallas (mapa, detalle, informes) |
+| **API 610 / ISO 13709** (bombas centrífugas, 13ª ed. 2026) | familia de bombas centrífugas | glifo `pump` (impulsor) para esa familia |
+| **NFPA 20** (bombas estacionarias contra incendio) | sistema de bombeo de protección contra incendio | glifo `fire` dedicado a la protección contra incendio |
+| **ISO 8528 / IEEE 446** (grupos electrógenos y potencia de emergencia) | motores y potencia de servicio/emergencia | glifo `engine` para la familia de generación de potencia |
+
+### 8.2. Reino Unido
+
+| Referencia | Alcance | Traducción a esta UI |
+| --- | --- | --- |
+| **EEMUA 191** (gestión y priorización de alarmas) | jerarquía de alarma y priorización | el banner de severidad ya sigue rojo→ámbar; los tokens de severidad (`--sev-critical`, `--sev-warning`) implementan esa jerarquía |
+| **BS 5306 / BS EN 12845** (extinción; rociadores e instalaciones fijas) | protección contra incendio | familia `fire` única para extinción y riesgo de incendio |
+
+### 8.3. Brasil
+
+| Referencia | Alcance | Traducción a esta UI |
+| --- | --- | --- |
+| **NR-23** (protección contra incendios, 2022) | proteção contra incêndio en instalaciones | familia `fire` como símbolo de protección contra incendio |
+| **ABNT NBR 13714** (hidrantes y sistemas de mangueiras) | redes de hidrantes | agrupada en la familia `fire` (misma señalización de emergencia) |
+| **ABNT NBR 17240** (detección y alarma de incendio) | detecção e alarme de incêndio | estados de severidad del HMI consistentes con la señalización de alarma |
+| **NR-26** (cores de segurança) | rojo = equipo de protección contra incendio | los equipos de protección contra incendio se renderizan con el token de severidad **rojo** |
+
+### 8.4. Glifos de equipos añadidos
+
+Un glifo por familia de equipo; fuente elegida en `node_modules` (ISC/MIT) y mantenida en
+`tools/build-icons.cjs`. Ninguno reemplaza ni renombra claves existentes.
+
+| Clave (semántica) | Fuente | Motivo |
+| --- | --- | --- |
+| `pump` | `lucide:fan` | no existe un glifo "pump" dedicado en Lucide ni Tabler; el impulsor de `fan` es el símbolo rotativo más fiel a una bomba centrífuga (API 610 / ISO 13709) |
+| `engine` | `lucide:engine` | glifo dedicado de motor, adecuado al grupo electrógeno / potencia de servicio (ISO 8528 / IEEE 446) |
+| `fire` | `lucide:fire-extinguisher` | símbolo directo de protección contra incendio (NFPA 20, BS EN 12845, NBR 13714) |
+| `substation` | `lucide:utility-pole` | no existe un glifo "substation" dedicado; el poste de distribución con cruceta y aisladores es el símbolo de infraestructura eléctrica más fiel (IEC 61439) |
+
+### 8.5. Regla de color de seguridad
+
+- **Un glifo por familia de equipo.** Cada familia (bombeo, generación, incendio, potencia) tiene
+  exactamente un glifo estable, reutilizado en mapa, detalle e informes (API RP 1165, ISA-101).
+- **Redundancia de color y forma.** Los equipos de protección contra incendio (`fire`) se renderizan
+  con el token de severidad **rojo** y con la **forma** de severidad correspondiente, de modo que la
+  señal se codifica en dos canales (color + forma) y sigue siendo legible en daltonismo y en
+  impresión monocroma. Esto es consistente con **NR-26** (rojo = equipos de incendio) y con el
+  sistema de seguridad **ISO 3864** (color + forma + contraste 4.5:1).
+- **Color reservado.** El rojo de protección contra incendio no se usa como color decorativo ni de
+  marca (confirma ISA-101/EEMUA 191: el color señala lo anormal).
+
+### 8.6. Nota legal
+
+Cero assets de terceros copiados. Los glifos incorporados provienen exclusivamente de **Lucide
+(ISC)** y **Tabler Icons (MIT)**, vendoriados en `node_modules` y regenerados de forma idempotente
+por `tools/build-icons.cjs` (`node tools/build-icons.cjs`, 2 ejecuciones → SHA idéntico); su
+licencia se resuelve en `THIRD-PARTY-NOTICES.md`. Las referencias a ISA-101, API RP 1165,
+API 610/ISO 13709, NFPA 20, ISO 8528/IEEE 446, EEMUA 191, BS 5306/BS EN 12845, NR-23,
+ABNT NBR 13714/17240, NR-26 e ISO 3864 son **patrones y principios de estándares públicos**; no se
+reproduce ni traduce texto normativo ni iconografía propietaria. El diseño, el código y los textos
+de este repositorio son propios.

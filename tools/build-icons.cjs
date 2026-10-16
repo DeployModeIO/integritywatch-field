@@ -71,6 +71,19 @@ const MAP = [
   ['trash', 'lucide', 'trash-2'],
   ['play', 'lucide', 'play'],
   ['menu', 'lucide', 'menu'],
+  /* Oil & gas equipment families (see docs/VISUAL-SPEC.md §8). One glyph per
+   * family, most faithful ISC/MIT source available; no third-party assets copied:
+   *   pump       - API 610 / ISO 13709 centrifugal machine -> Lucide impeller
+   *                (no dedicated "pump" glyph exists in either set; `fan` is the
+   *                closest faithful rotary-impeller symbol at 24x24 stroke 2).
+   *   engine     - ISO 8528 / IEEE 446 prime mover -> Lucide dedicated engine.
+   *   fire       - NFPA 20 / BS EN 12845 / NBR 13714 -> Lucide fire-extinguisher.
+   *   substation - IEC 61439 power installation -> Lucide utility-pole (no dedicated
+   *                "substation" glyph exists; the pole is the closest power-infra symbol). */
+  ['pump', 'lucide', 'fan'],
+  ['engine', 'lucide', 'engine'],
+  ['fire', 'lucide', 'fire-extinguisher'],
+  ['substation', 'lucide', 'utility-pole'],
   ['brand', 'custom', null]
 ];
 

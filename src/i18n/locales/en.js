@@ -208,7 +208,10 @@
         gasPlant: 'Gas plant', refinery: 'Refinery', distillationUnit: 'Distillation unit',
         hydrodesulfurization: 'Hydrodesulfurization', reformer: 'Reformer', heatExchanger: 'Heat exchanger',
         pump: 'Pump', compressor: 'Compressor', column: 'Column', furnace: 'Furnace',
-        utilitySteam: 'Utility — steam', utilityAir: 'Utility — air', utilityNitrogen: 'Utility — nitrogen'
+        utilitySteam: 'Utility — steam', utilityAir: 'Utility — air', utilityNitrogen: 'Utility — nitrogen',
+        centrifugalPump: 'Centrifugal pump (API 610)', reciprocatingPump: 'Positive displacement pump',
+        generator: 'Power generator (ISO 8528)', substation: 'Electrical substation',
+        firePump: 'Fire pump (NFPA 20)', fireSystem: 'Fire protection system'
       }
     },
 

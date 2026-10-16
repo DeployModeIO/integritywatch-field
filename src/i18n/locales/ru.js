@@ -498,7 +498,13 @@
         furnace: "Печь",
         utilitySteam: "Пар (утилиты)",
         utilityAir: "Воздух (утилиты)",
-        utilityNitrogen: "Азот (утилиты)"
+        utilityNitrogen: "Азот (утилиты)",
+        centrifugalPump: "Центробежный насос (API 610)",
+        reciprocatingPump: "Объёмный насос",
+        generator: "Электрогенератор (ISO 8528)",
+        substation: "Электрическая подстанция",
+        firePump: "Пожарный насос (NFPA 20)",
+        fireSystem: "Система пожаротушения"
       },
       deleteAssetConfirm: "Удалить этот актив?",
       name: "Название",

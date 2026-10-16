@@ -756,6 +756,90 @@
         ar: { term: 'WITSML', definition: 'لغة الترميز القياسية لنقل معلومات موقع البئر: معيار تبادل بيانات XML لنقل بيانات الحفر والإكمال والآبار بين المشغّلين وشركات الخدمات.' },
         pt: { term: 'WITSML', definition: 'Linguagem de marcação padrão para transferência de informações de poço: padrão XML de intercâmbio de dados de perfuração, completação e poço entre operadoras e empresas de serviço.' }
       }
+    },
+    {
+      id: 'centrifugal-pump',
+      category: 'apm',
+      standard: 'API 610',
+      i18n: {
+        en: { term: 'Centrifugal pump (API 610)', definition: 'A rotodynamic pump that raises fluid energy with a rotating impeller; the workhorse of oil & gas transfer, specified per API 610 / ISO 13709.' },
+        es: { term: 'Bomba centrífuga (API 610)', definition: 'Bomba rotodinámica que incrementa la energía del fluido mediante un impulsor giratorio; el equipo esencial de bombeo en petróleo y gas, especificado según API 610 / ISO 13709.' },
+        fr: { term: 'Pompe centrifuge (API 610)', definition: "Pompe rotodynamique qui élève l'énergie du fluide grâce à une roue en rotation ; l'équipement de pompage de référence du pétrole et du gaz, spécifié selon l'API 610 / ISO 13709." },
+        zh: { term: '离心泵（API 610）', definition: '利用旋转叶轮提升流体能量的旋转动力泵；油气输送的主力泵型，按 API 610 / ISO 13709 规定。' },
+        ru: { term: 'Центробежный насос (API 610)', definition: 'Динамический насос, повышающий энергию жидкости вращающимся рабочим колесом; основной насос нефтегазовой отрасли, по API 610 / ISO 13709.' },
+        ar: { term: 'مضخة طرد مركزي (API 610)', definition: 'مضخة ديناميكية ترفع طاقة المائع بواسطة دافعة دوّارة؛ وهي المضخة الأساسية في نقل النفط والغاز، ومحدَّدة وفق API 610 / ISO 13709.' },
+        pt: { term: 'Bomba centrífuga (API 610)', definition: 'Bomba rotodinâmica que eleva a energia do fluido por meio de um rotor; o equipamento de bombeamento padrão em petróleo e gás, especificado conforme API 610 / ISO 13709.' }
+      }
+    },
+    {
+      id: 'fire-pump',
+      category: 'apm',
+      standard: 'NFPA 20',
+      i18n: {
+        en: { term: 'Fire pump (NFPA 20)', definition: 'A dedicated pump that supplies water to a fire-protection system at the required flow and pressure; installed and tested per NFPA 20.' },
+        es: { term: 'Bomba contra incendio (NFPA 20)', definition: 'Bomba dedicada que suministra agua a un sistema de protección contra incendios con el caudal y la presión requeridos; instalada y probada según NFPA 20.' },
+        fr: { term: "Pompe à incendie (NFPA 20)", definition: "Pompe dédiée qui alimente un système de protection incendie au débit et à la pression requis ; installée et éprouvée selon la NFPA 20." },
+        zh: { term: '消防泵（NFPA 20）', definition: '向消防系统提供所需流量和压力的专用泵；按 NFPA 20 安装和试验。' },
+        ru: { term: 'Пожарный насос (NFPA 20)', definition: 'Специализированный насос, подающий воду в систему противопожарной защиты с требуемым расходом и напором; устанавливается и испытывается по NFPA 20.' },
+        ar: { term: 'مضخة حريق (NFPA 20)', definition: 'مضخة مخصّصة تزوّد نظام الحماية من الحريق بالماء عند معدل التدفق والضغط المطلوبين؛ وتُركّب وتُختبر وفق NFPA 20.' },
+        pt: { term: 'Bomba de incêndio (NFPA 20)', definition: 'Bomba dedicada que alimenta um sistema de proteção contra incêndio com a vazão e a pressão requeridas; instalada e ensaiada conforme NFPA 20.' }
+      }
+    },
+    {
+      id: 'foam-deluge',
+      category: 'apm',
+      standard: 'NFPA 11',
+      i18n: {
+        en: { term: 'Foam deluge system (NFPA 11)', definition: 'A fixed system that discharges foam solution through open nozzles to blanket a hazard area; design and expansion ratios follow NFPA 11.' },
+        es: { term: 'Sistema de espuma (NFPA 11)', definition: 'Sistema fijo que descarga solución de espuma a través de boquillas abiertas para cubrir un área de riesgo; el diseño y las relaciones de expansión siguen NFPA 11.' },
+        fr: { term: 'Système à mousse (NFPA 11)', definition: "Système fixe qui décharge une solution moussante par des buses ouvertes pour recouvrir une zone à risque ; conception et taux de foisonnement selon la NFPA 11." },
+        zh: { term: '泡沫喷淋系统（NFPA 11）', definition: '通过开式喷头喷洒泡沫混合液以覆盖危险区域的固定式系统；设计与发泡倍数依据 NFPA 11。' },
+        ru: { term: 'Система пенного пожаротушения (NFPA 11)', definition: 'Стационарная система, подающая пенный раствор через открытые оросители для покрытия опасной зоны; проектирование и кратность пены — по NFPA 11.' },
+        ar: { term: 'نظام الرغوة (NFPA 11)', definition: 'نظام ثابت يصرّف محلول الرغوة عبر فوهات مفتوحة لتغطية منطقة الخطر؛ ويتبع التصميم ونسب التمدد معيار NFPA 11.' },
+        pt: { term: 'Sistema de espuma (NFPA 11)', definition: 'Sistema fixo que descarrega solução de espuma por bicos abertos para cobrir uma área de risco; o projeto e as taxas de expansão seguem a NFPA 11.' }
+      }
+    },
+    {
+      id: 'emergency-generator',
+      category: 'apm',
+      standard: 'ISO 8528',
+      i18n: {
+        en: { term: 'Emergency generator (ISO 8528)', definition: 'An engine-driven generating set that supplies standby power to critical loads on loss of the primary supply; performance classes are defined by ISO 8528.' },
+        es: { term: 'Generador eléctrico (ISO 8528)', definition: 'Grupo electrógeno accionado por motor que suministra energía de respaldo a cargas críticas al perderse el suministro principal; las clases de prestación las define ISO 8528.' },
+        fr: { term: 'Groupe électrogène (ISO 8528)', definition: "Groupe entraîné par moteur qui fournit une alimentation de secours aux charges critiques en cas de perte de l'alimentation principale ; les classes de performance sont définies par l'ISO 8528." },
+        zh: { term: '发电机组（ISO 8528）', definition: '在主电源失电时向关键负载提供备用电源的发动机驱动发电机组；其性能等级由 ISO 8528 规定。' },
+        ru: { term: 'Электрогенератор (ISO 8528)', definition: 'Генераторная установка с приводом от двигателя, обеспечивающая резервное питание ответственных нагрузок при потере основного источника; классы характеристик определяет ISO 8528.' },
+        ar: { term: 'مولد كهربائي (ISO 8528)', definition: 'مجموعة توليد بمحرك تزوّد الأحمال الحرجة بالطاقة الاحتياطية عند فقدان المصدر الرئيسي؛ وتُحدَّد فئات الأداء في ISO 8528.' },
+        pt: { term: 'Gerador elétrico (ISO 8528)', definition: 'Conjunto gerador acionado por motor que fornece energia de reserva a cargas críticas na perda do suprimento principal; as classes de desempenho são definidas pela ISO 8528.' }
+      }
+    },
+    {
+      id: 'eemua-191',
+      category: 'standards',
+      standard: 'EEMUA 191',
+      i18n: {
+        en: { term: 'EEMUA 191 alarm management', definition: 'A UK guidance on alarm system design, management and procurement that sets targets for alarm rates and operator load to keep control rooms manageable.' },
+        es: { term: 'Gestión de alarmas EEMUA 191', definition: 'Guía británica sobre diseño, gestión y adquisición de sistemas de alarmas que fija objetivos de tasa de alarmas y carga del operador para mantener las salas de control gestionables.' },
+        fr: { term: 'Gestion des alarmes EEMUA 191', definition: "Guide britannique sur la conception, la gestion et l'acquisition des systèmes d'alarme fixant des objectifs de taux d'alarme et de charge opérateur pour garder les salles de contrôle maîtrisables." },
+        zh: { term: 'EEMUA 191 报警管理', definition: '英国关于报警系统设计、管理与采购的指南，设定报警率和操作员负荷目标，使控制室保持可管理状态。' },
+        ru: { term: 'Управление аварийными сигналами EEMUA 191', definition: 'Британское руководство по проектированию, управлению и закупке систем сигнализации; задаёт целевые показатели частоты сигналов и нагрузки оператора для управляемости операторных.' },
+        ar: { term: 'إدارة الإنذارات EEMUA 191', definition: 'دليل بريطاني لتصميم وإدارة وشراء أنظمة الإنذار، يحدّد أهدافاً لمعدل الإنذارات وعبء المشغّل للحفاظ على قابلية إدارة غرف التحكم.' },
+        pt: { term: 'Gestão de alarmes EEMUA 191', definition: 'Guia britânico sobre projeto, gestão e aquisição de sistemas de alarme que estabelece metas de taxa de alarmes e carga do operador para manter as salas de controle gerenciáveis.' }
+      }
+    },
+    {
+      id: 'nr-23',
+      category: 'standards',
+      standard: 'NR-23',
+      i18n: {
+        en: { term: 'NR-23 fire protection (Brazil)', definition: 'The Brazilian regulatory standard (Ministry of Labour, updated 2022) mandating fire protection measures, egress and fire-fighting equipment in workplaces.' },
+        es: { term: 'Protección contra incendios NR-23 (Brasil)', definition: 'Norma reglamentaria brasileña (Ministerio de Trabajo, actualizada en 2022) que exige medidas de protección contra incendios, salidas de emergencia y equipos de combate en los lugares de trabajo.' },
+        fr: { term: 'Protection incendie NR-23 (Brésil)', definition: "Norme réglementaire brésilienne (Ministère du Travail, mise à jour en 2022) imposant les mesures de protection incendie, les issues de secours et les équipements de lutte dans les lieux de travail." },
+        zh: { term: 'NR-23 消防保护（巴西）', definition: '巴西监管标准（劳动部，2022 年更新），规定工作场所的消防措施、疏散通道和灭火设备。' },
+        ru: { term: 'Пожарная защита NR-23 (Бразилия)', definition: 'Бразильский нормативный стандарт (Министерство труда, обновлён в 2022 г.), предписывающий меры противопожарной защиты, пути эвакуации и средства пожаротушения на рабочих местах.' },
+        ar: { term: 'الحماية من الحريق NR-23 (البرازيل)', definition: 'معيار تنظيمي برازيلي (وزارة العمل، مُحدَّث في 2022) يفرض تدابير الحماية من الحريق ومخارج الطوارئ ومعدات مكافحة الحرائق في أماكن العمل.' },
+        pt: { term: 'Proteção contra incêndio NR-23 (Brasil)', definition: 'Norma regulamentadora brasileira (Ministério do Trabalho, atualizada em 2022) que exige medidas de proteção contra incêndio, saídas de emergência e equipamentos de combate em locais de trabalho.' }
+      }
     }
   ];
 

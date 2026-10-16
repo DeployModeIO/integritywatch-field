@@ -261,13 +261,24 @@
       asset('APM-MD-003', 'GP-01', 'Gas plant Norte', 'midstream', 'gasPlant', 'B', 2, 3),
       asset('APM-DN-001', 'HEX-01', 'Heat exchanger E-101', 'downstream', 'heatExchanger', 'C', 5, 4, 45),
       asset('APM-DN-002', 'PMP-02', 'Crude pump P-102', 'downstream', 'pump', 'A', 4, 5),
-      asset('APM-DN-003', 'COL-01', 'Column C-201', 'downstream', 'column', 'B', 2, 2)
+      asset('APM-DN-004', 'COL-01', 'Column C-201', 'downstream', 'column', 'B', 2, 2),
+      // O&G equipment catalogue (pumps, power generation, fire protection, substation).
+      asset('APM-MD-105', 'PUMP-201A', 'Centrifugal pump P-201A (API 610)', 'midstream', 'centrifugalPump', 'A', 3, 4, 4),
+      asset('APM-MD-106', 'GEN-101', 'Emergency generator G-101 — 2.5 MW (ISO 8528)', 'midstream', 'generator', 'A', 2, 5),
+      asset('APM-MD-107', 'FP-01', 'Fire water pump FP-01 (NFPA 20)', 'midstream', 'firePump', 'A', 2, 5, 40),
+      asset('APM-MD-108', 'FPS-01', 'Foam deluge system — tank farm (NFPA 11 / NBR 13714)', 'midstream', 'fireSystem', 'A', 2, 5),
+      asset('APM-DN-003', 'PUMP-305', 'Centrifugal pump P-305 (API 610)', 'downstream', 'centrifugalPump', 'B', 2, 3)
     ];
   }
 
   function buildApmEvents(nowMs) {
-    function event(id, assetId, type, startDaysAgo, downtimeH) {
-      return { id: id, assetId: assetId, type: type, start: daysAgo(nowMs, startDaysAgo), downtimeH: downtimeH };
+    function event(id, assetId, type, startDaysAgo, downtimeH, extra) {
+      var rec = { id: id, assetId: assetId, type: type, start: daysAgo(nowMs, startDaysAgo), downtimeH: downtimeH };
+      if (extra) {
+        if (extra.description) { rec.description = extra.description; }
+        if (extra.workOrderRef) { rec.workOrderRef = extra.workOrderRef; }
+      }
+      return rec;
     }
     return [
       event('EV-001', 'APM-UP-001', 'maintenance', 120, 8),
@@ -287,7 +298,10 @@
       event('EV-015', 'APM-DN-002', 'failure', 20, 12),
       event('EV-016', 'APM-DN-002', 'failure', 40, 6),
       event('EV-017', 'APM-DN-002', 'maintenance', 160, 4),
-      event('EV-018', 'APM-DN-003', 'maintenance', 45, 6)
+      event('EV-018', 'APM-DN-004', 'maintenance', 45, 6),
+      event('EV-019', 'APM-MD-105', 'failure', 12, 8, { description: 'Mechanical seal failure on pump P-201A', workOrderRef: 'OT-2026-612' }),
+      event('EV-020', 'APM-MD-106', 'maintenance', 25, 6, { description: 'Preventive maintenance on emergency generator G-101', workOrderRef: 'OT-2026-618' }),
+      event('EV-021', 'APM-MD-108', 'inspection', 18, 0, { description: 'Inspection of foam deluge system FPS-01', workOrderRef: 'OT-2026-621' })
     ];
   }
 

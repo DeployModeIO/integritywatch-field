@@ -20,10 +20,26 @@
   var SVG_NS = 'http://www.w3.org/2000/svg';
 
   var SECTOR_CATEGORIES = {
-    upstream: ['well', 'platform', 'fpso', 'subsea', 'esp', 'suckerRod', 'gasLift', 'wellheadCompression', 'separator', 'storageTank'],
-    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant'],
-    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen']
+    upstream: ['well', 'platform', 'fpso', 'subsea', 'esp', 'suckerRod', 'gasLift', 'wellheadCompression', 'separator', 'storageTank', 'centrifugalPump', 'generator', 'firePump', 'fireSystem'],
+    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem'],
+    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem']
   };
+
+  // Fire-protection categories paint with the severe severity token (safety red,
+  // NR-26 / ISO 3864) by reusing the existing `badge-severe` pill — no new CSS.
+  var FIRE_CATEGORIES = ['firePump', 'fireSystem'];
+
+  // Category -> icon name. Returns null for categories without a dedicated glyph
+  // (the table then falls back to plain text, preserving prior rendering).
+  function categoryIcon(cat) {
+    if (cat === 'centrifugalPump' || cat === 'reciprocatingPump') { return 'pump'; }
+    if (cat === 'generator') { return 'engine'; }
+    if (cat === 'substation') { return 'substation'; }
+    if (cat === 'firePump' || cat === 'fireSystem') { return 'fire'; }
+    return null;
+  }
+
+  function isFireCategory(cat) { return FIRE_CATEGORIES.indexOf(cat) !== -1; }
 
   var _session = null;
 
@@ -367,12 +383,29 @@
       });
     }
 
+    // Category cell: icon + localized label. Fire categories (firePump/fireSystem)
+    // render inside the severe severity badge (safety red) reusing `.badge-severe`.
+    function categoryNode(cat) {
+      var c = cat || 'pump';
+      var label = t('apm.categories.' + c);
+      var ic = categoryIcon(c);
+      if (isFireCategory(c)) {
+        return el('span', { class: 'badge badge-severe' },
+          icon(ic, 16),
+          el('span', { text: label }));
+      }
+      if (ic) {
+        return el('span', { class: 'category-cell' }, icon(ic, 16), el('span', { text: label }));
+      }
+      return document.createTextNode(label);
+    }
+
     function buildAssetTable(list, byAsset, threshold) {
       var nowISO = new Date().toISOString();
       var columns = [
         { key: 'code', labelKey: 'apm.assetCode', render: function (v, row) { return el('button', { class: 'link', text: v, on: { click: function () { navigate('#/apm/' + row.id); } } }); } },
         { key: 'name', labelKey: 'apm.name' },
-        { key: 'category', labelKey: 'apm.category', render: function (v) { return document.createTextNode(t('apm.categories.' + (v || 'pump'))); } },
+        { key: 'category', labelKey: 'apm.category', render: function (v) { return categoryNode(v); } },
         { key: 'criticality', labelKey: 'apm.criticality', render: function (v) { return el('span', { class: 'badge ' + critClass(v), text: t('apm.crit.' + (v || 'C')) }); } },
         { key: 'status', labelKey: 'apm.assetStatus', render: function (v) { return el('span', { class: 'badge ' + statusClass(v), text: t('apm.statuses.' + (v || 'running')) }); } },
         { key: 'band', labelKey: 'apm.riskBand', render: function (v, row) { var b = rbiBandOf(row); return b ? el('span', { class: 'badge ' + bandClass(b), text: t('apm.bands.' + b) }) : document.createTextNode(t('common.none')); } },
@@ -447,7 +480,7 @@
         el('h2', { class: 'section-title', text: t('apm.assetCode') }),
         u.keyValueTable([
           [t('common.sector'), document.createTextNode(t('common.' + (asset.sector || 'upstream')))],
-          [t('apm.category'), document.createTextNode(t('apm.categories.' + (asset.category || 'pump')))],
+          [t('apm.category'), categoryNode(asset.category)],
           [t('apm.criticality'), el('span', { class: 'badge ' + critClass(asset.criticality), text: t('apm.crit.' + (asset.criticality || 'C')) })],
           [t('apm.assetStatus'), el('span', { class: 'badge ' + statusClass(asset.status), text: t('apm.statuses.' + (asset.status || 'running')) })],
           [t('common.notes'), document.createTextNode(asset.notes || t('common.none'))]
@@ -754,6 +787,8 @@
     icon: 'apm',
     render: render,
     computeMetrics: computeMetrics,
-    healthLevel: healthLevel
+    healthLevel: healthLevel,
+    sectorCategories: SECTOR_CATEGORIES,
+    categoryIcon: categoryIcon
   };
 });

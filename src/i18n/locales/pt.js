@@ -208,7 +208,10 @@
         gasPlant: 'Planta de gás', refinery: 'Refinaria', distillationUnit: 'Unidade de destilação',
         hydrodesulfurization: 'Hidrodessulfurização', reformer: 'Reformador', heatExchanger: 'Trocador de calor',
         pump: 'Bomba', compressor: 'Compressor', column: 'Coluna', furnace: 'Forno',
-        utilitySteam: 'Utilidades — vapor', utilityAir: 'Utilidades — ar', utilityNitrogen: 'Utilidades — nitrogênio'
+        utilitySteam: 'Utilidades — vapor', utilityAir: 'Utilidades — ar', utilityNitrogen: 'Utilidades — nitrogênio',
+        centrifugalPump: 'Bomba centrífuga (API 610)', reciprocatingPump: 'Bomba de deslocamento positivo',
+        generator: 'Gerador elétrico (ISO 8528)', substation: 'Subestação elétrica',
+        firePump: 'Bomba de incêndio (NFPA 20)', fireSystem: 'Sistema de combate a incêndio'
       }
     },
 

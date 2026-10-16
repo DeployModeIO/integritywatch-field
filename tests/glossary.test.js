@@ -84,9 +84,9 @@ test('D1a.h search falls back to en for an unknown locale', () => {
   assert.ok(hits.length > 0, 'unknown locale falls back to en');
 });
 
-test('D1a.i standards catalogue has 16 entries with non-empty fields', () => {
+test('D1a.i standards catalogue has 33 entries with non-empty fields', () => {
   assert.ok(Array.isArray(standards.standards), 'standards is an array');
-  assert.equal(standards.standards.length, 16, '16 standards entries');
+  assert.equal(standards.standards.length, 33, '33 standards entries');
   const ids = new Set();
   for (const s of standards.standards) {
     assert.equal(typeof s.id, 'string', 'id is string');
@@ -100,5 +100,5 @@ test('D1a.i standards catalogue has 16 entries with non-empty fields', () => {
     assert.ok(s.edition.length > 0, s.id + ' edition non-empty');
     assert.ok(Array.isArray(s.usedIn) && s.usedIn.length > 0, s.id + ' usedIn is a non-empty array');
   }
-  assert.equal(ids.size, 16, 'standards ids unique');
+  assert.equal(ids.size, 33, 'standards ids unique');
 });

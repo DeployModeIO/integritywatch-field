@@ -145,12 +145,12 @@ test('10. seed.demo: counts exactos por store', async () => {
     readings: 120,
     coupons: 4,
     psvs: 5,
-    apmAssets: 9,
-    apmEvents: 18,
+    apmAssets: 14,
+    apmEvents: 21,
     recommendations: 0
   });
   assert.strictEqual((await repos.lineAssets.list()).length, 12);
-  assert.strictEqual((await repos.apmEvents.list()).length, 18);
+  assert.strictEqual((await repos.apmEvents.list()).length, 21);
 
   // preserved from prior mega-test: enums y cordura de cupones
   const coupons = await repos.coupons.list();
@@ -204,14 +204,14 @@ test('13. seed APM: enums por sector y apmEvent.assetId existente', async () => 
   await seed.demo(repos, { nowISO: NOW });
 
   const sectorCats = {
-    upstream: ['well', 'platform', 'fpso', 'subsea', 'esp', 'suckerRod', 'gasLift', 'wellheadCompression', 'separator', 'storageTank'],
-    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant'],
-    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen']
+    upstream: ['well', 'platform', 'fpso', 'subsea', 'esp', 'suckerRod', 'gasLift', 'wellheadCompression', 'separator', 'storageTank', 'centrifugalPump', 'generator', 'firePump', 'fireSystem'],
+    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem'],
+    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem']
   };
 
   const assets = await repos.apmAssets.list();
   const assetIds = new Set(assets.map((a) => a.id));
-  assert.strictEqual(assets.length, 9);
+  assert.strictEqual(assets.length, 14);
   assets.forEach((a) => {
     assert.ok(sectorCats[a.sector], 'sector ' + a.sector);
     assert.ok(sectorCats[a.sector].includes(a.category), 'category ' + a.category + ' no válida para ' + a.sector);
@@ -222,7 +222,7 @@ test('13. seed APM: enums por sector y apmEvent.assetId existente', async () => 
   });
 
   const events = await repos.apmEvents.list();
-  assert.strictEqual(events.length, 18);
+  assert.strictEqual(events.length, 21);
   events.forEach((ev) => {
     assert.ok(['failure', 'maintenance', 'unplannedOutage', 'workOrder', 'inspection'].includes(ev.type), 'event.type ' + ev.type);
     assert.ok(assetIds.has(ev.assetId), 'apmEvent.assetId huérfano: ' + ev.assetId);

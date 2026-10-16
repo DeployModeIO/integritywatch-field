@@ -1,7 +1,7 @@
 /* IntegrityWatch Field - tools/tests/e2e-og.mjs
    Autonomous E2E harness for the O&G star symbols (Trend chart, Gauge, Sparkline,
    Skeleton). Boots its own static server on :8455, drives Microsoft Edge via
-   playwright-core and runs 8 checks. Prints `PASS|FAIL <id> <ms> <detalle>` lines
+   playwright-core and runs 10 checks. Prints `PASS|FAIL <id> <ms> <detalle>` lines
    plus a summary. exit(1) on FAIL.
 
    Run:  node tools\tests\e2e-og.mjs
@@ -225,6 +225,47 @@ async function main() {
     await page.waitForTimeout(650); // let the KPI count-up settle for the evidence shot
     await page.screenshot({ path: path.join(EVID, 'og-gauge-dashboard.png') });
     return `gauge title="${title}" · zones=${zones} · needle=${needle} · kpiValueTexts=${kpi.valueTexts.length}`;
+  });
+
+  // 9 --- apm-equipment-list -------------------------------------------------
+  // The O&G equipment catalogue surfaces in the APM list, and the asset form's
+  // category select exposes the new centrifugalPump category.
+  await check('apm-equipment-list', async () => {
+    await page.evaluate(() => { if (location.hash !== '#/apm') location.hash = '#/apm'; });
+    await page.waitForSelector('main table.data tbody tr', { timeout: 20000 });
+    const allTab = page.locator('#tab-all');
+    if (await allTab.count()) { await allTab.click(); }
+    await page.waitForTimeout(200);
+    const cell = page.locator('#panel-all td button.link', { hasText: 'PUMP-201A' }).first();
+    assert((await cell.count()) >= 1, 'no PUMP-201A row found in #/apm (all tab)');
+    const newBtn = page.locator('main .page-header .actions button').first();
+    await newBtn.click();
+    await page.waitForSelector('#fld-category', { timeout: 10000 });
+    const opts = await page.locator('#fld-category option').evaluateAll((os) => os.map((o) => o.value));
+    assert(opts.includes('centrifugalPump'), 'category select lacks centrifugalPump: ' + opts.join(','));
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('.dialog[role="dialog"]', { state: 'detached', timeout: 10000 }).catch(async () => {
+      await page.locator('.dialog .dialog-actions button').first().click().catch(() => {});
+    });
+    return `PUMP-201A row present · category select has ${opts.length} options incl. centrifugalPump`;
+  });
+
+  // 10 --- apm-fire-badge ----------------------------------------------------
+  // A fire-protection category renders its dedicated glyph inside the severe
+  // severity badge (safety red, NR-26 / ISO 3864), reusing the existing pill.
+  await check('apm-fire-badge', async () => {
+    const row = page.locator('#panel-all tbody tr', { hasText: 'FP-01' }).first();
+    assert((await row.count()) >= 1, 'no FP-01 row in #/apm (all tab)');
+    const badge = row.locator('.badge-severe', { hasText: 'NFPA 20' }).first();
+    assert((await badge.count()) >= 1, 'FP-01 row lacks a severe badge for the fire category');
+    const cls = await badge.evaluate((b) => b.className);
+    assert(/badge-severe/.test(cls), 'fire badge does not use the severe token: ' + cls);
+    const svg = badge.locator('svg').first();
+    assert((await svg.count()) >= 1, 'fire category badge has no svg glyph');
+    const html = await svg.evaluate((s) => s.innerHTML);
+    assert(/M15 6\.5/.test(html), 'glyph is not the fire icon: ' + clip(html, 40));
+    await page.screenshot({ path: path.join(EVID, 'og-apm-equipment.png') });
+    return `FP-01 fire badge class="${cls}" · svg fire glyph · screenshot og-apm-equipment.png`;
   });
 
   // 6 --- console-clean ------------------------------------------------------

@@ -498,7 +498,13 @@
         furnace: "加热炉",
         utilitySteam: "公用蒸汽",
         utilityAir: "公用空气",
-        utilityNitrogen: "公用氮气"
+        utilityNitrogen: "公用氮气",
+        centrifugalPump: "离心泵（API 610）",
+        reciprocatingPump: "容积泵",
+        generator: "发电机组（ISO 8528）",
+        substation: "变电站",
+        firePump: "消防泵（NFPA 20）",
+        fireSystem: "消防灭火系统"
       },
       deleteAssetConfirm: "删除该资产？",
       name: "名称",

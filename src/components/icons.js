@@ -40,6 +40,10 @@
  *   trash           <- lucide:trash-2
  *   play            <- lucide:play
  *   menu            <- lucide:menu
+ *   pump            <- lucide:fan
+ *   engine          <- lucide:engine
+ *   fire            <- lucide:fire-extinguisher
+ *   substation      <- lucide:utility-pole
  *   brand           <- custom (maintained)
  */
 /* IntegrityWatch Field — icons
@@ -100,6 +104,10 @@
     'trash': wrap('<path d="M10 11v6" /> <path d="M14 11v6" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /> <path d="M3 6h18" /> <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />'),
     'play': wrap('<path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" />'),
     'menu': wrap('<path d="M4 5h16" /> <path d="M4 12h16" /> <path d="M4 19h16" />'),
+    'pump': wrap('<path d="M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z" /> <path d="M12 12v.01" />'),
+    'engine': wrap('<path d="M10 3h6" /> <path d="M13 3v4" /> <path d="M2 10v6" /> <path d="M2 13h4" /> <path d="M6 16a2 2 0 002 2h1a2 2 0 011.6.8l.3.4a2 2 0 001.6.8h2.264a2 2 0 001.789-1.106l1.67-3.341a1 1 0 01.895-.553H21a1 1 0 001-1v-4a1 1 0 00-1-1h-3.5a1 1 0 01-.8-.4l-.9-1.2A1 1 0 0015 7h-4a1 1 0 00-.8.4l-.9 1.2a1 1 0 01-.8.4H7a1 1 0 00-1 1z" />'),
+    'fire': wrap('<path d="M15 6.5V3a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3.5" /> <path d="M9 18h8" /> <path d="M18 3h-3" /> <path d="M11 3a6 6 0 0 0-6 6v11" /> <path d="M5 13h4" /> <path d="M17 10a4 4 0 0 0-8 0v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2Z" />'),
+    'substation': wrap('<path d="M12 2v20" /> <path d="M2 5h20" /> <path d="M3 3v2" /> <path d="M7 3v2" /> <path d="M17 3v2" /> <path d="M21 3v2" /> <path d="m19 5-7 7-7-7" />'),
     'brand': wrap('<path d="M12 2.5 L20.5 7.25 L20.5 16.75 L12 21.5 L3.5 16.75 L3.5 7.25 Z"/><path d="M9.17 16.33 A4 4 0 1 1 14.83 16.33"/><path d="M12 13.5 L13.5 10.9"/>')
   };
 

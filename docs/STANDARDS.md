@@ -8,7 +8,7 @@ Este documento es la referencia de ingeniería de IntegrityWatch Field. Lista la
 
 ## 1. Normas implementadas
 
-Catálogo completo de `src/data/standards.js` (16 normas):
+Catálogo completo de `src/data/standards.js` (33 normas):
 
 | # | Código | Título | Edición típica | Uso en la app |
 |---|--------|--------|----------------|---------------|
@@ -28,6 +28,47 @@ Catálogo completo de `src/data/standards.js` (16 normas):
 | 14 | API 581 | Risk-Based Inspection Methodology | Verificar edición vigente | APM/RBI (matriz de riesgo), informes |
 | 15 | NACE SP0169 | Control of External Corrosion on Underground or Submerged Metallic Piping Systems | Verificar edición vigente | Corrosión (protección catódica), informes |
 | 16 | OGMP 2.0 | Oil & Gas Methane Partnership 2.0 Framework | Verificar edición vigente | Informes |
+
+### Equipos de proceso, potencia y protección — por región
+
+Las normas 17–33 cubren los equipos O&G incorporados al catálogo APM (bombas centrífugas y de desplazamiento positivo, generadores de potencia/servicio, subestación y protección contra incendio).
+
+**EE.UU./internacional — equipos rotativos**
+
+| # | Código | Título | Edición típica | Uso en la app |
+|---|--------|--------|----------------|---------------|
+| 17 | API STD 610 | Centrifugal Pumps for Petroleum, Petrochemical and Natural Gas Industries | (13th ed. 2026) — verificar edición vigente | APM (bombas centrífugas), informes |
+| 18 | API STD 682 | Pumps—Shaft Sealing Systems for Centrifugal and Rotary Pumps | (2014) — verificar edición vigente | APM (sellos de bomba), informes |
+| 19 | API STD 674 | Positive Displacement Pumps—Reciprocating | (2010) — verificar edición vigente | APM (bombas de desplazamiento positivo), informes |
+| 20 | API STD 616 | Gas Turbines for the Petroleum, Chemical, and Gas Industry Services | (2011) — verificar edición vigente | APM (turbinas de gas), informes |
+| 21 | ISO 13709 | Centrifugal pumps for petroleum, petrochemical and natural gas industries | (2009) — verificar edición vigente | APM (equivalente ISO de API 610), informes |
+| 22 | ISO 8528 | Reciprocating internal combustion engine driven alternating current generating sets | (2018) — verificar edición vigente | APM (generadores de potencia/servicio), informes |
+| 23 | IEEE 446 | IEEE Recommended Practice for Emergency and Standby Power Systems for Industrial and Commercial Applications | (1995) — verificar edición vigente | APM (energía de emergencia y respaldo), informes |
+
+**EE.UU./internacional — protección contra incendio**
+
+| # | Código | Título | Edición típica | Uso en la app |
+|---|--------|--------|----------------|---------------|
+| 24 | NFPA 20 | Standard for the Installation of Stationary Pumps for Fire Protection | (2022) — verificar edición vigente | APM (bombas contra incendio), informes |
+| 25 | NFPA 25 | Standard for the Inspection, Testing, and Maintenance of Water-Based Fire Protection Systems | (2023) — verificar edición vigente | APM (inspección/mantenimiento de sistemas), informes |
+| 26 | NFPA 11 | Standard for Low-, Medium-, and High-Expansion Foam | (2024) — verificar edición vigente | APM (sistemas de espuma), informes |
+
+**Reino Unido**
+
+| # | Código | Título | Edición típica | Uso en la app |
+|---|--------|--------|----------------|---------------|
+| 27 | BS 5306 | Fire extinguishing installations and equipment on premises | (partes, varía) — verificar edición vigente | APM (extinción), informes |
+| 28 | BS EN 12845 | Fixed firefighting systems — Automatic sprinkler systems — Design, installation and maintenance | (2020) — verificar edición vigente | APM (rociadores automáticos), informes |
+| 29 | EEMUA 191 | Alarm Systems — A Guide to Design, Management and Procurement | (2013) — verificar edición vigente | APM (gestión de alarmas), informes |
+
+**Brasil**
+
+| # | Código | Título | Edición típica | Uso en la app |
+|---|--------|--------|----------------|---------------|
+| 30 | NR-23 | Proteção Contra Incêndios | (2022) — verificar edición vigente | APM (protección contra incendio), informes |
+| 31 | ABNT NBR 13714 | Sistemas de hidrantes e de mangotinhos para combate a incêndio | (2000) — verificar edición vigente | APM (hidrantes y mangotinhos), informes |
+| 32 | ABNT NBR 17240 | Sistemas de detecção e alarme de incêndio — Projeto, instalação, comissionamento e manutenção | (2010) — verificar edición vigente | APM (detección y alarma), informes |
+| 33 | NR-26 | Sinalização de Segurança — Cores de segurança | (2022) — verificar edición vigente | APM (colores de seguridad), informes |
 
 ---
 
@@ -261,3 +302,23 @@ Ningún valor generado por la aplicación constituye una certificación ni una r
 - NACE SP0169, *Control of External Corrosion on Underground or Submerged Metallic Piping Systems*, NACE International / AMPP.
 - De Waard, C. & Milliams, D. E., *Carbonic acid corrosion of steel*, Corrosion, 31(5):177–181, 1975; y revisión de 1991 para el modelo de CO₂.
 - OGMP 2.0, *Oil & Gas Methane Partnership 2.0 Framework*, United Nations Environment Programme (UNEP).
+
+### Equipos de proceso, potencia y protección contra incendio (normas 17–33)
+
+- API STD 610, *Centrifugal Pumps for Petroleum, Petrochemical and Natural Gas Industries*, American Petroleum Institute.
+- API STD 682, *Pumps—Shaft Sealing Systems for Centrifugal and Rotary Pumps*, American Petroleum Institute.
+- API STD 674, *Positive Displacement Pumps—Reciprocating*, American Petroleum Institute.
+- API STD 616, *Gas Turbines for the Petroleum, Chemical, and Gas Industry Services*, American Petroleum Institute.
+- ISO 13709, *Centrifugal pumps for petroleum, petrochemical and natural gas industries*, ISO.
+- ISO 8528, *Reciprocating internal combustion engine driven alternating current generating sets*, ISO.
+- IEEE 446, *IEEE Recommended Practice for Emergency and Standby Power Systems for Industrial and Commercial Applications*, IEEE.
+- NFPA 20, *Standard for the Installation of Stationary Pumps for Fire Protection*, National Fire Protection Association.
+- NFPA 25, *Standard for the Inspection, Testing, and Maintenance of Water-Based Fire Protection Systems*, National Fire Protection Association.
+- NFPA 11, *Standard for Low-, Medium-, and High-Expansion Foam*, National Fire Protection Association.
+- BS 5306, *Fire extinguishing installations and equipment on premises*, British Standards Institution.
+- BS EN 12845, *Fixed firefighting systems — Automatic sprinkler systems — Design, installation and maintenance*, British Standards Institution / CEN.
+- EEMUA 191, *Alarm Systems — A Guide to Design, Management and Procurement*, Engineering Equipment and Materials Users Association.
+- NR-23, *Proteção Contra Incêndios*, Ministério do Trabalho e Emprego (Brasil).
+- ABNT NBR 13714, *Sistemas de hidrantes e de mangotinhos para combate a incêndio*, ABNT.
+- ABNT NBR 17240, *Sistemas de detecção e alarme de incêndio*, ABNT.
+- NR-26, *Sinalização de Segurança — Cores de segurança*, Ministério do Trabalho e Emprego (Brasil).

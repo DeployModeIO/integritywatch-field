@@ -13,6 +13,7 @@ require('../src/calc/psv.js');
 const dbMemory = require('../src/core/dbMemory.js');
 const storeApi = require('../src/core/store.js');
 const seed = require('../src/data/seed.js');
+const apmView = require('../src/views/apm.js');
 
 const NOW = '2026-09-15T00:00:00.000Z';
 const DAY = 86400000;
@@ -37,8 +38,8 @@ test('seed produces exact deterministic counts and returns them', async () => {
     readings: 120,
     coupons: 4,
     psvs: 5,
-    apmAssets: 9,
-    apmEvents: 18,
+    apmAssets: 14,
+    apmEvents: 21,
     recommendations: 0
   });
   assert.equal((await s.pipelineSystems.list()).length, 1);
@@ -48,9 +49,38 @@ test('seed produces exact deterministic counts and returns them', async () => {
   assert.equal((await s.readings.list()).length, 120);
   assert.equal((await s.coupons.list()).length, 4);
   assert.equal((await s.psvs.list()).length, 5);
-  assert.equal((await s.apmAssets.list()).length, 9);
-  assert.equal((await s.apmEvents.list()).length, 18);
+  assert.equal((await s.apmAssets.list()).length, 14);
+  assert.equal((await s.apmEvents.list()).length, 21);
   assert.equal((await s.recommendations.list()).length, 0);
+
+  // New O&G equipment assets exist with the right sector + category.
+  const byId = {};
+  (await s.apmAssets.list()).forEach((a) => { byId[a.id] = a; });
+  const expectedNew = {
+    'APM-MD-105': { code: 'PUMP-201A', sector: 'midstream', category: 'centrifugalPump' },
+    'APM-MD-106': { code: 'GEN-101', sector: 'midstream', category: 'generator' },
+    'APM-MD-107': { code: 'FP-01', sector: 'midstream', category: 'firePump' },
+    'APM-MD-108': { code: 'FPS-01', sector: 'midstream', category: 'fireSystem' },
+    'APM-DN-003': { code: 'PUMP-305', sector: 'downstream', category: 'centrifugalPump' }
+  };
+  for (const id of Object.keys(expectedNew)) {
+    const a = byId[id];
+    assert.ok(a, 'missing new O&G asset ' + id);
+    assert.equal(a.code, expectedNew[id].code, id + ' code');
+    assert.equal(a.sector, expectedNew[id].sector, id + ' sector');
+    assert.equal(a.category, expectedNew[id].category, id + ' category');
+  }
+
+  // New categories are members of at least one sector enum.
+  const newCats = ['centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem'];
+  const allSectorCats = [].concat(
+    apmView.sectorCategories.upstream,
+    apmView.sectorCategories.midstream,
+    apmView.sectorCategories.downstream
+  );
+  newCats.forEach((c) => {
+    assert.ok(allSectorCats.indexOf(c) !== -1, 'new category not in any sector enum: ' + c);
+  });
 });
 
 test('seed is deterministic across independent stores', async () => {
@@ -146,6 +176,14 @@ test('R9/R11/R12 triggers: overdue RBI, low availability, repeated failures', as
 
   const r9 = assets.filter((a) => a.rbi && a.rbi.nextInspectionISO && Date.parse(a.rbi.nextInspectionISO) < nowMs);
   assert.ok(r9.length >= 1, 'expected an asset with overdue RBI inspection');
+
+  const fp01 = assets.find((a) => a.id === 'APM-MD-107');
+  assert.ok(fp01, 'expected the fire pump FP-01 (APM-MD-107) asset');
+  assert.equal(fp01.category, 'firePump');
+  assert.ok(
+    fp01.rbi && fp01.rbi.nextInspectionISO && Date.parse(fp01.rbi.nextInspectionISO) < nowMs,
+    'FP-01 must have an overdue nextInspectionISO (triggers R9)'
+  );
 
   const events = await s.apmEvents.list();
   const pps = assets.find((a) => a.id === 'APM-MD-001');

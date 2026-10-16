@@ -498,7 +498,13 @@
         furnace: "Four",
         utilitySteam: "Vapeur (utilités)",
         utilityAir: "Air (utilités)",
-        utilityNitrogen: "Azote (utilités)"
+        utilityNitrogen: "Azote (utilités)",
+        centrifugalPump: "Pompe centrifuge (API 610)",
+        reciprocatingPump: "Pompe volumétrique",
+        generator: "Groupe électrogène (ISO 8528)",
+        substation: "Poste électrique",
+        firePump: "Pompe à incendie (NFPA 20)",
+        fireSystem: "Système d'extinction"
       },
       deleteAssetConfirm: "Supprimer cet actif ?",
       name: "Nom",

@@ -498,7 +498,13 @@
         furnace: "فرن",
         utilitySteam: "بخار (مرافق)",
         utilityAir: "هواء (مرافق)",
-        utilityNitrogen: "نيتروجين (مرافق)"
+        utilityNitrogen: "نيتروجين (مرافق)",
+        centrifugalPump: "مضخة طرد مركزي (API 610)",
+        reciprocatingPump: "مضخة إزاحة موجبة",
+        generator: "مولد كهربائي (ISO 8528)",
+        substation: "محطة فرعية كهربائية",
+        firePump: "مضخة حريق (NFPA 20)",
+        fireSystem: "نظام إطفاء الحرائق"
       },
       deleteAssetConfirm: "حذف هذا الأصل؟",
       name: "الاسم",
