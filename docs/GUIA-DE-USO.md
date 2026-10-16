@@ -141,6 +141,7 @@ KPIs. No borra nada de lo que ya tengas.
 | Los datos desaparecieron | Navegador en modo incógnito o borrado de datos del sitio | Restaura tu respaldo JSON; evita modo privado |
 | «Actualización disponible» | Nueva versión publicada | Pulsa **Recargar** en el aviso |
 | El informe sale en blanco | Se generó y cambió de vista | Vuelve a Generar y pulsa Imprimir sin salir |
+| **Sigo viendo la versión anterior** tras una actualización | El service worker conserva la versión previa hasta que se publica una versión de caché nueva (*cache-first*) | Pulsa **Recargar** en el aviso «Actualización disponible»; si no aparece: **Ctrl+F5** una vez, o DevTools → Application → Service Workers → **Update**. (Desde esta entrega, la app comprueba actualizaciones en cada carga.) |
 
 ## 6. Buenas prácticas
 

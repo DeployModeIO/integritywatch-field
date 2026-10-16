@@ -99,3 +99,49 @@ Reglas: SIN `div.layout`; `refreshChrome()` de shell.js se actualiza a esta estr
 5. Diálogos centrados con backdrop; tabs horizontales con scroll en móvil; formularios en 2 columnas ≥700px.
 6. Consola limpia; `node --test` 162/162; sin `style=` inline nuevos; solo propiedades lógicas.
 7. Capturas nuevas en docs/evidence/v2-*.png (dashboard, corrosion detalle, psv, mapa, apm, reports, admin; light+dark+rtl+móvil).
+
+## 6. Emblema y sistema de imágenes
+
+**Motivo — "Escudo de Integridad".** Escudo hexagonal (integridad industrial) con arco de
+manómetro de 270° y aguja (monitoreo) y, solo a tamaños ≥192 px, una línea de ducto horizontal
+con 2 bridas en gris acero (flujo).
+
+**Paleta.** Azul industrial `#0b5cad` (cuerpo del escudo), blanco `#ffffff` (arco/aguja),
+gris acero `#8d99a6` (ducto), fondo oscuro `#11161c` (versiones opacas). Sin gradientes:
+rellenos y trazos planos.
+
+**Fundamento.**
+- *ANSI/ISA-101 (High-Performance HMI)*: sobriedad, sin decoración, símbolos en vez de
+  ilustraciones, color reservado para lo anormal. El emblema es geométrico y plano, así que
+  el azul de marca no compite con los colores de estado (verde/ámbar/rojo) del HMI.
+- *Especificación maskable (web.dev)*: el contenido crítico vive dentro del círculo seguro de
+  radio 40 % del ancho; el borde exterior 10 % puede recortarse; `purpose:"any"` y
+  `"maskable"` se declaran separados, nunca combinados.
+
+**Simplificación progresiva.**
+| Tier | Arte | Archivo |
+| --- | --- | --- |
+| 16 px | escudo + arco + aguja | `assets/icons/favicon.svg` |
+| ≥192 px | + ducto (2 bridas) + anillo sutil | `assets/icons/icon-app.svg`, `icon-192.png`, `icon-512.png`, `maskable-512.png` |
+| 180 px (iOS) | escudo blanco + medidor azul (knockout), sin ducto/anillo | `apple-touch-icon.png` |
+
+**Zona segura del maskable (matemática explícita, lienzo 512 px).**
+- Radio seguro (web.dev) = 40 % × 512 = **204.8 px** (diámetro 80 % = 409.6 px); el 10 %
+  exterior (51.2 px por lado) puede recortarse.
+- Escala del emblema `k = 60 % × 512 / 400 = 0.768` (400 = ancho del hexágono en el espacio
+  de diseño de 512 unidades).
+- Caja del emblema en el lienzo = 400 × 0.768 = **307.2 px = 60.0 %** del ancho (≤ 80 % ✓);
+  margen por lado = (512 − 307.2) / 2 = **102.4 px = 20.0 %** (≥ 10 % ✓).
+- Radio de tinta más lejano = max(circunradio del escudo 223.61, radio exterior del anillo 240)
+  × 0.768 = 240 × 0.768 = **184.32 px ≤ 204.8 px** ✓ (holgura 20.48 px = 4.0 % del ancho).
+
+**Manifest.** `manifest.webmanifest`: `icon-192.png` (192×192, `any`) · `icon-512.png`
+(512×512, `any`) · `maskable-512.png` (512×512, `maskable`) · `icon-app.svg` (`any`,
+`image/svg+xml`). Nunca se combina `any maskable` en una misma entrada.
+
+**Cómo regenerar (idempotente).**
+```
+powershell -File tools/make-icons.ps1     # PNGs vía System.Drawing / GDI+ (PS 5.1 y 7+)
+node tools/build-icons.cjs                # src/components/icons.js (glifo `brand` 24×24)
+```
+El isotipo del encabezado (`IW.ui.icons.brand`) se mantiene en sintonía con `favicon.svg`.

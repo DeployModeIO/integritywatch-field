@@ -76,11 +76,12 @@ const MAP = [
 
 /* Custom inner markup retained because no faithful source glyph exists:
  *   valve  - industrial valve glyph (no valve icon in Lucide or Tabler).
- *   brand  - project isotipo (Conformity Shield).
+ *   brand  - project emblem (Shield of Integrity): hexagonal shield + 270-degree
+ *            gauge arc + needle. Kept in sync with assets/icons/favicon.svg.
  * Both use the same 2px stroke via the shared wrapper. */
 const CUSTOM = {
   valve: '<circle cx="12" cy="12" r="7"/><path d="M5 12h14M12 12v7"/>',
-  brand: '<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>'
+  brand: '<path d="M12 2.5 L20.5 7.25 L20.5 16.75 L12 21.5 L3.5 16.75 L3.5 7.25 Z"/><path d="M9.17 16.33 A4 4 0 1 1 14.83 16.33"/><path d="M12 13.5 L13.5 10.9"/>'
 };
 
 function readSource(source, file) {

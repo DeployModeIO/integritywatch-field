@@ -152,7 +152,11 @@
     if (typeof navigator === 'undefined' || typeof navigator.serviceWorker === 'undefined') { return; }
     if (typeof location === 'undefined') { return; }
     if (location.protocol !== 'http:' && location.protocol !== 'https:') { return; }
-    navigator.serviceWorker.register('sw.js').catch(function (err) {
+    navigator.serviceWorker.register('sw.js').then(function (reg) {
+      // Force an update check on every load so a new release is picked up on the next reload.
+      // Requires bumping CACHE_NAME in sw.js for every release: node tools/bump-cache.cjs
+      if (reg && typeof reg.update === 'function') { reg.update().catch(function () {}); }
+    }).catch(function (err) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('SW registration failed:', err); }
     });
     navigator.serviceWorker.addEventListener('message', function (event) {

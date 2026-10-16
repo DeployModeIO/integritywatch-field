@@ -112,15 +112,20 @@ En iOS, Safari usa el icono `apple-touch-icon.png` (ya incluido en `assets/icons
 La versión de caché se define en `sw.js`:
 
 ```js
-const CACHE_NAME = 'iw-v1';
+const CACHE_NAME = 'iw-v3';   // IMPORTANTE: incrementar en CADA publicación
 ```
 
 Para publicar una actualización:
 
-1. Aumenta la versión (por ejemplo, de `iw-v1` a `iw-v2`).
+1. Ejecuta `node tools/bump-cache.cjs` (incrementa la versión automáticamente).
 2. El `install` precachea los recursos nuevos y llama a `self.skipWaiting()`.
 3. En `activate`, se borran las cachés antiguas y se avisa a las pestañas abiertas con un mensaje `sw:updated`.
-4. La aplicación muestra un **toast de actualización** para que el usuario recargue.
+4. La aplicación muestra un **toast de actualización** ("Actualización disponible → Recargar") y, además,
+   `main.js` **fuerza la comprobación de actualización en cada carga** (`registration.update()`), de modo
+   que la siguiente recarga del usuario ya recibe la versión nueva.
+5. ⚠️ **Olvidar el paso 1 deja a los clientes con la versión anterior indefinidamente** (la estrategia es
+   *cache-first*): es exactamente la causa del síntoma "sigo viendo todo igual". Si un navegador quedó
+   atascado de una publicación anterior: Ctrl+F5 una vez, o DevTools → Application → Service Workers → Update.
 
 Los recursos se sirven con `Cache-Control: no-cache` y el service worker usa *stale-while-revalidate* para las peticiones del mismo origen.
 

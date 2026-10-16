@@ -2,7 +2,9 @@
    Offline-first: precache all static assets; stale-while-revalidate for same-origin GET. */
 'use strict';
 
-const CACHE_NAME = 'iw-v1';
+// BUMP THIS VERSION ON EVERY RELEASE: node tools/bump-cache.cjs
+// With cache-first, clients keep serving the previous cached assets until this string changes.
+const CACHE_NAME = 'iw-v4';
 
 const PRECACHE = [
   './',

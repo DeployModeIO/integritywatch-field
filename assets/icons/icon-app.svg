@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <path d="M88 320 A168 168 0 0 1 424 320" fill="none" stroke="currentColor" stroke-width="40" stroke-linecap="round"/>
-  <path d="M110 236 L145 256" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/>
-  <path d="M172 174 L192 209" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/>
-  <path d="M256 152 L256 192" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/>
-  <path d="M340 174 L320 209" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/>
-  <path d="M402 236 L367 256" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/>
-  <path d="M256 320 L322 226" fill="none" stroke="#0b5cad" stroke-width="38" stroke-linecap="round"/>
-  <circle cx="256" cy="320" r="28" fill="#0b5cad"/>
-  <path d="M256 330 C234 352 216 372 216 392 A40 40 0 0 0 296 392 C296 372 278 352 256 330 Z" fill="#0b5cad"/>
+  <!-- Shield of Integrity (rich tier >=192px): hexagonal shield + 270-degree gauge + duct with 2 flanges. Flat strokes, no gradients. -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#0b5cad" stroke-opacity="0.30" stroke-width="8"/>
+  <path d="M256 40 L456 156 L456 356 L256 472 L56 356 L56 156 Z" fill="#0b5cad"/>
+  <path d="M178.22 307.78 A110 110 0 1 1 333.78 307.78" fill="none" stroke="#ffffff" stroke-width="30" stroke-linecap="round"/>
+  <path d="M256 230 L297 158.99" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+  <circle cx="256" cy="230" r="22" fill="#ffffff"/>
+  <line x1="112" y1="380" x2="400" y2="380" stroke="#8d99a6" stroke-width="16"/>
+  <line x1="170" y1="348" x2="170" y2="412" stroke="#8d99a6" stroke-width="20"/>
+  <line x1="342" y1="348" x2="342" y2="412" stroke="#8d99a6" stroke-width="20"/>
 </svg>

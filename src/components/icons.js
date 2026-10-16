@@ -100,7 +100,7 @@
     'trash': wrap('<path d="M10 11v6" /> <path d="M14 11v6" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /> <path d="M3 6h18" /> <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />'),
     'play': wrap('<path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" />'),
     'menu': wrap('<path d="M4 5h16" /> <path d="M4 12h16" /> <path d="M4 19h16" />'),
-    'brand': wrap('<path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>')
+    'brand': wrap('<path d="M12 2.5 L20.5 7.25 L20.5 16.75 L12 21.5 L3.5 16.75 L3.5 7.25 Z"/><path d="M9.17 16.33 A4 4 0 1 1 14.83 16.33"/><path d="M12 13.5 L13.5 10.9"/>')
   };
 
   var SEVERITY_SHAPE = {
