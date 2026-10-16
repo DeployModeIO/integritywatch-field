@@ -150,18 +150,57 @@
     };
   }
 
-  function kpiCard(h, labelKey, valueText, iconName, contextText) {
+  function kpiCard(h, labelKey, valueText, iconName, contextText, extra) {
+    extra = extra || {};
     var card = h.ui.el('div', { class: 'kpi' });
     if (iconName) {
       card.appendChild(h.ui.el('span', { class: 'kpi__icon', attrs: { 'aria-hidden': 'true' } }, h.ui.icon(iconName, 20)));
     }
-    card.appendChild(h.ui.el('span', { class: 'kpi__label', text: h.t(labelKey) }));
-    card.appendChild(h.ui.el('span', { class: 'kpi__value', text: valueText }));
-    // ISA-101: show the reference/limit right below the value.
-    if (contextText) {
-      card.appendChild(h.ui.el('span', { class: 'kpi-context', text: contextText }));
+    var valueNode = h.ui.el('span', { class: 'kpi__value', text: valueText });
+    var contextNode = contextText ? h.ui.el('span', { class: 'kpi-context', text: contextText }) : null;
+    if (extra.gauge) {
+      // Two-column row: the text stack (label + value + reference line) flexes
+      // on the left, the gauge keeps its own width on the right. `align-items:
+      // center` + a fixed-basis gauge keeps them side by side with no overlap
+      // at 1366 / 800 / 390 px.
+      var body = h.ui.el('div', { class: 'kpi__body' },
+        h.ui.el('span', { class: 'kpi__label', text: h.t(labelKey) }),
+        valueNode,
+        contextNode
+      );
+      var gaugeBox = h.ui.el('div', { class: 'kpi__gauge' }, extra.gauge);
+      card.appendChild(h.ui.el('div', { class: 'kpi__main' }, body, gaugeBox));
+    } else {
+      card.appendChild(h.ui.el('span', { class: 'kpi__label', text: h.t(labelKey) }));
+      card.appendChild(valueNode);
+      if (contextNode) { card.appendChild(contextNode); }
+    }
+    if (extra.animateTo !== undefined && extra.animateTo !== null && typeof extra.animateTo === 'number' && isFinite(extra.animateTo)) {
+      countUp(valueNode, extra.animateTo, extra.format || function (v) { return String(Math.round(v)); }, extra.ms || 500);
     }
     return card;
+  }
+
+  function prefersReducedMotion() {
+    try {
+      return typeof window !== 'undefined' && typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) { return false; }
+  }
+
+  // rAF count-up for KPI values; reduced-motion users get the final value directly.
+  function countUp(node, to, format, ms) {
+    if (prefersReducedMotion() || !isFinite(to)) { node.textContent = format(to); return; }
+    var t0 = null;
+    node.textContent = format(0);
+    function step(ts) {
+      if (t0 === null) { t0 = ts; }
+      var k = Math.min(1, (ts - t0) / ms);
+      var eased = 1 - Math.pow(1 - k, 3);
+      node.textContent = format(to * eased);
+      if (k < 1) { window.requestAnimationFrame(step); }
+    }
+    window.requestAnimationFrame(step);
   }
 
   function buildHeatmap(h, heat) {
@@ -292,11 +331,23 @@
 
     // KPI bento grid.
     var grid = h.ui.el('div', { class: 'grid-bento' });
-    grid.appendChild(kpiCard(h, 'dashboard.kpiAvgCr', c.avgCr === null ? '—' : fmtNum(c.avgCr, 2) + ' ' + h.t('units.mpy'), 'corrosion', h.t('dashboard.ctxCr')));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiSeverePoints', String(c.severeCount), 'alert-critical', h.t('dashboard.ctxSevere')));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiPsvOverdue', String(c.psvOverdue), 'valve', h.t('dashboard.ctxPsv', { n: c.psvOverdue, total: c.psvTotal })));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiApmAlerts', String(c.apmAlerts), 'apm', h.t('dashboard.ctxApm', { n: c.apmAlerts, total: c.apmTotal })));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiPendingCompliance', String(c.pendingCompliance), 'recs', h.t('dashboard.ctxCompliance', { n: c.pendingCompliance, total: c.complianceTotal })));
+    var crGauge = h.ui.gauge({
+      value: c.avgCr === null ? 0 : c.avgCr,
+      min: 0, max: 20, size: 72, showValue: false,
+      zones: [{ to: 5, sev: 'low' }, { to: 10, sev: 'moderate' }, { to: 20, sev: 'high' }]
+    });
+    grid.appendChild(kpiCard(h, 'dashboard.kpiAvgCr',
+      c.avgCr === null ? '—' : fmtNum(c.avgCr, 2) + ' ' + h.t('units.mpy'),
+      'corrosion', h.t('dashboard.ctxCr'),
+      { gauge: crGauge, animateTo: c.avgCr === null ? null : c.avgCr, format: function (v) { return fmtNum(v, 2) + ' ' + h.t('units.mpy'); } }));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiSeverePoints', String(c.severeCount), 'alert-critical', h.t('dashboard.ctxSevere'),
+      { animateTo: c.severeCount, format: function (v) { return String(Math.round(v)); } }));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiPsvOverdue', String(c.psvOverdue), 'valve', h.t('dashboard.ctxPsv', { n: c.psvOverdue, total: c.psvTotal }),
+      { animateTo: c.psvOverdue, format: function (v) { return String(Math.round(v)); } }));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiApmAlerts', String(c.apmAlerts), 'apm', h.t('dashboard.ctxApm', { n: c.apmAlerts, total: c.apmTotal }),
+      { animateTo: c.apmAlerts, format: function (v) { return String(Math.round(v)); } }));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiPendingCompliance', String(c.pendingCompliance), 'recs', h.t('dashboard.ctxCompliance', { n: c.pendingCompliance, total: c.complianceTotal }),
+      { animateTo: c.pendingCompliance, format: function (v) { return String(Math.round(v)); } }));
     frag.appendChild(grid);
 
     frag.appendChild(buildHeatmap(h, c.heat));
@@ -306,9 +357,7 @@
   }
 
   function loadingNode(h) {
-    return h.ui.el('div', { class: 'empty-state', attrs: { role: 'status' } },
-      h.ui.el('span', { class: 'spinner', attrs: { 'aria-hidden': 'true' } }),
-      h.ui.el('span', { text: h.t('common.loading') }));
+    return h.ui.el('div', { class: 'dashboard-loading' }, h.ui.skeleton(3));
   }
 
   function errorNode(h, err) {

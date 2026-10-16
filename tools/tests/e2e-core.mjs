@@ -1,6 +1,6 @@
 /* IntegrityWatch Field - tools/tests/e2e-core.mjs
    Autonomous E2E core harness (ESM). Boots its own static server on :8451,
-   drives Microsoft Edge via playwright-core and runs 10 checks. Prints
+   drives Microsoft Edge via playwright-core and runs 12 checks. Prints
    `PASS|FAIL|SKIP <id> <ms> <detalle>` lines plus a summary. exit(1) on FAIL.
 
    Run:  node tools\tests\e2e-core.mjs
@@ -444,6 +444,40 @@ async function main() {
     if (allConsoleErrors.length === 0) { return 'no console errors / pageerrors'; }
     allConsoleErrors.forEach((e, i) => console.log(`  [${i + 1}] ${clip(e, 160)}`));
     throw new Error(`${allConsoleErrors.length} console error(s)/pageerror(s): ${clip(allConsoleErrors[0], 50)}`);
+  });
+
+  // 11 --- alarm-banner ------------------------------------------------------
+  await check('alarm-banner', async () => {
+    await closeToasts(page);
+    await page.evaluate(() => { if (location.hash !== '#/dashboard') location.hash = '#/dashboard'; });
+    await page.waitForSelector('#run-rules', { timeout: 15000 });
+    const visible0 = await page.locator('.alarm-banner').isVisible().catch(() => false);
+    if (!visible0) {
+      await page.locator('#run-rules').click();
+      await page.waitForTimeout(3000);
+    }
+    await page.waitForFunction(() => {
+      const b = document.querySelector('.alarm-banner');
+      if (!b || b.hidden) return false;
+      return /\d/.test(b.textContent || '');
+    }, { timeout: 15000 }).catch(() => {});
+    const visible = await page.locator('.alarm-banner').isVisible().catch(() => false);
+    const text = await page.locator('.alarm-banner').innerText().catch(() => '');
+    assert(visible, '.alarm-banner not visible after rules sweep');
+    assert(/\d/.test(text), `banner text has no number: "${clip(text, 60)}"`);
+    return `banner="${clip(text, 50)}"`;
+  });
+
+  // 12 --- admin -------------------------------------------------------------
+  await check('admin', async () => {
+    await closeToasts(page);
+    await page.evaluate(() => { location.hash = '#/admin'; });
+    await page.waitForSelector('.view-admin', { timeout: 15000 });
+    const btn = page.locator('.view-admin button').filter({ hasText: /actualizaci|update/i }).first();
+    const count = await btn.count();
+    assert(count >= 1, 'no force-update button (expected text /actualización|update/i)');
+    const label = (await btn.innerText()).trim();
+    return `button="${clip(label, 40)}"`;
   });
 
   await browser.close();

@@ -249,6 +249,8 @@
       entity: 'Entity', rule: 'Rule', condition: 'Condition', noRecs: 'No recommendations',
       filterStatus: 'Filter by status', sweepInterval: 'Sweep interval', runNow: 'Run now',
       lastRun: 'Last run', newCriticalToast: 'New critical recommendation',
+      alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendations',
+      alarmBannerWarning: '{{n}} warnings active · {{total}} open recommendations',
       resolveNotePlaceholder: 'Resolution note',
       actor: 'Actor', history: 'History', lastTriggered: 'Last triggered', triggerCount: 'Triggers',
       msg: {
@@ -323,6 +325,7 @@
       lockoutWait: 'Too many attempts. Try again later.', storageUsage: 'Storage usage',
       swStatus: 'Service worker', offlineReady: 'Ready for offline use', standardsRef: 'Referenced standards',
       demoLoaded: 'Demo data loaded', typeDelete: 'Type DELETE to confirm',
+      forceUpdate: 'Force update', forceUpdateHint: 'Clears the offline cache and reloads the app. Use when an update does not appear.',
       roles: { admin: 'Admin', operator: 'Operator' }
     },
 

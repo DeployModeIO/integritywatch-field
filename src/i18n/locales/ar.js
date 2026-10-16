@@ -606,6 +606,8 @@
       runNow: "تشغيل الآن",
       lastRun: "آخر تشغيل",
       newCriticalToast: "توصيات حرجة جديدة",
+      alarmBannerCritical: "{{n}} إنذارات حرجة نشطة · {{total}} توصيات مفتوحة",
+      alarmBannerWarning: "{{n}} تحذيرات نشطة · {{total}} توصيات مفتوحة",
       msg: {
         R1: "معدل التآكل {{cr}} mpy عند النقطة {{code}} يتجاوز الحد الحرج 10 mpy.",
         R2: "متوسط 7 أيام ({{avg7}} mpy) عند النقطة {{code}} يساوي {{ratio}} ضعف متوسط 30 يومًا ({{avg30}} mpy) — اتجاه صاعد.",
@@ -765,7 +767,9 @@
       offlineReady: "جاهز للعمل دون اتصال",
       standardsRef: "المعايير المرجعية",
       demoLoaded: "تم تحميل البيانات التجريبية",
-      typeDelete: "اكتب DELETE للتأكيد"
+      typeDelete: "اكتب DELETE للتأكيد",
+      forceUpdate: "فرض التحديث",
+      forceUpdateHint: "يمسح ذاكرة التخزين المؤقت ويُعيد تحميل التطبيق. استخدمه عند عدم ظهور تحديث."
     },
     a11y: {
       skipLink: "الانتقال إلى المحتوى",

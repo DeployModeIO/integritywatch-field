@@ -20,16 +20,22 @@ body {
   overflow: hidden;
 }
 
+/* Two-row header: top bar (brand + controls) over the alarm banner row. */
 .app-header {
   grid-area: header;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-block-end: 1px solid var(--border);
+}
+
+.app-header__bar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--sp-2) var(--sp-3);
   min-height: 60px;
   padding: var(--sp-2) var(--sp-3);
-  background: var(--surface);
-  border-block-end: 1px solid var(--border);
 }
 
 .app-header__controls {
@@ -57,6 +63,59 @@ body {
   .app-header .hamburger {
     display: inline-flex;
   }
+}
+
+/* --- Alarm banner (ASM / API-1165 style) ------------------------------------
+   Full-width second header row. Hidden with no gap when there are no alarms;
+   aria-live keeps the state announced while ISA-101 keeps the palette sober. */
+.alarm-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  font-size: 0.875rem;
+  border-block-start: 1px solid var(--border);
+  transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
+}
+
+.alarm-banner[hidden] {
+  display: none;
+}
+
+.alarm-banner--critical {
+  background: var(--sev-severe-bg);
+  color: var(--sev-severe);
+}
+
+.alarm-banner--warning {
+  background: var(--sev-moderate-bg);
+  color: var(--sev-moderate);
+}
+
+.alarm-banner__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.alarm-banner__text {
+  flex: 1 1 auto;
+  font-weight: 600;
+}
+
+.alarm-banner__action {
+  flex: none;
+  min-height: 32px;
+  padding: 2px var(--sp-3);
+  border: 1px solid currentColor;
+  border-radius: var(--r-1);
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+}
+
+.alarm-banner__action:hover {
+  background: var(--surface);
 }
 
 .app-brand {
@@ -100,12 +159,17 @@ body {
   gap: var(--sp-2);
   min-height: 44px;
   padding: var(--sp-2);
+  border: 0 solid transparent;
+  border-inline-start-width: 3px;
   border-radius: var(--r-1);
   color: var(--muted);
   text-decoration: none;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
+  transition: background-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out);
 }
 
 .app-sidebar__item .icon {
@@ -128,10 +192,26 @@ body {
   color: var(--muted);
 }
 
-.app-sidebar__item:hover,
+.app-sidebar__item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* Active route: subtle emphasis (accent rail + heavier label) with its own transition. */
 .app-sidebar__item[aria-current="page"] {
   background: var(--surface-2);
   color: var(--text);
+  border-inline-start-color: var(--accent);
+  font-weight: 700;
+}
+
+/* Interactive chrome: background/border feedback animated with the short duration token. */
+.btn,
+.app-header .btn,
+.app-sidebar .btn {
+  transition: background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    color var(--dur-1) var(--ease-out);
 }
 
 /* Visual separator between nav groups. */

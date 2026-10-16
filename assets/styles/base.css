@@ -143,6 +143,8 @@ table {
   font-size: 0.875rem;
 }
 
+/* Motion system: honour prefers-reduced-motion for every transition/animation
+   added with the --dur-* / --ease-out tokens (view-enter, nav, buttons, banner). */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -606,6 +606,8 @@
       runNow: "立即运行",
       lastRun: "上次运行",
       newCriticalToast: "新的严重建议",
+      alarmBannerCritical: "{{n}} 个严重报警处于活动状态 · {{total}} 条未处理建议",
+      alarmBannerWarning: "{{n}} 个警告处于活动状态 · {{total}} 条未处理建议",
       msg: {
         R1: "测点 {{code}} 的腐蚀速率 {{cr}} mpy 超过 10 mpy 的严重阈值。",
         R2: "测点 {{code}} 的 7 天均值（{{avg7}} mpy）是 30 天均值（{{avg30}} mpy）的 {{ratio}} 倍 — 呈上升趋势。",
@@ -765,7 +767,9 @@
       offlineReady: "离线就绪",
       standardsRef: "参考标准",
       demoLoaded: "演示数据已加载",
-      typeDelete: "输入 DELETE 以确认"
+      typeDelete: "输入 DELETE 以确认",
+      forceUpdate: "强制更新",
+      forceUpdateHint: "清除离线缓存并重新加载应用。更新未出现时使用。"
     },
     a11y: {
       skipLink: "跳到内容",

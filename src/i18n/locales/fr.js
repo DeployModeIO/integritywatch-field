@@ -606,6 +606,8 @@
       runNow: "Exécuter maintenant",
       lastRun: "Dernière exécution",
       newCriticalToast: "Nouvelles recommandations critiques",
+      alarmBannerCritical: "{{n}} alarmes critiques actives · {{total}} recommandations ouvertes",
+      alarmBannerWarning: "{{n}} avertissements actifs · {{total}} recommandations ouvertes",
       msg: {
         R1: "Taux de corrosion {{cr}} mpy au point {{code}} dépasse le seuil sévère de 10 mpy.",
         R2: "Moyenne 7 j ({{avg7}} mpy) au point {{code}} est {{ratio}}× la moyenne 30 j ({{avg30}} mpy) — tendance à la hausse.",
@@ -765,7 +767,9 @@
       offlineReady: "Prêt hors ligne",
       standardsRef: "Normes de référence",
       demoLoaded: "Données de démonstration chargées",
-      typeDelete: "Tapez DELETE pour confirmer"
+      typeDelete: "Tapez DELETE pour confirmer",
+      forceUpdate: "Forcer la mise à jour",
+      forceUpdateHint: "Efface le cache hors ligne et recharge l'application. À utiliser lorsqu'une mise à jour n'apparaît pas."
     },
     a11y: {
       skipLink: "Aller au contenu",

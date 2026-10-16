@@ -175,6 +175,11 @@
       var swCard = sectionCard(t('admin.swStatus'), []);
       var swEl = el('p', { text: t('common.loading') });
       swCard.appendChild(swEl);
+      var forceUpdateBtn = el('button', { class: 'btn', on: { click: onForceUpdate } },
+        icon('refresh', 18), el('span', { text: t('admin.forceUpdate') }));
+      var forceUpdateHint = el('p', { class: 'field-hint', text: t('admin.forceUpdateHint') });
+      swCard.appendChild(forceUpdateBtn);
+      swCard.appendChild(forceUpdateHint);
       grid.appendChild(swCard);
 
       // --- Standards reference -------------------------------------------------------------
@@ -407,6 +412,24 @@
         var sq = syncQueue();
         if (sq && typeof sq.flush === 'function') { return sq.flush().then(function () { refreshSync(); }); }
         return Promise.resolve();
+      }
+
+      // Anti-cache self-service: unregister the service worker, drop every cache
+      // and hard-reload, so operators can pull a fresh build without support.
+      function onForceUpdate() {
+        return ui().confirmDialog({ titleKey: 'admin.forceUpdate', bodyKey: 'admin.forceUpdateHint' }).then(function (ok) {
+          if (!ok) { return undefined; }
+          var sw = (typeof navigator !== 'undefined') ? navigator.serviceWorker : null;
+          var unregister = (sw && typeof sw.getRegistrations === 'function')
+            ? sw.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); })
+            : Promise.resolve();
+          var cacheApi = (typeof caches !== 'undefined') ? caches : null;
+          return unregister
+            .then(function () { return cacheApi ? cacheApi.keys() : []; })
+            .then(function (ks) { return cacheApi ? Promise.all(ks.map(function (k) { return cacheApi.delete(k); })) : []; })
+            .then(function () { if (typeof location !== 'undefined') { location.reload(); } })
+            .catch(function () { if (typeof location !== 'undefined') { location.reload(); } });
+        });
       }
 
       syncEndpointInput.addEventListener('change', function () {

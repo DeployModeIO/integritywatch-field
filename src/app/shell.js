@@ -35,6 +35,10 @@
   var _skipLinkEl = null;
   var _runRulesLabel = null;
   var _disclaimerEl = null;
+  var _alarmBanner = null;
+  var _alarmBannerText = null;
+  var _alarmBannerAction = null;
+  var _alarmBannerActionLabel = null;
 
   var SECTORS = ['upstream', 'midstream', 'downstream'];
 
@@ -50,7 +54,7 @@
     'API 581', 'NACE SP0169', 'OGMP 2.0'
   ];
 
-  function t(key) { return (_i18n && typeof _i18n.t === 'function') ? _i18n.t(key) : key; }
+  function t(key, params) { return (_i18n && typeof _i18n.t === 'function') ? _i18n.t(key, params) : key; }
   function ui() { return root.IW.ui; }
   function themeApi() { return root.IW.app.theme; }
 
@@ -92,20 +96,60 @@
     _sectorSelect.value = (SECTORS.indexOf(_sector) !== -1) ? _sector : 'all';
   }
 
+  // Second header row: ASM / API-1165 style alarm banner (full width, aria-live).
+  function buildAlarmBanner() {
+    _alarmBannerActionLabel = el('span', { text: t('dashboard.viewAll') });
+    _alarmBannerAction = el('button', {
+      class: 'btn alarm-banner__action',
+      attrs: { type: 'button' },
+      on: { click: function () { navigateTo('#/recommendations'); } }
+    }, _alarmBannerActionLabel);
+    _alarmBannerText = el('span', { class: 'alarm-banner__text' });
+    _alarmBanner = el('div', {
+      class: 'alarm-banner',
+      attrs: { id: 'alarm-banner', role: 'status', 'aria-live': 'polite' }
+    },
+      el('span', { class: 'alarm-banner__icon', attrs: { 'aria-hidden': 'true' } }, icon('alert-critical', 18)),
+      _alarmBannerText,
+      _alarmBannerAction);
+    _alarmBanner.hidden = true;
+    return _alarmBanner;
+  }
+
+  function renderAlarmBanner(critical, warning) {
+    if (!_alarmBanner || !_alarmBannerText) { return; }
+    var total = critical + warning;
+    if (critical > 0) {
+      _alarmBannerText.textContent = t('rules.alarmBannerCritical', { n: critical, total: total });
+      _alarmBanner.className = 'alarm-banner alarm-banner--critical';
+      _alarmBanner.hidden = false;
+    } else if (warning > 0) {
+      _alarmBannerText.textContent = t('rules.alarmBannerWarning', { n: warning, total: total });
+      _alarmBanner.className = 'alarm-banner alarm-banner--warning';
+      _alarmBanner.hidden = false;
+    } else {
+      _alarmBannerText.textContent = '';
+      _alarmBanner.className = 'alarm-banner';
+      _alarmBanner.hidden = true;
+    }
+    if (_alarmBannerActionLabel) { _alarmBannerActionLabel.textContent = t('dashboard.viewAll'); }
+  }
+
   function buildHeader() {
     var header = el('header', { class: 'app-header' });
+    var bar = el('div', { class: 'app-header__bar' });
 
     _hamburger = el('button', {
       class: 'btn btn-ghost hamburger',
       attrs: { 'aria-expanded': 'false', 'aria-controls': 'app-nav', 'aria-label': t('a11y.openNav') },
       on: { click: toggleNav }
     }, icon('menu', 22));
-    header.appendChild(_hamburger);
+    bar.appendChild(_hamburger);
 
     _brandEl = el('a', { class: 'app-brand', attrs: { href: '#/dashboard' } },
       brandMark(),
       _brandNameEl = el('span', { class: 'app-brand__name', text: t('common.appName') }));
-    header.appendChild(_brandEl);
+    bar.appendChild(_brandEl);
 
     var controls = el('div', { class: 'app-header__controls' });
 
@@ -139,7 +183,9 @@
     controls.appendChild(el('button', { class: 'btn btn-primary', attrs: { id: 'run-rules' }, on: { click: function () { runRules(false); } } },
       icon('play', 18), _runRulesLabel));
 
-    header.appendChild(controls);
+    bar.appendChild(controls);
+    header.appendChild(bar);
+    header.appendChild(buildAlarmBanner());
     return header;
   }
 
@@ -292,7 +338,9 @@
     syncBadgeLabel();
     if (_runRulesLabel) { _runRulesLabel.textContent = t('dashboard.runRules'); }
     if (_disclaimerEl) { _disclaimerEl.textContent = t('common.disclaimer'); }
+    if (_alarmBannerActionLabel) { _alarmBannerActionLabel.textContent = t('dashboard.viewAll'); }
     updateRulesStatus();
+    refreshRecs();
   }
 
   function refreshRecs() {
@@ -309,10 +357,12 @@
       if (_badgeCount) { _badgeCount.textContent = String(total); }
       if (_badgeEl) { _badgeEl.hidden = total === 0; }
       syncBadgeLabel();
+      renderAlarmBanner(critical, warning);
       return { critical: critical, warning: warning };
     }).catch(function (err) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] recommendations list failed', err); }
       if (_badgeEl) { _badgeEl.hidden = true; }
+      renderAlarmBanner(0, 0);
       return { critical: 0, warning: 0 };
     });
   }
@@ -391,6 +441,8 @@
       });
       _bus.on('theme:changed', function () { updateThemeIcon(); });
       _bus.on('locale:changed', function () { refreshChrome(); });
+      _bus.on('recs:new', function () { refreshRecs(); });
+      _bus.on('rules:run', function () { refreshRecs(); });
       _bus.on('sw:update', function () {
         if (ui() && typeof ui().toast === 'function') {
           ui().toast(t('common.updateAvailable'), {

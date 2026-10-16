@@ -395,62 +395,17 @@
     });
   }
 
-  function trendSvg(h, readings) {
-    var NS = 'http://www.w3.org/2000/svg';
-    var svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('class', 'trend');
-    svg.setAttribute('viewBox', '0 0 320 100');
-    svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', h.t('corrosion.trend'));
-
-    var title = document.createElementNS(NS, 'title');
-    title.textContent = h.t('corrosion.trend');
-    svg.appendChild(title);
-    var desc = document.createElementNS(NS, 'desc');
-    desc.textContent = h.t('a11y.chartDataTable');
-    svg.appendChild(desc);
-
-    // Baseline grid lines.
-    [20, 50, 80].forEach(function (y) {
-      var line = document.createElementNS(NS, 'line');
-      line.setAttribute('x1', '10'); line.setAttribute('x2', '310');
-      line.setAttribute('y1', String(y)); line.setAttribute('y2', String(y));
-      line.setAttribute('class', 'trend__grid');
-      svg.appendChild(line);
-    });
-
-    var sorted = readings.slice().sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
-    var max = 0;
-    sorted.forEach(function (r) { if (typeof r.crMpy === 'number' && r.crMpy > max) { max = r.crMpy; } });
-    if (max <= 0) { max = 1; }
-
-    function px(i) { var n = sorted.length > 1 ? sorted.length - 1 : 1; return 10 + (300 * i / n); }
-    function py(v) { return 90 - (Math.min(v, max) / max) * 80; }
-
-    var pts = sorted.map(function (r, i) {
-      var v = typeof r.crMpy === 'number' ? r.crMpy : 0;
-      return px(i).toFixed(1) + ',' + py(v).toFixed(1);
-    });
-
-    if (pts.length) {
-      var poly = document.createElementNS(NS, 'polyline');
-      poly.setAttribute('points', pts.join(' '));
-      poly.setAttribute('class', 'trend__line');
-      svg.appendChild(poly);
-      // Last point marker.
-      var last = sorted[sorted.length - 1];
-      var lv = typeof last.crMpy === 'number' ? last.crMpy : 0;
-      var circle = document.createElementNS(NS, 'circle');
-      circle.setAttribute('cx', px(sorted.length - 1).toFixed(1));
-      circle.setAttribute('cy', py(lv).toFixed(1));
-      circle.setAttribute('r', '3');
-      circle.setAttribute('class', 'trend__dot');
-      svg.appendChild(circle);
-    }
-
-    var wrap = h.ui.el('div', { class: 'trend-wrap' });
-    wrap.appendChild(svg);
-    return wrap;
+  function trendChartNode(h, readings) {
+    return h.ui.trendChart({
+      points: readings.map(function (r) { return { date: r.date, crMpy: r.crMpy }; }),
+      width: 960,
+      height: 180,
+      thresholds: [
+        { v: 5, label: h.t('corrosion.eiBands.acceptable') },
+        { v: 10, label: h.t('severity.severe') }
+      ],
+      titleKey: 'corrosion.trend'
+    }).node;
   }
 
   // ---- Coupons ------------------------------------------------------------------
@@ -829,7 +784,7 @@
     var readingsCard = card(h, 'corrosion.readings');
     readingsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { readingForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newReading') })));
     if (readings.length) {
-      readingsCard.appendChild(trendSvg(h, readings));
+      readingsCard.appendChild(trendChartNode(h, readings));
       var readingRows = readings.slice().reverse().map(function (r) {
         return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note };
       });
@@ -904,21 +859,28 @@
       var readings = d[1] || [];
       var latest = {};
       var times = {};
+      var series = {};
       readings.forEach(function (r) {
         var t = Date.parse(r.date);
         if (isNaN(t)) { t = 0; }
         if (!latest[r.mpId] || t >= (times[r.mpId] === undefined ? -1 : times[r.mpId])) { latest[r.mpId] = r; times[r.mpId] = t; }
+        if (!series[r.mpId]) { series[r.mpId] = []; }
+        series[r.mpId].push({ t: t, crMpy: r.crMpy });
+      });
+      Object.keys(series).forEach(function (k) {
+        series[k].sort(function (a, b) { return a.t - b.t; });
       });
       var existingCodes = points.map(function (p) { return p.code; });
       container.textContent = '';
-      container.appendChild(buildList(h, points, latest, existingCodes));
+      container.appendChild(buildList(h, points, latest, existingCodes, series));
     }).catch(function (err) {
       container.textContent = '';
       container.appendChild(errorNode(h, err));
     });
   }
 
-  function buildList(h, points, latest, existingCodes) {
+  function buildList(h, points, latest, existingCodes, series) {
+    series = series || {};
     var frag = document.createDocumentFragment();
 
     var header = h.ui.el('div', { class: 'page-header' });
@@ -1000,7 +962,8 @@
       var rows = filtered().map(function (mp) {
         var r = latest[mp.id];
         var mpy = r && typeof r.crMpy === 'number' ? r.crMpy : null;
-        return { id: mp.id, code: mp.code, name: mp.name, sector: mp.sector, material: mp.material, sensorType: mp.sensorType, lastMpy: mpy, _mp: mp };
+        var ser = (series[mp.id] || []).map(function (x) { return x.crMpy; });
+        return { id: mp.id, code: mp.code, name: mp.name, sector: mp.sector, material: mp.material, sensorType: mp.sensorType, lastMpy: mpy, _series: ser, _mp: mp };
       });
       tableHost.appendChild(h.ui.table({
         captionKey: 'corrosion.points',
@@ -1017,6 +980,11 @@
               if (v == null) { return '—'; }
               var sev = classifyMpy(v);
               return h.ui.el('span', { class: 'row' }, h.ui.el('span', { class: 'num', text: fmtNum(v, 2) }), sevBadge(h, sev));
+            } },
+          { key: '_series', labelKey: 'corrosion.trend', render: function (v) {
+              var vals = v || [];
+              if (vals.length < 2) { return '—'; }
+              return h.ui.sparkline(vals, { width: 72, height: 16 });
             } },
           { key: '_actions', labelKey: 'common.actions', render: function (v, row) { return rowActions(row._mp); } }
         ],

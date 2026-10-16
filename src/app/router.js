@@ -101,6 +101,14 @@
     return _container;
   }
 
+  // Restart the enter animation on the view container (no-op without a DOM).
+  function playEnter(node) {
+    if (!node || typeof node.classList === 'undefined') { return; }
+    node.classList.remove('view-enter');
+    void node.offsetWidth;
+    node.classList.add('view-enter');
+  }
+
   function render() {
     if (typeof document === 'undefined') { return Promise.resolve(); }
     var path = currentHash().replace(/^#\/?/, '');
@@ -140,7 +148,9 @@
     } catch (err) {
       return Promise.reject(err);
     }
-    return Promise.resolve(out).catch(function (err) {
+    return Promise.resolve(out).then(function () {
+      playEnter(c);
+    }).catch(function (err) {
       c.textContent = '';
       var errEl = document.createElement('div');
       errEl.className = 'error-banner';

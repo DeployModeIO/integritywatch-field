@@ -364,7 +364,11 @@
 
   function severityBadge(level) {
     var lv = level || 'low';
-    var badge = el('span', { class: 'badge badge-' + lv + ' shape-' + lv });
+    // The shape channel is the icon SVG only. The `shape-<lv>` classes are a
+    // swatch layer (see .shape in components.css) and must NOT be applied to
+    // the badge itself: their background/border rules would repaint the whole
+    // pill in the solid severity colour, hiding the label text.
+    var badge = el('span', { class: 'badge badge-' + lv });
     badge.appendChild(icon('shape-' + lv, 16));
     badge.appendChild(el('span', { text: tt('severity.' + lv) }));
     return badge;
@@ -458,6 +462,419 @@
     return nav;
   }
 
+  // ---- SVG symbols (CSP-safe: built via DOM, no inline markup) ---------------
+
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var DAY_MS = 86400000;
+
+  function svgEl(tag, attrs, children) {
+    var n = document.createElementNS(SVG_NS, tag);
+    if (attrs) {
+      for (var k in attrs) {
+        if (Object.prototype.hasOwnProperty.call(attrs, k) && attrs[k] !== null && attrs[k] !== undefined) {
+          n.setAttribute(k, String(attrs[k]));
+        }
+      }
+    }
+    if (children) {
+      var arr = Array.isArray(children) ? children : [children];
+      for (var i = 0; i < arr.length; i++) {
+        var c = arr[i];
+        if (c === null || c === undefined || c === false) { continue; }
+        if (typeof c === 'string' || typeof c === 'number') { n.appendChild(document.createTextNode(String(c))); }
+        else if (c instanceof Node) { n.appendChild(c); }
+      }
+    }
+    return n;
+  }
+
+  function fmtNumI18n(v, d) {
+    var i18n = root.IW && root.IW.i18n;
+    if (i18n && typeof i18n.formatNumber === 'function') {
+      try { return i18n.formatNumber(v, { maximumFractionDigits: d }); } catch (e) { /* fall through */ }
+    }
+    return String(Number(v.toFixed(d)));
+  }
+
+  function fmtDateI18n(iso) {
+    var i18n = root.IW && root.IW.i18n;
+    if (i18n && typeof i18n.formatDate === 'function') {
+      try { return i18n.formatDate(iso, { day: '2-digit', month: 'short' }); } catch (e) { /* fall through */ }
+    }
+    return String(iso).slice(0, 10);
+  }
+
+  function classifySp0775(v) {
+    var calc = root.IW && root.IW.calc && root.IW.calc.corrosion;
+    if (calc && typeof calc.classifySp0775 === 'function') { return calc.classifySp0775(v); }
+    if (v < 1) { return 'low'; }
+    if (v < 5) { return 'moderate'; }
+    if (v < 10) { return 'high'; }
+    return 'severe';
+  }
+
+  // PI Vision "Trend": responsive SVG with grid, thresholds, range selector,
+  // pointer/keyboard crosshair and severity tooltip.
+  function trendChart(opts) {
+    opts = opts || {};
+    var width = opts.width || 960;
+    var height = opts.height || 180;
+    var thresholds = opts.thresholds || [{ v: 5, label: 'aceptable' }, { v: 10, label: 'severo' }];
+    var titleKey = opts.titleKey || 'corrosion.trend';
+
+    var allPoints = (opts.points || []).map(function (p) {
+      var t = Date.parse(p.date);
+      return {
+        date: p.date,
+        time: isNaN(t) ? 0 : t,
+        crMpy: (typeof p.crMpy === 'number' && isFinite(p.crMpy)) ? p.crMpy : 0
+      };
+    }).sort(function (a, b) { return a.time - b.time; });
+
+    var ranges = [
+      { key: '24h', label: '24 h', ms: DAY_MS },
+      { key: '7d', label: '7 d', ms: 7 * DAY_MS },
+      { key: '30d', label: '30 d', ms: 30 * DAY_MS },
+      { key: '90d', label: '90 d', ms: 90 * DAY_MS },
+      { key: 'all', label: null, ms: null }
+    ];
+    var active = '30d';
+
+    var container = el('div', { class: 'trend-chart' });
+    var rangeBar = el('div', { class: 'trend-range', attrs: { role: 'group', 'aria-label': tt(titleKey) } });
+    var buttons = {};
+    ranges.forEach(function (r) {
+      var btn = el('button', {
+        class: 'trend-range__btn', text: r.label || tt('common.all'),
+        on: { click: function () { setRange(r.key); } }
+      });
+      buttons[r.key] = btn;
+      rangeBar.appendChild(btn);
+    });
+    container.appendChild(rangeBar);
+
+    var stage = el('div', { class: 'trend-chart__stage' });
+    var figure = el('div', { class: 'trend-chart__figure' });
+    var tooltip = el('div', { class: 'trend-tooltip', attrs: { role: 'status' } });
+    tooltip.hidden = true;
+    stage.appendChild(figure);
+    stage.appendChild(tooltip);
+    container.appendChild(stage);
+
+    var state = null;
+    var destroyed = false;
+
+    // Range windows are measured from the newest sample so historical data
+    // (offline field logs) still resolves to a meaningful "last N" slice.
+    var anchor = allPoints.length ? allPoints[allPoints.length - 1].time : Date.now();
+
+    function pointsForRange() {
+      if (active === 'all') { return allPoints.slice(); }
+      var r = null;
+      for (var i = 0; i < ranges.length; i++) { if (ranges[i].key === active) { r = ranges[i]; } }
+      if (!r || r.ms === null) { return allPoints.slice(); }
+      var cutoff = anchor - r.ms;
+      return allPoints.filter(function (p) { return p.time >= cutoff; });
+    }
+
+    function niceStep(x) {
+      if (!(x > 0)) { return 1; }
+      var exp = Math.floor(Math.log10(x));
+      var base = Math.pow(10, exp);
+      var n = x / base;
+      var m = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+      return m * base;
+    }
+
+    function hideCursor() {
+      tooltip.hidden = true;
+      if (state) {
+        if (state.cursorLine) { state.cursorLine.setAttribute('visibility', 'hidden'); }
+        if (state.dot) { state.dot.setAttribute('visibility', 'hidden'); }
+      }
+    }
+
+    function placeTooltip(svgX) {
+      var rect = state.svg.getBoundingClientRect();
+      if (rect.width <= 0) { return; }
+      var cssX = (svgX / width) * rect.width;
+      var minEdge = 48;
+      var maxEdge = rect.width - 48;
+      if (cssX < minEdge) { cssX = minEdge; }
+      if (cssX > maxEdge) { cssX = maxEdge; }
+      tooltip.style.left = cssX + 'px';
+    }
+
+    function showIndex(i) {
+      if (!state || !state.pts.length) { return; }
+      if (i < 0) { i = 0; }
+      if (i > state.pts.length - 1) { i = state.pts.length - 1; }
+      state.idx = i;
+      var p = state.pts[i];
+      var svgX = state.xFor(i);
+      var svgY = state.yFor(p.crMpy);
+      state.cursorLine.setAttribute('x1', String(svgX));
+      state.cursorLine.setAttribute('x2', String(svgX));
+      state.cursorLine.setAttribute('y1', String(state.y0));
+      state.cursorLine.setAttribute('y2', String(state.y1));
+      state.cursorLine.setAttribute('visibility', 'visible');
+      state.dot.setAttribute('cx', String(svgX));
+      state.dot.setAttribute('cy', String(svgY));
+      state.dot.setAttribute('visibility', 'visible');
+
+      tooltip.textContent = '';
+      tooltip.appendChild(el('span', { class: 'trend-tooltip__date', text: fmtDateI18n(p.date) }));
+      tooltip.appendChild(el('span', { class: 'trend-tooltip__value num', text: fmtNumI18n(p.crMpy, 2) + ' ' + tt('units.mpy') }));
+      tooltip.appendChild(severityBadge(classifySp0775(p.crMpy)));
+      tooltip.hidden = false;
+      placeTooltip(svgX);
+    }
+
+    function onPointerMove(evt) {
+      if (!state || !state.pts.length) { return; }
+      var rect = state.svg.getBoundingClientRect();
+      if (rect.width <= 0) { return; }
+      var svgX = (evt.clientX - rect.left) * (width / rect.width);
+      var n = state.pts.length;
+      var i = n > 1 ? Math.round((svgX - state.x0) / (state.x1 - state.x0) * (n - 1)) : 0;
+      showIndex(i);
+    }
+
+    function onKeyDown(evt) {
+      if (!state || !state.pts.length) { return; }
+      if (evt.key === 'ArrowRight' || evt.key === 'ArrowLeft' || evt.key === 'Home' || evt.key === 'End') {
+        evt.preventDefault();
+        var i = state.idx < 0 ? 0 : state.idx;
+        if (evt.key === 'ArrowRight') { i += 1; }
+        else if (evt.key === 'ArrowLeft') { i -= 1; }
+        else if (evt.key === 'Home') { i = 0; }
+        else if (evt.key === 'End') { i = state.pts.length - 1; }
+        showIndex(i);
+      } else if (evt.key === 'Escape') {
+        hideCursor();
+      }
+    }
+
+    function render() {
+      if (destroyed) { return; }
+      figure.textContent = '';
+      hideCursor();
+      state = null;
+      var pts = pointsForRange();
+      if (pts.length <= 1) {
+        figure.appendChild(el('p', { class: 'trend-chart__empty empty-state', text: tt('common.empty') }));
+        return;
+      }
+
+      var padL = 46, padR = 16, padT = 10, padB = 26;
+      var x0 = padL, x1 = width - padR, y0 = padT, y1 = height - padB;
+
+      var dataMax = 0;
+      pts.forEach(function (p) { if (p.crMpy > dataMax) { dataMax = p.crMpy; } });
+      thresholds.forEach(function (th) { if (th.v > dataMax) { dataMax = th.v; } });
+      if (dataMax <= 0) { dataMax = 1; }
+      var step = niceStep(dataMax / 3);
+      var yMax = step * Math.max(1, Math.ceil(dataMax / step));
+
+      var n = pts.length;
+      function xFor(i) { return x0 + (x1 - x0) * (n > 1 ? i / (n - 1) : 0); }
+      function yFor(v) { var c = Math.min(Math.max(v, 0), yMax); return y1 - (y1 - y0) * (c / yMax); }
+
+      var svg = svgEl('svg', {
+        class: 'trend-chart__svg', role: 'img', tabindex: '0',
+        viewBox: '0 0 ' + width + ' ' + height, preserveAspectRatio: 'xMidYMid meet',
+        'aria-label': tt(titleKey)
+      });
+      svg.appendChild(svgEl('title', null, tt(titleKey)));
+      svg.appendChild(svgEl('desc', null, tt('a11y.chartDataTable')));
+
+      var gv;
+      for (gv = 0; gv <= yMax + 1e-9; gv += step) {
+        var gy = yFor(gv);
+        svg.appendChild(svgEl('line', { x1: x0, x2: x1, y1: gy, y2: gy, class: 'trend-grid' }));
+        svg.appendChild(svgEl('text', { x: x0 - 6, y: gy + 3, class: 'trend-axis-label', 'text-anchor': 'end' },
+          fmtNumI18n(gv, gv % 1 === 0 ? 0 : 1)));
+      }
+
+      var labelCount = Math.min(5, n);
+      var seen = {};
+      for (var li = 0; li < labelCount; li++) {
+        var idx = labelCount > 1 ? Math.round(li * (n - 1) / (labelCount - 1)) : 0;
+        if (seen[idx]) { continue; }
+        seen[idx] = true;
+        svg.appendChild(svgEl('text', { x: xFor(idx), y: height - 8, class: 'trend-axis-label', 'text-anchor': 'middle' },
+          fmtDateI18n(pts[idx].date)));
+      }
+
+      thresholds.forEach(function (th) {
+        if (th.v > yMax) { return; }
+        var ty = yFor(th.v);
+        var sev = classifySp0775(th.v);
+        svg.appendChild(svgEl('line', { x1: x0, x2: x1, y1: ty, y2: ty, class: 'trend-threshold trend-threshold--' + sev }));
+        if (th.label) {
+          svg.appendChild(svgEl('text', { x: x1, y: ty - 3, class: 'trend-threshold-label trend-threshold-label--' + sev, 'text-anchor': 'end' }, th.label));
+        }
+      });
+
+      var coords = pts.map(function (p, i) { return xFor(i).toFixed(1) + ',' + yFor(p.crMpy).toFixed(1); });
+      svg.appendChild(svgEl('polyline', { points: coords.join(' '), class: 'trend-line' }));
+
+      var cursorLine = svgEl('line', { class: 'trend-cursor', visibility: 'hidden', 'aria-hidden': 'true' });
+      var dot = svgEl('circle', { class: 'trend-cursor-dot', r: '4', visibility: 'hidden', 'aria-hidden': 'true' });
+      svg.appendChild(cursorLine);
+      svg.appendChild(dot);
+      svg.setAttribute('data-points', String(n));
+
+      figure.appendChild(svg);
+
+      state = {
+        svg: svg, pts: pts, x0: x0, x1: x1, y0: y0, y1: y1, yMax: yMax, idx: -1,
+        xFor: xFor, yFor: yFor, cursorLine: cursorLine, dot: dot
+      };
+
+      svg.addEventListener('mousemove', onPointerMove);
+      svg.addEventListener('pointermove', onPointerMove);
+      svg.addEventListener('click', onPointerMove);
+      svg.addEventListener('mouseleave', hideCursor);
+      svg.addEventListener('keydown', onKeyDown);
+      svg.addEventListener('blur', hideCursor);
+    }
+
+    function setRange(key) {
+      active = key;
+      for (var k in buttons) {
+        if (Object.prototype.hasOwnProperty.call(buttons, k)) {
+          var isActive = k === key;
+          buttons[k].classList.toggle('is-active', isActive);
+          buttons[k].setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        }
+      }
+      render();
+    }
+
+    setRange('30d');
+
+    function destroy() {
+      destroyed = true;
+      hideCursor();
+      if (container.parentNode) { container.parentNode.removeChild(container); }
+      container.textContent = '';
+    }
+
+    return { node: container, destroy: destroy, setRange: setRange };
+  }
+
+  // ISA-101 analogue gauge: 240-degree arc, severity zones, needle, title.
+  function gauge(opts) {
+    opts = opts || {};
+    var value = (typeof opts.value === 'number' && isFinite(opts.value)) ? opts.value : 0;
+    var min = (opts.min !== undefined && opts.min !== null) ? opts.min : 0;
+    var max = (opts.max !== undefined && opts.max !== null) ? opts.max : 20;
+    var unit = opts.unit || 'mpy';
+    var size = opts.size || 96;
+    // showValue:false keeps arc, severity zones and needle but drops the in-dial
+    // value/unit text (for compact gauges that sit next to an explicit number).
+    var showValue = opts.showValue !== false;
+    var zones = opts.zones || [{ to: 5, sev: 'low' }, { to: 10, sev: 'moderate' }, { to: 20, sev: 'high' }];
+
+    var over = value > max;
+    var clamped = Math.min(Math.max(value, min), max);
+    var frac = (max > min) ? (clamped - min) / (max - min) : 0;
+
+    var cx = size / 2, cy = size / 2 + size * 0.06, r = size * 0.40;
+    var sw = Math.max(4, size * 0.11);
+    var span = 240, start = 210;
+
+    function pt(t, rad) {
+      var ang = (start - t * span) * Math.PI / 180;
+      return { x: cx + rad * Math.cos(ang), y: cy - rad * Math.sin(ang) };
+    }
+    function arc(t1, t2, rad) {
+      var a = pt(t1, rad), b = pt(t2, rad);
+      var large = ((t2 - t1) * span) > 180 ? 1 : 0;
+      return 'M ' + a.x.toFixed(2) + ' ' + a.y.toFixed(2) +
+        ' A ' + rad.toFixed(2) + ' ' + rad.toFixed(2) + ' 0 ' + large + ' 1 ' + b.x.toFixed(2) + ' ' + b.y.toFixed(2);
+    }
+
+    var wrap = el('span', { class: 'gauge' });
+    var svg = svgEl('svg', { class: 'gauge__svg', role: 'img', width: size, height: size, viewBox: '0 0 ' + size + ' ' + size });
+    var valueText = fmtNumI18n(value, 2);
+    svg.appendChild(svgEl('title', null, tt('dashboard.kpiAvgCr') + ': ' + valueText + ' ' + unit));
+    svg.appendChild(svgEl('desc', null, unit));
+
+    svg.appendChild(svgEl('path', { d: arc(0, 1, r), class: 'gauge-track', fill: 'none', 'stroke-width': sw }));
+
+    var prev = min;
+    zones.forEach(function (z) {
+      var to = Math.min(z.to, max);
+      if (to <= prev) { return; }
+      var t1 = (prev - min) / (max - min);
+      var t2 = (to - min) / (max - min);
+      svg.appendChild(svgEl('path', { d: arc(t1, t2, r), class: 'gauge-zone gauge-zone--' + (z.sev || 'low'), fill: 'none', 'stroke-width': sw }));
+      prev = z.to;
+    });
+
+    var np = pt(frac, r * 0.86);
+    svg.appendChild(svgEl('line', { x1: cx, y1: cy, x2: np.x.toFixed(2), y2: np.y.toFixed(2), class: 'gauge-needle', 'stroke-width': Math.max(2, size * 0.03) }));
+    svg.appendChild(svgEl('circle', { cx: cx, cy: cy, r: Math.max(2.5, size * 0.045), class: 'gauge-hub' }));
+
+    if (showValue) {
+      svg.appendChild(svgEl('text', { x: cx, y: cy + size * 0.02, class: over ? 'gauge-value num gauge-value--over' : 'gauge-value num', 'text-anchor': 'middle' }, valueText));
+      svg.appendChild(svgEl('text', { x: cx, y: cy + size * 0.17, class: 'gauge-unit', 'text-anchor': 'middle' }, unit));
+    }
+
+    wrap.appendChild(svg);
+    return wrap;
+  }
+
+  // Minimal inline trend for tables: polyline, 1.5px, accent colour.
+  // Size is pinned three ways so a viewBox-only SVG can never stretch to the
+  // width of its table cell: explicit width/height presentation attributes,
+  // and the .sparkline rule in components.css (fixed logical inline/block size,
+  // flex:0 0 auto, vertical-align:middle, overflow:hidden). Inline styles are
+  // deliberately avoided because the app ships a strict `style-src 'self'` CSP.
+  function sparkline(values, opts) {
+    opts = opts || {};
+    var width = opts.width || 72;
+    var height = opts.height || 16;
+    var svg = svgEl('svg', {
+      class: 'sparkline',
+      viewBox: '0 0 ' + width + ' ' + height,
+      width: width,
+      height: height,
+      preserveAspectRatio: 'none', role: 'img', focusable: 'false', 'aria-hidden': 'true'
+    });
+    var vals = [];
+    (values || []).forEach(function (v) { if (typeof v === 'number' && isFinite(v)) { vals.push(v); } });
+    if (vals.length < 2) { return svg; }
+    var max = Math.max.apply(null, vals);
+    var min = Math.min.apply(null, vals);
+    var span = (max - min) || 1;
+    var pad = 1.5;
+    var pts = vals.map(function (v, i) {
+      var x = pad + (width - 2 * pad) * (i / (vals.length - 1));
+      var y = height - pad - (height - 2 * pad) * ((v - min) / span);
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    });
+    svg.appendChild(svgEl('polyline', { points: pts.join(' '), class: 'sparkline__line', fill: 'none' }));
+    return svg;
+  }
+
+  // Loading placeholders: shimmer bars announced to assistive tech.
+  function skeleton(n, opts) {
+    opts = opts || {};
+    var count = (typeof n === 'number' && n > 0) ? Math.floor(n) : 3;
+    var box = el('div', {
+      class: 'skeleton-stack' + (opts.class ? ' ' + opts.class : ''),
+      attrs: { role: 'status', 'aria-busy': 'true' }
+    });
+    box.appendChild(el('span', { class: 'visually-hidden', text: tt('common.loading') }));
+    for (var i = 0; i < count; i++) {
+      box.appendChild(el('div', { class: 'skeleton', attrs: { 'aria-hidden': 'true' } }));
+    }
+    return box;
+  }
+
   return {
     el: el,
     txt: txt,
@@ -470,6 +887,11 @@
     keyValueTable: keyValueTable,
     severityBadge: severityBadge,
     tabs: tabs,
-    pager: pager
+    pager: pager,
+    svgEl: svgEl,
+    trendChart: trendChart,
+    gauge: gauge,
+    sparkline: sparkline,
+    skeleton: skeleton
   };
 });

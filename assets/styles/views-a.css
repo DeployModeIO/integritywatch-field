@@ -3,6 +3,17 @@
 
 /* --- View scaffolding -------------------------------------------------------- */
 
+/* Replayed on every route render (router toggles .view-enter) for a restrained
+   fade + 4px rise; neutralised by prefers-reduced-motion in base.css. */
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.view-enter {
+  animation: viewIn var(--dur-2) var(--ease-out);
+}
+
 .rules-last-run {
   font-size: 0.875rem;
   color: var(--muted);

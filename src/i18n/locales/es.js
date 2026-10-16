@@ -249,6 +249,8 @@
       entity: 'Entidad', rule: 'Regla', condition: 'Condición', noRecs: 'Sin recomendaciones',
       filterStatus: 'Filtrar por estado', sweepInterval: 'Intervalo de barrido', runNow: 'Ejecutar ahora',
       lastRun: 'Última ejecución', newCriticalToast: 'Nueva recomendación crítica',
+      alarmBannerCritical: '{{n}} alarmas críticas activas · {{total}} recomendaciones abiertas',
+      alarmBannerWarning: '{{n}} advertencias activas · {{total}} recomendaciones abiertas',
       resolveNotePlaceholder: 'Nota de resolución',
       actor: 'Actor', history: 'Historial', lastTriggered: 'Último disparo', triggerCount: 'Disparos',
       msg: {
@@ -323,6 +325,7 @@
       lockoutWait: 'Demasiados intentos. Intenta más tarde.', storageUsage: 'Uso de almacenamiento',
       swStatus: 'Service worker', offlineReady: 'Listo para uso offline', standardsRef: 'Normas referenciadas',
       demoLoaded: 'Datos de demo cargados', typeDelete: 'Escriba DELETE para confirmar',
+      forceUpdate: 'Forzar actualización', forceUpdateHint: 'Limpia la caché sin conexión y recarga la aplicación. Úsalo cuando no aparezca una actualización.',
       roles: { admin: 'Admin', operator: 'Operador' }
     },
 
