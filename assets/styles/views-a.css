@@ -1,0 +1,314 @@
+/* views-a.css — dashboard, corrosion and psv view styles.
+   Logical properties only (RTL-safe); no inline style attributes (CSP). */
+
+/* --- View scaffolding -------------------------------------------------------- */
+
+.view-title {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.view-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-4);
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.rules-last-run {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.section-title {
+  font-size: 1.125rem;
+  margin: 0 0 var(--sp-2);
+}
+
+.section-hint {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-block-end: var(--sp-3);
+}
+
+.row--end {
+  justify-content: flex-end;
+}
+
+/* --- Loading spinner ---------------------------------------------------------- */
+
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--border);
+  border-block-start-color: var(--accent);
+  border-radius: 50%;
+  animation: iw-spin 0.8s linear infinite;
+}
+
+@keyframes iw-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- KPI cards ------------------------------------------------------------------ */
+
+.kpi__icon {
+  display: inline-flex;
+  align-self: flex-start;
+  color: var(--muted);
+}
+
+/* --- Heatmap -------------------------------------------------------------------- */
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: var(--sp-2);
+}
+
+.heat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  min-height: 44px;
+  padding: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  text-decoration: none;
+}
+
+.heat-cell:hover {
+  filter: brightness(0.94);
+}
+
+.heat-cell__code {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.heat-cell__value {
+  font-size: 0.8125rem;
+}
+
+.heat-cell-low {
+  background: var(--sev-low-bg);
+  color: var(--sev-low);
+  border-color: var(--sev-low);
+}
+
+.heat-cell-moderate {
+  background: var(--sev-moderate-bg);
+  color: var(--sev-moderate);
+  border-color: var(--sev-moderate);
+}
+
+.heat-cell-high {
+  background: var(--sev-high-bg);
+  color: var(--sev-high);
+  border-color: var(--sev-high);
+}
+
+.heat-cell-severe {
+  background: var(--sev-severe-bg);
+  color: var(--sev-severe);
+  border-color: var(--sev-severe);
+}
+
+/* --- Alerts feed ------------------------------------------------------------------ */
+
+.feed-counts {
+  margin-block-end: var(--sp-2);
+}
+
+.alerts-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.alert-item {
+  border-block-end: 1px solid var(--border);
+}
+
+.alert-item:last-child {
+  border-block-end: none;
+}
+
+.alert-item__link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-2);
+  text-decoration: none;
+  color: var(--text);
+  border-radius: var(--r-1);
+}
+
+.alert-item__link:hover {
+  background: var(--surface-2);
+}
+
+.alert-item__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-start: 2px;
+}
+
+.alert-item__icon--critical { color: var(--sev-severe); }
+.alert-item__icon--warning { color: var(--sev-moderate); }
+.alert-item__icon--info { color: var(--accent); }
+
+.alert-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.alert-item__sev {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.alert-item__text {
+  color: var(--text);
+}
+
+/* --- Forms (shared engineering validation helpers) ------------------------------ */
+
+.field-error {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--sev-severe);
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+/* --- Filter bar ------------------------------------------------------------------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+}
+
+.filter-field {
+  margin-block-end: 0;
+  flex: 1 1 160px;
+  min-width: 160px;
+}
+
+/* --- Tables / links ----------------------------------------------------------------- */
+
+.row-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.row-link:hover {
+  text-decoration: underline;
+}
+
+.plain-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* --- Coupon live result ------------------------------------------------------------- */
+
+.coupon-live {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  background: var(--surface-2);
+}
+
+/* --- Trend SVG ------------------------------------------------------------------------ */
+
+.trend-wrap {
+  margin-block: var(--sp-3);
+  padding: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  background: var(--surface-2);
+}
+
+.trend {
+  display: block;
+  width: 100%;
+  height: 120px;
+  color: var(--accent);
+}
+
+.trend__grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.trend__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.trend__dot {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* --- PSV sizing panels ---------------------------------------------------------------- */
+
+.sizing-result {
+  margin-block-start: var(--sp-3);
+}
+
+/* Tab structure: IW.ui.tabs wraps a tablist (.tabs-nav) and panels (.tabs-panels)
+   inside a single .tabs wrapper; orient the wrapper vertically. */
+.tabs {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  border-block-end: none;
+  overflow-x: visible;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: var(--sp-1);
+  border-block-end: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.tab-panel {
+  padding: var(--sp-3) 0 0;
+}

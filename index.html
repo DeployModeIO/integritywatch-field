@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b5cad">
+  <meta name="description" content="Offline-first integrity &amp; compliance operations center for oil &amp; gas field use">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' http://127.0.0.1:* ; manifest-src 'self'; worker-src 'self'; base-uri 'self'; form-action 'self'">
+  <title>IntegrityWatch Field</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/styles/tokens.css">
+  <link rel="stylesheet" href="assets/styles/base.css">
+  <link rel="stylesheet" href="assets/styles/layout.css">
+  <link rel="stylesheet" href="assets/styles/components.css">
+  <link rel="stylesheet" href="assets/styles/views-a.css">
+  <link rel="stylesheet" href="assets/styles/views-b.css">
+  <link rel="stylesheet" href="assets/styles/views-c.css">
+  <link rel="stylesheet" href="assets/styles/print.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="app-header">
+    <a class="app-brand" href="#/dashboard">
+      <svg class="app-brand__mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path d="M5.5 20 A10.5 10.5 0 0 1 26.5 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M16 9.5 L16 12 M6.9 14.8 L9.1 16 M25.1 14.8 L22.9 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16 20 L20 14.3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="16" cy="20" r="1.8" fill="currentColor"/>
+      </svg>
+      <span class="app-brand__name">IntegrityWatch Field</span>
+    </a>
+    <div class="app-header__controls">
+      <div id="sector-select"></div>
+      <div id="locale-select"></div>
+      <div id="theme-toggle"></div>
+      <div id="recs-badge"></div>
+      <div id="rules-status"></div>
+      <div id="run-rules"></div>
+    </div>
+  </header>
+
+  <nav class="app-sidebar" id="nav" aria-label="Primary"></nav>
+
+  <main class="app-main" id="view" tabindex="-1"></main>
+
+  <footer class="app-footer" id="footer-disclaimer"></footer>
+
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+  <script defer src="src/compat/file-guard.js"></script>
+  <script defer src="src/core/bus.js"></script>
+  <script defer src="src/calc/units.js"></script>
+  <script defer src="src/data/materials.js"></script>
+  <script defer src="src/data/fluids.js"></script>
+  <script defer src="src/data/glossary.js"></script>
+  <script defer src="src/data/standards.js"></script>
+  <script defer src="src/data/seed.js"></script>
+  <script defer src="src/i18n/locales/en.js"></script>
+  <script defer src="src/i18n/locales/es.js"></script>
+  <script defer src="src/i18n/locales/fr.js"></script>
+  <script defer src="src/i18n/locales/zh.js"></script>
+  <script defer src="src/i18n/locales/ru.js"></script>
+  <script defer src="src/i18n/locales/ar.js"></script>
+  <script defer src="src/i18n/locales/pt.js"></script>
+  <script defer src="src/i18n/i18n.js"></script>
+  <script defer src="src/core/db.js"></script>
+  <script defer src="src/core/dbMemory.js"></script>
+  <script defer src="src/core/store.js"></script>
+  <script defer src="src/core/exportImport.js"></script>
+  <script defer src="src/core/syncQueue.js"></script>
+  <script defer src="src/security/lock.js"></script>
+  <script defer src="src/calc/corrosion.js"></script>
+  <script defer src="src/calc/psv.js"></script>
+  <script defer src="src/calc/apm.js"></script>
+  <script defer src="src/rules/engine.js"></script>
+  <script defer src="src/rules/definitions.js"></script>
+  <script defer src="src/ingest/csv.js"></script>
+  <script defer src="src/ingest/witsmlLite.js"></script>
+  <script defer src="src/components/icons.js"></script>
+  <script defer src="src/components/ui.js"></script>
+  <script defer src="src/reports/quarterly.js"></script>
+  <script defer src="src/reports/dossier.js"></script>
+  <script defer src="src/reports/datasheet.js"></script>
+  <script defer src="src/views/dashboard.js"></script>
+  <script defer src="src/views/corrosion.js"></script>
+  <script defer src="src/views/psv.js"></script>
+  <script defer src="src/views/pipelines.js"></script>
+  <script defer src="src/views/pipelineMap.js"></script>
+  <script defer src="src/views/apm.js"></script>
+  <script defer src="src/views/ingest.js"></script>
+  <script defer src="src/views/recommendations.js"></script>
+  <script defer src="src/views/reports.js"></script>
+  <script defer src="src/views/glossary.js"></script>
+  <script defer src="src/views/admin.js"></script>
+  <script defer src="src/app/theme.js"></script>
+  <script defer src="src/app/router.js"></script>
+  <script defer src="src/app/shell.js"></script>
+  <script defer src="src/app/main.js"></script>
+</body>
+</html>

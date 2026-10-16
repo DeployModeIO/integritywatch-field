@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iw-lite>
+  <wells>
+    <well uid="W-1" name="Well Alpha" field="Norte" operator="Petronorth"/>
+    <well uid="W-2" name="Well Beta"/>
+  </wells>
+  <trajectories>
+    <station wellUid="W-1" md="120.5" incl="12.3" azi="45.0"/>
+    <station wellUid="W-1" md="350.0" incl="15.1" azi="47.2"/>
+    <station wellUid="W-1" md="600.0" incl="18.4" azi="50.5"/>
+  </trajectories>
+  <channels>
+    <channel wellUid="W-1" name="CR_MPY" unit="mpy" mpCode="MP-CORR-001">
+      <point time="2026-09-01T00:00:00Z" value="3.2"/>
+      <point time="2026-09-02T00:00:00Z" value="3.4"/>
+      <point time="2026-09-03T00:00:00Z" value="3.1"/>
+      <point time="2026-09-04T00:00:00Z" value="3.6"/>
+      <point time="2026-09-05T00:00:00Z"/>
+    </channel>
+  </channels>
+</iw-lite>

@@ -1,0 +1,346 @@
+/* IntegrityWatch Field — locale pt
+   Full i18n inventory per SCHEMA.md §5 plus ingest.canonical.* (SCHEMA §6)
+   and fluids.* (SCHEMA §8.2). Key set mirrors en.js exactly. */
+(function (root, factory) {
+  'use strict';
+  var api = factory(root);
+  root.IW_LOCALES = root.IW_LOCALES || {};
+  root.IW_LOCALES.pt = api;
+  if (typeof module === 'object' && module.exports) { module.exports = api; }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
+  'use strict';
+  return {
+    __meta: { code: 'pt', name: 'Portuguese', nativeName: 'Português', dir: 'ltr' },
+
+    common: {
+      appName: 'IntegrityWatch Field',
+      tagline: 'Centro de operações offline de integridade e conformidade',
+      disclaimer: 'Ferramenta de apoio. Valide sempre contra as edições vigentes das normas e os dados do fabricante.',
+      save: 'Salvar', cancel: 'Cancelar', delete: 'Excluir', edit: 'Editar', add: 'Adicionar', new: 'Novo',
+      close: 'Fechar', search: 'Buscar', filter: 'Filtrar', clear: 'Limpar',
+      export: 'Exportar', import: 'Importar', print: 'Imprimir', copy: 'Copiar', copied: 'Copiado',
+      refresh: 'Atualizar', run: 'Executar', back: 'Voltar', next: 'Avançar', yes: 'Sim', no: 'Não',
+      confirm: 'Confirmar', required: 'Obrigatório', optional: 'Opcional', none: 'Nenhum', all: 'Todos',
+      actions: 'Ações', status: 'Status', severity: 'Severidade', date: 'Data', notes: 'Notas',
+      note: 'Nota', value: 'Valor', min: 'Mín', max: 'Máx', avg: 'Méd', total: 'Total',
+      ok: 'OK', error: 'Erro', warning: 'Aviso', info: 'Info', critical: 'Crítico',
+      loading: 'Carregando…', empty: 'Sem dados', apply: 'Aplicar', reset: 'Redefinir',
+      language: 'Idioma', theme: 'Tema', light: 'Claro', dark: 'Escuro', system: 'Sistema',
+      sector: 'Setor', upstream: 'Upstream', midstream: 'Midstream', downstream: 'Downstream',
+      asset: 'Ativo', assets: 'Ativos', active: 'Ativo', due: 'Vence', overdue: 'Vencido',
+      days: 'dias', hours: 'horas', months: 'meses', createdAt: 'Criado', updatedAt: 'Atualizado',
+      unknown: 'Desconhecido', keyboardHint: 'Navegação por teclado disponível',
+      updateAvailable: 'Atualização disponível', reload: 'Recarregar',
+      bootError: 'Erro de inicialização', viewError: 'Erro de visualização',
+      moduleLoading: 'módulo carregando…',
+      inMemoryNotice: 'IndexedDB indisponível; executando com armazenamento em memória. As alterações podem não ser salvas.'
+    },
+
+    nav: {
+      dashboard: 'Painel', corrosion: 'Corrosão', psv: 'Válvulas de alívio', pipelines: 'Dutos',
+      apm: 'Desempenho de ativos', ingest: 'Importação de dados', recommendations: 'Recomendações',
+      reports: 'Relatórios', glossary: 'Glossário', admin: 'Admin'
+    },
+
+    severity: {
+      low: 'Baixa', moderate: 'Moderada', high: 'Alta', severe: 'Severa',
+      critical: 'Crítica', warning: 'Aviso', info: 'Informação',
+      shapeHint: 'A severidade também é codificada por forma'
+    },
+
+    units: {
+      mpy: 'mpy', mmYear: 'mm/ano', umYear: 'µm/ano', degC: '°C', degF: '°F',
+      psia: 'psia', psig: 'psig', bar: 'bar', kPa: 'kPa', ppm: 'ppm', pct: '%',
+      lbH: 'lb/h', gpm: 'gpm', in2: 'in²', cm2: 'cm²', km: 'km', mg: 'mg',
+      cm2Area: 'área em cm²'
+    },
+
+    dashboard: {
+      title: 'Painel', kpiAvgCr: 'Taxa média de corrosão', kpiSeverePoints: 'Pontos severos',
+      kpiPsvOverdue: 'PSVs vencidas', kpiApmAlerts: 'Alertas APM', kpiPendingCompliance: 'Conformidade pendente',
+      heatmapTitle: 'Mapa de calor de corrosão', heatmapHint: 'Taxa média de corrosão por ponto',
+      alertsFeed: 'Feed de alertas', noAlerts: 'Sem alertas ativos', lastRulesRun: 'Última execução das regras',
+      runRules: 'Executar regras', topPoints: 'Principais pontos críticos', viewAll: 'Ver tudo',
+      sectorView: 'Visão por setor', criticalCount: 'Críticos', warningCount: 'Avisos', infoCount: 'Info'
+    },
+
+    corrosion: {
+      title: 'Corrosão', points: 'Pontos de monitoramento', newPoint: 'Novo ponto', editPoint: 'Editar ponto',
+      pointCode: 'Código do ponto', line: 'Linha', material: 'Material', sensorType: 'Tipo de sensor',
+      processParams: 'Parâmetros de processo', h2s: 'H₂S', co2: 'CO₂', totalPressure: 'Pressão total',
+      temperature: 'Temperatura', bsw: 'BS&W', velocity: 'Velocidade',
+      inhibitorTarget: 'Meta de inibidor', inhibitorResidual: 'Residual de inibidor',
+      readings: 'Leituras', newReading: 'Nova leitura', noReadings: 'Ainda não há leituras', trend: 'Tendência',
+      coupons: 'Cupons', newCoupon: 'Novo cupom', couponRole: 'Função do cupom', blank: 'Branco',
+      inhibited: 'Inibido', pair: 'Par', initialWeight: 'Peso inicial', finalWeight: 'Peso final',
+      area: 'Área', exposureDays: 'Dias de exposição', exposureHours: 'Horas de exposição', density: 'Densidade',
+      crResult: 'Resultado da taxa de corrosão', classification: 'Classificação', sp0775Ref: 'Classificação de severidade SP0775',
+      inhibitorEfficiency: 'Eficiência do inibidor', eiPoorestNote: 'Par de menor eficiência',
+      inhibitorBalance: 'Balanço do inibidor', balanceResult: 'Resultado do balanço',
+      dwmTitle: 'Modelo De Waard–Milliams', dwmResult: 'Resultado do modelo', dwmNote: 'Predição de corrosão doce',
+      modelRatio: 'Razão do modelo', sourScreening: 'Triagem de serviço ácido', ph2s: 'pH₂S',
+      mr0175Ref: 'Triagem MR0175/ISO 15156', cpTitle: 'Proteção catódica',
+      cpPotential: 'Potencial', cpPolarization: 'Polarização', cpResult: 'Resultado de PC',
+      cuiTitle: 'Corrosão sob isolamento', insulated: 'Isolado', jacketType: 'Tipo de jaqueta',
+      lastCuiInspection: 'Última inspeção CUI', pointDossier: 'Dossiê do ponto',
+      deletePointConfirm: 'Excluir este ponto de monitoramento e todos os seus dados?',
+      pointName: 'Nome do ponto', system: 'Sistema', stationKm: 'Estação (km)', location: 'Localização',
+      crMpy: 'Taxa de corrosão (mpy)', startDate: 'Data de início', endDate: 'Data de fim',
+      codeDuplicate: 'Já existe um ponto com este código',
+      wfGtWi: 'O peso final não pode exceder o peso inicial',
+      deleteDisabled: 'Não é possível excluir: este ponto possui dados associados (leituras ou cupons)',
+      screeningNote: 'Estimativa de triagem: valide sempre contra a edição vigente da norma referenciada',
+      sensorTypes: {
+        couponGravimetric: 'Cupom (gravimétrico)', erProbe: 'Sonda ER', lprProbe: 'Sonda LPR',
+        h2Probe: 'Sonda de hidrogênio', utInspection: 'Inspeção UT', visual: 'Visual'
+      },
+      eiBands: { poor: 'Ruim', acceptable: 'Aceitável', good: 'Boa', excellent: 'Excelente' },
+      balanceBands: { under: 'Abaixo', onTarget: 'Na meta', over: 'Acima' },
+      mr0175: { low: 'Baixa', moderate: 'Moderada', high: 'Alta' },
+      cpStatus: { pass: 'Aprovado', fail: 'Reprovado', insufficient: 'Dados insuficientes' }
+    },
+
+    psv: {
+      title: 'Válvulas de alívio', registry: 'Registro de PSV', newPsv: 'Nova PSV', tag: 'Tag',
+      location: 'Localização', valveType: 'Tipo de válvula', fluid: 'Fluido', phase: 'Fase',
+      gasVapor: 'Gás / vapor', liquid: 'Líquido', setPressure: 'Pressão de ajuste', temperature: 'Temperatura',
+      backPressure: 'Contrapressão', flowW: 'Vazão (W)', flowQ: 'Vazão (Q)',
+      k: 'Razão de calores específicos (k)', molarMass: 'Massa molar', compressibility: 'Fator de compressibilidade',
+      specificGravity: 'Gravidade específica', viscosity: 'Viscosidade', kd: 'Coeficiente de descarga (Kd)',
+      kb: 'Fator de contrapressão (Kb)', kw: 'Fator de contrapressão de líquido (Kw)',
+      kc: 'Fator de disco de ruptura (Kc)', kv: 'Fator de viscosidade (Kv)',
+      sizingTitle: 'Dimensionamento', gasSizing: 'Dimensionamento de gás / vapor', liquidSizing: 'Dimensionamento de líquido',
+      flowCritical: 'Fluxo crítico', flowSubcritical: 'Fluxo subcrítico', requiredArea: 'Área requerida',
+      selectedOrifice: 'Orifício selecionado', selectedArea: 'Área selecionada', realCapacity: 'Capacidade real',
+      margin: 'Margem', usage: 'Uso', exceedsT: 'Excede o orifício T', recalculate: 'Recalcular',
+      datasheet: 'Ficha técnica', copyDatasheet: 'Copiar ficha', printDatasheet: 'Imprimir ficha',
+      fluidsEditor: 'Fluidos', newFluid: 'Novo fluido', editFluid: 'Editar fluido',
+      lastTest: 'Último teste', nextTest: 'Próximo teste', statusOk: 'Status',
+      certified: 'Capacidade certificada', validationHeader: 'Validação',
+      deletePsvConfirm: 'Excluir esta PSV e todos os seus dados?',
+      overpressure: 'Sobrepressão (%)', fluidName: 'Nome do fluido', c: 'Coeficiente de vazão (C)',
+      f2: 'Fator subcrítico (F2)', re: 'Número de Reynolds (Re)', iterations: 'Iterações',
+      tagDuplicate: 'Já existe uma PSV com este tag',
+      deleteDisabled: 'Não é possível excluir: esta PSV possui um ativo ou registro de inspeção associado',
+      types: { conventional: 'Convencional', balanced: 'Fole compensado', pilot: 'Pilotada' },
+      err: {
+        empty: 'Campo obrigatório', set: 'A pressão de ajuste deve ser maior que 0',
+        z: 'O fator de compressibilidade deve ser maior que 0', k: 'k (cp/cv) deve ser maior que 1',
+        t: 'A temperatura deve ser maior que 0', m: 'A massa molar deve ser maior que 0',
+        g: 'A gravidade específica deve ser maior que 0', negflow: 'A vazão deve ser maior que 0',
+        p1lep2: 'A pressão a montante deve ser maior que a pressão a jusante'
+      },
+      warn: { reRange: 'Número de Reynolds abaixo de 100: a correção de viscosidade tem validade limitada' }
+    },
+
+    pipelines: {
+      title: 'Dutos', systems: 'Sistemas de dutos', newSystem: 'Novo sistema',
+      systemName: 'Nome do sistema', operator: 'Operador', product: 'Produto', diameter: 'Diâmetro',
+      wallThickness: 'Espessura de parede', coating: 'Revestimento', length: 'Comprimento', stationRange: 'Faixa de estação',
+      lineAssets: 'Ativos de linha', newLineAsset: 'Novo ativo de linha', assetType: 'Tipo de ativo',
+      stationKm: 'Estação (km)', side: 'Lado', inspections: 'Inspeções', newInspection: 'Nova inspeção',
+      fromKm: 'De (km)', toKm: 'Até (km)', findings: 'Achados', certExpiry: 'Vencimento da certificação',
+      campaigns: 'Campanhas de inspeção', mapView: 'Visão de mapa', mapLegend: 'Legenda',
+      mapNodeAria: 'Ativo de duto no mapa', noSystems: 'Sem sistemas de dutos',
+      schematicHint: 'Visão esquemática dos ativos de linha por estação',
+      deleteSystemConfirm: 'Excluir este sistema de dutos e todos os seus ativos?',
+      editSystem: 'Editar sistema', editLineAsset: 'Editar ativo de linha',
+      stationFromKm: 'De (km)', stationToKm: 'Até (km)',
+      stationRangeError: 'A faixa de estação deve ter De < Até',
+      stationKmRangeError: 'A estação (km) deve estar dentro da faixa do sistema',
+      assetCode: 'Código do ativo', assetName: 'Nome do ativo', inspectionType: 'Tipo de inspeção',
+      lastInspection: 'Última inspeção', certExpirySoon: 'Certificação a vencer',
+      filterType: 'Filtrar por tipo', filterSeverity: 'Filtrar por severidade',
+      allTypes: 'Todos os tipos', allSeverities: 'Todas as severidades',
+      noAssets: 'Sem ativos de linha', noInspections: 'Sem inspeções',
+      deleteLineAssetConfirm: 'Excluir este ativo de linha?', deleteInspectionConfirm: 'Excluir esta inspeção?',
+      openAsset: 'Abrir ativo', reportRef: 'Ref. do relatório',
+      products: { crude: 'Petróleo', gas: 'Gás', products: 'Produtos', water: 'Água' },
+      types: {
+        sectionValve: 'Válvula de seção', blockValve: 'Válvula de bloqueio', flange: 'Flange', fitting: 'Conexão',
+        pumpStation: 'Estação de bombeio', compressorStation: 'Estação de compressão', tank: 'Tanque', sump: 'Poço de drenagem',
+        valveChamber: 'Câmara de válvula', crossing: 'Travessia', row: 'Faixa de servidão', meteringStation: 'Estação de medição'
+      },
+      sides: { left: 'Esquerdo', right: 'Direito', center: 'Centro' },
+      inspTypes: {
+        ild: 'Inspeção em linha (ILD)', externalCorrosion: 'Corrosão externa', visual: 'Visual',
+        ut: 'Espessura UT', repair: 'Reparo', replacement: 'Substituição'
+      }
+    },
+
+    apm: {
+      title: 'Desempenho de ativos', assetsBySector: 'Ativos por setor', newAsset: 'Novo ativo',
+      assetCode: 'Código do ativo', category: 'Categoria', criticality: 'Criticidade', assetStatus: 'Status',
+      metrics: 'Métricas', availability: 'Disponibilidade', mtbf: 'MTBF', mttr: 'MTTR', oee: 'OEE',
+      failureRate: 'Taxa de falhas', rbi: 'Inspeção baseada em risco', pof: 'Probabilidade de falha',
+      cof: 'Consequência de falha', riskScore: 'Pontuação de risco', riskBand: 'Faixa de risco',
+      inspectionBase: 'Base de inspeção', nextInspection: 'Próxima inspeção',
+      suggestedInterval: 'Intervalo sugerido', events: 'Eventos', newEvent: 'Novo evento',
+      start: 'Início', end: 'Fim', downtime: 'Tempo de parada', workOrderRef: 'Ref. da ordem de serviço',
+      healthBySector: 'Saúde por setor', noAssets: 'Sem ativos',
+      deleteAssetConfirm: 'Excluir este ativo e todos os seus eventos?',
+      name: 'Nome', eventType: 'Tipo de evento', reprogram: 'Reprogramar inspeção',
+      reprogrammed: 'Inspeção reprogramada', noEvents: 'Sem eventos',
+      openRecommendations: 'Recomendações abertas', deleteEventConfirm: 'Excluir este evento?',
+      editAsset: 'Editar ativo', availabilityOverride: 'Substituição de disponibilidade (%)',
+      window90d: 'Últimos 90 dias', windowTotal: 'Total',
+      oeePerformance: 'Desempenho (%)', oeeQuality: 'Qualidade (%)',
+      endBeforeStart: 'O fim deve ser posterior ao início', riskMatrix: 'Matriz de risco',
+      riskMatrixDesc: 'Consequência de falha (COF) vs probabilidade de falha (POF)',
+      healthTitle: 'Saúde',
+      health: { good: 'Saudável', warn: 'Degradado', bad: 'Em risco' },
+      crit: { A: 'A', B: 'B', C: 'C' },
+      statuses: { running: 'Em operação', standby: 'Em espera', down: 'Parado', maintenance: 'Manutenção' },
+      bands: { low: 'Baixa', medium: 'Média', high: 'Alta', veryHigh: 'Muito alta' },
+      eventTypes: {
+        failure: 'Falha', maintenance: 'Manutenção', unplannedOutage: 'Parada não planejada',
+        workOrder: 'Ordem de serviço', inspection: 'Inspeção'
+      },
+      categories: {
+        well: 'Poço', platform: 'Plataforma', fpso: 'FPSO', subsea: 'Submarino', esp: 'ESP',
+        suckerRod: 'Bombeio mecânico', gasLift: 'Elevação por gás', wellheadCompression: 'Compressão na cabeça do poço',
+        separator: 'Separador', storageTank: 'Tanque de armazenamento', pipeline: 'Duto',
+        pumpStation: 'Estação de bombeio', compressorStation: 'Estação de compressão', loadingTerminal: 'Terminal de carregamento',
+        gasPlant: 'Planta de gás', refinery: 'Refinaria', distillationUnit: 'Unidade de destilação',
+        hydrodesulfurization: 'Hidrodessulfurização', reformer: 'Reformador', heatExchanger: 'Trocador de calor',
+        pump: 'Bomba', compressor: 'Compressor', column: 'Coluna', furnace: 'Forno',
+        utilitySteam: 'Utilidades — vapor', utilityAir: 'Utilidades — ar', utilityNitrogen: 'Utilidades — nitrogênio'
+      }
+    },
+
+    ingest: {
+      title: 'Importação de dados', csvImport: 'Importação CSV', chooseFile: 'Escolher arquivo', orDrop: 'ou solte o arquivo aqui',
+      delimiterDetected: 'Delimitador detectado', columnMapping: 'Mapeamento de colunas', mapTo: 'Mapear para',
+      runValidation: 'Executar validação', importBtn: 'Importar', resultSummary: 'Resumo do resultado',
+      rowsTotal: 'Total de linhas', rowsOk: 'Linhas importadas', rowsSkipped: 'Linhas ignoradas',
+      rowsError: 'Linhas com erros', createMissing: 'Criar pontos ausentes', duplicatesSkipped: 'Duplicados ignorados',
+      witsmlImport: 'Importação WITSML', witsmlNote: 'Subconjunto WITSML-lite suportado',
+      importHistory: 'Histórico de importação', queueTitle: 'Fila de sincronização', queuePending: 'Operações pendentes',
+      syncEndpoint: 'Endpoint de sincronização', endpointNote: 'Configure um endpoint de sincronização para habilitar o envio da fila offline',
+      jsonExport: 'Exportação JSON', jsonImport: 'Importação JSON', modeMerge: 'Mesclar', modeReplace: 'Substituir',
+      importConfirmReplace: 'Substituir apagará os dados existentes dos armazenamentos importados. Continuar?',
+      downloadBackup: 'Baixar backup',
+      wells: 'Poços', stations: 'Estações', channels: 'Canais', witsmlErrors: 'Erros',
+      fileName: 'Arquivo', flush: 'Esvaziar fila', importDone: 'Importação concluída',
+      jsonResult: 'Criados {{created}}, atualizados {{updated}}, excluídos {{deleted}}',
+      deadCount: 'Operações mortas',
+      canonical: {
+        mpCode: 'Ponto de monitoramento', date: 'Data', crMpy: 'Taxa de corrosão (mpy)',
+        wiMg: 'Peso inicial (mg)', wfMg: 'Peso final (mg)', areaIn2: 'Área (in²)', days: 'Dias',
+        inhibitorResidualPpm: 'Residual de inibidor (ppm)', tempC: 'Temperatura (°C)', bswPct: 'BS&W (%)',
+        category: 'Categoria', note: 'Nota'
+      },
+      errorCodes: {
+        E_ID: 'Identificador do ponto ausente ou duplicado', E_DATE_FORMAT: 'Formato de data inválido',
+        E_DATE_FUTURE: 'A data está no futuro', E_WF: 'Peso final maior que o inicial',
+        E_MP_UNKNOWN: 'Ponto de monitoramento desconhecido', E_RANGE: 'Valor fora do intervalo', E_EMPTY: 'Campo obrigatório vazio',
+        E_WITSML_POINT: 'Ponto WITSML inválido'
+      }
+    },
+
+    rules: {
+      title: 'Regras e recomendações', open: 'Aberta', acked: 'Reconhecida', resolved: 'Resolvida',
+      acknowledge: 'Reconhecer', resolve: 'Resolver', reopen: 'Reabrir',
+      autoReopenNote: 'Reaberta automaticamente porque a condição reapareceu',
+      entity: 'Entidade', rule: 'Regra', condition: 'Condição', noRecs: 'Sem recomendações',
+      filterStatus: 'Filtrar por status', sweepInterval: 'Intervalo de varredura', runNow: 'Executar agora',
+      lastRun: 'Última execução', newCriticalToast: 'Nova recomendação crítica',
+      resolveNotePlaceholder: 'Nota de resolução',
+      actor: 'Ator', history: 'Histórico', lastTriggered: 'Último disparo', triggerCount: 'Disparos',
+      msg: {
+        R1: '{{code}}: a taxa de corrosão {{cr}} mpy excede 10 mpy nas últimas 24 h',
+        R2: '{{code}}: a média de 7 dias {{avg7}} mpy é {{ratio}}× a média de 30 dias ({{avg30}} mpy)',
+        R3: '{{code}}: a eficiência do inibidor {{ei}}% está abaixo de 70%',
+        R4: '{{code}}: residual de inibidor em {{pct}}% da meta (faixa: {{band}})',
+        R5: '{{code}}: anomalia de sensor detectada (motivo: {{reason}})',
+        R6: '{{code}}: o cupom venceu ({{days}} dias desde a data final)',
+        R7: '{{code}}: razão de corrosão medida/modelo {{ratio}} (medida {{measured}} mpy, modelo {{model}} mpy)',
+        R8: '{{code}}: serviço ácido pH₂S {{ph2sKpa}} kPa (nível: {{level}})',
+        R9: '{{name}}: inspeção RBI vencida em {{days}} dias',
+        R10: '{{name}}: MTBF caiu de {{mtbfPrev}} h para {{mtbfNow}} h nos últimos 90 dias',
+        R11: '{{name}}: disponibilidade {{pct}}% abaixo do limite {{threshold}}%',
+        R12: '{{name}}: {{count}} eventos de falha nos últimos 90 dias',
+        R13: '{{tag}}: teste da PSV vencido em {{days}} dias',
+        R14: '{{tag}}: a capacidade instalada é inferior à requerida (margem {{margin}}%)'
+      },
+      name: {
+        R1: 'Taxa de corrosão crítica', R2: 'Escalada da taxa de corrosão', R3: 'Baixa eficiência do inibidor',
+        R4: 'Residual de inibidor fora da faixa', R5: 'Anomalia de sensor', R6: 'Cupom vencido',
+        R7: 'Desvio do modelo', R8: 'Triagem de serviço ácido', R9: 'Inspeção vencida',
+        R10: 'Degradação do MTBF', R11: 'Disponibilidade abaixo do limite', R12: 'Falhas repetidas',
+        R13: 'Teste da PSV vencido', R14: 'Válvula de alívio subdimensionada'
+      },
+      histActions: { created: 'Criada', triggered: 'Disparada', acked: 'Reconhecida', resolved: 'Resolvida', reopened: 'Reaberta' }
+    },
+
+    reports: {
+      title: 'Relatórios', quarterly: 'Relatório trimestral', dossier: 'Dossiê do ponto', datasheet: 'Ficha da PSV',
+      period: 'Período', periodFrom: 'De', periodTo: 'Até', generate: 'Gerar',
+      cover: 'Relatório trimestral de integridade', coverSubtitle: 'KPIs de corrosão e integridade',
+      kpis: 'Indicadores-chave', weeklyChartTitle: 'Taxa média semanal de corrosão',
+      weeklyChartAlt: 'Gráfico da taxa média semanal de corrosão', topCritical: 'Principais pontos críticos',
+      eiByPairs: 'Eficiência do inibidor por par', campaignsTable: 'Campanhas de inspeção',
+      recsSummary: 'Resumo de recomendações', recsOpen: 'Abertas', recsAcked: 'Reconhecidas',
+      recsResolved: 'Resolvidas', ruleName: 'Nome da regra', standardsApplied: 'Normas aplicadas', methodology: 'Metodologia',
+      methodologyBody: 'Taxas derivadas da perda de peso de cupons (ASTM G4) e de modelos de processo (De Waard–Milliams).',
+      disclaimer: 'Ferramenta de apoio. Valide sempre contra as edições vigentes das normas e os dados do fabricante.',
+      generatedAt: 'Gerado', pageFooter: 'IntegrityWatch Field', noData: 'Sem dados para este período',
+      associatedPsvs: 'PSVs associadas', associationCriterion: 'Nenhuma PSV está vinculada explicitamente a este ponto; as válvulas associadas são pareadas por localização e sistema',
+      astmCalc: 'Cálculo de perda de massa ASTM G4', avgCr: 'Taxa média de corrosão', band: 'Faixa',
+      coefficientC: 'Coeficiente C', cr: 'Taxa de corrosão', datasheetFields: 'Campos da ficha técnica',
+      datasheetTitle: 'Ficha técnica da PSV', deltaW: 'Perda de massa (ΔW)', dossierTitle: 'Dossiê do ponto',
+      eiPct: 'Eficiência do inibidor (%)', f2: 'F2', kpiAvailability: 'Disponibilidade média',
+      kpiAvgCr: 'Taxa média de corrosão', methodologySources: 'Fontes: ASTM G4, NACE/AMPP SP0775, API 520 Parte I, API 526, NACE MR0175/ISO 15156.',
+      pointInfo: 'Informações do ponto', reynolds: 'Re', screening: 'Triagem',
+      selectPoint: 'Selecionar ponto', selectPsv: 'Selecionar PSV', source: 'Fonte', testDates: 'Datas de teste',
+      week: 'Semana'
+    },
+
+    glossary: {
+      title: 'Glossário', term: 'Termo', definition: 'Definição', category: 'Categoria', reference: 'Referência',
+      searchPlaceholder: 'Buscar termos', noResults: 'Sem resultados', resultsCount: 'resultados',
+      categories: {
+        corrosion: 'Corrosão', psv: 'Válvulas de alívio', pipeline: 'Duto',
+        apm: 'Desempenho de ativos', standards: 'Normas', data: 'Dados'
+      }
+    },
+
+    admin: {
+      title: 'Admin', about: 'Sobre', version: 'Versão', appearance: 'Aparência', locale: 'Idioma',
+      rulesConfig: 'Configuração de regras', intervalSec: 'Intervalo de varredura (s)', thresholds: 'Limites',
+      residualBand: 'Faixa residual (%)', availabilityThreshold: 'Limite de disponibilidade (%)',
+      stuckSensor: 'Contagem de sensor travado', zScore: 'Limite de escore Z', dataManagement: 'Gerenciamento de dados',
+      exportAll: 'Exportar tudo', importAll: 'Importar tudo', resetDemo: 'Redefinir dados de demonstração',
+      resetDemoConfirm: 'Redefinir os dados de demonstração para o estado inicial?', dangerZone: 'Zona de perigo',
+      clearAll: 'Apagar todos os dados', clearAllConfirm: 'Excluir TODOS os dados permanentemente? Isso não pode ser desfeito.',
+      security: 'Segurança', lockTitle: 'Bloqueio de tela', enableLock: 'Ativar bloqueio', disableLock: 'Desativar bloqueio',
+      changePin: 'Alterar PIN', pin: 'PIN', pinRepeat: 'Repetir PIN', pinMismatch: 'Os PINs não coincidem',
+      role: 'Função', unlock: 'Desbloquear', wrongPin: 'PIN incorreto',
+      lockoutWait: 'Muitas tentativas. Tente novamente mais tarde.', storageUsage: 'Uso de armazenamento',
+      swStatus: 'Service worker', offlineReady: 'Pronto para uso offline', standardsRef: 'Normas referenciadas',
+      demoLoaded: 'Dados de demonstração carregados', typeDelete: 'Digite DELETE para confirmar',
+      roles: { admin: 'Admin', operator: 'Operador' }
+    },
+
+    a11y: {
+      skipLink: 'Pular para o conteúdo', openNav: 'Abrir navegação', closeNav: 'Fechar navegação',
+      closeDialog: 'Fechar diálogo', tableCaptionPrefix: 'Tabela:', chartDataTable: 'Tabela de dados do gráfico',
+      severityIconHint: 'A severidade também é codificada por forma e cor', dialogTitlePrefix: 'Diálogo:'
+    },
+
+    fileguard: {
+      title: 'Modo de arquivo local',
+      body: 'Você abriu o IntegrityWatch Field a partir de um arquivo local (file://). O app funciona, mas a instalação da PWA e as atualizações automáticas exigem um servidor local.',
+      copyWin: 'No Windows, clique duas vezes em START-HERE.bat ou execute tools/serve.ps1.',
+      copyPy: 'Como alternativa, execute tools/serve.py em um terminal.',
+      copyBat: 'Este script de inicialização requer Windows.',
+      dismiss: 'Fechar'
+    },
+
+    fluids: {
+      methane: 'Metano', ethane: 'Etano', propane: 'Propano', butane: 'Butano',
+      'natural-gas': 'Gás natural', hydrogen: 'Hidrogênio', nitrogen: 'Nitrogênio', steam: 'Vapor',
+      water: 'Água', 'crude-oil': 'Petróleo bruto', diesel: 'Diesel'
+    }
+  };
+});

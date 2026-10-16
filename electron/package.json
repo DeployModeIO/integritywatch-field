@@ -1,0 +1,54 @@
+{
+  "name": "integritywatch-field-desktop",
+  "productName": "IntegrityWatch Field",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron desktop wrapper for IntegrityWatch Field (offline-first PWA). Serves the project root over a local HTTP server.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "local.integritywatch.field",
+    "productName": "IntegrityWatch Field",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../index.html",
+        "to": "app-root/index.html"
+      },
+      {
+        "from": "../src",
+        "to": "app-root/src"
+      },
+      {
+        "from": "../assets",
+        "to": "app-root/assets"
+      },
+      {
+        "from": "../sw.js",
+        "to": "app-root/sw.js"
+      },
+      {
+        "from": "../manifest.webmanifest",
+        "to": "app-root/manifest.webmanifest"
+      }
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "../assets/icons/icon-512.png"
+    }
+  }
+}

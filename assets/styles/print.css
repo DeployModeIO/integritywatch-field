@@ -1,0 +1,59 @@
+/* print.css — A4 print isolation.
+   Physical directions are permitted here where justified for A4 tables. */
+
+@page {
+  size: A4;
+  margin: 18mm;
+}
+
+body.print-mode {
+  display: block;
+  height: auto;
+  min-width: 0;
+  overflow: visible;
+  background: #ffffff;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+body.print-mode .app-header,
+body.print-mode .app-sidebar,
+body.print-mode .app-footer,
+body.print-mode .toast-region,
+body.print-mode .skip-link {
+  display: none;
+}
+
+body.print-mode .app-main {
+  overflow: visible;
+  padding: 0;
+}
+
+body.print-mode .print-root {
+  position: static;
+  width: 100%;
+  margin: 0;
+}
+
+.page-break {
+  break-before: page;
+}
+
+/* Repeat table headers across pages. */
+table.data thead {
+  display: table-header-group;
+}
+
+table.data tr {
+  break-inside: avoid;
+}
+
+/* Keep severity colors visible when printing. */
+body.print-mode .badge,
+body.print-mode .shape,
+body.print-mode .toast,
+body.print-mode .kpi,
+body.print-mode table.data thead th {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}

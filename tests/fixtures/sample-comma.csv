@@ -1,0 +1,6 @@
+punto,fecha,tasa,nota
+MP-CORR-001,2026-09-20,4.2,ok
+MP-CORR-002,2026-10-01,7.8,ok
+MP-CORR-001,2026-10-10,5.1,ok
+MP-CORR-002,2027-01-05,3.0,futura
+MP-CORR-002,2026-10-01,7.8,duplicada

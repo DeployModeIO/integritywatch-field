@@ -1,0 +1,17 @@
+# Python bytecode (tools/serve.py)
+__pycache__/
+*.pyc
+
+# Node / Electron (solo si el usuario instala deps opcionales)
+node_modules/
+dist/
+electron/dist/
+
+# SO
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temporal
+*.log
+*.tmp

@@ -1,0 +1,305 @@
+/* views-b.css — styles for views: pipelines, pipelineMap, APM (owned by T9).
+   Direction handling uses logical properties only (RTL-safe). */
+
+/* --- Shared helpers (not defined elsewhere) ---------------------------------- */
+
+.error-banner {
+  padding: var(--sp-3);
+  background: var(--sev-severe-bg);
+  color: var(--sev-severe);
+  border: 1px solid var(--sev-severe);
+  border-radius: var(--r-1);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: var(--sp-1) 0;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.badge-neutral {
+  background: var(--surface-2);
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+.view-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  width: 100%;
+  margin-block-end: var(--sp-3);
+}
+
+.section-title {
+  font-size: 1rem;
+  margin-block-end: var(--sp-3);
+}
+
+/* Modal positioning for ui.dialog: components.css .dialog has no backdrop or
+   fixed positioning, so dialogs would render in flow at the end of the body. */
+.dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  margin: auto;
+}
+
+/* --- Pipelines ---------------------------------------------------------------- */
+
+.filter-bar {
+  margin-block-end: var(--sp-3);
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-end: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--sev-moderate-bg);
+  color: var(--sev-moderate);
+  border-inline-start: 4px solid var(--sev-moderate);
+  border-radius: var(--r-1);
+}
+
+.campaign-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.campaign-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+}
+
+.sortable-th {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.sortable-th:hover {
+  color: var(--accent);
+}
+
+.dimmed {
+  opacity: 0.4;
+}
+
+/* --- Schematic map ------------------------------------------------------------ */
+
+.map-wrap {
+  position: relative;
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-2);
+}
+
+.map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: 0.8125rem;
+}
+
+.map-hint {
+  margin-block-end: var(--sp-2);
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.map-svg {
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+}
+
+.map-line {
+  stroke: var(--muted);
+  stroke-width: 4;
+}
+
+.map-sys-label {
+  fill: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.map-axis-label {
+  fill: var(--muted);
+  font-size: 12px;
+}
+
+.map-node {
+  stroke: var(--surface);
+  stroke-width: 2.5;
+}
+
+.map-node--low { fill: var(--sev-low); }
+.map-node--moderate { fill: var(--sev-moderate); }
+.map-node--high { fill: var(--sev-high); }
+.map-node--severe { fill: none; stroke: var(--sev-severe); stroke-width: 3; }
+.map-node--severe-bg { fill: var(--surface); }
+.map-node--none { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+
+.map-node-group {
+  cursor: pointer;
+}
+
+.map-node-group:hover .map-node,
+.map-node-group:focus .map-node {
+  stroke-width: 4;
+}
+
+.map-node-group:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.map-node-group.dimmed {
+  opacity: 0.25;
+}
+
+.map-tooltip {
+  position: absolute;
+  z-index: 10;
+  max-width: 240px;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  box-shadow: var(--shadow-1);
+  font-size: 0.8125rem;
+  pointer-events: none;
+}
+
+.map-tooltip__code {
+  font-weight: 700;
+  margin-block-end: var(--sp-1);
+}
+
+.map-detail {
+  margin-block-start: var(--sp-3);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+}
+
+.shape-none {
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  background: transparent;
+}
+
+/* --- APM ---------------------------------------------------------------------- */
+
+.health {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-weight: 600;
+}
+
+.health--good { color: var(--sev-low); }
+.health--warn { color: var(--sev-moderate); }
+.health--bad { color: var(--sev-severe); }
+
+.rec-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.rec-list li {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+}
+
+.rbi-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.rbi-matrix {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+}
+
+.rbi-cell {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.rbi-cell--low { fill: var(--sev-low-bg); }
+.rbi-cell--medium { fill: var(--sev-moderate-bg); }
+.rbi-cell--high { fill: var(--sev-high-bg); }
+.rbi-cell--veryHigh { fill: var(--sev-severe-bg); }
+
+.rbi-cell-text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.rbi-current {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  pointer-events: none;
+}
+
+.rbi-current-label {
+  fill: var(--accent);
+  font-size: 15px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.rbi-axis {
+  fill: var(--muted);
+  font-size: 12px;
+}

@@ -1,0 +1,155 @@
+/* layout.css — application shell grid: header, sidebar (single column), main, footer.
+   Mobile-first (360px) up to desktop (1366x768). Sidebar collapses to a 56px icon rail
+   below 900px and opens as a drawer via .app-sidebar[data-open]. */
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100vh;
+  height: 100dvh;
+  min-width: 360px;
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.app-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+  min-height: 60px;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border-block-end: 1px solid var(--border);
+}
+
+.app-header__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-inline-start: auto;
+}
+
+.app-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1rem;
+  min-height: 44px;
+}
+
+.app-brand__mark {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  color: var(--accent);
+}
+
+.app-brand__name {
+  white-space: nowrap;
+}
+
+.app-sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  width: 56px;
+  padding: var(--sp-2);
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.app-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 44px;
+  padding: var(--sp-2);
+  border-radius: var(--r-1);
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.app-sidebar__item .icon {
+  flex: none;
+}
+
+.app-sidebar__label {
+  display: none;
+}
+
+.app-sidebar__item:hover,
+.app-sidebar__item[aria-current="page"] {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.app-main {
+  grid-area: main;
+  min-width: 0;
+  overflow-y: auto;
+  padding: var(--sp-4);
+}
+
+.app-footer {
+  grid-area: footer;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border-block-start: 1px solid var(--border);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Desktop: full-width sidebar with visible labels. */
+@media (min-width: 900px) {
+  body {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .app-sidebar {
+    width: 240px;
+  }
+
+  .app-sidebar__label {
+    display: inline;
+  }
+}
+
+/* Below 900px the sidebar is an icon rail; [data-open] expands it into a drawer. */
+.app-sidebar[data-open] {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: 900;
+  width: 240px;
+  box-shadow: var(--shadow-1);
+}
+
+.app-sidebar[data-open] .app-sidebar__label {
+  display: inline;
+}

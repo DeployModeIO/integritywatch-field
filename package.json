@@ -1,0 +1,11 @@
+{
+  "name": "integritywatch-field",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline-first integrity & compliance operations center for oil & gas field use",
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "serve": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/serve.ps1"
+  }
+}
