@@ -120,11 +120,14 @@
     return wrap;
   }
 
+  var _dialogSeq = 0;
+
   function dialog(opts) {
-    var overlay = el('div', { class: 'dialog', attrs: { role: 'dialog', 'aria-modal': 'true', tabindex: '-1' } });
+    var titleId = 'dlg-title-' + (++_dialogSeq);
+    var overlay = el('div', { class: 'dialog', attrs: { role: 'dialog', 'aria-modal': 'true', tabindex: '-1', 'aria-labelledby': titleId } });
 
     var header = el('div', { class: 'dialog-header' },
-      el('h2', { class: 'dialog-title', text: tt(opts.titleKey) }),
+      el('h2', { class: 'dialog-title', attrs: { id: titleId }, text: tt(opts.titleKey) }),
       el('button', { class: 'btn btn-ghost', attrs: { 'aria-label': tt('a11y.closeDialog') }, on: { click: function () { close(); } } }, icon('close', 20))
     );
     overlay.appendChild(header);

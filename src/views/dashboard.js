@@ -159,14 +159,13 @@
       return card;
     }
 
-    var grid = h.ui.el('div', { class: 'heatmap-grid', attrs: { role: 'list', 'aria-label': h.t('dashboard.heatmapTitle') } });
+    var grid = h.ui.el('div', { class: 'heatmap-grid', attrs: { role: 'group', 'aria-label': h.t('dashboard.heatmapTitle') } });
     heat.forEach(function (p) {
       var valueText = p.lastMpy === null ? '—' : fmtNum(p.lastMpy, 1);
       var cell = h.ui.el('a', {
         class: 'heat-cell heat-cell-' + p.sev,
         attrs: {
           href: '#/corrosion/mp/' + encodeURIComponent(p.mp.id),
-          role: 'listitem',
           title: p.mp.code + ': ' + (p.lastMpy === null ? '—' : fmtNum(p.lastMpy, 2) + ' ' + h.t('units.mpy'))
         },
         on: {

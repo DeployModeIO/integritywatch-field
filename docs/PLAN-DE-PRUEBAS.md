@@ -151,3 +151,30 @@ equipo desfasado (fechas futuras → validaciones). **Criterio:** degradación l
 > **Recomendación del arquitecto:** ejecutar solo el bloque **P0** ahora (6 pruebas, día y medio de
 > trabajo delegado) y dejar el resto planificado. La aplicación está lista para demostración y validación
 > funcional desde hace varias entregas; el P0 cierra las brechas que sí afectan el trabajo diario en campo.
+
+---
+
+## 8. Resultados P0 — EJECUTADO (2026-10-16)
+
+Los cuatro scripts quedan instalados en `tools/tests/` y se re-ejecutan con un comando cada uno
+(coste de tokens ≈ 0 en cada repetición).
+
+| Script | Comando | Cobertura | Resultado |
+|---|---|---|---|
+| `e2e-core.mjs` | `node tools\tests\e2e-core.mjs` | boot, seed limpio, import CSV real, reglas, PDF A4, **offline PWA**, **file://**, **XSS por import**, viewports 390/800/1366, consola | **10/10 PASS** (PDF 96 KB generado) |
+| `volume.cjs` | `node tools\tests\volume.cjs` | pipeline de 10 000 filas (parser→validación→toRecords) + saveAll 9 100 registros | **8/8 PASS** · total 58 ms (límite 10 s) |
+| `e2e-volume.mjs` | `node tools\tests\e2e-volume.mjs` | importación de 10 000 filas **por la UI**, rendimiento de dashboard y ficha con 450 filas | **7/7 PASS** · import UI 568 ms · dashboard 104 ms |
+| `quality.mjs` | `node tools\tests\quality.mjs` | axe-core (3 vistas + diálogo), **7 idiomas** (dir/RTL/claves), Firefox, Edge | **OK** · axe critical/serious/moderate/minor = 0 |
+
+### Bugs encontrados y corregidos por la campaña P0
+1. Hamburguesa visible en escritorio (>900 px): conflicto de especificidad CSS `.btn` vs `.hamburger` → corregido en `layout.css`.
+2. `aria-label` del contador de recomendaciones no incluía el número visible (WCAG aria mismatch) → corregido en `shell.js`.
+3. Diálogos sin nombre accesible → `aria-labelledby` añadido en `ui.js`.
+4. `role` no permitido en celdas del mapa de calor → corregido en `dashboard.js`.
+
+### Estado tras P0
+- Suite `node --test`: **281/281** · 4 scripts P0 verdes · 0 bugs abiertos.
+- **Pendiente con el usuario (T12 UAT):** los 6 guiones de la sección 4 (T12) para validar el flujo real
+  en campo — la guía `docs/GUIA-DE-USO.md` sirve como guion.
+- **Opcional (P2):** Electron (`npm start` + `.exe`), multi-pestaña, flujo de actualización del service worker.
+- **Accesibilidad (P1 residual):** auditoría con lector de pantalla (NVDA) y lighthouse completo.

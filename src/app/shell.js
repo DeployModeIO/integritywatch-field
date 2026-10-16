@@ -53,6 +53,13 @@
   function ui() { return root.IW.ui; }
   function themeApi() { return root.IW.app.theme; }
 
+  // Keep the accessible name coherent with the visible counter (axe label-content-name-mismatch).
+  function syncBadgeLabel() {
+    if (!_badgeEl) { return; }
+    var count = _badgeCount ? _badgeCount.textContent : '0';
+    _badgeEl.setAttribute('aria-label', t('rules.title') + ' · ' + count);
+  }
+
   function el(tag, attrs) {
     var u = ui();
     if (u && typeof u.el === 'function') { return u.el.apply(u, arguments); }
@@ -272,7 +279,7 @@
       var open = !!(document.body && document.body.classList.contains('nav-open'));
       _hamburger.setAttribute('aria-label', t(open ? 'a11y.closeNav' : 'a11y.openNav'));
     }
-    if (_badgeEl) { _badgeEl.setAttribute('aria-label', t('rules.title')); }
+    syncBadgeLabel();
     if (_runRulesLabel) { _runRulesLabel.textContent = t('dashboard.runRules'); }
     if (_disclaimerEl) { _disclaimerEl.textContent = t('common.disclaimer'); }
     updateRulesStatus();
@@ -291,6 +298,7 @@
       var total = critical + warning;
       if (_badgeCount) { _badgeCount.textContent = String(total); }
       if (_badgeEl) { _badgeEl.hidden = total === 0; }
+      syncBadgeLabel();
       return { critical: critical, warning: warning };
     }).catch(function (err) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] recommendations list failed', err); }

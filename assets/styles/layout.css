@@ -47,13 +47,14 @@ body {
   min-inline-size: 7rem;
 }
 
-/* Hamburger only shows below the desktop breakpoint (900px). */
-.hamburger {
+/* Hamburger only shows below the desktop breakpoint (900px).
+   Scoped to .app-header so its specificity beats .btn (components.css, loaded later). */
+.app-header .hamburger {
   display: none;
 }
 
 @media (max-width: 899.98px) {
-  .hamburger {
+  .app-header .hamburger {
     display: inline-flex;
   }
 }
