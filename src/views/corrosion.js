@@ -476,9 +476,25 @@
     ];
   }
 
-  function openCouponForm(h, mpId, onDone) {
+  function openCouponForm(h, mpId, onDone, existing) {
     var corr = corrosion();
-    var form = buildForm(h, couponFields(h), { role: 'blank' });
+    var values = { role: 'blank' };
+    if (existing) {
+      var materialOk = existing.material && materialById(existing.material);
+      values = {
+        role: existing.role || 'blank',
+        pairId: existing.pairId || '',
+        material: materialOk ? existing.material : 'api5l-gr-b',
+        densityGcm3: existing.densityGcm3,
+        wiMg: existing.wiMg,
+        wfMg: existing.wfMg,
+        areaIn2: existing.areaIn2,
+        days: existing.days,
+        startDate: existing.startDate || '',
+        endDate: existing.endDate || ''
+      };
+    }
+    var form = buildForm(h, couponFields(h), values);
     var resultWrap = h.ui.el('div', { class: 'coupon-live' });
 
     function updateLive() {
@@ -511,28 +527,51 @@
 
     var body = h.ui.el('div', { class: 'stack' }, form.node, resultWrap);
     var dlg = h.ui.dialog({
-      titleKey: 'corrosion.newCoupon',
+      titleKey: existing ? 'common.edit' : 'corrosion.newCoupon',
       bodyNode: body,
       actions: [
         { labelKey: 'common.cancel', kind: 'ghost', onClick: function () { return true; } },
         { labelKey: 'common.save', kind: 'primary', onClick: function () {
             if (!form.validate()) { return false; }
             var v = form.getValues();
-            var rec = {
-              id: 'C-' + Date.now().toString(36).toUpperCase(),
-              mpId: mpId,
-              pairId: v.pairId ? String(v.pairId).trim() : undefined,
-              role: v.role,
-              material: v.material,
-              densityGcm3: Number(v.densityGcm3),
-              wiMg: Number(v.wiMg),
-              wfMg: Number(v.wfMg),
-              areaIn2: Number(v.areaIn2),
-              days: Number(v.days),
-              startDate: v.startDate || undefined,
-              endDate: v.endDate || undefined,
-              status: 'active'
-            };
+            var rec;
+            if (existing) {
+              rec = {
+                id: existing.id,
+                createdAt: existing.createdAt,
+                mpId: existing.mpId,
+                pairId: v.pairId ? String(v.pairId).trim() : undefined,
+                role: v.role,
+                material: v.material,
+                densityGcm3: Number(v.densityGcm3),
+                wiMg: Number(v.wiMg),
+                wfMg: Number(v.wfMg),
+                areaIn2: Number(v.areaIn2),
+                days: Number(v.days),
+                startDate: v.startDate || undefined,
+                endDate: v.endDate || undefined,
+                exposedHours: Number(v.days) * 24,
+                crMpy: existing.crMpy,
+                status: existing.status || 'active'
+              };
+              if (existing.note) { rec.note = existing.note; }
+            } else {
+              rec = {
+                id: 'C-' + Date.now().toString(36).toUpperCase(),
+                mpId: mpId,
+                pairId: v.pairId ? String(v.pairId).trim() : undefined,
+                role: v.role,
+                material: v.material,
+                densityGcm3: Number(v.densityGcm3),
+                wiMg: Number(v.wiMg),
+                wfMg: Number(v.wfMg),
+                areaIn2: Number(v.areaIn2),
+                days: Number(v.days),
+                startDate: v.startDate || undefined,
+                endDate: v.endDate || undefined,
+                status: 'active'
+              };
+            }
             h.repos.coupons.save(rec).then(function () {
               dlg.close();
               if (onDone) { onDone(); }
@@ -820,7 +859,7 @@
     var couponRows = coupons.map(function (cp) {
       var sev = classifyMpy(cp.crMpy);
       var m = materialById(cp.material);
-      return { role: cp.role, pairId: cp.pairId, material: m ? m.name : (cp.material || ''), crMpy: cp.crMpy, status: cp.status, sev: sev };
+      return { coupon: cp, role: cp.role, pairId: cp.pairId, material: m ? m.name : (cp.material || ''), crMpy: cp.crMpy, status: cp.status, sev: sev };
     });
     couponsCard.appendChild(h.ui.table({
       captionKey: 'corrosion.coupons',
@@ -832,7 +871,12 @@
         { key: 'crMpy', labelKey: 'corrosion.crMpy', align: 'num', render: function (v, row) {
             return h.ui.el('span', { class: 'row' }, h.ui.el('span', { class: 'num', text: v == null ? '—' : fmtNum(v, 3) }), sevBadge(h, row.sev));
           } },
-        { key: 'status', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } }
+        { key: 'status', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } },
+        { key: 'actions', labelKey: 'common.actions', render: function (v, row) {
+            return h.ui.el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': h.t('common.edit') }, on: { click: function () {
+              openCouponForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }, row.coupon);
+            } } }, h.ui.icon('edit', 16), h.ui.el('span', { text: h.t('common.edit') }));
+          } }
       ],
       rows: couponRows
     }));

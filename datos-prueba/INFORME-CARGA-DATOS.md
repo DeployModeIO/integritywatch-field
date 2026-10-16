@@ -74,10 +74,12 @@ Nota de física: con área 3.72 in² y ρ 7.85 g/cm³, ΔW por mpy (30 días) = 
 4. Decide el modo:
    - ☑ **Crear puntos faltantes** (recomendado): crea MP-IMP-001 (MP-CORR-009), MP-IMP-002 (MP-CORR-010), MP-IMP-003 (MP-FANTASMA-99).
    - ☐ Sin la casilla: esas 3 filas fallan con **E_MP_UNKNOWN** (así pruebas también el error).
+   - ⚠️ **Matiz verificado en vivo**: si marcas la casilla **después** de validar, vuelve a pulsar *Ejecutar validación* antes de *Importar* — la importación usa el resultado de la última validación.
 5. **Validar** → la tabla debe mostrar exactamente los 4 errores de la fila 35–38 y las 2 duplicadas (40–41), con resumen 35/4/2.
 6. **Importar** → resumen final: **30 lecturas + 5 cupones + 3 puntos nuevos**, entrada en el historial de importaciones.
 7. **Panel**: verifica KPIs y mapa de calor (MP-CORR-001 en rojo Severa con aspa ✕).
-8. **Post-importación (prueba del editor de cupones y panel EI):** en *Corrosión → Cupones*, edita los 4 cupones de los pares y asigna **Rol** (blanco/inhibido), **Par** (P3 y P4), material (API 5L X52) y fecha fin. El CSV no trae rol/par a propósito: así ejercitas también el editor. El panel de eficiencia debe mostrar **P3 = 92 % (excelente)** y **P4 = 65 % (mala)**.
+8. **Post-importación (prueba del editor de cupones y panel EI):** en *Corrosión → Cupones*, pulsa **Editar** en cada cupón importado (columna de acciones añadida tras el fix del 16/10) y asigna **Rol** (blanco/inhibido), **Par** (P3 y P4), material (API 5L X52) y fecha fin. El CSV no trae rol/par a propósito: así ejercitas también el editor. El panel de eficiencia debe mostrar **P3 = 92 % (excelente)** y **P4 = 65 % (mala)** — verificado en vivo. Luego *Ejecutar reglas* dispara **R3** sobre MP-CORR-001 (par P2, 65 %) y MP-CORR-002 (par P4, 65 %).
+   - ⚠️ Matiz conocido: si el barrido automático de reglas (60 s) se ejecuta mientras el diálogo está abierto, la tabla de fondo se re-renderiza; el diálogo y el guardado no se pierden, pero conviene reabrir la fila si notas que cambió. Mejora pendiente en el backlog de UI.
 9. **Ejecutar reglas** (botón del encabezado) → deben dispararse: **R1** (12.4 mpy en 24 h), **R2** (escalada MP-002), **R3** (Par P4), **R4 ×2** (residual 180 % y 48 %), **R5** (LPR clavada) — además de las que ya existían de la demo.
 10. **Informes**: genera el trimestral con periodo 01/07/2026–16/10/2026 y compara con las estadísticas de §6.
 
