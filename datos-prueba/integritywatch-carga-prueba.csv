@@ -1,0 +1,42 @@
+punto,fecha,tasa,wi,wf,área,días,residual,temperatura,bsw,categoría,nota
+MP-CORR-001,2026-10-16,12.4,,,,25,78,3,lectura,"Pico severo — acción inmediata según SP0775"
+MP-CORR-001,2026-10-14,9.8,,,,26,76,3,lectura,"Descenso tras dosificación de emergencia"
+MP-CORR-001,2026-10-09,8.9,,,,25,74,2,lectura,
+MP-CORR-001,2026-10-02,7.6,,,,25,72,3,lectura,
+MP-CORR-002,2026-10-15,6.0,,,,24,47,8,lectura,"Tendencia en ascenso — revisar dosis de inhibidor"
+MP-CORR-002,2026-10-13,5.8,,,,24,46,8,lectura,
+MP-CORR-002,2026-10-11,6.2,,,,25,47,7,lectura,
+MP-CORR-002,2026-10-08,5.9,,,,24,45,8,lectura,
+MP-CORR-002,2026-09-25,2.6,,,,24,44,7,lectura,
+MP-CORR-002,2026-09-18,2.5,,,,25,43,8,lectura,
+MP-CORR-003,2026-10-15,2.0,,,,25,52,4,lectura,
+MP-CORR-003,2026-10-13,2.0,,,,25,52,4,lectura,
+MP-CORR-003,2026-10-11,2.0,,,,25,52,4,lectura,"Sonda LPR fija — posible bloqueo del elemento"
+MP-CORR-003,2026-10-09,2.0,,,,25,52,4,lectura,
+MP-CORR-004,2026-10-12,1.9,,,,22,31,1,lectura,
+MP-CORR-004,2026-10-05,2.0,,,,22,30,1,lectura,
+MP-CORR-005,2026-10-12,1.8,,,,23,28,1,lectura,
+MP-CORR-005,2026-10-04,1.9,,,,23,27,1,lectura,
+MP-CORR-006,2026-10-14,2.3,,,,45,66,8,lectura,"Residual sobre banda — dosificación excesiva"
+MP-CORR-006,2026-10-07,2.4,,,,44,65,8,lectura,
+MP-CORR-007,2026-10-13,1.2,,,,12,41,0.5,lectura,"Residual bajo banda — ajustar bomba química"
+MP-CORR-007,2026-10-06,1.3,,,,13,40,0.5,lectura,
+MP-CORR-008,2026-10-10,1.0,,,,20,35,95,lectura,"Línea de inyección — BSW alta esperada"
+MP-CORR-008,2026-10-03,0.9,,,,20,34,95,lectura,
+MP-CORR-009,2026-10-12,0.8,,,,24,52,2,lectura,"Nueva sonda LPR duplex 2205 — separador SEP-2"
+MP-CORR-009,2026-10-05,0.7,,,,24,52,2,lectura,
+MP-CORR-010,2026-10-12,5.5,,,,21,58,6,lectura,"ER 316L línea ácida — planta de gas"
+MP-CORR-010,2026-10-05,5.8,,,,21,58,6,lectura,
+MP-CORR-010,2026-10-03,5.9,,,,21,-12,6,lectura,"Operación invernal — tramo expuesto"
+MP-CORR-001,2026-10-16,,24100,23785.0,3.72,30,,,cupón,"Par P3 blanco — 30 días en wellhead"
+MP-CORR-001,2026-10-16,,24100,24074.8,3.72,30,,,cupón,"Par P3 inhibido"
+MP-CORR-002,2026-10-15,,24100,23706.3,3.72,30,,,cupón,"Par P4 blanco"
+MP-CORR-002,2026-10-15,,24100,23962.2,3.72,30,,,cupón,"Par P4 inhibido — eficiencia en duda"
+MP-CORR-006,2026-10-14,,24100,23202.3,3.72,45,,,cupón,"Cupón largo separador — ataque por H2S"
+MP-CORR-002,2027-01-05,3.0,,,,25,46,8,lectura,"Fecha futura — el sistema debe rechazarla"
+MP-CORR-002,31/31/2026,2.2,,,,25,46,8,lectura,"Fecha inválida — el sistema debe rechazarla"
+MP-CORR-004,2026-10-12,,20000,20150,3.72,30,,,cupón,"Wf mayor que Wi — el sistema debe rechazarla"
+MP-CORR-008,2026-10-09,-3.0,,,,20,35,95,lectura,"Tasa negativa — el sistema debe rechazarla"
+MP-FANTASMA-99,2026-10-10,2.0,,,,22,38,2,lectura,"Punto inexistente — E_MP_UNKNOWN o auto-crear"
+MP-CORR-003,2026-10-15,2.0,,,,25,52,4,lectura,"Duplicada — debe omitirse"
+MP-CORR-003,2026-10-15,2.0,,,,25,52,4,lectura,"Duplicada 2 — debe omitirse"
