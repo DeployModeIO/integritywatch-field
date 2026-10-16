@@ -19,6 +19,7 @@
   var _sector = null;
   var _navLinks = {};
   var _navLabels = {};
+  var _navGroupLabels = [];
   var _settings = { rulesIntervalSec: 60, residualBandPct: 20, availabilityThresholdPct: 90, stuckSensorCount: 10, zScoreThreshold: 3 };
   var _badgeEl = null;
   var _badgeCount = null;
@@ -38,9 +39,9 @@
   var SECTORS = ['upstream', 'midstream', 'downstream'];
 
   var NAV_GROUPS = [
-    { items: [['dashboard', 'dashboard', '#/dashboard'], ['recommendations', 'recs', '#/recommendations'], ['reports', 'reports', '#/reports']] },
-    { items: [['corrosion', 'corrosion', '#/corrosion'], ['psv', 'valve', '#/psv'], ['pipelines', 'pipeline', '#/pipelines'], ['apm', 'apm', '#/apm']] },
-    { items: [['ingest', 'ingest', '#/ingest'], ['glossary', 'glossary', '#/glossary'], ['admin', 'admin', '#/admin']] }
+    { labelKey: 'nav.groupOps', items: [['dashboard', 'dashboard', '#/dashboard'], ['recommendations', 'recs', '#/recommendations'], ['reports', 'reports', '#/reports']] },
+    { labelKey: 'nav.groupIntegrity', items: [['corrosion', 'corrosion', '#/corrosion'], ['psv', 'valve', '#/psv'], ['pipelines', 'pipeline', '#/pipelines'], ['apm', 'apm', '#/apm']] },
+    { labelKey: 'nav.groupData', items: [['ingest', 'ingest', '#/ingest'], ['glossary', 'glossary', '#/glossary'], ['admin', 'admin', '#/admin']] }
   ];
 
   var STATIC_STANDARD_CODES = [
@@ -145,8 +146,14 @@
   function buildNav() {
     var nav = el('nav', { class: 'app-sidebar', attrs: { id: 'app-nav', 'aria-label': t('common.appName') } });
     _navEl = nav;
+    _navGroupLabels = [];
     NAV_GROUPS.forEach(function (g) {
       var group = el('div', { class: 'nav-group' });
+      if (g.labelKey) {
+        var groupLabel = el('span', { class: 'app-sidebar__group-label', text: t(g.labelKey) });
+        _navGroupLabels.push({ el: groupLabel, key: g.labelKey });
+        group.appendChild(groupLabel);
+      }
       g.items.forEach(function (item) {
         var viewId = item[0];
         var a = el('a', { class: 'app-sidebar__item', attrs: { href: item[2] }, dataset: { view: viewId } },
@@ -265,6 +272,9 @@
     if (_skipLinkEl) { _skipLinkEl.textContent = t('a11y.skipLink'); }
     Object.keys(_navLabels).forEach(function (k) {
       _navLabels[k].textContent = t('nav.' + k);
+    });
+    _navGroupLabels.forEach(function (g) {
+      g.el.textContent = t(g.key);
     });
     if (_sectorSelect) {
       buildSectorOptions();

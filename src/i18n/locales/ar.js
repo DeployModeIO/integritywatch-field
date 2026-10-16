@@ -98,7 +98,10 @@
       recommendations: "التوصيات",
       reports: "التقارير",
       glossary: "المسرد",
-      admin: "الإدارة"
+      admin: "الإدارة",
+      groupOps: "العمليات",
+      groupIntegrity: "السلامة والأصول",
+      groupData: "البيانات والنظام"
     },
     severity: {
       low: "منخفضة",
@@ -148,7 +151,12 @@
       sectorView: "عرض حسب القطاع",
       criticalCount: "حرجة",
       warningCount: "تحذيرات",
-      infoCount: "معلومات"
+      infoCount: "معلومات",
+      ctxCr: "المرجع: <5 mpy مقبول",
+      ctxSevere: "حد SP0775: ≥10 mpy",
+      ctxPsv: "{{n}} من {{total}} صمامات متأخرة",
+      ctxApm: "{{n}} من {{total}} أصول بها تنبيه",
+      ctxCompliance: "{{n}} من {{total}} مفتوحة"
     },
     corrosion: {
       title: "التآكل",

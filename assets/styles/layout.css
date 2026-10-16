@@ -116,6 +116,18 @@ body {
   display: none;
 }
 
+/* Functional nav grouping label (ISA-101 style functional taxonomy): discreet,
+   uppercase, hidden on the icon rail and shown with the labels at >=900px. */
+.app-sidebar__group-label {
+  display: none;
+  margin-block-start: var(--sp-3);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .app-sidebar__item:hover,
 .app-sidebar__item[aria-current="page"] {
   background: var(--surface-2);
@@ -173,6 +185,10 @@ body {
   .app-sidebar__label {
     display: inline;
   }
+
+  .app-sidebar__group-label {
+    display: block;
+  }
 }
 
 /* Below 900px the sidebar is an icon rail; [data-open] expands it into a drawer. */
@@ -189,6 +205,10 @@ body {
   display: inline;
 }
 
+.app-sidebar[data-open] .app-sidebar__group-label {
+  display: block;
+}
+
 /* Alias so body.nav-open (set by shell.js) mirrors the data-open drawer state. */
 body.nav-open .app-sidebar {
   position: fixed;
@@ -201,6 +221,10 @@ body.nav-open .app-sidebar {
 
 body.nav-open .app-sidebar .app-sidebar__label {
   display: inline;
+}
+
+body.nav-open .app-sidebar .app-sidebar__group-label {
+  display: block;
 }
 
 /* Toast stack lives above everything and never intercepts pointer events. */

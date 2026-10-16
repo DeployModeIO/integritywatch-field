@@ -98,7 +98,10 @@
       recommendations: "建议",
       reports: "报告",
       glossary: "术语表",
-      admin: "管理"
+      admin: "管理",
+      groupOps: "运营",
+      groupIntegrity: "完整性与资产",
+      groupData: "数据与系统"
     },
     severity: {
       low: "低",
@@ -148,7 +151,12 @@
       sectorView: "按板块视图",
       criticalCount: "严重",
       warningCount: "警告",
-      infoCount: "信息"
+      infoCount: "信息",
+      ctxCr: "参考值：<5 mpy 可接受",
+      ctxSevere: "SP0775 阈值：≥10 mpy",
+      ctxPsv: "{{total}} 个阀门中 {{n}} 个逾期",
+      ctxApm: "{{total}} 项资产中 {{n}} 项有告警",
+      ctxCompliance: "{{total}} 项中 {{n}} 项未关闭"
     },
     corrosion: {
       title: "腐蚀",

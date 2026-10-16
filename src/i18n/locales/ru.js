@@ -98,7 +98,10 @@
       recommendations: "Рекомендации",
       reports: "Отчёты",
       glossary: "Глоссарий",
-      admin: "Админ"
+      admin: "Админ",
+      groupOps: "Эксплуатация",
+      groupIntegrity: "Целостность и активы",
+      groupData: "Данные и система"
     },
     severity: {
       low: "Низкая",
@@ -148,7 +151,12 @@
       sectorView: "Вид по секторам",
       criticalCount: "Критические",
       warningCount: "Предупреждения",
-      infoCount: "Информационные"
+      infoCount: "Информационные",
+      ctxCr: "Ориентир: <5 mpy приемлемо",
+      ctxSevere: "Порог SP0775: ≥10 mpy",
+      ctxPsv: "{{n}} из {{total}} клапанов просрочено",
+      ctxApm: "{{n}} из {{total}} активов с оповещением",
+      ctxCompliance: "{{n}} из {{total}} открыто"
     },
     corrosion: {
       title: "Коррозия",

@@ -39,7 +39,8 @@
     nav: {
       dashboard: 'Panel', corrosion: 'Corrosión', psv: 'Válvulas de alivio', pipelines: 'Ductos',
       apm: 'Desempeño de activos', ingest: 'Ingesta de datos', recommendations: 'Recomendaciones',
-      reports: 'Informes', glossary: 'Glosario', admin: 'Admin'
+      reports: 'Informes', glossary: 'Glosario', admin: 'Admin',
+      groupOps: 'Operación', groupIntegrity: 'Integridad y activos', groupData: 'Datos y sistema'
     },
 
     severity: {
@@ -61,7 +62,10 @@
       heatmapTitle: 'Mapa de calor de corrosión', heatmapHint: 'Tasa de corrosión promedio por punto',
       alertsFeed: 'Fuente de alertas', noAlerts: 'Sin alertas activas', lastRulesRun: 'Última ejecución de reglas',
       runRules: 'Ejecutar reglas', topPoints: 'Puntos críticos principales', viewAll: 'Ver todo',
-      sectorView: 'Vista por sector', criticalCount: 'Críticas', warningCount: 'Advertencias', infoCount: 'Info'
+      sectorView: 'Vista por sector', criticalCount: 'Críticas', warningCount: 'Advertencias', infoCount: 'Info',
+      ctxCr: 'Referencia: <5 mpy aceptable', ctxSevere: 'Umbral SP0775: ≥10 mpy',
+      ctxPsv: '{{n}} de {{total}} válvulas en estado vencido', ctxApm: '{{n}} de {{total}} activos con alerta',
+      ctxCompliance: '{{n}} de {{total}} abiertas'
     },
 
     corrosion: {

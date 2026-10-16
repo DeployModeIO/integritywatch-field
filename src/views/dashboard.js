@@ -65,19 +65,24 @@
   }
 
   function loadData(h) {
+    var assetsJob = (h.repos && h.repos.apmAssets && typeof h.repos.apmAssets.list === 'function')
+      ? h.repos.apmAssets.list().catch(function () { return []; })
+      : Promise.resolve([]);
     return Promise.all([
       h.repos.monitoringPoints.list(),
       h.repos.readings.list(),
       h.repos.psvs.list(),
       h.repos.recommendations.list(),
-      h.repos.meta.get('lastRulesRunISO').catch(function () { return undefined; })
+      h.repos.meta.get('lastRulesRunISO').catch(function () { return undefined; }),
+      assetsJob
     ]).then(function (d) {
       return {
         points: d[0] || [],
         readings: d[1] || [],
         psvs: d[2] || [],
         recs: d[3] || [],
-        lastRulesRunISO: d[4]
+        lastRulesRunISO: d[4],
+        assets: d[5] || []
       };
     });
   }
@@ -108,6 +113,9 @@
     });
 
     var psvOverdue = (data.psvs || []).filter(psvDue).length;
+    var psvTotal = (data.psvs || []).length;
+    var assetsTotal = (data.assets || []).length;
+    var recsTotal = (data.recs || []).length;
 
     var openRecs = (data.recs || []).filter(function (r) { return r.status === 'open'; });
     var apmAlerts = 0;
@@ -129,8 +137,11 @@
       avgCr: n > 0 ? sum / n : null,
       severeCount: severeCount,
       psvOverdue: psvOverdue,
+      psvTotal: psvTotal,
       apmAlerts: apmAlerts,
+      apmTotal: assetsTotal,
       pendingCompliance: openRecs.length,
+      complianceTotal: recsTotal,
       heat: heat,
       feed: feed,
       criticalCount: openRecs.filter(function (r) { return r.severity === 'critical'; }).length,
@@ -139,13 +150,17 @@
     };
   }
 
-  function kpiCard(h, labelKey, valueText, iconName) {
+  function kpiCard(h, labelKey, valueText, iconName, contextText) {
     var card = h.ui.el('div', { class: 'kpi' });
     if (iconName) {
       card.appendChild(h.ui.el('span', { class: 'kpi__icon', attrs: { 'aria-hidden': 'true' } }, h.ui.icon(iconName, 20)));
     }
     card.appendChild(h.ui.el('span', { class: 'kpi__label', text: h.t(labelKey) }));
     card.appendChild(h.ui.el('span', { class: 'kpi__value', text: valueText }));
+    // ISA-101: show the reference/limit right below the value.
+    if (contextText) {
+      card.appendChild(h.ui.el('span', { class: 'kpi-context', text: contextText }));
+    }
     return card;
   }
 
@@ -277,11 +292,11 @@
 
     // KPI bento grid.
     var grid = h.ui.el('div', { class: 'grid-bento' });
-    grid.appendChild(kpiCard(h, 'dashboard.kpiAvgCr', c.avgCr === null ? '—' : fmtNum(c.avgCr, 2) + ' ' + h.t('units.mpy'), 'corrosion'));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiSeverePoints', String(c.severeCount), 'alert-critical'));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiPsvOverdue', String(c.psvOverdue), 'valve'));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiApmAlerts', String(c.apmAlerts), 'apm'));
-    grid.appendChild(kpiCard(h, 'dashboard.kpiPendingCompliance', String(c.pendingCompliance), 'recs'));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiAvgCr', c.avgCr === null ? '—' : fmtNum(c.avgCr, 2) + ' ' + h.t('units.mpy'), 'corrosion', h.t('dashboard.ctxCr')));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiSeverePoints', String(c.severeCount), 'alert-critical', h.t('dashboard.ctxSevere')));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiPsvOverdue', String(c.psvOverdue), 'valve', h.t('dashboard.ctxPsv', { n: c.psvOverdue, total: c.psvTotal })));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiApmAlerts', String(c.apmAlerts), 'apm', h.t('dashboard.ctxApm', { n: c.apmAlerts, total: c.apmTotal })));
+    grid.appendChild(kpiCard(h, 'dashboard.kpiPendingCompliance', String(c.pendingCompliance), 'recs', h.t('dashboard.ctxCompliance', { n: c.pendingCompliance, total: c.complianceTotal })));
     frag.appendChild(grid);
 
     frag.appendChild(buildHeatmap(h, c.heat));
@@ -369,6 +384,7 @@
       subscribe(h, live, 'data:changed:monitoringPoints', reload);
       subscribe(h, live, 'data:changed:readings', reload);
       subscribe(h, live, 'data:changed:psvs', reload);
+      subscribe(h, live, 'data:changed:apmAssets', reload);
       subscribe(h, live, 'data:changed:recommendations', reload);
       subscribe(h, live, 'data:changed:meta', reload);
 

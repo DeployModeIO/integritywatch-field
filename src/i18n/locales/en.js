@@ -39,7 +39,8 @@
     nav: {
       dashboard: 'Dashboard', corrosion: 'Corrosion', psv: 'Relief valves', pipelines: 'Pipelines',
       apm: 'Asset performance', ingest: 'Data ingest', recommendations: 'Recommendations',
-      reports: 'Reports', glossary: 'Glossary', admin: 'Admin'
+      reports: 'Reports', glossary: 'Glossary', admin: 'Admin',
+      groupOps: 'Operations', groupIntegrity: 'Integrity & assets', groupData: 'Data & system'
     },
 
     severity: {
@@ -61,7 +62,10 @@
       heatmapTitle: 'Corrosion heatmap', heatmapHint: 'Average corrosion rate by point',
       alertsFeed: 'Alerts feed', noAlerts: 'No active alerts', lastRulesRun: 'Last rules run',
       runRules: 'Run rules', topPoints: 'Top critical points', viewAll: 'View all',
-      sectorView: 'Sector view', criticalCount: 'Critical', warningCount: 'Warnings', infoCount: 'Info'
+      sectorView: 'Sector view', criticalCount: 'Critical', warningCount: 'Warnings', infoCount: 'Info',
+      ctxCr: 'Reference: <5 mpy acceptable', ctxSevere: 'SP0775 threshold: ≥10 mpy',
+      ctxPsv: '{{n}} of {{total}} valves overdue', ctxApm: '{{n}} of {{total}} assets with alerts',
+      ctxCompliance: '{{n}} of {{total}} open'
     },
 
     corrosion: {

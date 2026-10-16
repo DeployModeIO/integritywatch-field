@@ -145,3 +145,28 @@ powershell -File tools/make-icons.ps1     # PNGs vía System.Drawing / GDI+ (PS 
 node tools/build-icons.cjs                # src/components/icons.js (glifo `brand` 24×24)
 ```
 El isotipo del encabezado (`IW.ui.icons.brand`) se mantiene en sintonía con `favicon.svg`.
+
+## 7. Benchmarking clase empresarial (sin copia de assets)
+
+**Objetivo.** Elevar la densidad informativa y el ritmo visual al registro de un HMI / centro de
+operaciones de clase empresarial, sin importar ni emular diseño propietario de terceros.
+
+**Referencias conceptuales (no visuales).**
+- *Jerarquía y contexto (ANSI/ISA-101, High-Performance HMI):* cada valor clave muestra su
+  referencia/límite junto al número, no solo el número. Origen de las líneas `.kpi-context`
+  («Referencia: <5 mpy aceptable», «Umbral SP0775: ≥10 mpy», «n de total…»).
+- *Taxonomía funcional de soluciones industriales:* la navegación se agrupa por función/resultado
+  (Operación · Integridad y activos · Datos y sistema) mediante una etiqueta discreta
+  `.app-sidebar__group-label`, en lugar de una lista plana de módulos.
+- *Ritmo de tabla:* filas de altura mínima 40 px, padding uniforme, hover de fila y cabecera fija
+  en `table.data`; sin zebra, porque las bandas compiten con el color de severidad.
+
+**Uso de terceros.** Ninguna mejora de esta sección copia, importa ni traduce assets, capturas,
+hojas de estilo, iconografía ni textos de `yokogawa.com` u otro proveedor. Solo se emuló el
+*registro de información* (qué se muestra y cómo se jerarquiza), que no es objeto de protección;
+el diseño, el código y los textos son propios y viven en este repositorio.
+
+**Cómo se decidió.** Se partió de los principios públicos de ISA-101 y de la agrupación funcional
+observable en catálogos de soluciones industriales; cada principio se tradujo a tokens y clases
+propias (`.app-sidebar__group-label`, `.kpi-context`, ritmo de `table.data`) y se validó con la
+suite (`node --test`), el e2e y el quality gate (capturas `docs/evidence/p0-locale-*.png`).

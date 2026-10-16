@@ -270,6 +270,7 @@ table.data thead th {
   position: sticky;
   top: 0;
   z-index: 1;
+  min-block-size: 40px;
   padding: var(--sp-2) var(--sp-3);
   text-align: start;
   background: var(--surface-2);
@@ -279,8 +280,11 @@ table.data thead th {
   white-space: nowrap;
 }
 
+/* ISA-101 enterprise rhythm: uniform 40px minimum row height, hover only (no
+   zebra striping, which competes with severity colour). */
 table.data tbody th,
 table.data tbody td {
+  min-block-size: 40px;
   padding: var(--sp-2) var(--sp-3);
   border-block-end: 1px solid var(--border);
   text-align: start;

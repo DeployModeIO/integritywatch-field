@@ -98,7 +98,10 @@
       recommendations: "Recommandations",
       reports: "Rapports",
       glossary: "Glossaire",
-      admin: "Admin"
+      admin: "Admin",
+      groupOps: "Exploitation",
+      groupIntegrity: "Intégrité et actifs",
+      groupData: "Données et système"
     },
     severity: {
       low: "Faible",
@@ -148,7 +151,12 @@
       sectorView: "Vue par secteur",
       criticalCount: "Critiques",
       warningCount: "Avertissements",
-      infoCount: "Informations"
+      infoCount: "Informations",
+      ctxCr: "Référence : <5 mpy acceptable",
+      ctxSevere: "Seuil SP0775 : ≥10 mpy",
+      ctxPsv: "{{n}} sur {{total}} soupapes en retard",
+      ctxApm: "{{n}} sur {{total}} actifs en alerte",
+      ctxCompliance: "{{n}} sur {{total}} ouvertes"
     },
     corrosion: {
       title: "Corrosion",
