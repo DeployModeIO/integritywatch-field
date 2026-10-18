@@ -145,7 +145,7 @@ test('10. seed.demo: counts exactos por store', async () => {
     readings: 120,
     coupons: 4,
     psvs: 5,
-    apmAssets: 14,
+    apmAssets: 18,
     apmEvents: 21,
     recommendations: 0
   });
@@ -205,13 +205,13 @@ test('13. seed APM: enums por sector y apmEvent.assetId existente', async () => 
 
   const sectorCats = {
     upstream: ['well', 'platform', 'fpso', 'subsea', 'esp', 'suckerRod', 'gasLift', 'wellheadCompression', 'separator', 'storageTank', 'centrifugalPump', 'generator', 'firePump', 'fireSystem'],
-    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem'],
-    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem']
+    midstream: ['pipeline', 'pumpStation', 'compressorStation', 'loadingTerminal', 'storageTank', 'gasPlant', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem', 'separator'],
+    downstream: ['refinery', 'distillationUnit', 'hydrodesulfurization', 'reformer', 'heatExchanger', 'pump', 'compressor', 'column', 'furnace', 'utilitySteam', 'utilityAir', 'utilityNitrogen', 'centrifugalPump', 'reciprocatingPump', 'generator', 'substation', 'firePump', 'fireSystem', 'sensor']
   };
 
   const assets = await repos.apmAssets.list();
   const assetIds = new Set(assets.map((a) => a.id));
-  assert.strictEqual(assets.length, 14);
+  assert.strictEqual(assets.length, 18);
   assets.forEach((a) => {
     assert.ok(sectorCats[a.sector], 'sector ' + a.sector);
     assert.ok(sectorCats[a.sector].includes(a.category), 'category ' + a.category + ' no válida para ' + a.sector);

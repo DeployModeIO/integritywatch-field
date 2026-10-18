@@ -267,7 +267,11 @@
       asset('APM-MD-106', 'GEN-101', 'Emergency generator G-101 — 2.5 MW (ISO 8528)', 'midstream', 'generator', 'A', 2, 5),
       asset('APM-MD-107', 'FP-01', 'Fire water pump FP-01 (NFPA 20)', 'midstream', 'firePump', 'A', 2, 5, 40),
       asset('APM-MD-108', 'FPS-01', 'Foam deluge system — tank farm (NFPA 11 / NBR 13714)', 'midstream', 'fireSystem', 'A', 2, 5),
-      asset('APM-DN-003', 'PUMP-305', 'Centrifugal pump P-305 (API 610)', 'downstream', 'centrifugalPump', 'B', 2, 3)
+      asset('APM-DN-003', 'PUMP-305', 'Centrifugal pump P-305 (API 610)', 'downstream', 'centrifugalPump', 'B', 2, 3),
+      asset('APM-MD-004', 'TK-101', 'Tank farm TK-101', 'midstream', 'storageTank', 'B', 2, 3),
+      asset('APM-MD-005', 'C-501', 'Compressor C-501', 'midstream', 'compressorStation', 'C', 3, 4),
+      asset('APM-MD-006', 'SEP-7', 'Test separator SEP-7', 'midstream', 'separator', 'B', 2, 3),
+      asset('APM-DN-005', 'FT-201', 'Field instrument FT-201', 'downstream', 'sensor', 'C', 4, 3)
     ];
   }
 

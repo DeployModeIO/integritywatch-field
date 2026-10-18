@@ -38,7 +38,7 @@ test('seed produces exact deterministic counts and returns them', async () => {
     readings: 120,
     coupons: 4,
     psvs: 5,
-    apmAssets: 14,
+    apmAssets: 18,
     apmEvents: 21,
     recommendations: 0
   });
@@ -49,7 +49,7 @@ test('seed produces exact deterministic counts and returns them', async () => {
   assert.equal((await s.readings.list()).length, 120);
   assert.equal((await s.coupons.list()).length, 4);
   assert.equal((await s.psvs.list()).length, 5);
-  assert.equal((await s.apmAssets.list()).length, 14);
+  assert.equal((await s.apmAssets.list()).length, 18);
   assert.equal((await s.apmEvents.list()).length, 21);
   assert.equal((await s.recommendations.list()).length, 0);
 
