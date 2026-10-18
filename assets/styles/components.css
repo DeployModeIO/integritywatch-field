@@ -64,6 +64,11 @@
   box-shadow: var(--shadow-1);
 }
 
+.card--elevated {
+  box-shadow: var(--shadow-2);
+  border-color: var(--border);
+}
+
 .card > h2,
 .card > h3 {
   margin-block: 0 var(--sp-2);
@@ -838,8 +843,50 @@ table.data tbody tr:hover {
   to { background-position: 0 50%; }
 }
 
+/* --- Toast & Dialog motion (Linear-style) ----------------------------------- */
+
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toast-slide-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+@keyframes dialog-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.toast {
+  animation: toast-slide-in var(--dur-2) var(--ease-out);
+}
+
+.toast[data-exiting] {
+  animation: toast-slide-out var(--dur-2) var(--ease-in-out) forwards;
+}
+
+.dialog {
+  animation: dialog-scale-in var(--dur-2) var(--ease-out);
+}
+
+/* --- Button micro-interactions ----------------------------------------------- */
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* --- Reduced motion overrides (consolidated) -------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
-  .skeleton {
-    animation: none;
+  .skeleton,
+  .toast,
+  .dialog {
+    animation: none !important;
+  }
+  .btn:active:not(:disabled) {
+    transform: none;
   }
 }
