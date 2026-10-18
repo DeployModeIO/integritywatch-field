@@ -356,6 +356,9 @@
       var total = critical + warning;
       if (_badgeCount) { _badgeCount.textContent = String(total); }
       if (_badgeEl) { _badgeEl.hidden = total === 0; }
+      if (_badgeEl && _badgeEl.firstElementChild) {
+        _badgeEl.firstElementChild.replaceWith(icon(critical > 0 ? 'alert-critical' : 'warning', 18));
+      }
       syncBadgeLabel();
       renderAlarmBanner(critical, warning);
       return { critical: critical, warning: warning };

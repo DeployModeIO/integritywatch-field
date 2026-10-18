@@ -36,6 +36,10 @@
     if (cat === 'generator') { return 'engine'; }
     if (cat === 'substation') { return 'substation'; }
     if (cat === 'firePump' || cat === 'fireSystem') { return 'fire'; }
+    if (cat === 'storageTank') { return 'tank'; }
+    if (cat === 'compressor' || cat === 'compressorStation') { return 'compressor'; }
+    if (cat === 'separator') { return 'separator'; }
+    if (cat === 'sensor') { return 'sensor'; }
     return null;
   }
 
