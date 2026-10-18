@@ -116,7 +116,7 @@
           controls.appendChild(el('div', { class: 'row' },
             el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('reports.periodFrom') }), fromInput),
             el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('reports.periodTo') }), toInput)));
-          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { generateQuarterly(fromInput.value, toInput.value); } } }, icon('printer', 18), el('span', { text: t('reports.generate') })));
+          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { generateQuarterly(fromInput.value, toInput.value); } } }, icon('export', 18), el('span', { text: t('reports.generate') })));
         } else if (state.type === 'dossier') {
           var mpSelect = el('select', { class: 'select', attrs: { 'aria-label': t('reports.selectPoint') } });
           mpSelect.appendChild(el('option', { attrs: { value: '' }, text: t('common.none') }));
@@ -125,7 +125,7 @@
           });
           if (state.mpId) { mpSelect.value = state.mpId; }
           controls.appendChild(el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('reports.selectPoint') }), mpSelect));
-          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { if (mpSelect.value) { generateDossier(mpSelect.value); } } } }, icon('printer', 18), el('span', { text: t('reports.generate') })));
+          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { if (mpSelect.value) { generateDossier(mpSelect.value); } } } }, icon('export', 18), el('span', { text: t('reports.generate') })));
         } else {
           var psvSelect = el('select', { class: 'select', attrs: { 'aria-label': t('reports.selectPsv') } });
           psvSelect.appendChild(el('option', { attrs: { value: '' }, text: t('common.none') }));
@@ -134,7 +134,7 @@
           });
           if (state.psvId) { psvSelect.value = state.psvId; }
           controls.appendChild(el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('reports.selectPsv') }), psvSelect));
-          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { if (psvSelect.value) { generateDatasheet(psvSelect.value); } } } }, icon('printer', 18), el('span', { text: t('reports.generate') })));
+          controls.appendChild(el('button', { class: 'btn btn-primary', on: { click: function () { if (psvSelect.value) { generateDatasheet(psvSelect.value); } } } }, icon('export', 18), el('span', { text: t('reports.generate') })));
         }
       }
 
@@ -154,7 +154,7 @@
       function mountReport(element, actions) {
         var host = printHost();
         var toolbar = el('div', { class: 'print-toolbar' });
-        toolbar.appendChild(el('button', { class: 'btn btn-primary', on: { click: doPrint } }, icon('printer', 18), el('span', { text: t('common.print') })));
+        toolbar.appendChild(el('button', { class: 'btn btn-primary', on: { click: doPrint } }, icon('print', 18), el('span', { text: t('common.print') })));
         (actions || []).forEach(function (a) { toolbar.appendChild(a); });
         host.appendChild(toolbar);
         host.appendChild(element);

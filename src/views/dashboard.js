@@ -152,7 +152,7 @@
 
   function kpiCard(h, labelKey, valueText, iconName, contextText, extra) {
     extra = extra || {};
-    var card = h.ui.el('div', { class: 'kpi' });
+    var card = h.ui.el('div', { class: 'kpi card--elevated' });
     if (iconName) {
       card.appendChild(h.ui.el('span', { class: 'kpi__icon', attrs: { 'aria-hidden': 'true' } }, h.ui.icon(iconName, 20)));
     }
