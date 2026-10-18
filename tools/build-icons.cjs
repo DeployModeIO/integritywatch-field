@@ -79,11 +79,26 @@ const MAP = [
    *   engine     - ISO 8528 / IEEE 446 prime mover -> Lucide dedicated engine.
    *   fire       - NFPA 20 / BS EN 12845 / NBR 13714 -> Lucide fire-extinguisher.
    *   substation - IEC 61439 power installation -> Lucide utility-pole (no dedicated
-   *                "substation" glyph exists; the pole is the closest power-infra symbol). */
+   *                "substation" glyph exists; the pole is the closest power-infra symbol).
+   *   tank       - API 650 / ISO 7575 storage vessel -> Tabler dedicated tank.
+   *   compressor - ISO 5389 / API 617 compressor -> Tabler gauge (pressure readout).
+   *   separator  - API 12J / API 12K separator vessel -> Tabler dedicated separator.
+   *   sensor     - ISA 100 / IEC 62591 field instrument -> Tabler photo-sensor. */
   ['pump', 'lucide', 'fan'],
   ['engine', 'lucide', 'engine'],
   ['fire', 'lucide', 'fire-extinguisher'],
   ['substation', 'lucide', 'utility-pole'],
+  ['tank', 'tabler', 'tank'],
+  ['compressor', 'tabler', 'gauge'],
+  ['separator', 'tabler', 'separator'],
+  ['sensor', 'tabler', 'photo-sensor'],
+  /* UI actions & navigation (one glyph per semantic action; no emoji, no third-party). */
+  ['export', 'tabler', 'file-export'],
+  ['print', 'tabler', 'printer'],
+  ['settings', 'lucide', 'settings'],
+  ['chevron-left', 'lucide', 'chevron-left'],
+  ['info', 'lucide', 'info'],
+  ['warning', 'lucide', 'triangle-alert'],
   ['brand', 'custom', null]
 ];
 

@@ -110,7 +110,7 @@ test('T1b.e router ROUTES frozen table has 16 patterns', () => {
 });
 
 test('T1b.f icons cover all §4.14 names and severity() covers 4 levels', () => {
-  const names = ['dashboard', 'corrosion', 'valve', 'pipeline', 'apm', 'ingest', 'recs', 'reports', 'glossary', 'admin', 'alert-critical', 'alert-warning', 'alert-info', 'shape-low', 'shape-moderate', 'shape-high', 'shape-severe', 'sun', 'moon', 'monitor', 'check', 'x', 'plus', 'search', 'filter', 'download', 'upload', 'printer', 'clipboard', 'refresh', 'chevron-down', 'chevron-right', 'lock', 'unlock', 'keyboard', 'close', 'edit', 'trash', 'play'];
+  const names = ['dashboard', 'corrosion', 'valve', 'pipeline', 'apm', 'ingest', 'recs', 'reports', 'glossary', 'admin', 'alert-critical', 'alert-warning', 'alert-info', 'shape-low', 'shape-moderate', 'shape-high', 'shape-severe', 'sun', 'moon', 'monitor', 'check', 'x', 'plus', 'search', 'filter', 'download', 'upload', 'printer', 'clipboard', 'refresh', 'chevron-down', 'chevron-right', 'lock', 'unlock', 'keyboard', 'close', 'edit', 'trash', 'play', 'menu', 'pump', 'engine', 'fire', 'substation', 'tank', 'compressor', 'separator', 'sensor', 'export', 'print', 'settings', 'chevron-left', 'info', 'warning', 'brand'];
   for (const n of names) {
     assert.ok(typeof icons.ICONS[n] === 'string' && icons.ICONS[n].length > 0, 'missing icon ' + n);
   }
