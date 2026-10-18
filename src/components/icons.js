@@ -44,6 +44,16 @@
  *   engine          <- lucide:engine
  *   fire            <- lucide:fire-extinguisher
  *   substation      <- lucide:utility-pole
+ *   tank            <- tabler:tank
+ *   compressor      <- tabler:gauge
+ *   separator       <- tabler:separator
+ *   sensor          <- tabler:photo-sensor
+ *   export          <- tabler:file-export
+ *   print           <- tabler:printer
+ *   settings        <- lucide:settings
+ *   chevron-left    <- lucide:chevron-left
+ *   info            <- lucide:info
+ *   warning         <- lucide:triangle-alert
  *   brand           <- custom (maintained)
  */
 /* IntegrityWatch Field — icons
@@ -108,6 +118,16 @@
     'engine': wrap('<path d="M10 3h6" /> <path d="M13 3v4" /> <path d="M2 10v6" /> <path d="M2 13h4" /> <path d="M6 16a2 2 0 002 2h1a2 2 0 011.6.8l.3.4a2 2 0 001.6.8h2.264a2 2 0 001.789-1.106l1.67-3.341a1 1 0 01.895-.553H21a1 1 0 001-1v-4a1 1 0 00-1-1h-3.5a1 1 0 01-.8-.4l-.9-1.2A1 1 0 0015 7h-4a1 1 0 00-.8.4l-.9 1.2a1 1 0 01-.8.4H7a1 1 0 00-1 1z" />'),
     'fire': wrap('<path d="M15 6.5V3a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3.5" /> <path d="M9 18h8" /> <path d="M18 3h-3" /> <path d="M11 3a6 6 0 0 0-6 6v11" /> <path d="M5 13h4" /> <path d="M17 10a4 4 0 0 0-8 0v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2Z" />'),
     'substation': wrap('<path d="M12 2v20" /> <path d="M2 5h20" /> <path d="M3 3v2" /> <path d="M7 3v2" /> <path d="M17 3v2" /> <path d="M21 3v2" /> <path d="m19 5-7 7-7-7" />'),
+    'tank': wrap('<path d="M2 15a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3" /> <path d="M6 12l1 -5h5l3 5" /> <path d="M21 9l-7.8 0" />'),
+    'compressor': wrap('<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /> <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /> <path d="M13.41 10.59l2.59 -2.59" /> <path d="M7 12a5 5 0 0 1 5 -5" />'),
+    'separator': wrap('<path d="M3 12l0 .01" /> <path d="M7 12l10 0" /> <path d="M21 12l0 .01" />'),
+    'sensor': wrap('<path d="M17 5h2a2 2 0 0 1 2 2v2" /> <path d="M21 15v2a2 2 0 0 1 -2 2h-2" /> <path d="M7 19h-2a2 2 0 0 1 -2 -2v-2" /> <path d="M3 9v-2a2 2 0 0 1 2 -2h2" /> <path d="M7 10a1 1 0 0 1 1 -1h8a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-8a1 1 0 0 1 -1 -1l0 -4" />'),
+    'export': wrap('<path d="M14 3v4a1 1 0 0 0 1 1h4" /> <path d="M11.5 21h-4.5a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v5m-5 6h7m-3 -3l3 3l-3 3" />'),
+    'print': wrap('<path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /> <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /> <path d="M7 15a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2l0 -4" />'),
+    'settings': wrap('<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /> <circle cx="12" cy="12" r="3" />'),
+    'chevron-left': wrap('<path d="m15 18-6-6 6-6" />'),
+    'info': wrap('<circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" />'),
+    'warning': wrap('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" />'),
     'brand': wrap('<path d="M12 2.5 L20.5 7.25 L20.5 16.75 L12 21.5 L3.5 16.75 L3.5 7.25 Z"/><path d="M9.17 16.33 A4 4 0 1 1 14.83 16.33"/><path d="M12 13.5 L13.5 10.9"/>')
   };
 
