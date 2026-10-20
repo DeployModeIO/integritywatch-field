@@ -263,22 +263,28 @@ Sirve la carpeta del proyecto con cualquier servidor estático.
 
 ## Paquete portable
 
-**IntegrityWatch-Field-Portable:**
+**IntegrityWatch-Field-Portable** — paquete listo para usar, sin instalación ni internet.
+
+**Descarga:** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.1
+(asset `IntegrityWatch-Field-Portable-v1.0.1.zip`, 84,96 MB, SHA256: `04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba`)
 
 **Contenido:**
 - Aplicación completa (JS vanilla, service worker, manifest)
-- `IntegrityWatch-Field 1.0.0.exe` (contenedor Electron)
-- Todos los `docs/` incluyendo `DEPLOY.md`, `STANDARDS.md`
+- `app/IntegrityWatch Field 1.0.0.exe` (contenedor Electron portable, sin instalación)
+- Todos los `docs/`: guía de uso, estándares, `DEPLOY.md`, `ISSUES-CONOCIDOS.md`, manual en DOCX/HTML, presentación PPTX y `evidence/` (capturas, PDF y vídeo walkthrough)
 - `datos-prueba/` (CSV y JSON de validación)
 - `THIRD-PARTY-NOTICES.md`
-- `SHA256SUMS.txt` con hashes SHA256 para verificación
+- `SHA256SUMS.txt` con el hash SHA256 de cada archivo del paquete (excepto él mismo)
 
 **Verificación:**
 ```bash
-# Descargar ZIP
-# Calcular SHA256 de IntegrityWatch-Field\ 1.0.0.exe
-type IntegrityWatch-Field\ 1.0.0.exe | certutil -hashfile - SHA256
-# Comparar con SHA256SUMS.txt
+# 1. Comprobar el ZIP antes de extraer:
+certutil -hashfile IntegrityWatch-Field-Portable-v1.0.1.zip SHA256
+#    debe coincidir con: 04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba
+
+# 2. Tras extraer, comprobar cada archivo contra SHA256SUMS.txt (rutas relativas):
+certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
+#    en macOS/Linux: sha256sum -c SHA256SUMS.txt
 ```
 
 **Extracción:** Extrae en cualquier carpeta, ejecuta el `.exe` (o `START-HERE.bat`).
