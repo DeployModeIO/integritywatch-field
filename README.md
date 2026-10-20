@@ -40,7 +40,7 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first dise�
 
 ## Capturas
 
-![Captura del Panel principal](docs/evidence/og-trend-chart.png) ![Captura del Dashboard](docs/evidence/og-gauge-dashboard.png) ![Captura del módulo de Corrosión](docs/evidence/og-apm-equipment.png) ![Captura del Selector de idioma](docs/evidence/p0-locale-es.png) ![Captura del Dashboard con tema oscuro](docs/evidence/v2-01-dashboard.png) ![Captura del Mapa](docs/evidence/v2-03-corrosion-detail-light.png) ![Captura del Mapa de ductos](docs/evidence/v2-04-map-light.png) ![Captura del Panel Español](docs/evidence/01-dashboard-es-light.png)
+![Captura del Panel principal](docs/evidence/og-trend-chart.png) ![Captura del Dashboard](docs/evidence/og-gauge-dashboard.png) ![Captura del módulo de Corrosión](docs/evidence/og-apm-equipment.png) ![Captura del Selector de idioma](docs/evidence/p0-locale-es.png) ![Captura del Dashboard con tema oscuro](docs/evidence/v2-01-dashboard.png) ![Captura del Mapa](docs/evidence/v2-03-corrosion-detail-light.png) ![Captura del Mapa de ductos](docs/evidence/v2-04-map-light.png) ![Captura del Panel Español](docs/evidence/v2-01-dashboard.png)
 
 ---
 
