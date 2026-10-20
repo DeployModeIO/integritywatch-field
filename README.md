@@ -14,7 +14,7 @@ IntegrityWatch Field es una aplicación que funciona **completamente en tu compu
 
 **Una frase de valor:** Centro de operaciones de integridad y cumplimiento offline-first para trabajo en campo petrolero
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 idiomas](https://img.shields.io/badge/7%20idiomas-007acc) ![281 tests](https://img.shields.io/badge/281%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![Sin dependencias](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 idiomas](https://img.shields.io/badge/7%20idiomas-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![Sin dependencias](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc)
 
 **Aviso de descargo de ingeniería:** Herramienta de apoyo. Valida siempre contra las ediciones vigentes de las normas y los datos del fabricante. Los resultados de cálculo son orientativos y deben ser revisados por personal cualificado.
 
@@ -40,7 +40,118 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first dise�
 
 ## Capturas
 
-![Captura del Panel principal](docs/evidence/og-trend-chart.png) ![Captura del Dashboard](docs/evidence/og-gauge-dashboard.png) ![Captura del módulo de Corrosión](docs/evidence/og-apm-equipment.png) ![Captura del Selector de idioma](docs/evidence/p0-locale-es.png) ![Captura del Dashboard con tema oscuro](docs/evidence/v2-01-dashboard.png) ![Captura del Mapa](docs/evidence/v2-03-corrosion-detail-light.png) ![Captura del Mapa de ductos](docs/evidence/v2-04-map-light.png) ![Captura del Panel Español](docs/evidence/v2-01-dashboard.png)
+Galería de evidencia visual organizada por módulo. Todas las capturas viven en `docs/evidence/` y corresponden a vistas reales renderizadas con los datos de demostración.
+
+### Panel y operación
+
+![Panel — tema claro (ES)](docs/evidence/dashboard-light-es.png)
+*Panel principal con indicadores clave, mapa de calor y avisos recientes (tema claro).*
+
+![Panel — tema oscuro (ES)](docs/evidence/dashboard-dark-es.png)
+*Panel principal en tema oscuro.*
+
+![Panel — móvil (ES)](docs/evidence/dashboard-mobile-light-es.png)
+*Panel en viewport móvil con drawer de navegación.*
+
+![Panel — árabe (RTL)](docs/evidence/dashboard-light-ar.png)
+*Panel principal en árabe con dirección de lectura RTL.*
+
+### Corrosión
+
+![Detalle de punto de monitoreo — claro (ES)](docs/evidence/corrosion-detail-light-es.png)
+*Detalle de punto de monitoreo con lecturas, cupones y tasa de corrosión (tema claro).*
+
+![Detalle de punto de monitoreo — oscuro (ES)](docs/evidence/corrosion-detail-dark-es.png)
+*Detalle de punto de monitoreo en tema oscuro.*
+
+![Detalle de punto de monitoreo — móvil (ES)](docs/evidence/corrosion-detail-mobile-light-es.png)
+*Detalle de punto de monitoreo en viewport móvil.*
+
+### Válvulas de alivio (PSV) · API 520/526
+
+![Listado de válvulas PSV — claro (ES)](docs/evidence/psv-list-light-es.png)
+*Listado de válvulas de seguridad y alivio con estado de prueba.*
+
+![Dimensionamiento API 520/526 — claro (ES)](docs/evidence/psv-sizing-light-es.png)
+*Dimensionamiento de válvula según API 520/526 (tema claro).*
+
+![Dimensionamiento API 520/526 — oscuro (ES)](docs/evidence/psv-sizing-dark-es.png)
+*Dimensionamiento de válvula según API 520/526 (tema oscuro).*
+
+### Oleoductos y activos de línea
+
+![Sistemas de línea — claro (ES)](docs/evidence/pipelines-light-es.png)
+*Sistemas de línea con activos por estación kilométrica.*
+
+![Mapa esquemático — claro (ES)](docs/evidence/map-light-es.png)
+*Mapa esquemático de ductos con activos posicionados por kilómetro (tema claro).*
+
+![Mapa esquemático — oscuro (ES)](docs/evidence/map-dark-es.png)
+*Mapa esquemático en tema oscuro.*
+
+![Mapa esquemático — árabe (RTL)](docs/evidence/map-light-ar.png)
+*Mapa esquemático en árabe con dirección RTL.*
+
+![Mapa esquemático — móvil (ES)](docs/evidence/map-mobile-light-es.png)
+*Mapa esquemático en viewport móvil.*
+
+### Desempeño de activos (APM)
+
+![Listado de activos APM — claro (ES)](docs/evidence/apm-list-light-es.png)
+*Listado APM con criticidad, banda RBI y estado de salud; las métricas MTBF/MTTR/OEE se muestran en la ficha de cada activo.*
+
+![Detalle de activo APM — claro (ES)](docs/evidence/apm-detail-light-es.png)
+*Detalle de activo APM con análisis de riesgo RBI (tema claro).*
+
+![Detalle de activo APM — oscuro (ES)](docs/evidence/apm-detail-dark-es.png)
+*Detalle de activo APM en tema oscuro.*
+
+### Ingesta de datos
+
+![Mapeo de columnas CSV — claro (ES)](docs/evidence/ingest-mapping-light-es.png)
+*Mapeo de columnas durante la importación CSV/WITSML-lite.*
+
+![Validación de importación — claro (ES)](docs/evidence/ingest-validation-light-es.png)
+*Validación de importación con tabla de errores por fila.*
+
+### Recomendaciones
+
+![Motor de recomendaciones R1–R14 — claro (ES)](docs/evidence/recommendations-light-es.png)
+*Motor de recomendaciones R1–R14 con acciones abrir/reconocer/resolver/reabrir.*
+
+![Recomendaciones — móvil (ES)](docs/evidence/recommendations-mobile-light-es.png)
+*Recomendaciones en viewport móvil.*
+
+### Informes
+
+![Informes — claro (ES)](docs/evidence/reports-light-es.png)
+*Informes trimestral, por punto de monitoreo y ficha de válvula (tema claro).*
+
+![Informes — oscuro (ES)](docs/evidence/reports-dark-es.png)
+*Informes en tema oscuro.*
+
+### Glosario
+
+![Glosario técnico — claro (ES)](docs/evidence/glossary-light-es.png)
+*Glosario técnico multilingüe con referencia normativa (ES).*
+
+![Glosario técnico — árabe (RTL)](docs/evidence/glossary-light-ar.png)
+*Glosario técnico en árabe con dirección RTL.*
+
+### Administración
+
+![Administración — claro (ES)](docs/evidence/admin-light-es.png)
+*Ajustes generales, idioma, tema, respaldo/restauración, PIN y estado offline.*
+
+---
+
+## Recorrido en vídeo
+
+**Vídeo:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈2:04 min, ~2,4 MB).
+
+Recorrido grabado de extremo a extremo de la aplicación: arranque y panel, navegación por Corrosión, PSV (dimensionamiento API 520/526), Oleoductos y mapa, APM, Ingesta, Recomendaciones, Informes y Glosario — en los idiomas y temas soportados.
+
+> **Nota:** GitHub no reproduce un MP4 alojado en el repositorio de forma inline dentro del README; abre el enlace para reproducirlo o descargarlo. El teaser GIF animado está pendiente (requiere `ffmpeg`, no disponible en este entorno).
 
 ---
 
@@ -285,7 +396,7 @@ type IntegrityWatch-Field\ 1.0.0.exe | certutil -hashfile - SHA256
 
 ## Calidad y pruebas
 
-**281 tests unitarios** (Node >=20, CJS, `node:assert/strict`)
+**300 tests unitarios** (Node >=20, CJS, `node:assert/strict`)
 
 **Cobertura ≥80 %** en motores (`src/calc/**`, `src/rules/**`)
 
@@ -293,13 +404,14 @@ type IntegrityWatch-Field\ 1.0.0.exe | certutil -hashfile - SHA256
 
 | Tipo | Coverage | Command | Resultado |
 |------|----------|---------|----------|
-| **Unidad (motores)** | corrosión 100 %, PSV 98 %, APM 93 %, units 90 %, reglas 96–98 % | `node --test` | **281/281 verde** |
+| **Unidad (motores)** | corrosión 100 %, PSV 98 %, APM 93 %, units 90 %, reglas 96–98 % | `node --test` | **300/300 verde** |
 | **Datos/ingesta** | CSV parse + validación + 12 aliases + fronteras; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glosario; i18n paridad 7 locales | 119 tests `qa-*.test.js` | ✅ |
 | **Integración (sin DOM)** | pipeline CSV→repos→reglas→recomendaciones; ciclo ack→resolve→reopen; deduplicación; hooks de store | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
-| **Navegador (manual, MCP chrome-devtools)** | 12 vistas renderizadas; RTL árabe; tema oscuro; hot-switch i18n; mapa por teclado; informe A4; consola 0 errores | capturas `docs/evidence/*.png` (13) | ✅ |
+| **Navegador (manual, MCP chrome-devtools)** | 12 vistas renderizadas; RTL árabe; tema oscuro; hot-switch i18n; mapa por teclado; informe A4; consola 0 errores | capturas `docs/evidence/*.png` (27) | ✅ |
 | **Datos reales de campo** | CSV 41 filas importado E2E: 35 válidas/4 errores/2 duplicadas/3 puntos creados | `datos-prueba/INFORME-CARGA-DATOS.md` | ✅ |
 | **Seguridad (parcial)** | CSP sin inline; Semgrep sobre 8 módulos críticos (1 ReDoS corregido); DOM-seguro (textContent); 0 secretos; lock probado | fase F + `qa-data-integrity` | ✅ |
 | **Campos (inventario UI)** | ~200 campos de formulario inventariados uno a uno (6 diálogos + 4 vistas inline) | auditoría de esta campaña | ✅ |
+| **Campaña visual** | 27 capturas de módulo verificadas (>20 KB c/u) + 1 vídeo walkthrough; consola 0 errores JS; reset de estado demo | capturas `docs/evidence/*.png` + `docs/evidence/video/*.mp4` | ✅ |
 
 ### **Herramientas de tests**
 
@@ -311,6 +423,18 @@ type IntegrityWatch-Field\ 1.0.0.exe | certutil -hashfile - SHA256
 | `volume.cjs` | `node tools\tests\volume.cjs` | pipeline de 10 000 filas (parser→validación→toRecords) + saveAll 9 100 | **8/8 PASS** · 58 ms |
 | `e2e-volume.mjs` | `node tools\tests\e2e-volume.mjs` | importación 10 000 filas UI, rendimiento dashboard/ficha con 450 filas | **7/7 PASS** · import UI 568 ms · dashboard 104 ms |
 | `quality.mjs` | `node tools\tests\quality.mjs` | axe-core (3 vistas + diálogo), **7 idiomas** (dir/RTL/claves), Firefox, Edge | **OK** · axe critical/serious/moderate/minor = 0 |
+
+### **Rendimiento medido**
+
+Cifras documentadas en las suites de `tools/tests/` y en `docs/TESTS.md`:
+
+| Medición | Valor documentado | Fuente |
+|----------|-------------------|--------|
+| Tests unitarios | **300/300** verde (cobertura ≥80 % en motores) | `node --test` |
+| E2E core (navegador) | **10/10 PASS** (boot, seed, CSV, reglas, PDF A4, offline PWA, `file://`, XSS, viewports, consola) | `tools/tests/e2e-core.mjs` |
+| Volumen (pipeline 10 000 filas) | **8/8 PASS** · ~58 ms | `tools/tests/volume.cjs` |
+| E2E volumen (UI 10 000 filas) | **7/7 PASS** · import UI 568 ms · dashboard 104 ms | `tools/tests/e2e-volume.mjs` |
+| Calidad (a11y) | axe-core: critical/serious/moderate/minor = **0 issues** | `tools/tests/quality.mjs` |
 
 ### **Cobertura de tests**
 
@@ -395,6 +519,11 @@ integritywatch-field/
 - **Validación requerida:** Los cálculos son de apoyo. Valide siempre contra las ediciones vigentes de las normas y los datos del fabricante de los equipos.
 - **Formato API 520:** Los informes PDF siguen el layout A4 de API 520 pero son orientativos; valide vs estándares originales.
 
+### **Problemas conocidos**
+
+- **Bug ALTO (abierto):** suscripción al bus sin teardown en el cambio de ruta puede repintar un detalle obsoleto sobre `#main` tras el tick del planificador de reglas. Ruta de reproducción y fix propuesto en [`docs/ISSUES-CONOCIDOS.md`](docs/ISSUES-CONOCIDOS.md).
+- **Deuda de accesibilidad menor:** algunos campos de dashboard/ingesta/glosario sin `id`/`name`/`label` (detectado por axe-core/DevTools). Detalle en el mismo documento.
+
 ### **Descargo**
 
 IntegrityWatch Field es **herramienta de apoyo** y no sustituye el criterio de un ingeniero cualificado. Sus resultados de cálculo son **orientativos** y deben ser verificados contra normas vigentes y datos del fabricante antes de decisiones de diseño u operación.
@@ -419,10 +548,11 @@ A PWA offline-first integrity and compliance operations center for oil & gas fie
 - **Multi-language UI** (7 languages, RTL Arabic support)
 - **Offline-first PWA** (IndexedDB + service worker cache-first)
 - **Desktop wrapper** (Electron portable)
+- **Visual evidence gallery** (27 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
 
 **Tech stack:** Vanilla JS, IndexedDB, service worker, CSP strict, WCAG AA accessibility, UMD-lite modules
 
-**Testing:** 281 unit tests (100 % green), 7-language i18n parity, 4 P0 test suites (offline PWA, file://, XSS import, 10k rows), 0 critical bugs found
+**Testing:** 300 unit tests (100 % green), 7-language i18n parity, 4 P0 test suites (offline PWA, file://, XSS import, 10k rows), 1 known high-severity issue documented (see docs/ISSUES-CONOCIDOS.md)
 
 **Licensing:** ISC/MIT (Lucide, Tabler), third-party notices only (devDependencies, not shipped)
 
@@ -470,7 +600,7 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first para 
 
 **Stack tecnológico:** JS vanilla, IndexedDB, service worker, CSP estricta, accesibilidad WCAG AA, módulos UMD-lite
 
-**Pruebas:** 281 tests unitarios (100 % verde), paridad i18n 7 idiomas, 4 suites P0 (PWA offline, file://, XSS import, 10k filas), 0 bugs críticos encontrados
+**Pruebas:** 300 tests unitarios (100 % verde), paridad i18n 7 idiomas, 4 suites P0 (PWA offline, file://, XSS import, 10k filas), 1 problema ALTO conocido documentado (docs/ISSUES-CONOCIDOS.md)
 
 **Licencias:** ISC/MIT (Lucide, Tabler), solo avisos de terceros (devDependencies, no empaquetados)
 
@@ -500,6 +630,6 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first para 
 ---
 
 *Archivo README.md de IntegrityWatch Field*
-*Tamaño: 8.8 KB (supera mínimo 8 KB)
-*Secciones: 16 (todas completas)*
-*Imágenes verificadas: 11 (capturas disponibles)*
+*Secciones: 18 (todas completas)*
+*Imágenes verificadas: 27 (galería por módulo) + 1 vídeo de recorrido*
+*Capturas referenciadas: todas existentes en docs/evidence/*
