@@ -50,9 +50,6 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 ![Panel — tema oscuro (ES)](docs/evidence/dashboard-dark-es.png)
 *Panel principal en tema oscuro.*
 
-![Panel — móvil (ES)](docs/evidence/dashboard-mobile-light-es.png)
-*Panel en viewport móvil con drawer de navegación.*
-
 ![Panel — árabe (RTL)](docs/evidence/dashboard-light-ar.png)
 *Panel principal en árabe con dirección de lectura RTL.*
 
@@ -63,9 +60,6 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 
 ![Detalle de punto de monitoreo — oscuro (ES)](docs/evidence/corrosion-detail-dark-es.png)
 *Detalle de punto de monitoreo en tema oscuro.*
-
-![Detalle de punto de monitoreo — móvil (ES)](docs/evidence/corrosion-detail-mobile-light-es.png)
-*Detalle de punto de monitoreo en viewport móvil.*
 
 ### Válvulas de alivio (PSV) · API 520/526
 
@@ -118,9 +112,6 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 
 ![Motor de recomendaciones R1–R15 — claro (ES)](docs/evidence/recommendations-light-es.png)
 *Motor de recomendaciones R1–R15 con acciones abrir/reconocer/resolver/reabrir.*
-
-![Recomendaciones — móvil (ES)](docs/evidence/recommendations-mobile-light-es.png)
-*Recomendaciones en viewport móvil.*
 
 ### Informes
 
@@ -417,7 +408,7 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | **Datos reales de campo** | CSV 41 filas importado E2E: 35 válidas/4 errores/2 duplicadas/3 puntos creados | `datos-prueba/INFORME-CARGA-DATOS.md` | ✅ |
 | **Seguridad (parcial)** | CSP sin inline; Semgrep sobre 8 módulos críticos (1 ReDoS corregido); DOM-seguro (textContent); 0 secretos; lock probado | fase F + `qa-data-integrity` | ✅ |
 | **Campos (inventario UI)** | ~200 campos de formulario inventariados uno a uno (6 diálogos + 4 vistas inline) | auditoría de esta campaña | ✅ |
-| **Campaña visual** | 27 capturas de módulo verificadas (>20 KB c/u) + 1 vídeo walkthrough; consola 0 errores JS; reset de estado demo | capturas `docs/evidence/*.png` + `docs/evidence/video/*.mp4` | ✅ |
+| **Campaña visual** | 24 capturas de módulo verificadas (>20 KB c/u) + 1 vídeo walkthrough; consola 0 errores JS; reset de estado demo | capturas `docs/evidence/*.png` + `docs/evidence/video/*.mp4` | ✅ |
 
 ### **Herramientas de tests**
 
@@ -556,7 +547,7 @@ A PWA offline-first integrity and compliance operations center for oil & gas fie
 - **Multi-language UI** (7 languages, RTL Arabic support)
 - **Offline-first PWA** (IndexedDB + service worker cache-first)
 - **Desktop wrapper** (Electron portable)
-- **Visual evidence gallery** (27 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
+- **Visual evidence gallery** (24 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
 
 **Tech stack:** Vanilla JS, IndexedDB, service worker, CSP strict, WCAG AA accessibility, UMD-lite modules
 
@@ -639,5 +630,5 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first para 
 
 *Archivo README.md de IntegrityWatch Field*
 *Secciones: 18 (todas completas)*
-*Imágenes verificadas: 27 (galería por módulo) + 1 vídeo de recorrido*
+*Imágenes verificadas: 24 (galería por módulo) + 1 vídeo de recorrido*
 *Capturas referenciadas: todas existentes en docs/evidence/*

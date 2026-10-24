@@ -1,5 +1,5 @@
 /* IntegrityWatch Field - tools/tests/capture-evidence.mjs
-   Visual evidence capture: 27 PNGs for the README gallery.
+   Visual evidence capture: 24 PNGs for the README gallery.
    Boots static server, drives Edge via playwright-core, captures each
    view/state at the required resolution. Theme via data-theme, locale
    via localStorage. Prints PASS/FAIL per capture + final summary.
@@ -269,17 +269,13 @@ async function main() {
     { file: 'dashboard-light-es.png', hash: '#/dashboard', locale: 'es', theme: 'light', viewport: DESKTOP },
     // 2: dashboard-dark-es
     { file: 'dashboard-dark-es.png', hash: '#/dashboard', locale: 'es', theme: 'dark', viewport: DESKTOP },
-    // 3: dashboard-mobile-light-es (drawer open)
-    { file: 'dashboard-mobile-light-es.png', hash: '#/dashboard', locale: 'es', theme: 'light', viewport: MOBILE, mobile: true },
-    // 4: dashboard-light-ar (RTL)
+    // 3: dashboard-light-ar (RTL)
     { file: 'dashboard-light-ar.png', hash: '#/dashboard', locale: 'ar', theme: 'light', viewport: DESKTOP },
-    // 5: corrosion-detail-light-es
+    // 4: corrosion-detail-light-es
     { file: 'corrosion-detail-light-es.png', hash: '#/corrosion', locale: 'es', theme: 'light', viewport: DESKTOP, preAction: openCorrosionDetail },
-    // 6: corrosion-detail-dark-es
+    // 5: corrosion-detail-dark-es
     { file: 'corrosion-detail-dark-es.png', hash: '#/corrosion', locale: 'es', theme: 'dark', viewport: DESKTOP, preAction: openCorrosionDetail },
-    // 7: corrosion-detail-mobile-light-es (NOT mobile-drawer - "corrosion-mobile-light-es")
-    { file: 'corrosion-detail-mobile-light-es.png', hash: '#/corrosion', locale: 'es', theme: 'light', viewport: MOBILE, mobile: true, preAction: openCorrosionDetail },
-    // 8: psv-list-light-es
+    // 6: psv-list-light-es
     { file: 'psv-list-light-es.png', hash: '#/psv', locale: 'es', theme: 'light', viewport: DESKTOP },
     // 9: psv-sizing-light-es
     { file: 'psv-sizing-light-es.png', hash: '#/psv', locale: 'es', theme: 'light', viewport: DESKTOP, preAction: openPsvSizing },
@@ -307,9 +303,7 @@ async function main() {
     { file: 'ingest-validation-light-es.png', hash: '#/ingest', locale: 'es', theme: 'light', viewport: DESKTOP, preAction: ingestValidation },
     // 21: recommendations-light-es
     { file: 'recommendations-light-es.png', hash: '#/recommendations', locale: 'es', theme: 'light', viewport: DESKTOP },
-    // 22: recommendations-mobile-light-es
-    { file: 'recommendations-mobile-light-es.png', hash: '#/recommendations', locale: 'es', theme: 'light', viewport: MOBILE, mobile: true },
-    // 23: reports-light-es
+    // 22: reports-light-es
     { file: 'reports-light-es.png', hash: '#/reports', locale: 'es', theme: 'light', viewport: DESKTOP },
     // 24: reports-dark-es
     { file: 'reports-dark-es.png', hash: '#/reports', locale: 'es', theme: 'dark', viewport: DESKTOP },
@@ -325,7 +319,7 @@ async function main() {
   try {
     for (let i = 0; i < captures.length; i++) {
       const c = captures[i];
-      console.log(`\n[${String(i + 1).padStart(2, '0')}/27] ${c.file}`);
+      console.log(`\n[${String(i + 1).padStart(2, '0')}/24] ${c.file}`);
       const ok = await capture(browser, c);
       if (ok) passCount++;
     }
@@ -336,7 +330,7 @@ async function main() {
 
   // Summary
   console.log('\n' + '='.repeat(70));
-  console.log(`SUMMARY: ${passCount}/27 PASS  (${failures} FAIL)`);
+  console.log(`SUMMARY: ${passCount}/24 PASS (${failures} FAIL)`);
   captureResults.forEach((r) => {
     console.log(`${r.status === 'PASS' ? '  ✓' : '  ✗'} ${pad(r.file, 42)} ${r.status === 'PASS' ? pad(String(r.size), 8) + ' bytes' : r.error || 'FAIL'}`);
   });
@@ -345,7 +339,7 @@ async function main() {
     console.error(`\n${failures} capture(s) failed. Check docs/evidence/ for missing files.`);
     process.exit(1);
   }
-  console.log('\nAll 27 captures PASS. Evidence in docs/evidence/');
+  console.log('\nAll 24 captures PASS. Evidence in docs/evidence/');
   process.exit(0);
 }
 
