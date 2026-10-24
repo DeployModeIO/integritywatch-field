@@ -17,6 +17,7 @@ body.print-mode {
 }
 
 body.print-mode .app-header,
+body.print-mode .sys-banner,
 body.print-mode .app-sidebar,
 body.print-mode .app-footer,
 body.print-mode .toast-region,

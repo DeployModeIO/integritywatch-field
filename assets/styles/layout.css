@@ -1,5 +1,6 @@
-/* layout.css — application shell grid: header, sidebar (single column), main, footer.
-   Mobile-first (360px) up to desktop (1366x768). Sidebar collapses to a 56px icon rail
+/* layout.css — Experion PKS-inspired HMI shell: dark system bar header,
+   sys-banner status strip, industrial flat sidebar, main content, footer.
+   Mobile-first (360px) to desktop (1366x768). Sidebar collapses to icon rail
    below 900px and opens as a drawer via .app-sidebar[data-open]. */
 
 html {
@@ -13,20 +14,22 @@ body {
   display: grid;
   grid-template-areas:
     "header header"
+    "banner banner"
     "sidebar main"
     "footer footer";
   grid-template-columns: 56px minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
-/* Two-row header: top bar (brand + controls) over the alarm banner row. */
+/* ---- Header: dark HMI system bar (Experion-style) ---- */
 .app-header {
   grid-area: header;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
-  border-block-end: 1px solid var(--border);
+  background: var(--hmi-bar);
+  border-block-end: 1px solid var(--hmi-bar-border);
+  color: var(--hmi-bar-text);
 }
 
 .app-header__bar {
@@ -34,27 +37,64 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: var(--sp-2) var(--sp-3);
-  min-height: 60px;
-  padding: var(--sp-2) var(--sp-3);
+  min-height: 48px;
+  padding: var(--sp-1) var(--sp-3);
 }
 
 .app-header__controls {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--sp-2);
+  gap: var(--sp-1);
   margin-inline-start: auto;
 }
 
-/* Header selects stay compact; never stretch to full width (components.css sets 100%). */
+/* Header controls: flat dark buttons with 1px border */
+.app-header__controls .btn,
+.app-header .btn {
+  color: var(--hmi-bar-text);
+  border-color: var(--hmi-bar-border);
+  background: transparent;
+}
+
+.app-header__controls .btn:hover,
+.app-header .btn:hover {
+  background: var(--hmi-bar-border);
+}
+
+.app-header__controls .btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.app-header__controls .btn-primary:hover {
+  background: var(--accent);
+  filter: brightness(0.9);
+}
+
+/* Header selects: compact dark */
 .app-header__controls .select,
 .app-header .select {
   inline-size: auto;
   min-inline-size: 7rem;
+  background: var(--hmi-bar);
+  border-color: var(--hmi-bar-border);
+  color: var(--hmi-bar-text);
 }
 
-/* Hamburger only shows below the desktop breakpoint (900px).
-   Scoped to .app-header so its specificity beats .btn (components.css, loaded later). */
+.app-header__controls .select:focus,
+.app-header .select:focus {
+  border-color: var(--accent);
+}
+
+.app-header .rules-status {
+  color: var(--hmi-bar-text);
+  font-size: 0.8125rem;
+  opacity: 0.75;
+}
+
+/* Hamburger: only below 900px */
 .app-header .hamburger {
   display: none;
 }
@@ -65,16 +105,16 @@ body {
   }
 }
 
-/* --- Alarm banner (ASM / API-1165 style) ------------------------------------
-   Full-width second header row. Hidden with no gap when there are no alarms;
-   aria-live keeps the state announced while ISA-101 keeps the palette sober. */
+/* ---- Alarm banner (ASM / API-1165) ---- */
 .alarm-banner {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-1) var(--sp-3);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  background: var(--surface);
   border-block-start: 1px solid var(--border);
+  color: var(--text);
   transition: background-color var(--dur-2) var(--ease-out), color var(--dur-2) var(--ease-out);
 }
 
@@ -118,20 +158,26 @@ body {
   background: var(--surface);
 }
 
+/* ---- Sys-banner (status strip between header and sidebar) ---- */
+.sys-banner {
+  grid-area: banner;
+}
+
+/* ---- Brand (in HMI dark bar) ---- */
 .app-brand {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
   text-decoration: none;
-  color: var(--text);
+  color: var(--hmi-bar-text);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   min-height: 44px;
 }
 
 .app-brand__mark {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   flex: none;
   color: var(--accent);
 }
@@ -140,13 +186,25 @@ body {
   white-space: nowrap;
 }
 
+/* Small brand accent line (Honeywell red) */
+.app-brand::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 16px;
+  background: var(--brand);
+  margin-inline-start: var(--sp-1);
+  border-radius: 1px;
+}
+
+/* ---- Sidebar: industrial flat ---- */
 .app-sidebar {
   grid-area: sidebar;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-1);
+  gap: 0;
   width: 56px;
-  padding: var(--sp-2);
+  padding: 0;
   background: var(--surface);
   border-inline-end: 1px solid var(--border);
   overflow-y: auto;
@@ -158,13 +216,14 @@ body {
   align-items: center;
   gap: var(--sp-2);
   min-height: 44px;
-  padding: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   border: 0 solid transparent;
   border-inline-start-width: 3px;
-  border-radius: var(--r-1);
+  border-block-end: 1px solid var(--border);
   color: var(--muted);
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.875rem;
   white-space: nowrap;
   overflow: hidden;
   transition: background-color var(--dur-1) var(--ease-out),
@@ -180,11 +239,10 @@ body {
   display: none;
 }
 
-/* Functional nav grouping label (ISA-101 style functional taxonomy): discreet,
-   uppercase, hidden on the icon rail and shown with the labels at >=900px. */
 .app-sidebar__group-label {
   display: none;
-  margin-block-start: var(--sp-3);
+  margin-block-start: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -197,7 +255,7 @@ body {
   color: var(--text);
 }
 
-/* Active route: subtle emphasis (accent rail + heavier label) with its own transition. */
+/* Active route: accent rail 3px + surface-2 */
 .app-sidebar__item[aria-current="page"] {
   background: var(--surface-2);
   color: var(--text);
@@ -205,7 +263,7 @@ body {
   font-weight: 700;
 }
 
-/* Interactive chrome: background/border feedback animated with the short duration token. */
+/* Interactive chrome transitions */
 .btn,
 .app-header .btn,
 .app-sidebar .btn {
@@ -214,13 +272,14 @@ body {
     color var(--dur-1) var(--ease-out);
 }
 
-/* Visual separator between nav groups. */
+/* Sidebar nav group separator */
 .nav-group + .nav-group {
-  margin-block-start: var(--sp-2);
-  padding-block-start: var(--sp-2);
+  margin-block-start: var(--sp-1);
+  padding-block-start: var(--sp-1);
   border-block-start: 1px solid var(--border);
 }
 
+/* ---- Main content ---- */
 .app-main {
   grid-area: main;
   min-width: 0;
@@ -228,6 +287,7 @@ body {
   padding: var(--sp-4);
 }
 
+/* ---- Footer ---- */
 .app-footer {
   grid-area: footer;
   display: flex;
@@ -252,14 +312,14 @@ body {
   gap: var(--sp-1);
 }
 
-/* Desktop: full-width sidebar with visible labels. */
+/* ---- Desktop: full sidebar with labels ---- */
 @media (min-width: 900px) {
   body {
-    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-columns: 220px minmax(0, 1fr);
   }
 
   .app-sidebar {
-    width: 240px;
+    width: 220px;
   }
 
   .app-sidebar__label {
@@ -271,14 +331,14 @@ body {
   }
 }
 
-/* Below 900px the sidebar is an icon rail; [data-open] expands it into a drawer. */
+/* ---- Drawer mode (<900px, data-open) ---- */
 .app-sidebar[data-open] {
   position: fixed;
   inset-block: 0;
   inset-inline-start: 0;
   z-index: 900;
-  width: 240px;
-  box-shadow: var(--shadow-1);
+  width: 220px;
+  box-shadow: var(--shadow-2);
 }
 
 .app-sidebar[data-open] .app-sidebar__label {
@@ -289,14 +349,13 @@ body {
   display: block;
 }
 
-/* Alias so body.nav-open (set by shell.js) mirrors the data-open drawer state. */
 body.nav-open .app-sidebar {
   position: fixed;
   inset-block: 0;
   inset-inline-start: 0;
   z-index: 900;
-  width: 240px;
-  box-shadow: var(--shadow-1);
+  width: 220px;
+  box-shadow: var(--shadow-2);
 }
 
 body.nav-open .app-sidebar .app-sidebar__label {
@@ -307,7 +366,7 @@ body.nav-open .app-sidebar .app-sidebar__group-label {
   display: block;
 }
 
-/* Toast stack lives above everything and never intercepts pointer events. */
+/* ---- Toast region ---- */
 .toast-region {
   position: fixed;
   inset-block-end: var(--sp-3);

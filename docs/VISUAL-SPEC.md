@@ -238,3 +238,7 @@ API 610/ISO 13709, NFPA 20, ISO 8528/IEEE 446, EEMUA 191, BS 5306/BS EN 12845, N
 ABNT NBR 13714/17240, NR-26 e ISO 3864 son **patrones y principios de estándares públicos**; no se
 reproduce ni traduce texto normativo ni iconografía propietaria. El diseño, el código y los textos
 de este repositorio son propios.
+
+
+## 9. Sistema Experion-inspired (2026-10-24)
+Rediseño visual completo alineado con Honeywell Experion PKS / ISA-101 HMI alto rendimiento. Paleta industrial plata+grafito, shell HMI oscuro con reloj de planta y sys-banner de estado, faceplates KPI con LED animado, badges cuadrados con LED, tablas DCS densas, cerco glassmorphism/gradientes/scanlines. Ver tokens.css (nuevos --hmi-bar, --led-ok/warn/crit, --panel-header-bg, --brand), layout.css, components.css y shell.js.

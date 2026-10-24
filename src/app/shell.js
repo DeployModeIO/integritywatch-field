@@ -39,6 +39,11 @@
   var _alarmBannerText = null;
   var _alarmBannerAction = null;
   var _alarmBannerActionLabel = null;
+  var _sysBanner = null;
+  var _sysBannerLed = null;
+  var _sysBannerText = null;
+  var _sysClock = null;
+  var _clockTimer = null;
 
   var SECTORS = ['upstream', 'midstream', 'downstream'];
 
@@ -135,6 +140,99 @@
     if (_alarmBannerActionLabel) { _alarmBannerActionLabel.textContent = t('dashboard.viewAll'); }
   }
 
+  function buildNav() {
+    var nav = el('nav', { class: 'app-sidebar', attrs: { id: 'app-nav', 'aria-label': t('common.appName') } });
+    _navEl = nav;
+    _navGroupLabels = [];
+    NAV_GROUPS.forEach(function (g) {
+      var group = el('div', { class: 'nav-group' });
+      if (g.labelKey) {
+        var groupLabel = el('span', { class: 'app-sidebar__group-label', text: t(g.labelKey) });
+        _navGroupLabels.push({ el: groupLabel, key: g.labelKey });
+        group.appendChild(groupLabel);
+      }
+      g.items.forEach(function (item) {
+        var viewId = item[0];
+        var a = el('a', { class: 'app-sidebar__item', attrs: { href: item[2] }, dataset: { view: viewId } },
+          el('span', { class: 'icon' }, icon(item[1], 20)),
+          _navLabels[viewId] = el('span', { class: 'app-sidebar__label', text: t('nav.' + viewId) }));
+        _navLinks[viewId] = a;
+        group.appendChild(a);
+      });
+      nav.appendChild(group);
+    });
+    return nav;
+  }
+
+  function buildFooter() {
+    var footer = el('footer', { class: 'app-footer' });
+    _disclaimerEl = el('p', { class: 'disclaimer', text: t('common.disclaimer') });
+    footer.appendChild(_disclaimerEl);
+    var standards = (root.IW.data && root.IW.data.standards && root.IW.data.standards.standards) || STATIC_STANDARD_CODES;
+    var chips = el('div', { class: 'standard-chips' });
+    standards.forEach(function (s) {
+      var code = typeof s === 'string' ? s : s.code;
+      if (code) { chips.appendChild(el('span', { class: 'pill', text: code })); }
+    });
+    footer.appendChild(chips);
+    return footer;
+  }
+
+  function buildSysBanner() {
+    _sysBannerLed = el('span', { class: 'led led--ok', attrs: { 'aria-hidden': 'true' } });
+    _sysBannerText = el('span', { text: t('common.ok') });
+    _sysBanner = el('div', {
+      class: 'sys-banner',
+      attrs: { id: 'sys-banner', role: 'status' }
+    }, _sysBannerLed, _sysBannerText);
+    return _sysBanner;
+  }
+
+  function updateSysBanner() {
+    if (!_sysBanner || !_sysBannerLed || !_sysBannerText) { return; }
+    var countEl = _badgeCount;
+    var count = countEl ? parseInt(countEl.textContent, 10) || 0 : 0;
+    var isCrit = false;
+    /* Check if any visible severity badge on the page is critical */
+    if (typeof document !== 'undefined') {
+      var critBadges = document.querySelectorAll('.badge-severe, [class*="badge-severe"]');
+      isCrit = critBadges.length > 0;
+    }
+    if (isCrit) {
+      _sysBanner.className = 'sys-banner sys-banner--crit';
+      _sysBannerLed.className = 'led led--crit-blink';
+      _sysBannerText.textContent = t('common.critical');
+    } else if (count > 0) {
+      _sysBanner.className = 'sys-banner sys-banner--warn';
+      _sysBannerLed.className = 'led led--warn';
+      _sysBannerText.textContent = t('common.warning');
+    } else {
+      _sysBanner.className = 'sys-banner';
+      _sysBannerLed.className = 'led led--ok';
+      _sysBannerText.textContent = t('common.ok');
+    }
+  }
+
+  function updateClock() {
+    if (!_sysClock) { return; }
+    var locale = (_i18n && typeof _i18n.getLocale === 'function') ? _i18n.getLocale() : 'en';
+    try {
+      _sysClock.textContent = new Date().toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    } catch (e) {
+      _sysClock.textContent = new Date().toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    }
+  }
+
+  function startClock() {
+    if (_clockTimer) { clearInterval(_clockTimer); }
+    updateClock();
+    _clockTimer = setInterval(updateClock, 1000);
+  }
+
+  function stopClock() {
+    if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; }
+  }
+
   function buildHeader() {
     var header = el('header', { class: 'app-header' });
     var bar = el('div', { class: 'app-header__bar' });
@@ -183,48 +281,14 @@
     controls.appendChild(el('button', { class: 'btn btn-primary', attrs: { id: 'run-rules' }, on: { click: function () { runRules(false); } } },
       icon('play', 18), _runRulesLabel));
 
+    /* Plant clock — far right */
+    _sysClock = el('span', { attrs: { id: 'sys-clock', 'aria-hidden': 'true' } });
+    controls.appendChild(_sysClock);
+
     bar.appendChild(controls);
     header.appendChild(bar);
     header.appendChild(buildAlarmBanner());
     return header;
-  }
-
-  function buildNav() {
-    var nav = el('nav', { class: 'app-sidebar', attrs: { id: 'app-nav', 'aria-label': t('common.appName') } });
-    _navEl = nav;
-    _navGroupLabels = [];
-    NAV_GROUPS.forEach(function (g) {
-      var group = el('div', { class: 'nav-group' });
-      if (g.labelKey) {
-        var groupLabel = el('span', { class: 'app-sidebar__group-label', text: t(g.labelKey) });
-        _navGroupLabels.push({ el: groupLabel, key: g.labelKey });
-        group.appendChild(groupLabel);
-      }
-      g.items.forEach(function (item) {
-        var viewId = item[0];
-        var a = el('a', { class: 'app-sidebar__item', attrs: { href: item[2] }, dataset: { view: viewId } },
-          el('span', { class: 'icon' }, icon(item[1], 20)),
-          _navLabels[viewId] = el('span', { class: 'app-sidebar__label', text: t('nav.' + viewId) }));
-        _navLinks[viewId] = a;
-        group.appendChild(a);
-      });
-      nav.appendChild(group);
-    });
-    return nav;
-  }
-
-  function buildFooter() {
-    var footer = el('footer', { class: 'app-footer' });
-    _disclaimerEl = el('p', { class: 'disclaimer', text: t('common.disclaimer') });
-    footer.appendChild(_disclaimerEl);
-    var standards = (root.IW.data && root.IW.data.standards && root.IW.data.standards.standards) || STATIC_STANDARD_CODES;
-    var chips = el('div', { class: 'standard-chips' });
-    standards.forEach(function (s) {
-      var code = typeof s === 'string' ? s : s.code;
-      if (code) { chips.appendChild(el('span', { class: 'pill', text: code })); }
-    });
-    footer.appendChild(chips);
-    return footer;
   }
 
   function buildShell() {
@@ -233,6 +297,7 @@
     _skipLinkEl = el('a', { class: 'skip-link', attrs: { href: '#main' }, text: t('a11y.skipLink') });
     _root.appendChild(_skipLinkEl);
     _root.appendChild(buildHeader());
+    _root.appendChild(buildSysBanner());
     _root.appendChild(buildNav());
     _root.appendChild(el('main', { class: 'app-main', attrs: { id: 'main', tabindex: '-1' } }));
     _root.appendChild(buildFooter());
@@ -339,6 +404,8 @@
     if (_runRulesLabel) { _runRulesLabel.textContent = t('dashboard.runRules'); }
     if (_disclaimerEl) { _disclaimerEl.textContent = t('common.disclaimer'); }
     if (_alarmBannerActionLabel) { _alarmBannerActionLabel.textContent = t('dashboard.viewAll'); }
+    updateSysBanner();
+    updateClock();
     updateRulesStatus();
     refreshRecs();
   }
@@ -361,11 +428,13 @@
       }
       syncBadgeLabel();
       renderAlarmBanner(critical, warning);
+      updateSysBanner();
       return { critical: critical, warning: warning };
     }).catch(function (err) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] recommendations list failed', err); }
       if (_badgeEl) { _badgeEl.hidden = true; }
       renderAlarmBanner(0, 0);
+      updateSysBanner();
       return { critical: 0, warning: 0 };
     });
   }
@@ -474,6 +543,7 @@
     bindChromeEvents();
     bindEvents();
     updateThemeIcon();
+    startClock();
     loadSettings();
     return { refreshRecs: refreshRecs, runRules: runRules, getSector: function () { return _sector; } };
   }

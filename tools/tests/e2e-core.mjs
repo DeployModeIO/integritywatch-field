@@ -429,7 +429,7 @@ async function main() {
       if (c.mobile) {
         assert(m.hamburgerShown, `${c.w}px: .hamburger hidden (expected visible ≤900)`);
       } else {
-        assert(m.navWidth >= 232 && m.navWidth <= 248, `${c.w}px: nav width=${m.navWidth} (expected ~240)`);
+        assert(m.navWidth >= 212 && m.navWidth <= 228, `${c.w}px: nav width=${m.navWidth} (expected ~220)`);
         assert(!m.hamburgerShown,
           `${c.w}px: .hamburger display=${m.hamDisplay} (mqMobile=${m.mqMobile}); expected hidden >900 ` +
           '(CSS: layout.css .hamburger{display:none} is overridden by components.css .btn{display:inline-flex})');

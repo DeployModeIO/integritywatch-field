@@ -147,7 +147,7 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 
 ## Recorrido en vídeo
 
-**Vídeo:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈2:04 min, ~2,4 MB).
+**Vídeo:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1,5 MB).
 
 Recorrido grabado de extremo a extremo de la aplicación: arranque y panel, navegación por Corrosión, PSV (dimensionamiento API 520/526), Oleoductos y mapa, APM, Ingesta, Recomendaciones, Informes y Glosario — en los idiomas y temas soportados.
 

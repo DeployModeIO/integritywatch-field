@@ -1,76 +1,91 @@
-/* tokens.css — design tokens (light + dark)
-   Frozen inventory per CONTRACTS.md §3; values verified for WCAG 2.1 AA contrast. */
+/* tokens.css — Experion PKS-inspired design tokens (light + dark)
+   Industrial DCS HMI palette: grey dominates, colour only informs.
+   Frozen inventory per CONTRACTS.md §3; WCAG 2.1 AA verified. */
 
 :root {
-  /* Surfaces */
-  --bg: #f4f6f8;
-  --surface: #ffffff;
-  --surface-2: #e9edf1;
-  --border: #c9d3dc;
+  /* ---- Surface stack (silver industrial canvas) ---- */
+  --bg: #d7dbdf;
+  --surface: #eceef0;
+  --surface-2: #dde1e5;
+  --border: #9aa3ac;
 
-  /* Text */
-  --text: #1a2430;
-  --muted: #5a6b7c;
-  --accent: #0b5cad;
+  /* ---- Text ---- */
+  --text: #14181c;
+  --muted: #49535d;
+  --accent: #005f87;
   --accent-text: #ffffff;
+  --brand: #c41230;
 
-  /* Severity (text / graphic on surface) */
+  /* ---- Severity (AA contrast verified) ---- */
   --sev-low: #1e7a34;
-  /* moderate (#7a5200) and high (#8f4208) are darkened for WCAG 2.1 AA:
-     >=4.5:1 on their tinted backgrounds (--sev-moderate-bg #fbf1d7 and
-     --sev-high-bg #fbe9dc) and >=4.5:1 on --surface #ffffff. */
   --sev-moderate: #7a5200;
   --sev-high: #8f4208;
   --sev-severe: #b42318;
 
-  /* Alerts */
   --alert-critical: #b42318;
   --alert-warning: #9a6700;
-  --alert-info: #0b5cad;
+  --alert-info: #005f87;
 
-  /* Severity tinted surfaces */
   --sev-low-bg: #e5f3e9;
   --sev-moderate-bg: #fbf1d7;
   --sev-high-bg: #fbe9dc;
   --sev-severe-bg: #fae3e1;
 
-  /* Scale */
+  /* ---- Scale ---- */
   --sp-1: 4px;
   --sp-2: 8px;
   --sp-3: 12px;
   --sp-4: 16px;
   --sp-5: 24px;
   --sp-6: 32px;
-  --r-1: 6px;
-  --r-2: 10px;
 
-  /* Motion (Linear/Vercel-style: short, eased, restrained) */
+  /* ---- Radius (industrial: 2-3px) ---- */
+  --r-1: 2px;
+  --r-2: 3px;
+
+  /* ---- Motion ---- */
   --dur-1: 120ms;
   --dur-2: 200ms;
   --dur-3: 300ms;
   --ease-out: cubic-bezier(.2, .8, .2, 1);
   --ease-in-out: cubic-bezier(.4, 0, .2, 1);
 
-  /* Typography */
-  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* ---- Typography ---- */
+  --font-ui: "Segoe UI", Tahoma, system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --font-mono: Consolas, ui-monospace, SFMono-Regular, "SF Mono", Menlo, "Liberation Mono", monospace;
+  --font-ui-size: 0.9375rem;
 
-  /* Flat shadow (no decorative gradients) */
-  --shadow-1: 0 1px 2px rgba(16, 24, 32, 0.12), 0 1px 3px rgba(16, 24, 32, 0.08);
-  --shadow-2: 0 4px 8px rgba(16, 24, 32, 0.12), 0 2px 4px rgba(16, 24, 32, 0.08);
-  --shadow-3: 0 12px 24px rgba(16, 24, 32, 0.15), 0 4px 8px rgba(16, 24, 32, 0.1);
+  /* ---- Shadows (flat minimal) ---- */
+  --shadow-1: 0 1px 0 rgba(20, 24, 28, .08);
+  --shadow-2: 0 1px 2px rgba(20, 24, 28, .12);
+  --shadow-3: 0 2px 6px rgba(20, 24, 28, .16);
+
+  /* ---- HMI shell ---- */
+  --hmi-bar: #23282e;
+  --hmi-bar-text: #e6eaee;
+  --hmi-bar-border: #3a4149;
+
+  /* ---- LED indicators ---- */
+  --led-ok: #1e7a34;
+  --led-warn: #e3b341;
+  --led-crit: #e0434f;
+
+  /* ---- Panel header ---- */
+  --panel-header-bg: #dde1e5;
 }
 
+/* ---- Dark: control-room graphite ---- */
 [data-theme="dark"] {
-  --bg: #11161c;
-  --surface: #1a2129;
-  --surface-2: #232c36;
-  --border: #33404d;
+  --bg: #101418;
+  --surface: #181d23;
+  --surface-2: #20262d;
+  --border: #39424b;
 
-  --text: #e8edf2;
-  --muted: #9fb0bf;
-  --accent: #5aa9e6;
-  --accent-text: #08131f;
+  --text: #e6eaee;
+  --muted: #9aa8b4;
+  --accent: #4da3c7;
+  --accent-text: #0b1a24;
+  --brand: #e0354f;
 
   --sev-low: #57c97e;
   --sev-moderate: #e3b341;
@@ -79,30 +94,39 @@
 
   --alert-critical: #f26d6d;
   --alert-warning: #e3b341;
-  --alert-info: #5aa9e6;
+  --alert-info: #4da3c7;
 
   --sev-low-bg: #1c2f22;
   --sev-moderate-bg: #33290f;
   --sev-high-bg: #38210f;
   --sev-severe-bg: #3a1512;
 
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-2: 0 4px 8px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-3: 0 12px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-1: 0 1px 0 rgba(0, 0, 0, .25);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, .35);
+  --shadow-3: 0 2px 6px rgba(0, 0, 0, .45);
+
+  --hmi-bar: #0b0e12;
+  --hmi-bar-text: #d0d6dd;
+  --hmi-bar-border: #2a3038;
+  --led-ok: #57c97e;
+  --led-warn: #e3b341;
+  --led-crit: #f26d6d;
+  --panel-header-bg: #20262d;
 }
 
 /* System preference fallback: only when no explicit theme attribute exists yet. */
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]) {
-    --bg: #11161c;
-    --surface: #1a2129;
-    --surface-2: #232c36;
-    --border: #33404d;
+    --bg: #101418;
+    --surface: #181d23;
+    --surface-2: #20262d;
+    --border: #39424b;
 
-    --text: #e8edf2;
-    --muted: #9fb0bf;
-    --accent: #5aa9e6;
-    --accent-text: #08131f;
+    --text: #e6eaee;
+    --muted: #9aa8b4;
+    --accent: #4da3c7;
+    --accent-text: #0b1a24;
+    --brand: #e0354f;
 
     --sev-low: #57c97e;
     --sev-moderate: #e3b341;
@@ -111,15 +135,23 @@
 
     --alert-critical: #f26d6d;
     --alert-warning: #e3b341;
-    --alert-info: #5aa9e6;
+    --alert-info: #4da3c7;
 
     --sev-low-bg: #1c2f22;
     --sev-moderate-bg: #33290f;
     --sev-high-bg: #38210f;
     --sev-severe-bg: #3a1512;
 
-    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-2: 0 4px 8px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-3: 0 12px 24px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-1: 0 1px 0 rgba(0, 0, 0, .25);
+    --shadow-2: 0 1px 2px rgba(0, 0, 0, .35);
+    --shadow-3: 0 2px 6px rgba(0, 0, 0, .45);
+
+    --hmi-bar: #0b0e12;
+    --hmi-bar-text: #d0d6dd;
+    --hmi-bar-border: #2a3038;
+    --led-ok: #57c97e;
+    --led-warn: #e3b341;
+    --led-crit: #f26d6d;
+    --panel-header-bg: #20262d;
   }
 }

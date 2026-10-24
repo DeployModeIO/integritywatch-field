@@ -3,29 +3,24 @@
 
 /* --- View scaffolding -------------------------------------------------------- */
 
-/* Replayed on every route render (router toggles .view-enter) for a restrained
-   fade + 4px rise; neutralised by prefers-reduced-motion in base.css. */
-@keyframes viewIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.view-enter {
-  animation: viewIn var(--dur-2) var(--ease-out);
-}
+/* View entry animation handled in base.css via #view > * */
 
 .rules-last-run {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--muted);
 }
 
 .section-title {
-  font-size: 1.125rem;
+  font-size: 1rem;
+  font-weight: 700;
   margin: 0 0 var(--sp-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
 }
 
 .section-hint {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--muted);
   margin-block-end: var(--sp-3);
 }
@@ -50,7 +45,31 @@
   to { transform: rotate(360deg); }
 }
 
-/* --- KPI cards ------------------------------------------------------------------ */
+/* --- KPI faceplates (Experion-style) ----------------------------------------- */
+
+.kpi {
+  border-radius: var(--r-2);
+}
+
+/* Faceplate header: thin surface-2 strip with uppercase title */
+.kpi::before {
+  display: none; /* reset any pseudo */
+}
+
+/* If the KPI is wrapped in a faceplate container, style the header */
+.kpi .kpi__label {
+  padding: var(--sp-1) var(--sp-3);
+  background: var(--panel-header-bg);
+  margin: calc(-1 * var(--sp-3));
+  margin-block-end: var(--sp-2);
+  border-block-end: 1px solid var(--border);
+  border-radius: var(--r-2) var(--r-2) 0 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
 .kpi__icon {
   display: inline-flex;
@@ -58,10 +77,16 @@
   color: var(--muted);
 }
 
-/* ISA-101 reference/limit context line shown under the KPI value. */
 .kpi-context {
   font-size: 0.75rem;
   color: var(--muted);
+}
+
+.kpi__value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 /* --- Heatmap -------------------------------------------------------------------- */

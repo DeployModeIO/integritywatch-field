@@ -63,7 +63,7 @@ test('hamburger hidden >=900px and shown below 900px', () => {
 test('nav groups separated by a logical block border', () => {
   assert.match(
     layoutCss,
-    /\.nav-group \+ \.nav-group\s*\{[^}]*margin-block-start:\s*var\(--sp-2\);[^}]*padding-block-start:\s*var\(--sp-2\);[^}]*border-block-start:\s*1px solid var\(--border\);/s
+    /\.nav-group \+ \.nav-group\s*\{[^}]*margin-block-start:\s*var\(--sp-1\);[^}]*padding-block-start:\s*var\(--sp-1\);[^}]*border-block-start:\s*1px solid var\(--border\);/s
   );
 });
 

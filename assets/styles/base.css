@@ -32,7 +32,7 @@ html[data-theme="dark"] {
 body {
   min-height: 100%;
   font-family: var(--font-ui);
-  font-size: 1rem;
+  font-size: var(--font-ui-size);
   line-height: 1.5;
   background: var(--bg);
   color: var(--text);
@@ -40,12 +40,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
   font-weight: 700;
 }
@@ -58,17 +53,12 @@ a {
   color: var(--accent);
 }
 
-img,
-svg,
-video {
+img, svg, video {
   display: block;
   max-width: 100%;
 }
 
-button,
-input,
-select,
-textarea {
+button, input, select, textarea {
   font: inherit;
   color: inherit;
 }
@@ -79,8 +69,7 @@ button {
   cursor: pointer;
 }
 
-ul,
-ol {
+ul, ol {
   padding-inline-start: var(--sp-5);
 }
 
@@ -143,8 +132,97 @@ table {
   font-size: 0.875rem;
 }
 
-/* Motion system: honour prefers-reduced-motion for every transition/animation
-   added with the --dur-* / --ease-out tokens (view-enter, nav, buttons, banner). */
+/* ---- LED pulse animation (control-room subtle, stops on reduced-motion) ---- */
+@keyframes led-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes led-blink-crit {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+.led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: var(--r-1);
+}
+
+.led--ok {
+  background: var(--led-ok);
+  animation: led-pulse 1.6s ease-in-out infinite;
+}
+
+.led--warn {
+  background: var(--led-warn);
+  animation: led-pulse 1.6s ease-in-out infinite;
+}
+
+.led--crit {
+  background: var(--led-crit);
+}
+
+.led--crit-blink {
+  background: var(--led-crit);
+  animation: led-blink-crit 1s steps(2) infinite;
+}
+
+/* ---- Sys-banner (status strip below header) ---- */
+.sys-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  min-height: 28px;
+  background: var(--surface);
+  border-block-end: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sys-banner--warn {
+  background: var(--sev-moderate-bg);
+  color: var(--sev-moderate);
+  border-block-end-color: var(--sev-moderate);
+}
+
+.sys-banner--crit {
+  background: var(--sev-severe-bg);
+  color: var(--sev-severe);
+  border-block-end-color: var(--sev-severe);
+  box-shadow: inset 0 1px 8px rgba(180, 35, 24, 0.18);
+}
+
+/* ---- Plant clock in header ---- */
+#sys-clock {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--hmi-bar-text);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--sp-2);
+}
+
+/* ---- View entry animation ---- */
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#view > * {
+  animation: viewIn 160ms var(--ease-out);
+}
+
+/* ---- Motion system: honour prefers-reduced-motion ---- */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -153,5 +231,9 @@ table {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  #view > * {
+    animation: none !important;
   }
 }

@@ -22,9 +22,9 @@ test('tokens.css declares new motion tokens: --dur-3, --ease-in-out', () => {
 });
 
 test('tokens.css declares new shadow tokens: --shadow-2, --shadow-3 (light & dark)', () => {
-  // Light theme (root)
-  assert.match(tokensCss, /--shadow-2:\s*[^;]+rgba\(16, 24, 32/);
-  assert.match(tokensCss, /--shadow-3:\s*[^;]+rgba\(16, 24, 32/);
+  // Light theme (root) — Experion-spec: 20,24,28 shadow base
+  assert.match(tokensCss, /--shadow-2:\s*[^;]+rgba\(20, 24, 28/);
+  assert.match(tokensCss, /--shadow-3:\s*[^;]+rgba\(20, 24, 28/);
   // Dark theme
   assert.match(tokensCss, /\[data-theme="dark"\]/);
   const darkSection = tokensCss.match(/\[data-theme="dark"\]\s*\{[\s\S]*?\}/);
@@ -49,8 +49,8 @@ test('components.css defines toast & dialog keyframes and applies them', () => {
   assert.match(componentsCss, /\.dialog\s*\{[^}]*animation:\s*dialog-scale-in\s+var\(--dur-2\)\s+var\(--ease-out\)/);
 });
 
-test('components.css defines .btn:active micro-interaction (scale 0.98)', () => {
-  assert.match(componentsCss, /\.btn:active:not\(:disabled\)\s*\{[^}]*transform:\s*scale\(0\.98\)/);
+test('components.css defines .btn:active micro-interaction (translateY 1px)', () => {
+  assert.match(componentsCss, /\.btn:active:not\(:disabled\)\s*\{[^}]*transform:\s*translateY\(1px\)/);
 });
 
 test('components.css has reduced-motion overrides for new animations', () => {

@@ -1,5 +1,6 @@
-/* components.css — utility and component classes per CONTRACTS.md §3.
-   Touch targets >= 44x44px; severity is always color + shape (never color alone). */
+/* components.css — industrial utility and component classes per CONTRACTS.md §3.
+   Flat panels, 1px borders, no decorative gradients. Touch >= 44x44px.
+   Severity = colour + shape (never colour alone). */
 
 /* --- Accessibility helpers ------------------------------------------------- */
 
@@ -66,13 +67,12 @@
 
 .card--elevated {
   box-shadow: var(--shadow-2);
-  border-color: var(--border);
 }
 
 .card > h2,
 .card > h3 {
   margin-block: 0 var(--sp-2);
-  font-size: 1.0625rem;
+  font-size: 1rem;
 }
 
 .card + .card {
@@ -85,14 +85,13 @@
   gap: var(--sp-3);
 }
 
-/* Listings of cards/panels (detail panels, glossaries, admin sections). */
 .grid-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--sp-3);
 }
 
-/* Page header: title on the start, actions pushed to the end. */
+/* Page header: title start, actions end */
 .page-header {
   display: flex;
   flex-wrap: wrap;
@@ -103,7 +102,7 @@
 
 .page-header h1 {
   margin: 0;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .page-header .actions {
@@ -113,7 +112,7 @@
   flex-wrap: wrap;
 }
 
-/* Page toolbar: filters and compact inline controls. */
+/* Page toolbar */
 .page-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -128,7 +127,7 @@
   min-inline-size: 10rem;
 }
 
-/* Two-column form grid (>=700px collapses to one column below). */
+/* Form grid */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -143,7 +142,7 @@
   grid-column: 1 / -1;
 }
 
-/* --- Buttons --------------------------------------------------------------- */
+/* --- Buttons (flat industrial) --------------------------------------------- */
 
 .btn {
   display: inline-flex;
@@ -158,12 +157,17 @@
   background: var(--surface);
   color: var(--text);
   font-weight: 600;
+  font-size: 0.875rem;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .btn:hover {
   background: var(--surface-2);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .btn:disabled {
@@ -179,7 +183,7 @@
 
 .btn-primary:hover {
   background: var(--accent);
-  filter: brightness(0.92);
+  filter: brightness(0.9);
 }
 
 .btn-ghost {
@@ -192,13 +196,13 @@
 }
 
 .btn-danger {
-  background: var(--sev-severe);
-  border-color: var(--sev-severe);
-  color: #ffffff;
+  border-color: var(--brand);
+  color: var(--brand);
+  background: transparent;
 }
 
 .btn-danger:hover {
-  filter: brightness(0.9);
+  background: var(--sev-severe-bg);
 }
 
 /* --- Forms ----------------------------------------------------------------- */
@@ -229,6 +233,8 @@
 .input:focus,
 .select:focus {
   border-color: var(--accent);
+  outline: none;
+  box-shadow: none;
 }
 
 .input[aria-invalid="true"],
@@ -249,7 +255,7 @@
   color: var(--muted);
 }
 
-/* --- Tables ----------------------------------------------------------------- */
+/* --- Tables (DCS dense) ---------------------------------------------------- */
 
 .table-wrap {
   overflow-x: auto;
@@ -259,11 +265,11 @@
 
 table.data {
   width: 100%;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 table.data caption {
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
   text-align: start;
   font-weight: 600;
   color: var(--muted);
@@ -275,22 +281,23 @@ table.data thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  min-block-size: 40px;
-  padding: var(--sp-2) var(--sp-3);
+  min-block-size: 36px;
+  padding: 6px 10px;
   text-align: start;
   background: var(--surface-2);
   color: var(--text);
   border-block-end: 1px solid var(--border);
   font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-/* ISA-101 enterprise rhythm: uniform 40px minimum row height, hover only (no
-   zebra striping, which competes with severity colour). */
 table.data tbody th,
 table.data tbody td {
-  min-block-size: 40px;
-  padding: var(--sp-2) var(--sp-3);
+  min-block-size: 36px;
+  padding: 6px 10px;
   border-block-end: 1px solid var(--border);
   text-align: start;
   vertical-align: top;
@@ -300,18 +307,20 @@ table.data tbody tr:hover {
   background: var(--surface-2);
 }
 
-/* --- Badges and severity shapes -------------------------------------------- */
+/* --- Badges and severity shapes (SQUARED, with LED) ------------------------ */
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-1);
+  gap: 6px;
   min-height: 24px;
-  padding: var(--sp-1) var(--sp-2);
+  padding: 2px 8px;
   border: 1px solid transparent;
-  border-radius: 999px;
-  font-size: 0.8125rem;
+  border-radius: var(--r-1);
+  font-size: 0.75rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .badge-low {
@@ -338,7 +347,22 @@ table.data tbody tr:hover {
   border-color: var(--sev-severe);
 }
 
-/* Redundant shape channel (color-blind safe). */
+/* Badge LED square */
+.badge::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-1);
+  flex: none;
+}
+
+.badge-low::before { background: var(--sev-low); }
+.badge-moderate::before { background: var(--sev-moderate); }
+.badge-high::before { background: var(--sev-high); }
+.badge-severe::before { background: var(--sev-severe); }
+
+/* Shape encodings (color-blind safe) */
 .shape {
   position: relative;
   display: inline-block;
@@ -353,7 +377,7 @@ table.data tbody tr:hover {
 }
 
 .shape-moderate {
-  border-radius: 2px;
+  border-radius: var(--r-1);
   background: var(--sev-moderate);
 }
 
@@ -381,13 +405,8 @@ table.data tbody tr:hover {
   background: var(--sev-severe);
 }
 
-.shape-severe::before {
-  transform: rotate(45deg);
-}
-
-.shape-severe::after {
-  transform: rotate(-45deg);
-}
+.shape-severe::before { transform: rotate(45deg); }
+.shape-severe::after { transform: rotate(-45deg); }
 
 /* --- Small elements --------------------------------------------------------- */
 
@@ -396,12 +415,14 @@ table.data tbody tr:hover {
   align-items: center;
   gap: var(--sp-1);
   padding: var(--sp-1) var(--sp-2);
-  border-radius: 999px;
+  border-radius: var(--r-1);
   background: var(--surface-2);
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
 }
 
+/* KPI / faceplate */
 .kpi {
   display: flex;
   flex-direction: column;
@@ -413,15 +434,17 @@ table.data tbody tr:hover {
 }
 
 .kpi__label {
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .kpi__value {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  font-size: 1.75rem;
+  font-size: 1.625rem;
   font-weight: 700;
 }
 
@@ -433,7 +456,7 @@ table.data tbody tr:hover {
 
 .tabs-nav {
   display: flex;
-  gap: var(--sp-1);
+  gap: 0;
   border-block-end: 1px solid var(--border);
   overflow-x: auto;
 }
@@ -446,6 +469,7 @@ table.data tbody tr:hover {
   border-block-end: 3px solid transparent;
   color: var(--muted);
   font-weight: 600;
+  font-size: 0.875rem;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -467,7 +491,7 @@ table.data tbody tr:hover {
   padding-block-start: var(--sp-3);
 }
 
-/* --- Dialog ------------------------------------------------------------------- */
+/* --- Dialog (flat panel with surface-2 header) ----------------------------- */
 
 .dialog {
   position: fixed;
@@ -483,10 +507,9 @@ table.data tbody tr:hover {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-2);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-2);
 }
 
-/* Backdrop behind the centered modal card. */
 .dialog::before {
   content: "";
   position: fixed;
@@ -503,11 +526,12 @@ table.data tbody tr:hover {
   gap: var(--sp-2);
   padding: var(--sp-3) var(--sp-4);
   border-block-end: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
 .dialog-title {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 700;
 }
 
@@ -527,7 +551,7 @@ table.data tbody tr:hover {
   border-block-start: 1px solid var(--border);
 }
 
-/* --- Toast --------------------------------------------------------------------- */
+/* --- Toast (flat panel with severity sidebar) ------------------------------ */
 
 .toast {
   display: flex;
@@ -538,7 +562,7 @@ table.data tbody tr:hover {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-inline-start: 4px solid var(--alert-info);
+  border-inline-start: 3px solid var(--alert-info);
   border-radius: var(--r-1);
   box-shadow: var(--shadow-1);
 }
@@ -686,7 +710,7 @@ table.data tbody tr:hover {
   background: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--r-1);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -786,7 +810,6 @@ table.data tbody tr:hover {
   gap: var(--sp-2);
 }
 
-/* Left text stack of a gauge KPI: label + value + ISA-101 reference line. */
 .kpi__body {
   display: flex;
   flex-direction: column;
@@ -795,7 +818,6 @@ table.data tbody tr:hover {
   min-inline-size: 0;
 }
 
-/* Right column: the gauge keeps its intrinsic size and never shrinks. */
 .kpi__gauge {
   display: flex;
   align-items: center;
@@ -843,7 +865,7 @@ table.data tbody tr:hover {
   to { background-position: 0 50%; }
 }
 
-/* --- Toast & Dialog motion (Linear-style) ----------------------------------- */
+/* --- Toast & Dialog motion (flat) ------------------------------------------- */
 
 @keyframes toast-slide-in {
   from { opacity: 0; transform: translateX(100%); }
@@ -872,13 +894,7 @@ table.data tbody tr:hover {
   animation: dialog-scale-in var(--dur-2) var(--ease-out);
 }
 
-/* --- Button micro-interactions ----------------------------------------------- */
-
-.btn:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* --- Reduced motion overrides (consolidated) -------------------------------- */
+/* --- Reduced motion overrides ----------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton,

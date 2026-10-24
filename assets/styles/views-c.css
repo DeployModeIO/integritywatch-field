@@ -1,4 +1,4 @@
-/* views-c.css — styles for views: ingest, recommendations, reports, glossary, admin (owned by T10).
+/* views-c.css — styles for views: ingest, recommendations, reports, glossary, admin.
    Logical properties only (RTL-safe); report sheet is a white A4 preview. */
 
 /* --- Ingest ------------------------------------------------------------------- */
@@ -112,7 +112,7 @@
 
 .rules-status {
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
 
 /* --- Reports ------------------------------------------------------------------ */
@@ -166,7 +166,7 @@
   flex-direction: column;
   gap: var(--sp-3);
   padding-block-end: var(--sp-5);
-  border-block-end: 4px solid var(--accent);
+  border-block-end: 3px solid var(--accent);
   margin-block-end: var(--sp-5);
 }
 
@@ -366,7 +366,9 @@
 }
 
 .admin-section h2 {
-  font-size: 1.125rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin-block-end: var(--sp-3);
   border-block-end: 1px solid var(--border);
   padding-block-end: var(--sp-2);
