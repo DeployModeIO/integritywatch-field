@@ -1,5 +1,5 @@
 /* IntegrityWatch Field — rules definitions
-   Pure rule catalogue R1–R14 evaluated over a state snapshot (SCHEMA §3, TESTS §11). */
+   Pure rule catalogue R1–R15 evaluated over a state snapshot (SCHEMA §3, TESTS §11). */
 (function (root, factory) {
   'use strict';
   var api = factory(root);
@@ -18,12 +18,16 @@
   if (typeof require === 'function' && !(root.IW && root.IW.calc && root.IW.calc.apm)) {
     try { require('../calc/apm.js'); } catch (e) { /* ignore */ }
   }
+  if (typeof require === 'function' && !(root.IW && root.IW.calc && root.IW.calc.remainingLife)) {
+    try { require('../calc/remainingLife.js'); } catch (e) { /* ignore */ }
+  }
 
   var HOUR_MS = 3600000;
   var DAY_MS = 86400000;
 
   function corrosion() { return (root.IW && root.IW.calc) ? root.IW.calc.corrosion : null; }
   function apm() { return (root.IW && root.IW.calc) ? root.IW.calc.apm : null; }
+  function remainingLife() { return (root.IW && root.IW.calc) ? root.IW.calc.remainingLife : null; }
 
   function parse(iso) { return Date.parse(iso); }
   function r2(v) { return Math.round(v * 100) / 100; }
@@ -471,6 +475,26 @@
     return findings;
   }
 
+  // R15: monitoring point with tNom+tMin and >=2 CR readings whose RUL < 12 months -> high
+  function R15(state) {
+    var rl = remainingLife();
+    if (!rl || typeof rl.rulFromCorrosionRates !== 'function') { return []; }
+    var findings = [];
+    (state.monitoringPoints || []).forEach(function (mp) {
+      if (mp.tMin == null || mp.tNom == null) { return; }
+      var rdgs = readingsFor(state, mp.id);
+      if (rdgs.length < 2) { return; }
+      var series = rdgs.map(function (r) { return { date: r.date, value: r.crMpy }; });
+      var result = rl.rulFromCorrosionRates(series, { tNom: mp.tNom, tMin: mp.tMin });
+      if (!result || result.error) { return; }
+      if (result.rulMonths < 12 && result.rulMonths >= 0) {
+        findings.push(makeFinding('R15', 'high', 'monitoringPoints', mp.id,
+          { code: mp.code, rulMonths: r2(result.rulMonths), confidence: result.confidence || 'low' }, mp.code));
+      }
+    });
+    return findings;
+  }
+
   return {
     rules: [
       { id: 'R1', evaluate: R1 },
@@ -486,7 +510,8 @@
       { id: 'R11', evaluate: R11 },
       { id: 'R12', evaluate: R12 },
       { id: 'R13', evaluate: R13 },
-      { id: 'R14', evaluate: R14 }
+      { id: 'R14', evaluate: R14 },
+      { id: 'R15', evaluate: R15 }
     ]
   };
 });

@@ -1,5 +1,5 @@
 /* IntegrityWatch Field — rules engine (TESTS §11)
-   Anchors for R1–R14, reconcile and sweep over dbMemory. */
+   Anchors for R1–R15, reconcile and sweep over dbMemory. */
 'use strict';
 
 const { test } = require('node:test');
@@ -7,6 +7,7 @@ const assert = require('node:assert/strict');
 
 require('../src/calc/corrosion.js');
 require('../src/calc/apm.js');
+require('../src/calc/remainingLife.js');
 const bus = require('../src/core/bus.js');
 const dbMemory = require('../src/core/dbMemory.js');
 const storeApi = require('../src/core/store.js');
@@ -302,10 +303,42 @@ test('R14 sizing.marginPct -8 -> critical (TESTS §11)', () => {
   assert.equal(ev('R14', mkState({ psvs: [{ id: 'PSV-1', tag: 'PSV-1', sizing: { marginPct: 20 } }] })).length, 0);
 });
 
-test('engine.evaluate aggregates all 14 rule definitions', () => {
-  assert.equal(definitions.rules.length, 14);
+test('R15 RUL < 12 months with tNom+tMin and >=2 CR readings -> high; missing limits -> 0 (TESTS §11)', () => {
+  // CR 100 -> 120 mpy over ~30 days. Regression-projected current rate:
+  // 120 mpy = 3.048 mm/yr. RUL = (7.5-5)/3.048*12 ≈ 9.84 months
+  const mp1 = mp('MP-R15', { tNom: 7.5, tMin: 5 });
+  const readings = [
+    rdg('MP-R15', daysAgo(30), 100, 'r-a'),
+    rdg('MP-R15', daysAgo(1), 120, 'r-b')
+  ];
+  const f = ev('R15', mkState({ monitoringPoints: [mp1], readings: readings }));
+  assert.equal(f.length, 1);
+  assert.equal(f[0].severity, 'high');
+  assert.equal(f[0].ruleId, 'R15');
+  assert.equal(f[0].entityStore, 'monitoringPoints');
+  assert.equal(f[0].entityId, 'MP-R15');
+  assert.equal(f[0].messageKey, 'rules.msg.R15');
+  assert.ok(f[0].params.rulMonths < 12);
+
+  // Missing tMin/tNom
+  const mp2 = mp('MP-R15B');
+  assert.equal(ev('R15', mkState({ monitoringPoints: [mp2], readings: readings })).length, 0);
+  const mp2b = mp('MP-R15B2', { tNom: 7.5 });
+  assert.equal(ev('R15', mkState({ monitoringPoints: [mp2b], readings: readings })).length, 0);
+
+  // RUL >= 12 months: tNom=10 -> 5/3.048*12 ≈ 19.7 months
+  const mp4 = mp('MP-R15D', { tNom: 10, tMin: 5 });
+  assert.equal(ev('R15', mkState({ monitoringPoints: [mp4], readings: readings })).length, 0);
+
+  // < 2 readings
+  const mp3 = mp('MP-R15C', { tNom: 7.5, tMin: 5 });
+  assert.equal(ev('R15', mkState({ monitoringPoints: [mp3], readings: [rdg('MP-R15C', daysAgo(1), 120, 'r-x')] })).length, 0);
+});
+
+test('engine.evaluate aggregates all 15 rule definitions', () => {
+  assert.equal(definitions.rules.length, 15);
   const ids = definitions.rules.map((r) => r.id);
-  for (let i = 1; i <= 14; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
+  for (let i = 1; i <= 15; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
   assert.equal(engine.evaluate(mkState({})).length, 0);
 });
 

@@ -83,6 +83,7 @@
       keyboardHint: "Astuce clavier",
       updateAvailable: "Mise à jour disponible",
       reload: "Recharger",
+      confidence: 'Confiance',
       bootError: "Erreur de démarrage",
       viewError: "Erreur d'affichage",
       moduleLoading: "chargement du module…",
@@ -255,7 +256,10 @@
         pass: "Conforme",
         fail: "Non conforme",
         insufficient: "Données insuffisantes"
-      }
+      },
+      remainingLife: 'Durée de vie restante', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: 'Définir T-nom et T-min (mm) pour calculer la durée de vie',
+      outlier: 'Anomalie', rulingMethod: 'Méthode',
+      trendLabels: { increasing: 'Augmentant', decreasing: 'Diminuant', stable: 'Stable', insufficient: 'Insuffisant' }
     },
     psv: {
       title: "Soupapes de sûreté",
@@ -528,6 +532,15 @@
         good: "Sain",
         warn: "Dégradé",
         bad: "À risque"
+      },
+      iso14224: {
+        failureMode: 'Mode de défaillance (ISO 14224)', failureConsequence: 'Conséquence (ISO 14224)',
+        failureModes: {
+          mechanical: 'Mécanique', wear: 'Usure', fatigue: 'Fatigue',
+          corrosion: 'Corrosion', electrical: 'Électrique', instrumentation: 'Instrumentation',
+          other: 'Autre'
+        },
+        consequences: { none: 'Aucune', personal: 'Personnel', environment: 'Environnement', costs: 'Coûts' }
       }
     },
     ingest: {
@@ -628,7 +641,8 @@
         R11: "Disponibilité de {{name}} : {{pct}} % (seuil {{threshold}} %).",
         R12: "{{count}} défaillances sur {{name}} au cours des 90 derniers jours.",
         R13: "Essai de la PSV {{tag}} en retard de {{days}} jours.",
-        R14: "PSV {{tag}} sous-dimensionnée (marge {{margin}} %)."
+        R14: "PSV {{tag}} sous-dimensionnée (marge {{margin}} %).",
+        R15: '{{code}}: durée de vie restante estimée {{rulMonths}} mois sous 12 (confiance: {{confidence}})'
       },
       name: {
         R1: "Taux de corrosion sévère",
@@ -644,7 +658,8 @@
         R11: "Disponibilité faible",
         R12: "Défaillances répétées",
         R13: "Essai PSV en retard",
-        R14: "PSV sous-dimensionnée"
+        R14: "PSV sous-dimensionnée",
+        R15: 'Durée de vie critique'
       },
       resolveNotePlaceholder: "Note de résolution…",
       actor: "Acteur",

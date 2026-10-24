@@ -83,6 +83,7 @@
       keyboardHint: "键盘提示",
       updateAvailable: "有可用更新",
       reload: "重新加载",
+      confidence: '置信度',
       bootError: "启动错误",
       viewError: "视图错误",
       moduleLoading: "模块加载中…",
@@ -255,7 +256,10 @@
         pass: "合格",
         fail: "不合格",
         insufficient: "数据不足"
-      }
+      },
+      remainingLife: '剩余寿命', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: '设定T-nom和T-min（mm）以计算剩余寿命',
+      outlier: '异常值', rulingMethod: '方法',
+      trendLabels: { increasing: '上升', decreasing: '下降', stable: '稳定', insufficient: '不足' }
     },
     psv: {
       title: "泄压阀",
@@ -528,6 +532,15 @@
         good: "健康",
         warn: "退化",
         bad: "风险"
+      },
+      iso14224: {
+        failureMode: '故障模式 (ISO 14224)', failureConsequence: '后果 (ISO 14224)',
+        failureModes: {
+          mechanical: '机械', wear: '磨损', fatigue: '疲劳',
+          corrosion: '腐蚀', electrical: '电气', instrumentation: '仪表',
+          other: '其他'
+        },
+        consequences: { none: '无', personal: '人身', environment: '环境', costs: '成本' }
       }
     },
     ingest: {
@@ -628,7 +641,8 @@
         R11: "{{name}} 的可用度为 {{pct}}%（阈值 {{threshold}}%）。",
         R12: "{{name}} 在最近 90 天内发生 {{count}} 次故障。",
         R13: "泄压阀 {{tag}} 校验已逾期 {{days}} 天。",
-        R14: "泄压阀 {{tag}} 尺寸不足（余量 {{margin}}%）。"
+        R14: "泄压阀 {{tag}} 尺寸不足（余量 {{margin}}%）。",
+        R15: '{{code}}: 估计剩余寿命 {{rulMonths}} 个月低于12（置信度: {{confidence}}）'
       },
       name: {
         R1: "严重腐蚀速率",
@@ -644,7 +658,8 @@
         R11: "可用度低",
         R12: "重复故障",
         R13: "泄压阀校验逾期",
-        R14: "泄压阀尺寸不足"
+        R14: "泄压阀尺寸不足",
+        R15: '关键剩余寿命'
       },
       resolveNotePlaceholder: "解决备注…",
       actor: "操作者",

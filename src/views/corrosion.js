@@ -12,6 +12,8 @@
 
   function i18nApi() { return root.IW.i18n; }
   function corrosion() { return root.IW.calc && root.IW.calc.corrosion; }
+  function remainingLife() { return root.IW.calc && root.IW.calc.remainingLife; }
+  function spc() { return root.IW.calc && root.IW.calc.spc; }
   function materials() { return root.IW.data && root.IW.data.materials; }
   function lock() { return root.IW.security && root.IW.security.lock; }
 
@@ -229,6 +231,8 @@
       { name: 'line', labelKey: 'corrosion.line', type: 'text' },
       { name: 'material', labelKey: 'corrosion.material', type: 'select', options: materialOptions, required: true },
       { name: 'sensorType', labelKey: 'corrosion.sensorType', type: 'select', options: sensorOptions, required: true },
+      { name: 'tNom', labelKey: 'corrosion.tNom', type: 'number', min: 0 },
+      { name: 'tMin', labelKey: 'corrosion.tMin', hint: 'corrosion.tMinHint', type: 'number', min: 0 },
       { name: 'h2sPpm', labelKey: 'corrosion.h2s', type: 'number', min: 0 },
       { name: 'co2Ppm', labelKey: 'corrosion.co2', type: 'number', min: 0 },
       { name: 'totalPressureKpa', labelKey: 'corrosion.totalPressure', type: 'number', min: 0 },
@@ -256,6 +260,8 @@
       line: existing ? existing.line : '',
       material: existing ? existing.material : '',
       sensorType: existing ? existing.sensorType : 'couponGravimetric',
+      tNom: existing && existing.tNom != null ? existing.tNom : '',
+      tMin: existing && existing.tMin != null ? existing.tMin : '',
       h2sPpm: p.h2sPpm != null ? p.h2sPpm : '',
       co2Ppm: p.co2Ppm != null ? p.co2Ppm : '',
       totalPressureKpa: p.totalPressureKpa != null ? p.totalPressureKpa : '',
@@ -287,6 +293,8 @@
     rec.line = vals.line ? String(vals.line).trim() : undefined;
     rec.material = vals.material;
     rec.sensorType = vals.sensorType;
+    rec.tNom = numOrUndef(vals.tNom);
+    rec.tMin = numOrUndef(vals.tMin);
     rec.process = {
       h2sPpm: numOrUndef(vals.h2sPpm),
       co2Ppm: numOrUndef(vals.co2Ppm),
@@ -715,6 +723,112 @@
     return h.ui.keyValueTable(pairs);
   }
 
+  // ---- Remaining life faceplate (Experion PKS) ---------------------------------
+
+  function trendArrow(classification) {
+    if (classification === 'increasing') { return '\u25B2'; }
+    if (classification === 'decreasing') { return '\u25BC'; }
+    return '\u25C6';
+  }
+
+  function trendChipClass(classification) {
+    return 'trend-chip' + (classification ? ' trend-chip--' + classification : '');
+  }
+
+  function trendChipLabel(classification) {
+    if (!classification) { return ''; }
+    var i18n = i18nApi();
+    if (i18n && typeof i18n.t === 'function') { return i18n.t('corrosion.trendLabels.' + classification); }
+    return classification;
+  }
+
+  function buildRulFaceplate(h, mp, readings) {
+    var rl = remainingLife();
+    var spcMod = spc();
+    var tMin = mp.tMin;
+    var tNom = mp.tNom;
+
+    var faceplateCard = h.ui.el('section', { class: 'card' });
+    faceplateCard.appendChild(h.ui.el('h2', { class: 'section-title', text: h.t('corrosion.remainingLife') }));
+
+    if (tMin == null || tNom == null) {
+      faceplateCard.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t('corrosion.tMinHint') }));
+      return faceplateCard;
+    }
+
+    if (!rl || !spcMod) {
+      faceplateCard.appendChild(emptyState(h, 'common.none'));
+      return faceplateCard;
+    }
+
+    // RUL from corrosion-rate readings (mpy) projected against wall limits.
+    var ruling = rl.rulFromCorrosionRates(readings.map(function (r) {
+      return { date: r.date, value: r.crMpy };
+    }), { tNom: tNom, tMin: tMin });
+
+    if (ruling && ruling.error === 'E_NO_TNOM_TMIN') {
+      faceplateCard.appendChild(emptyState(h, 'common.none'));
+      return faceplateCard;
+    }
+
+    // Convert readings to {x:days, y:crMpy} for trend analysis
+    var sortedReadings = readings.slice().sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+    var trendPoints = [];
+    if (sortedReadings.length >= 2) {
+      var baseMs = Date.parse(sortedReadings[0].date);
+      if (!isNaN(baseMs)) {
+        for (var i = 0; i < sortedReadings.length; i++) {
+          var ms = Date.parse(sortedReadings[i].date);
+          if (!isNaN(ms) && typeof sortedReadings[i].crMpy === 'number') {
+            trendPoints.push({ x: (ms - baseMs) / 86400000, y: sortedReadings[i].crMpy });
+          }
+        }
+      }
+    }
+
+    var trendResult = null;
+    var classification = 'insufficient';
+    if (spcMod && trendPoints.length >= 2) {
+      trendResult = spcMod.linearTrend(trendPoints);
+      classification = spcMod.classifyTrend({ slope: trendResult.slope, r2: trendResult.r2, n: trendResult.n });
+    }
+
+    // LED state
+    var months = ruling.rulMonths;
+    var ledClass = 'led';
+    if (months === Infinity || months >= 24) { ledClass += ' led--ok'; }
+    else if (months >= 12) { ledClass += ' led--warn'; }
+    else { ledClass += ' led--crit-blink'; }
+    if (ruling.confidence === 'insufficient') { ledClass = 'led led--warn'; }
+
+    var valueText;
+    if (months === Infinity) { valueText = '\u221E'; }
+    else { valueText = fmtNum(months, 0); }
+
+    var fp = h.ui.el('div', { class: 'rul-faceplate' });
+    fp.appendChild(h.ui.el('span', { class: 'rul-faceplate__header', text: h.t('corrosion.remainingLife') }));
+
+    var row = h.ui.el('div', { class: 'rul-faceplate__row' });
+    row.appendChild(h.ui.el('span', { class: ledClass, attrs: { 'aria-hidden': 'true', role: 'img', 'aria-label': ruling.confidence } }));
+    row.appendChild(h.ui.el('span', { class: 'rul-faceplate__value', text: valueText }));
+    row.appendChild(h.ui.el('span', { class: 'rul-faceplate__unit', text: h.t('common.months') }));
+    fp.appendChild(row);
+
+    // Trend chip
+    var chip = h.ui.el('span', { class: trendChipClass(classification) });
+    chip.appendChild(h.ui.el('span', { class: 'trend-chip__arrow', attrs: { 'aria-hidden': 'true' }, text: trendArrow(classification) }));
+    chip.appendChild(h.ui.el('span', { text: trendChipLabel(classification) }));
+    fp.appendChild(chip);
+
+    faceplateCard.appendChild(fp);
+
+    if (ruling.confidence === 'high' || ruling.confidence === 'medium') {
+      faceplateCard.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t('corrosion.rulingMethod') + ': ' + ruling.method + ', ' + h.t('common.confidence') + ': ' + ruling.confidence }));
+    }
+
+    return faceplateCard;
+  }
+
   function processTable(h, mp) {
     var p = mp.process || {};
     function v(x, unit) { return x == null ? '—' : fmtNum(x, 2) + ' ' + unit; }
@@ -785,17 +899,30 @@
     readingsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { readingForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newReading') })));
     if (readings.length) {
       readingsCard.appendChild(trendChartNode(h, readings));
-      var readingRows = readings.slice().reverse().map(function (r) {
-        return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note };
+
+      // Detect outliers
+      var spcMod = spc();
+      var crValues = readings.map(function (r) { return r.crMpy; });
+      var outlierIndices = spcMod && typeof spcMod.detectOutliers === 'function' ? spcMod.detectOutliers(crValues, { threshold: 3.5 }) : [];
+      var outlierSet = {};
+      for (var oi = 0; oi < outlierIndices.length; oi++) { outlierSet[outlierIndices[oi]] = true; }
+
+      var readingRows = readings.slice().reverse().map(function (r, revIdx) {
+        var origIdx = readings.length - 1 - revIdx;
+        return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note, _outlier: !!outlierSet[origIdx] };
       });
       var readingTable = h.ui.table({
         captionKey: 'corrosion.readings',
         emptyKey: 'corrosion.noReadings',
         columns: [
           { key: 'date', labelKey: 'common.date', render: function (v) { return fmtDate(v, { dateStyle: 'short' }); } },
-          { key: 'crMpy', labelKey: 'corrosion.crMpy', align: 'num', render: function (v) {
+          { key: 'crMpy', labelKey: 'corrosion.crMpy', align: 'num', render: function (v, row) {
               var sev = classifyMpy(v);
-              return h.ui.el('span', { class: 'row' }, h.ui.el('span', { class: 'num', text: fmtNum(v, 2) }), sevBadge(h, sev));
+              var els = [h.ui.el('span', { class: 'num', text: fmtNum(v, 2) }), sevBadge(h, sev)];
+              if (row._outlier) {
+                els.push(h.ui.el('span', { class: 'reading-outlier', text: h.t('corrosion.outlier') }));
+              }
+              return h.ui.el('span', { class: 'row' }, els);
             } },
           { key: 'source', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } },
           { key: 'note', labelKey: 'common.note' }
@@ -836,6 +963,9 @@
       rows: couponRows
     }));
     frag.appendChild(couponsCard);
+
+    // Remaining life faceplate.
+    frag.appendChild(buildRulFaceplate(h, mp, readings));
 
     // Inhibitor efficiency.
     frag.appendChild(buildEiPanel(h, coupons));

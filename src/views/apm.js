@@ -487,6 +487,18 @@
           [t('apm.category'), categoryNode(asset.category)],
           [t('apm.criticality'), el('span', { class: 'badge ' + critClass(asset.criticality), text: t('apm.crit.' + (asset.criticality || 'C')) })],
           [t('apm.assetStatus'), el('span', { class: 'badge ' + statusClass(asset.status), text: t('apm.statuses.' + (asset.status || 'running')) })],
+          (function () {
+            var iso = asset.iso14224;
+            if (!iso || (!iso.failureMode && !iso.failureConsequence)) { return null; }
+            var parts = [];
+            if (iso.failureMode) {
+              parts.push(el('span', { class: 'badge', text: t('apm.iso14224.failureModes.' + iso.failureMode) || iso.failureMode }));
+            }
+            if (iso.failureConsequence) {
+              parts.push(el('span', { class: 'badge badge-moderate', text: t('apm.iso14224.consequences.' + iso.failureConsequence) || iso.failureConsequence }));
+            }
+            return [t('ISO 14224'), el('span', { class: 'row' }, parts)];
+          })(),
           [t('common.notes'), document.createTextNode(asset.notes || t('common.none'))]
         ])));
 
@@ -639,6 +651,23 @@
         { name: 'category', labelKey: 'apm.category', type: 'select', options: categoryOptions(sector) },
         { name: 'criticality', labelKey: 'apm.criticality', type: 'select', options: CRITICALITIES.map(function (c) { return { value: c, labelKey: 'apm.crit.' + c }; }) },
         { name: 'status', labelKey: 'apm.assetStatus', type: 'select', options: STATUSES.map(function (s) { return { value: s, labelKey: 'apm.statuses.' + s }; }) },
+        { name: 'isoFailureMode', labelKey: 'apm.iso14224.failureMode', type: 'select', options: [
+          { value: '', labelKey: 'common.none' },
+          { value: 'mechanical', labelKey: 'apm.iso14224.failureModes.mechanical' },
+          { value: 'wear', labelKey: 'apm.iso14224.failureModes.wear' },
+          { value: 'fatigue', labelKey: 'apm.iso14224.failureModes.fatigue' },
+          { value: 'corrosion', labelKey: 'apm.iso14224.failureModes.corrosion' },
+          { value: 'electrical', labelKey: 'apm.iso14224.failureModes.electrical' },
+          { value: 'instrumentation', labelKey: 'apm.iso14224.failureModes.instrumentation' },
+          { value: 'other', labelKey: 'apm.iso14224.failureModes.other' }
+        ] },
+        { name: 'isoFailureConsequence', labelKey: 'apm.iso14224.failureConsequence', type: 'select', options: [
+          { value: '', labelKey: 'common.none' },
+          { value: 'none', labelKey: 'apm.iso14224.consequences.none' },
+          { value: 'personal', labelKey: 'apm.iso14224.consequences.personal' },
+          { value: 'environment', labelKey: 'apm.iso14224.consequences.environment' },
+          { value: 'costs', labelKey: 'apm.iso14224.consequences.costs' }
+        ] },
         { name: 'pof', labelKey: 'apm.pof', type: 'number', min: 1, max: 5, required: true },
         { name: 'cof', labelKey: 'apm.cof', type: 'number', min: 1, max: 5, required: true },
         { name: 'inspectionBaseMonths', labelKey: 'apm.inspectionBase', type: 'number', min: 1, required: true },
@@ -648,7 +677,10 @@
       ];
       var values = asset ? {
         code: asset.code, name: asset.name, sector: asset.sector, category: asset.category,
-        criticality: asset.criticality, status: asset.status, pof: (asset.rbi && asset.rbi.pof) || 1,
+        criticality: asset.criticality, status: asset.status,
+        isoFailureMode: (asset.iso14224 && asset.iso14224.failureMode) || '',
+        isoFailureConsequence: (asset.iso14224 && asset.iso14224.failureConsequence) || '',
+        pof: (asset.rbi && asset.rbi.pof) || 1,
         cof: (asset.rbi && asset.rbi.cof) || 1, inspectionBaseMonths: (asset.rbi && asset.rbi.inspectionBaseMonths) || 24,
         nextInspectionISO: toDateInput((asset.rbi && asset.rbi.nextInspectionISO)),
         availabilityOverridePct: asset.availabilityOverridePct, notes: asset.notes
@@ -710,6 +742,10 @@
                 code: v.code, name: v.name, sector: v.sector || 'upstream',
                 category: v.category || (SECTOR_CATEGORIES[v.sector || 'upstream'][0]),
                 criticality: v.criticality || 'C', status: v.status || 'running',
+                iso14224: (v.isoFailureMode || v.isoFailureConsequence) ? {
+                  failureMode: v.isoFailureMode || undefined,
+                  failureConsequence: v.isoFailureConsequence || undefined
+                } : undefined,
                 rbi: {
                   pof: v.pof, cof: v.cof,
                   band: undefined, score: undefined,

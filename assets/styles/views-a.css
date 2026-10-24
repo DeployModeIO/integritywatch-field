@@ -301,3 +301,100 @@
 .sizing-result {
   margin-block-start: var(--sp-3);
 }
+
+/* --- Remaining life faceplate (Experion PKS) -------------------------------------- */
+
+.rul-faceplate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+}
+
+.rul-faceplate__header {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.rul-faceplate__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.rul-faceplate__value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.rul-faceplate__unit {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin-inline-start: var(--sp-1);
+}
+
+/* Trend chip: square badge with arrow character + classification */
+.trend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.trend-chip--increasing {
+  background: var(--sev-severe-bg);
+  color: var(--sev-severe);
+  border: 1px solid var(--sev-severe);
+}
+
+.trend-chip--decreasing {
+  background: var(--sev-low-bg);
+  color: var(--sev-low);
+  border: 1px solid var(--sev-low);
+}
+
+.trend-chip--stable {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.trend-chip--insufficient {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.trend-chip__arrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+/* Outlier row mark */
+.reading-outlier {
+  color: var(--sev-moderate);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-inline-start: var(--sp-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .led--ok,
+  .led--warn {
+    animation: none;
+  }
+}

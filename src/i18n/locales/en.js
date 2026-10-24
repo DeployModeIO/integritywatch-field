@@ -30,7 +30,7 @@
       asset: 'Asset', assets: 'Assets', active: 'Active', due: 'Due', overdue: 'Overdue',
       days: 'days', hours: 'hours', months: 'months', createdAt: 'Created', updatedAt: 'Updated',
       unknown: 'Unknown', keyboardHint: 'Keyboard navigation available',
-      updateAvailable: 'Update available', reload: 'Reload',
+      updateAvailable: 'Update available', reload: 'Reload', confidence: 'Confidence',
       bootError: 'Boot error', viewError: 'View error',
       moduleLoading: 'module loading…',
       inMemoryNotice: 'IndexedDB unavailable; running with in-memory storage. Changes may not persist.'
@@ -101,7 +101,10 @@
       eiBands: { poor: 'Poor', acceptable: 'Acceptable', good: 'Good', excellent: 'Excellent' },
       balanceBands: { under: 'Under', onTarget: 'On target', over: 'Over' },
       mr0175: { low: 'Low', moderate: 'Moderate', high: 'High' },
-      cpStatus: { pass: 'Pass', fail: 'Fail', insufficient: 'Insufficient data' }
+      cpStatus: { pass: 'Pass', fail: 'Fail', insufficient: 'Insufficient data' },
+      remainingLife: 'Remaining life', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: 'Set T-nom and T-min (mm) to calculate remaining life',
+      outlier: 'Outlier', rulingMethod: 'Method',
+      trendLabels: { increasing: 'Increasing', decreasing: 'Decreasing', stable: 'Stable', insufficient: 'Insufficient' }
     },
 
     psv: {
@@ -212,6 +215,15 @@
         centrifugalPump: 'Centrifugal pump (API 610)', reciprocatingPump: 'Positive displacement pump',
         generator: 'Power generator (ISO 8528)', substation: 'Electrical substation',
         firePump: 'Fire pump (NFPA 20)', fireSystem: 'Fire protection system'
+      },
+      iso14224: {
+        failureMode: 'Failure mode (ISO 14224)', failureConsequence: 'Consequence (ISO 14224)',
+        failureModes: {
+          mechanical: 'Mechanical', wear: 'Wear', fatigue: 'Fatigue',
+          corrosion: 'Corrosion', electrical: 'Electrical', instrumentation: 'Instrumentation',
+          other: 'Other'
+        },
+        consequences: { none: 'None', personal: 'Personal', environment: 'Environment', costs: 'Costs' }
       }
     },
 
@@ -270,14 +282,15 @@
         R11: '{{name}}: availability {{pct}}% below threshold {{threshold}}%',
         R12: '{{name}}: {{count}} failure events in the last 90 days',
         R13: '{{tag}}: PSV test overdue by {{days}} days',
-        R14: '{{tag}}: installed capacity is below required (margin {{margin}}%)'
+        R14: '{{tag}}: installed capacity is below required (margin {{margin}}%)',
+        R15: '{{code}}: estimated remaining life {{rulMonths}} months below 12 (confidence: {{confidence}})'
       },
       name: {
         R1: 'Critical corrosion rate', R2: 'Corrosion rate escalation', R3: 'Low inhibitor efficiency',
         R4: 'Inhibitor residual out of band', R5: 'Sensor anomaly', R6: 'Coupon expired',
         R7: 'Model deviation', R8: 'Sour service screening', R9: 'Inspection overdue',
         R10: 'MTBF degradation', R11: 'Availability below threshold', R12: 'Repeated failures',
-        R13: 'PSV test overdue', R14: 'Undersized relief valve'
+        R13: 'PSV test overdue', R14: 'Undersized relief valve', R15: 'Critical remaining life'
       },
       histActions: { created: 'Created', triggered: 'Triggered', acked: 'Acknowledged', resolved: 'Resolved', reopened: 'Reopened' }
     },

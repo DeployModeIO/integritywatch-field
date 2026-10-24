@@ -83,6 +83,7 @@
       keyboardHint: "تلميح لوحة المفاتيح",
       updateAvailable: "يتوفر تحديث",
       reload: "إعادة تحميل",
+      confidence: "موثوقية",
       bootError: "خطأ في بدء التشغيل",
       viewError: "خطأ في العرض",
       moduleLoading: "جارٍ تحميل الوحدة…",
@@ -255,7 +256,10 @@
         pass: "مطابق",
         fail: "غير مطابق",
         insufficient: "بيانات غير كافية"
-      }
+      },
+      remainingLife: "العمر المتبقي", tNom: "T-nom (مم)", tMin: "T-min (مم)", tMinHint: "حدد T-nom وT-min (مم) لحساب العمر المتبقي",
+      outlier: "قيمة شاذة", rulingMethod: "الطريقة",
+      trendLabels: { increasing: "متزايد", decreasing: "متناقص", stable: "مستقر", insufficient: "غير كاف" }
     },
     psv: {
       title: "صمامات الأمان",
@@ -528,6 +532,15 @@
         good: "سليم",
         warn: "متدهور",
         bad: "تحت الخطر"
+      },
+      iso14224: {
+        failureMode: 'نمط الفشل (ISO 14224)', failureConsequence: 'العاقبة (ISO 14224)',
+        failureModes: {
+          mechanical: 'ميكانيكي', wear: 'تآكل', fatigue: 'إعياء',
+          corrosion: 'تآكل', electrical: 'كهربائي', instrumentation: 'أجهزة',
+          other: 'أخرى'
+        },
+        consequences: { none: 'لا شيء', personal: 'شخصي', environment: 'بيئي', costs: 'تكاليف' }
       }
     },
     ingest: {
@@ -628,7 +641,8 @@
         R11: "إتاحية الأصل {{name}}: {{pct}}% (الحد {{threshold}}%).",
         R12: "{{count}} أعطال على الأصل {{name}} خلال آخر 90 يومًا.",
         R13: "اختبار صمام الأمان {{tag}} متأخر {{days}} يومًا.",
-        R14: "صمام الأمان {{tag}} مقاسه غير كافٍ (الهامش {{margin}}%)."
+        R14: "صمام الأمان {{tag}} مقاسه غير كافٍ (الهامش {{margin}}%).",
+        R15: "{{code}}: العمر المتبقي المقدر {{rulMonths}} شهراً أقل من 12 (الموثوقية: {{confidence}})"
       },
       name: {
         R1: "معدل تآكل حرج",
@@ -644,7 +658,7 @@
         R11: "إتاحية منخفضة",
         R12: "أعطال متكررة",
         R13: "اختبار صمام أمان متأخر",
-        R14: "مقاس صمام أمان غير كافٍ"
+        R14: "مقاس صمام أمان غير كافٍ", R15: "عمر متبقٍ حرج"
       },
       resolveNotePlaceholder: "ملاحظة الحل…",
       actor: "الفاعل",

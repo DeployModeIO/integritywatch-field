@@ -31,6 +31,7 @@
       days: 'dias', hours: 'horas', months: 'meses', createdAt: 'Criado', updatedAt: 'Atualizado',
       unknown: 'Desconhecido', keyboardHint: 'Navegação por teclado disponível',
       updateAvailable: 'Atualização disponível', reload: 'Recarregar',
+      confidence: 'Confiança',
       bootError: 'Erro de inicialização', viewError: 'Erro de visualização',
       moduleLoading: 'módulo carregando…',
       inMemoryNotice: 'IndexedDB indisponível; executando com armazenamento em memória. As alterações podem não ser salvas.'
@@ -101,7 +102,10 @@
       eiBands: { poor: 'Ruim', acceptable: 'Aceitável', good: 'Boa', excellent: 'Excelente' },
       balanceBands: { under: 'Abaixo', onTarget: 'Na meta', over: 'Acima' },
       mr0175: { low: 'Baixa', moderate: 'Moderada', high: 'Alta' },
-      cpStatus: { pass: 'Aprovado', fail: 'Reprovado', insufficient: 'Dados insuficientes' }
+      cpStatus: { pass: 'Aprovado', fail: 'Reprovado', insufficient: 'Dados insuficientes' },
+      remainingLife: 'Vida remanescente', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: 'Defina T-nom e T-min (mm) para calcular a vida remanescente',
+      outlier: 'Atípica', rulingMethod: 'Método',
+      trendLabels: { increasing: 'Aumentando', decreasing: 'Diminuindo', stable: 'Estável', insufficient: 'Insuficiente' }
     },
 
     psv: {
@@ -212,6 +216,15 @@
         centrifugalPump: 'Bomba centrífuga (API 610)', reciprocatingPump: 'Bomba de deslocamento positivo',
         generator: 'Gerador elétrico (ISO 8528)', substation: 'Subestação elétrica',
         firePump: 'Bomba de incêndio (NFPA 20)', fireSystem: 'Sistema de combate a incêndio'
+      },
+      iso14224: {
+        failureMode: 'Modo de falha (ISO 14224)', failureConsequence: 'Consequência (ISO 14224)',
+        failureModes: {
+          mechanical: 'Mecânico', wear: 'Desgaste', fatigue: 'Fadiga',
+          corrosion: 'Corrosão', electrical: 'Elétrico', instrumentation: 'Instrumentação',
+          other: 'Outro'
+        },
+        consequences: { none: 'Nenhuma', personal: 'Pessoal', environment: 'Ambiental', costs: 'Custos' }
       }
     },
 
@@ -270,14 +283,15 @@
         R11: '{{name}}: disponibilidade {{pct}}% abaixo do limite {{threshold}}%',
         R12: '{{name}}: {{count}} eventos de falha nos últimos 90 dias',
         R13: '{{tag}}: teste da PSV vencido em {{days}} dias',
-        R14: '{{tag}}: a capacidade instalada é inferior à requerida (margem {{margin}}%)'
+        R14: '{{tag}}: a capacidade instalada é inferior à requerida (margem {{margin}}%)',
+        R15: '{{code}}: vida remanescente estimada {{rulMonths}} meses abaixo de 12 (confiança: {{confidence}})'
       },
       name: {
         R1: 'Taxa de corrosão crítica', R2: 'Escalada da taxa de corrosão', R3: 'Baixa eficiência do inibidor',
         R4: 'Residual de inibidor fora da faixa', R5: 'Anomalia de sensor', R6: 'Cupom vencido',
         R7: 'Desvio do modelo', R8: 'Triagem de serviço ácido', R9: 'Inspeção vencida',
         R10: 'Degradação do MTBF', R11: 'Disponibilidade abaixo do limite', R12: 'Falhas repetidas',
-        R13: 'Teste da PSV vencido', R14: 'Válvula de alívio subdimensionada'
+        R13: 'Teste da PSV vencido', R14: 'Válvula de alívio subdimensionada', R15: 'Vida remanescente crítica'
       },
       histActions: { created: 'Criada', triggered: 'Disparada', acked: 'Reconhecida', resolved: 'Resolvida', reopened: 'Reaberta' }
     },
