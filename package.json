@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Offline-first integrity & compliance operations center for oil & gas field use",
+  "author": "DeployModeIO",
+  "license": "MIT",
+  "homepage": "https://github.com/DeployModeIO/integritywatch-field#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeployModeIO/integritywatch-field.git"
+  },
   "scripts": {
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",

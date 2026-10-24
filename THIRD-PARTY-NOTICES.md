@@ -1,5 +1,8 @@
 # Third-Party Notices
 
+**IntegrityWatch Field** is licensed under the MIT License — Copyright © 2026 DeployModeIO.
+See the [`LICENSE`](LICENSE) file for the full text.
+
 IntegrityWatch Field vendors icon artwork from the following open-source projects.
 The SVGs are inlined at build time by `tools/build-icons.cjs` into
 `src/components/icons.js`. The source packages are devDependencies and are not

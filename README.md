@@ -14,7 +14,7 @@ IntegrityWatch Field es una aplicación que funciona **completamente en tu compu
 
 **Una frase de valor:** Centro de operaciones de integridad y cumplimiento offline-first para trabajo en campo petrolero
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 idiomas](https://img.shields.io/badge/7%20idiomas-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![Sin dependencias](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 idiomas](https://img.shields.io/badge/7%20idiomas-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![Sin dependencias](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
 
 **Aviso de descargo de ingeniería:** Herramienta de apoyo. Valida siempre contra las ediciones vigentes de las normas y los datos del fabricante. Los resultados de cálculo son orientativos y deben ser revisados por personal cualificado.
 
@@ -499,7 +499,9 @@ integritywatch-field/
 
 ## Licencias y atribución
 
-**ISC/MIT:** Lucide (iconos), Tabler (glifos)
+**IntegrityWatch Field — MIT License · Copyright © 2026 DeployModeIO.** Texto completo en [`LICENSE`](LICENSE).
+
+**ISC/MIT (terceros):** Lucide (iconos), Tabler (glifos)
 
 **Third-Party:** `THIRD-PARTY-NOTICES.md`
 
@@ -560,7 +562,7 @@ A PWA offline-first integrity and compliance operations center for oil & gas fie
 
 **Testing:** 300 unit tests (100 % green), 7-language i18n parity, 4 P0 test suites (offline PWA, file://, XSS import, 10k rows), 1 known high-severity issue documented (see docs/ISSUES-CONOCIDOS.md)
 
-**Licensing:** ISC/MIT (Lucide, Tabler), third-party notices only (devDependencies, not shipped)
+**Licensing:** App: MIT © 2026 DeployModeIO (see `LICENSE`). Third-party: ISC/MIT (Lucide, Tabler), notices only (devDependencies, not shipped)
 
 **Installation:**
 
