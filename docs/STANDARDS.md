@@ -430,6 +430,26 @@ si pAllow < opPressure con los parámetros SMYS/D/t del ducto → severidad **hi
 
 ---
 
+## 2.17 Formato de evidencia de campo en inspecciones
+
+**Motor:** `src/components/signaturePad.js`, `src/components/inspectionEvidence.js`, `src/calc/exif.js`
+
+**Campos en el registro `lineInspection`:**
+
+- **`signature`** (opcional): `data:` URL PNG de firma manuscrita capturada con canvas (fondo blanco, línea negra 2px, escalado por `devicePixelRatio`).
+- **`photos`** (opcional): array de objetos `{ dataUrl, capturedAt, gps }`. Máximo 6. `dataUrl` es JPEG reescalado a ≤1024px en el lado mayor (calidad 0.85). `capturedAt` es ISO 8601 derivado de EXIF `DateTimeOriginal` (tag 0x9003). `gps` es `{ lat, lon, alt }` en grados decimales con signo N/E positivo, derivado de EXIF GPS IFD (tags 1-6).
+- **`sketch`** (opcional): `data:` URL PNG de croquis/boceto capturado con el mismo componente `createSignaturePad`.
+
+**Parser EXIF:** `src/calc/exif.js` implementa un parser JPEG mínimo que busca el marcador APP1 con cabecera `Exif\0\0`, parsea TIFF little/big-endian, extrae Make/Model de IFD0, DateTimeOriginal de ExifIFD (vía puntero 0x8769) y coordenadas GPS de GPS IFD (vía puntero 0x8825). No lanza nunca: JPEG sin EXIF devuelve todos los campos como `null`.
+
+**Límites y validación:**
+- Máximo 6 fotos por inspección (validado en cliente con toast).
+- Las fotos se reescalan siempre a ≤1024px para no inflar IndexedDB.
+- La firma y el croquis son PNG (pocos KB en la práctica).
+- El checksum FNV-1a del expediente `.iwf` (sección 2.16) maneja los dataURLs grandes mediante `canonicalStringify` (serialización canónica con claves ordenadas).
+
+---
+
 ## 4. Descargo de ingeniería completo
 
 IntegrityWatch Field es una **herramienta de apoyo a la decisión**. Sus resultados de cálculo (tasas de corrosión, dimensionamiento de válvulas, eficiencia de inhibidor, análisis de riesgo, intervalos de inspección) son **orientativos** y deben ser:

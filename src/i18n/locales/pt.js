@@ -96,7 +96,8 @@
       inMemoryNotice: 'IndexedDB indisponível; executando com armazenamento em memória. As alterações podem não ser salvas.',
       pass: 'Pass',
       fail: 'Fail',
-      na: 'N/A'
+      na: 'N/A',
+      saved: 'Salvo'
     },
     nav: {
       dashboard: 'Painel',
@@ -466,7 +467,8 @@
       exceeds: 'Excede a Pressão Segura',
       imported: 'Anomalias {{n}} Importados ({{ok}} Avaliado)',
       noIli: 'Nenhuma Anomalia ILI Carregada',
-      opPressure: 'Presição de operação'
+      opPressure: 'Presição de operação',
+      editInspection: 'Editar inspeção'
     },
     apm: {
       title: 'Desempenho de ativos',
@@ -923,6 +925,26 @@
       badFormat: 'Não é um arquivo de expediente .iwf válido',
       badVersion: 'Versão .iwf não suportada',
       badChecksum: 'O arquivo foi alterado (verificação de soma inválida)'
+    },
+    evidence: {
+      sectionTitle: 'Evidência de campo',
+      signature: {
+        label: 'Assinatura',
+        hint: 'Trace sua assinatura acima',
+        clear: 'Limpar',
+        empty: 'Sem assinatura'
+      },
+      photos: {
+        label: 'Fotos',
+        hint: 'Fotos JPEG (máx. 6). Data EXIF e GPS são extraídos automaticamente.',
+        tooMany: 'Máximo de 6 fotos permitidas',
+        noExif: 'Sem dados EXIF'
+      },
+      sketch: {
+        label: 'Croqui',
+        clear: 'Limpar',
+        hint: 'Desenhe um croqui acima'
+      }
     }
   };
 });

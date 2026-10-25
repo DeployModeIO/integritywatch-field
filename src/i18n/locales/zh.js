@@ -95,7 +95,8 @@
       inMemoryNotice: "IndexedDB 不可用；正在使用内存存储运行。更改可能不会保留。",
       pass: "通过",
       fail: "失败",
-      na: "N/A"
+      na: "N/A",
+      saved: "已保存"
     },
     nav: {
       dashboard: "仪表盘",
@@ -465,7 +466,8 @@
       exceeds: "超过安全压力",
       imported: "已导入 {{n}} 条异常（{{ok}} 条已评定）",
       noIli: "未加载内检测异常",
-      opPressure: "操作压力"
+      opPressure: "操作压力",
+      editInspection: "编辑检验"
     },
     apm: {
       title: "资产绩效",
@@ -922,6 +924,26 @@
       badFormat: "不是有效的 .iwf 案卷文件",
       badVersion: "不支持的 .iwf 版本",
       badChecksum: "文件已被篡改（校验和不匹配）"
+    },
+    evidence: {
+      sectionTitle: "现场证据",
+      signature: {
+        label: "签名",
+        hint: "请在上方签名",
+        clear: "清除",
+        empty: "无签名"
+      },
+      photos: {
+        label: "照片",
+        hint: "JPEG 照片（最多 6 张）。自动提取 EXIF 日期和 GPS。",
+        tooMany: "最多允许 6 张照片",
+        noExif: "无 EXIF 数据"
+      },
+      sketch: {
+        label: "草图",
+        clear: "清除",
+        hint: "在上方绘制草图"
+      }
     }
   };
 });

@@ -39,7 +39,7 @@
       inMemoryNotice: 'IndexedDB unavailable; running with in-memory storage. Changes may not persist.',
 
 
-      pass: 'Pass', fail: 'Fail', na: 'N/A'
+      pass: 'Pass', fail: 'Fail', na: 'N/A', saved: 'Saved'
     },
 
     nav: {
@@ -159,6 +159,7 @@
       wallThickness: 'Wall thickness', coating: 'Coating', length: 'Length', stationRange: 'Station range',
       lineAssets: 'Line assets', newLineAsset: 'New line asset', assetType: 'Asset type',
       stationKm: 'Station (km)', side: 'Side', inspections: 'Inspections', newInspection: 'New inspection',
+      editInspection: 'Edit inspection',
       fromKm: 'From (km)', toKm: 'To (km)', findings: 'Findings', certExpiry: 'Certification expiry',
       campaigns: 'Inspection campaigns', mapView: 'Map view', mapLegend: 'Legend',
       mapNodeAria: 'Pipeline asset on map', noSystems: 'No pipeline systems',
@@ -428,6 +429,13 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       methane: 'Methane', ethane: 'Ethane', propane: 'Propane', butane: 'Butane',
       'natural-gas': 'Natural gas', hydrogen: 'Hydrogen', nitrogen: 'Nitrogen', steam: 'Steam',
       water: 'Water', 'crude-oil': 'Crude oil', diesel: 'Diesel'
+    },
+
+    evidence: {
+      sectionTitle: 'Field evidence',
+      signature: { label: 'Signature', hint: 'Draw your signature above', clear: 'Clear', empty: 'No signature' },
+      photos: { label: 'Photos', hint: 'JPEG photos (max 6). EXIF date and GPS are extracted automatically.', tooMany: 'Maximum 6 photos allowed', noExif: 'No EXIF data' },
+      sketch: { label: 'Sketch', hint: 'Draw a quick sketch above', clear: 'Clear' }
     }
   };
 });

@@ -95,7 +95,8 @@
       inMemoryNotice: "IndexedDB indisponible ; exécution avec un stockage en mémoire. Les modifications peuvent ne pas être conservées.",
       pass: "Pass",
       fail: "Fail",
-      na: "N/A"
+      na: "N/A",
+      saved: "Enregistré"
     },
     nav: {
       dashboard: "Tableau de bord",
@@ -465,7 +466,8 @@
       exceeds: "Exceeds pressure sécurisée",
       imported: "Anomalies {{n}} importés ({{ok}} évalués)",
       noIli: "Aucune anomalie ILI non chargée",
-      opPressure: "Pression opérationnelle"
+      opPressure: "Pression opérationnelle",
+      editInspection: "Modifier l'inspection"
     },
     apm: {
       title: "Performance des actifs",
@@ -922,6 +924,26 @@
       badFormat: "Ce n'est pas un fichier .iwf valide",
       badVersion: "Version .iwf non prise en charge",
       badChecksum: "Le fichier a été altéré (somme de contrôle invalide)"
+    },
+    evidence: {
+      sectionTitle: "Preuves de terrain",
+      signature: {
+        label: "Signature",
+        hint: "Tracez votre signature ci-dessus",
+        clear: "Effacer",
+        empty: "Aucune signature"
+      },
+      photos: {
+        label: "Photos",
+        hint: "Photos JPEG (max 6). Date EXIF et coordonnées GPS extraites automatiquement.",
+        tooMany: "Maximum 6 photos autorisées",
+        noExif: "Aucune donnée EXIF"
+      },
+      sketch: {
+        label: "Croquis",
+        clear: "Effacer",
+        hint: "Dessinez un croquis ci-dessus"
+      }
     }
   };
 });

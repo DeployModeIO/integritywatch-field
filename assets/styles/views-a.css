@@ -392,6 +392,59 @@
   margin-inline-start: var(--sp-1);
 }
 
+/* --- Evidence thumbnails (field inspections) --------------------------------- */
+
+.evidence-thumb {
+  display: block;
+  max-width: 160px;
+  max-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  background: var(--surface);
+  object-fit: contain;
+}
+
+.signature-pad {
+  margin-block-end: var(--sp-3);
+}
+
+.signature-pad__canvas {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: var(--r-1);
+  background: #ffffff;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+}
+
+.photo-grid__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 168px;
+}
+
+.photo-grid__caption {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  text-align: center;
+  margin-block-start: var(--sp-1);
+  word-break: break-all;
+}
+
+.field-group {
+  margin-block-start: var(--sp-4);
+  padding-block-start: var(--sp-3);
+  border-block-start: 1px solid var(--border);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .led--ok,
   .led--warn {

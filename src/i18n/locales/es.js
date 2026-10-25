@@ -94,9 +94,10 @@
       viewError: 'Error de vista',
       moduleLoading: 'módulo cargando…',
       inMemoryNotice: 'IndexedDB no disponible; ejecutando con almacenamiento en memoria. Los cambios pueden no persistir.',
-      pass: 'Aprobado',
+pass: 'Aprobado',
       fail: 'Fallido',
-      na: 'N/A'
+      na: 'N/A',
+      saved: 'Guardado'
     },
     nav: {
       dashboard: 'Panel',
@@ -384,6 +385,7 @@
       side: 'Lado',
       inspections: 'Inspecciones',
       newInspection: 'Nueva inspección',
+      editInspection: 'Editar inspección',
       fromKm: 'Desde (km)',
       toKm: 'Hasta (km)',
       findings: 'Hallazgos',
@@ -912,8 +914,16 @@ consequences: {
       steam: 'Vapor',
       water: 'Agua',
       'crude-oil': 'Petróleo crudo',
-      diesel: 'Diésel'
+diesel: 'Diésel'
     },
+
+    evidence: {
+      sectionTitle: 'Evidencia de campo',
+      signature: { label: 'Firma', hint: 'Dibuje su firma arriba', clear: 'Borrar', empty: 'Sin firma' },
+      photos: { label: 'Fotos', hint: 'Fotos JPEG (máx. 6). La fecha EXIF y GPS se extraen automáticamente.', tooMany: 'Máximo 6 fotos permitidas', noExif: 'Sin datos EXIF' },
+      sketch: { label: 'Croquis', hint: 'Dibuje un croquis arriba', clear: 'Borrar' }
+    },
+
     ffs: {
       title: 'Aptitud para el servicio (API 579 L1)',
       mawpAllowed: 'MAWP admisible',

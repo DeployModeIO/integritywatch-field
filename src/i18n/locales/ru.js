@@ -95,7 +95,8 @@
       inMemoryNotice: "IndexedDB недоступна; работа в режиме хранения в памяти. Изменения могут не сохраниться.",
       pass: "Pass",
       fail: "Fail",
-      na: "N/A"
+      na: "N/A",
+      saved: "Сохранено"
     },
     nav: {
       dashboard: "Панель",
@@ -465,7 +466,8 @@
       exceeds: "Exceeds safe pressure",
       imported: "Imported {{n}} anomalies ({{ok}} assessed)",
       noIli: "No ILI anomalies loaded",
-      opPressure: "Operating pressure"
+      opPressure: "Operating pressure",
+      editInspection: "Изменить осмотр"
     },
     apm: {
       title: "Надёжность активов",
@@ -922,6 +924,26 @@
       badFormat: "Не является корректным файлом досье .iwf",
       badVersion: "Неподдерживаемая версия .iwf",
       badChecksum: "Файл был изменён (несовпадение контрольной суммы)"
+    },
+    evidence: {
+      sectionTitle: "Полевые данные",
+      signature: {
+        label: "Подпись",
+        hint: "Поставьте подпись выше",
+        clear: "Очистить",
+        empty: "Нет подписи"
+      },
+      photos: {
+        label: "Фотографии",
+        hint: "Фото JPEG (макс. 6). Дата EXIF и GPS извлекаются автоматически.",
+        tooMany: "Допускается не более 6 фотографий",
+        noExif: "Нет данных EXIF"
+      },
+      sketch: {
+        label: "Эскиз",
+        clear: "Очистить",
+        hint: "Нарисуйте эскиз выше"
+      }
     }
   };
 });

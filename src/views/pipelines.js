@@ -402,7 +402,7 @@
           el('h2', { class: 'section-title', text: t('pipelines.inspections') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openInspectionForm(system, assets, null); } } }, icon('plus', 18), el('span', { text: t('pipelines.newInspection') }))),
         inspHost));
-      renderInspections(assets, inspections, inspHost);
+      renderInspections(system, assets, inspections, inspHost);
 
       // Campaigns
       var campaigns = groupCampaigns(inspections);
@@ -754,7 +754,7 @@
       host.appendChild(wrap);
     }
 
-    function renderInspections(assets, inspections, host) {
+    function renderInspections(system, assets, inspections, host) {
       var sorted = inspections.slice().sort(function (a, b) { return (a.date < b.date) ? 1 : -1; });
       host.textContent = '';
       var wrap = el('div', { class: 'table-wrap' });
@@ -783,6 +783,7 @@
           tr.appendChild(sevTd);
           tr.appendChild(el('td', { text: i.findings || '' }));
           tr.appendChild(el('td', null, el('div', { class: 'row' },
+            el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openInspectionForm(system, assets, i); } } }, icon('edit', 18)),
             (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteInspection(i); } } }, icon('trash', 18)); b.disabled = isOperatorLocked(); return b; })())));
           tbody.appendChild(tr);
         });
@@ -912,6 +913,7 @@
     }
 
     function openInspectionForm(system, assets, inspection) {
+      var isEdit = !!inspection;
       var assetOptions = [{ value: '', labelKey: 'common.none' }].concat(assets.map(function (a) {
         return { value: a.id, labelKey: (a.code || a.name || a.id) };
       }));
@@ -931,9 +933,130 @@
         findings: inspection.findings, reportRef: inspection.reportRef
       } : { type: 'visual', date: new Date().toISOString().slice(0, 10) };
       var f = u.form(fields, values);
+
+      // --- Evidence section (optional) ---
+      var bodyWrap = el('div');
+      bodyWrap.appendChild(f.node);
+
+      var evidenceSection = el('section', { class: 'field-group' });
+      evidenceSection.appendChild(el('h3', { class: 'section-title', text: t('evidence.sectionTitle') }));
+
+      // Signature
+      var sigContainer = el('div');
+      evidenceSection.appendChild(sigContainer);
+      var sigPad = null;
+      var sigModule = root.IW.components && root.IW.components.signaturePad;
+      if (sigModule && typeof sigModule.createSignaturePad === 'function') {
+        sigPad = sigModule.createSignaturePad(sigContainer, { width: 300, height: 120, labelKey: 'evidence.signature.label' });
+      }
+
+      // Photos
+      var photoInput = el('input', { attrs: { type: 'file', accept: 'image/jpeg', multiple: '' } });
+      var photoHint = el('p', { class: 'field-hint', text: t('evidence.photos.hint') });
+      var photoPreview = el('div', { class: 'photo-grid' });
+      var photoLabel = el('label', { class: 'field-label', text: t('evidence.photos.label') });
+      evidenceSection.appendChild(photoLabel);
+      evidenceSection.appendChild(photoHint);
+      evidenceSection.appendChild(photoInput);
+      evidenceSection.appendChild(photoPreview);
+
+      var pendingPhotos = [];
+      var existingPhotos = (inspection && inspection.photos) ? inspection.photos.slice() : [];
+
+      function updatePhotoPreview() {
+        photoPreview.textContent = '';
+        var all = existingPhotos.concat(pendingPhotos);
+        all.forEach(function (p) {
+          var img = el('img', { class: 'evidence-thumb', attrs: { src: p.dataUrl, alt: t('evidence.photos.label') } });
+          var item = el('div', { class: 'photo-grid__item' }, img);
+          photoPreview.appendChild(item);
+        });
+      }
+      if (existingPhotos.length > 0) { updatePhotoPreview(); }
+
+      photoInput.addEventListener('change', function () {
+        var files = photoInput.files;
+        if (!files || files.length === 0) { return; }
+        var total = existingPhotos.length + pendingPhotos.length + files.length;
+        if (total > 6) {
+          u.toast('evidence.photos.tooMany', { severity: 'warning' });
+          photoInput.value = '';
+          return;
+        }
+        var exifMod = root.IW.calc && root.IW.calc.exif;
+        var spMod = root.IW.components && root.IW.components.signaturePad;
+        Array.prototype.forEach.call(files, function (file) {
+          var reader = new FileReader();
+          reader.onload = function (evt) {
+            var arrayBuf = evt.target.result;
+            var photo = { dataUrl: '', capturedAt: null, gps: null };
+            // Downscale
+            var blob = new Blob([arrayBuf], { type: file.type });
+            var url = URL.createObjectURL(blob);
+            var img = new Image();
+            img.onload = function () {
+              URL.revokeObjectURL(url);
+              var c = document.createElement('canvas');
+              var maxDim = 1024;
+              var scale = maxDim / Math.max(img.width, img.height);
+              if (scale < 1) { c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale); }
+              else { c.width = img.width; c.height = img.height; }
+              var cx = c.getContext('2d');
+              cx.drawImage(img, 0, 0, c.width, c.height);
+              photo.dataUrl = c.toDataURL('image/jpeg', 0.85);
+              // EXIF
+              if (exifMod && typeof exifMod.parseExif === 'function') {
+                try {
+                  var bytes = new Uint8Array(arrayBuf);
+                  var exifData = exifMod.parseExif(bytes);
+                  if (exifData) {
+                    photo.capturedAt = exifData.capturedAt || null;
+                    photo.gps = exifData.gps || null;
+                  }
+                } catch (_) { /* ignore EXIF errors */ }
+              }
+              pendingPhotos.push(photo);
+              updatePhotoPreview();
+            };
+            img.onerror = function () {
+              URL.revokeObjectURL(url);
+              pendingPhotos.push(photo);
+              updatePhotoPreview();
+            };
+            img.src = url;
+          };
+          reader.readAsArrayBuffer(file);
+        });
+        photoInput.value = '';
+      });
+
+      // Sketch (croquis)
+      var sketchContainer = el('div');
+      evidenceSection.appendChild(sketchContainer);
+      var sketchPad = null;
+      if (sigModule && typeof sigModule.createSignaturePad === 'function') {
+        sketchPad = sigModule.createSignaturePad(sketchContainer, { width: 300, height: 120, labelKey: 'evidence.sketch.label', hintKey: 'evidence.sketch.hint' });
+      }
+
+      bodyWrap.appendChild(evidenceSection);
+
+      // Show existing evidence if editing
+      if (isEdit) {
+        var evMod = root.IW.components && root.IW.components.inspectionEvidence;
+        if (evMod && typeof evMod.renderEvidenceRows === 'function') {
+          var evidenceRows = evMod.renderEvidenceRows(inspection);
+          if (evidenceRows.length > 0) {
+            var existingSection = el('section', { class: 'field-group' });
+            existingSection.appendChild(el('h3', { class: 'section-title', text: t('evidence.sectionTitle') + ' (' + t('common.saved') + ')' }));
+            existingSection.appendChild(u.keyValueTable(evidenceRows));
+            bodyWrap.appendChild(existingSection);
+          }
+        }
+      }
+
       var dlg = u.dialog({
-        titleKey: 'pipelines.newInspection',
-        bodyNode: f.node,
+        titleKey: isEdit ? 'pipelines.editInspection' : 'pipelines.newInspection',
+        bodyNode: bodyWrap,
         actions: [
           { labelKey: 'common.cancel', kind: 'ghost', onClick: function () { return true; } },
           {
@@ -941,7 +1064,7 @@
               if (!f.validate()) { return false; }
               var v = f.getValues();
               var rec = {
-                id: newId('insp'),
+                id: inspection ? inspection.id : newId('insp'),
                 systemId: system.id,
                 type: v.type || 'visual',
                 date: v.date ? fromDateInput(v.date) : new Date().toISOString(),
@@ -952,6 +1075,18 @@
                 findings: v.findings || undefined,
                 reportRef: v.reportRef || undefined
               };
+              // Evidence
+              if (sigPad && !sigPad.isEmpty()) { rec.signature = sigPad.toDataURL(); }
+              else if (isEdit && inspection.signature) { rec.signature = inspection.signature; }
+              if (pendingPhotos.length > 0 || existingPhotos.length > 0) {
+                rec.photos = existingPhotos.concat(pendingPhotos);
+              } else if (isEdit && inspection.photos) { rec.photos = inspection.photos; }
+              if (sketchPad && !sketchPad.isEmpty()) { rec.sketch = sketchPad.toDataURL(); }
+              else if (isEdit && inspection.sketch) { rec.sketch = inspection.sketch; }
+              // Clean up signature/sketch if cleared
+              if (sigPad && sigPad.isEmpty() && isEdit && !inspection.signature) { rec.signature = undefined; }
+              if (sketchPad && sketchPad.isEmpty() && isEdit && !inspection.sketch) { rec.sketch = undefined; }
+
               repos.lineInspections.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
               return false;
             }
