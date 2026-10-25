@@ -277,7 +277,32 @@
         decreasing: "下降",
         stable: "稳定",
         insufficient: "不足"
-      }
+      },
+      advancedTitle: "高级腐蚀分析"
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: "缺少计算所需的必填输入。",
+        E_TEMP_RANGE: "温度超出模型范围（5–150 °C）。",
+        E_PH_RANGE: "pH 超出模型范围（3.5–6.5）。",
+        E_SHEAR_INPUT: "剪应力或流速输入无效。"
+      },
+      title: "NORSOK M-506 — CO₂ 腐蚀", cr: "腐蚀速率", results: "结果",
+      inputs: { temp: "温度 (°C)", pressure: "总压力 (bar)", co2: "CO₂ 摩尔 %", ph: "pH", shear: "壁面剪应力 (Pa)", velocity: "流速 (m/s)", diameter: "管内径 (mm)", density: "液体密度 (kg/m³)", viscosity: "粘度 (mPa·s)", glycol: "乙二醇 wt %", inhibitor: "缓蚀剂效率 %", calculate: "计算", save: "保存输入" },
+      breakdown: { kt: "Kt", fph: "f(pH)", fco2: "fCO₂", shear: "剪应力 (S)", exponent: "指数", reduction: "折减系数" },
+      warn: { W_ORGANIC_ACIDS: "模型不覆盖 >100 ppm 有机酸", W_NO_H2S_O2: "不适用于酸性/含氧工况", W_PCO2_LOW: "pCO₂ <0.5 bar 可能低估", W_OUT_OF_ENVELOPE: "fCO₂ 超出 0.1–10 bar 包络", W_SHEAR_RANGE: "剪应力超出 1–150 Pa 范围" }
+    },
+    cui: {
+      title: "CUI 筛查 (API RP 583/571)", inputs: { material: "材料类别", temp: "操作温度 (°C)", insulation: "保温类型", coating: "涂层状况", environment: "环境", penetrating: "贯穿件", cyclic: "循环工况", steam: "蒸汽伴热" },
+      risk: { low: "低", moderate: "中", high: "高", critical: "严重" },
+      method: { visual: "目视检查", thermo: "热成像", pec: "脉冲涡流 (PEC)", rt: "射线检测 (RT)", gw: "导波超声", utSpot: "定点超声", utProgram: "计划超声" },
+      note: { pt: "不锈钢建议渗透检测 (ECSCC)" }
+    },
+    mic: {
+      title: "MIC 筛查 (NACE TM0194 / API 571)", factor: { freeWater: "游离水存在", stagnant: "滞流水", temperature: "温度 20–50 °C", sulfate: "硫酸盐存在", deposits: "沉积物", nearNeutralPh: "近中性 pH", sulfideSigns: "硫化物迹象", historyMic: "MIC 历史", highCounts: "高细菌计数" },
+      driver: { stagnant: "滞流条件", temperature: "嗜温范围 (20–50 °C)", sulfate: "硫酸盐还原菌", deposits: "垢下", nearNeutralPh: "中性 pH", sulfideSigns: "硫化物指标", historyMic: "既往 MIC 事件", highCounts: "计数升高" },
+      score: "评分", risk: { low: "低", moderate: "中", high: "高" }
     },
     psv: {
       title: "泄压阀",
@@ -702,7 +727,9 @@
         R14: "泄压阀 {{tag}} 尺寸不足（余量 {{margin}}%）。",
         R15: "{{code}}: 估计剩余寿命 {{rulMonths}} 个月低于12（置信度: {{confidence}}）",
         R16: "{{tag}}：PSV 检验已逾期（API 576）",
-        R17: "{{code}}：内检测异常要求压力超过安全限值（{{required}} > {{safe}} bar）"
+        R17: "{{code}}：内检测异常要求压力超过安全限值（{{required}} > {{safe}} bar）",
+        R18: "{{code}}：CUI 筛查 — 风险等级 {{risk}}",
+        R19: "{{code}}：MIC 筛查评分 {{score}}/15 — 高风险"
       },
       name: {
         R1: "严重腐蚀速率",
@@ -721,7 +748,9 @@
         R14: "泄压阀尺寸不足",
         R15: "关键剩余寿命",
         R16: "PSV 检验逾期",
-        R17: "内检测异常超过安全压力"
+        R17: "内检测异常超过安全压力",
+        R18: "CUI 高风险",
+        R19: "MIC 高风险"
       },
       resolveNotePlaceholder: "解决备注…",
       actor: "操作者",

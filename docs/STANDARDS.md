@@ -448,6 +448,79 @@ si pAllow < opPressure con los parámetros SMYS/D/t del ducto → severidad **hi
 - La firma y el croquis son PNG (pocos KB en la práctica).
 - El checksum FNV-1a del expediente `.iwf` (sección 2.16) maneja los dataURLs grandes mediante `canonicalStringify` (serialización canónica con claves ordenadas).
 
+### 2.18 Modelo de corrosión CO₂ — NORSOK M-506 (screening)
+
+**Fuente:** NORSOK M-506 Rev.1/Rev.2, *CO₂ corrosion rate calculation model*.
+
+**Ecuación base:**
+
+CR = Kt · fCO₂^0.62 · (S/19)^(0.146 + 0.0324·log₁₀(fCO₂)) · f(pH) · R   [mm/año]
+
+**Variables:**
+- **Kt:** constante dependiente de temperatura (tabla de 9 puntos, 5–150°C, interpolación lineal).
+- **fCO₂:** fugacidad del CO₂ en bar. fCO₂ = a · pCO₂, donde pCO₂ = (%mol CO₂ / 100) · P_total_capada (máximo 250 bar) y a = 10^(P_capada · (0.0031 − 1.4/TK)).
+- **S:** esfuerzo de corte en la pared (Pa). Si no se provee directamente, se calcula según Dukler para flujo turbulento en tramo recto: f = 0.001375 · [1 + (20000·k/D + 10⁶·μ/(ρ·u·D))^(1/3)], S = 0.5·ρ·f·u².
+- **f(pH):** función de pH definida por tramos (piecewise) para cada temperatura tabulada (5, 15, 20, 40, 60, 80, 90, 120, 150°C), con interpolación lineal entre temperaturas vecinas.
+- **R:** factor de reducción. Glicol: R_glycol = 10^(1.6·(log₁₀(100−wt%)−2)), R = 0.008 si wt% ≥ 95. Inhibidor: R_inh = 1 − eficiencia%/100. Si ambos están presentes se aplica el menor factor (no se multiplican).
+
+**Rangos de validez:**
+- Temperatura: 5–150°C. Fuera de rango → error E_TEMP_RANGE.
+- pH: 3.5–6.5. Fuera de rango → error E_PH_RANGE.
+- fCO₂: 0.1–10 bar. Fuera de rango → warning W_OUT_OF_ENVELOPE.
+- S: 1–150 Pa. Fuera de rango → warning W_SHEAR_RANGE.
+
+**Limitaciones documentadas:**
+- El modelo no cubre ácidos orgánicos (>100 ppm).
+- No aplica en servicio amargo (H₂S) ni oxigenado (O₂).
+- pCO₂ < 0.5 bar puede subestimar la tasa de corrosión.
+- Screening solamente; siempre validar contra la edición vigente de la norma.
+
+**Implementación:** `src/calc/norsok506.js`.
+
+### 2.19 Screening CUI — API RP 583/571 (cualitativo)
+
+**Fuente:** API RP 583, *Corrosion Under Insulation and Fireproofing*; API RP 571, *Damage Mechanisms Affecting Fixed Equipment in the Refining Industry*.
+
+**Modelo cualitativo de screening (adaptación):** Este módulo implementa un checklist cualitativo defendible basado en la guía pública de API RP 583 y API RP 571. **No es el modelo cuantitativo propietario** de API RP 583 — es una adaptación de screening que utiliza bandas de susceptibilidad, puntaje de factores y recomendaciones de métodos de inspección.
+
+**Bandas de susceptibilidad:**
+- Acero al carbono (CS): susceptible −12 a 175°C, pico 60–120°C.
+- Acero inoxidable austenítico (SS): susceptible 60–205°C (ECSCC).
+
+**Factores de puntaje (0–10):**
+- Base: in-band 2, peak 4, fuera-de-banda 0 (1 si servicio cíclico o trazado de vapor).
+- Aditivos: penetraciones +2, recubrimiento ausente +2, pobre o regular +1, aislante mineral/calcio-silicato +1, entorno marino +2, costero +1, servicio cíclico +1, trazado de vapor +1.
+- Cap en 10.
+
+**Niveles de riesgo:** 0–2 bajo, 3–5 moderado, 6–8 alto, 9–10 crítico.
+
+**Métodos recomendados por nivel:** visual + termografía (todos); + PEC (moderado+); + RT, GW, UT puntual (alto+); + UT programado (crítico).
+
+**Implementación:** `src/calc/cui583.js`.
+
+### 2.20 Screening MIC — checklist (adaptación de guía pública)
+
+**Fuente:** NACE TM0194, *Field Monitoring of Bacterial Growth in Oil and Gas Systems*; API RP 571.
+
+**Modelo de checklist ponderado (adaptación):** Implementa un puntaje de factores basado en guías públicas. No es un modelo predictivo — es un tamizaje cualitativo.
+
+**Prerrequisito:** Agua libre. Sin agua libre → riesgo bajo, puntaje 0.
+
+**Factores de puntaje (0–15):**
+- Agua estancada: +3.
+- Temperatura en rango mesofílico (20–50°C): +3.
+- Sulfatos presentes: +2.
+- Depósitos: +2.
+- pH cercano a neutro: +2.
+- Señales de sulfuro: +3.
+- Historial MIC: +3.
+- Conteos bacterianos elevados: +3.
+- Cap en 15.
+
+**Niveles de riesgo:** <6 bajo, 6–10 moderado, ≥11 alto.
+
+**Implementación:** `src/calc/mic.js`.
+
 ---
 
 ## 4. Descargo de ingeniería completo

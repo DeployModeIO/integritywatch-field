@@ -54,14 +54,15 @@
 
   // Custom form builder with per-field validators, reactive inline errors and
   // aria-invalid wiring (superset of IW.ui.form for engineering validation).
-  function buildForm(h, fields, values) {
+  function buildForm(h, fields, values, idPrefix) {
     values = values || {};
+    var prefix = idPrefix ? String(idPrefix) + '-' : 'cf-';
     var node = h.ui.el('form', { class: 'form', attrs: { novalidate: '' } });
     var state = {};
 
     fields.forEach(function (f) {
       var value = values[f.name] !== undefined && values[f.name] !== null ? values[f.name] : (f.value !== undefined && f.value !== null ? f.value : '');
-      var fieldId = 'cf-' + String(f.name).replace(/[^A-Za-z0-9_-]/g, '_');
+      var fieldId = prefix + String(f.name).replace(/[^A-Za-z0-9_-]/g, '_');
       var control;
       var wrap = h.ui.el('div', { class: 'field' });
 
@@ -706,6 +707,393 @@
     return c;
   }
 
+  function norsok506mod() { return root.IW.calc && root.IW.calc.norsok506; }
+  function cui583mod() { return root.IW.calc && root.IW.calc.cui583; }
+  function micMod() { return root.IW.calc && root.IW.calc.mic; }
+  function unitsMod() { return root.IW.calc && root.IW.calc.units; }
+
+  function classifyMpyFromMMYear(mmYear) {
+    var u = unitsMod();
+    var mpy = u && typeof u.mmYearToMpy === 'function' ? u.mmYearToMpy(mmYear) : mmYear * 39.37;
+    return classifyMpy(mpy);
+  }
+
+  function ledBadge(h, level) {
+    var cls = 'led';
+    if (level === 'low' || level === 'none') { cls += ' led--ok'; }
+    else if (level === 'moderate') { cls += ' led--warn'; }
+    else if (level === 'high') { cls += ' led--crit-blink'; }
+    else if (level === 'critical' || level === 'severe') { cls += ' led--crit'; }
+    return h.ui.el('span', { class: cls, attrs: { 'aria-hidden': 'true', role: 'img' } });
+  }
+
+  function buildAdvancedCorrosion(h, mp) {
+    var section = card(h, 'corrosion.advancedTitle');
+    var saved = (mp.advanced && typeof mp.advanced === 'object') ? mp.advanced : {};
+
+    // ---- NORSOK M-506 panel ----
+    var norsokPanel = card(h, 'norsok.title');
+    var norsokSaved = saved.norsok || {};
+    var norsokResult = h.ui.el('div', { class: 'norsok-result' });
+
+    function renderNorsokResult(inputValues) {
+      norsokResult.textContent = '';
+      var mod = norsok506mod();
+      if (!mod || typeof mod.computeCR !== 'function') {
+        norsokResult.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t('common.moduleLoading') }));
+        return;
+      }
+      try {
+        var r = mod.computeCR(inputValues);
+        if (!r.ok) {
+          r.errors.forEach(function (e) {
+            var key = 'norsok.error.' + e;
+            var text = h.t(key);
+            norsokResult.appendChild(h.ui.el('p', { class: 'field-error', text: (text && text !== key) ? text : e }));
+          });
+          return;
+        }
+        var row = h.ui.el('div', { class: 'row' });
+        row.appendChild(ledBadge(h, classifyMpyFromMMYear(r.crMMPerYear)));
+        row.appendChild(h.ui.el('span', { class: 'num', text: fmtNum(r.crMMPerYear, 4) + ' mm/y' }));
+
+        var sev = classifyMpyFromMMYear(r.crMMPerYear);
+        row.appendChild(h.ui.severityBadge(sev));
+        norsokResult.appendChild(row);
+
+        // Breakdown table
+        var t = r.terms;
+        var breakdown = h.ui.keyValueTable([
+          ['norsok.breakdown.kt', h.ui.el('span', { class: 'num', text: fmtNum(t.kt, 3) })],
+          ['norsok.breakdown.fph', h.ui.el('span', { class: 'num', text: fmtNum(t.fPH, 4) })],
+          ['norsok.breakdown.fco2', h.ui.el('span', { class: 'num', text: fmtNum(t.fugacityBar, 4) + ' bar' })],
+          ['norsok.breakdown.shear', h.ui.el('span', { class: 'num', text: fmtNum(t.shearPa, 1) + ' Pa (' + t.shearMode + ')' })],
+          ['norsok.breakdown.exponent', h.ui.el('span', { class: 'num', text: fmtNum(t.exponent, 5) })],
+          ['norsok.breakdown.reduction', h.ui.el('span', { class: 'num', text: fmtNum(t.reductionFactor, 4) + ' (' + t.reductionSource + ')' })]
+        ]);
+        norsokResult.appendChild(breakdown);
+
+        // Warnings
+        if (r.warnings && r.warnings.length) {
+          var wDiv = h.ui.el('div', { class: 'field-hint' });
+          r.warnings.forEach(function (w) {
+            var key = 'norsok.warn.' + w;
+            wDiv.appendChild(h.ui.el('p', { text: h.t(key) }));
+          });
+          norsokResult.appendChild(wDiv);
+        }
+      } catch (err) {
+        norsokResult.appendChild(h.ui.el('p', { class: 'field-error', text: String(err) }));
+      }
+    }
+
+    // Build NOROK form inline
+    var nFields = [];
+    function addNF(name, labelKey, type, def) {
+      nFields.push({ name: name, labelKey: labelKey, type: type || 'number', value: def || '' });
+    }
+    var ns = norsokSaved.inputs || {};
+    addNF('temperatureC', 'norsok.inputs.temp', 'number', ns.temperatureC != null ? ns.temperatureC : 20);
+    addNF('totalPressureBar', 'norsok.inputs.pressure', 'number', ns.totalPressureBar != null ? ns.totalPressureBar : 1);
+    addNF('co2MolePercent', 'norsok.inputs.co2', 'number', ns.co2MolePercent != null ? ns.co2MolePercent : 10);
+    addNF('ph', 'norsok.inputs.ph', 'number', ns.ph != null ? ns.ph : 4);
+    addNF('wallShearPa', 'norsok.inputs.shear', 'number', ns.wallShearPa);
+    addNF('flowVelocityMs', 'norsok.inputs.velocity', 'number', ns.flowVelocityMs);
+    addNF('pipeIDmm', 'norsok.inputs.diameter', 'number', ns.pipeIDmm);
+    addNF('liquidDensityKgM3', 'norsok.inputs.density', 'number', ns.liquidDensityKgM3);
+    addNF('liquidViscositymPaS', 'norsok.inputs.viscosity', 'number', ns.liquidViscositymPaS);
+    addNF('glycolWtPercent', 'norsok.inputs.glycol', 'number', ns.glycolWtPercent != null ? ns.glycolWtPercent : 0);
+    addNF('inhibitorEfficiencyPercent', 'norsok.inputs.inhibitor', 'number', ns.inhibitorEfficiencyPercent != null ? ns.inhibitorEfficiencyPercent : 0);
+
+    var nForm = buildForm(h, nFields, {}, 'cf-ns');
+    norsokPanel.appendChild(nForm.node);
+
+    if (norsokSaved.inputs) {
+      // Recalculate deterministically from the saved inputs so the last
+      // result is shown after a reload (no dependence on a stored output).
+      var restored = {};
+      var src = norsokSaved.inputs;
+      Object.keys(src).forEach(function (k) {
+        var v = src[k];
+        if (v !== null && v !== undefined && v !== '') { restored[k] = (typeof v === 'number') ? v : Number(v); }
+      });
+      renderNorsokResult(restored);
+    }
+
+    var nCalcBtn = h.ui.el('button', { class: 'btn btn-primary', text: h.t('norsok.inputs.calculate'),
+      on: { click: function () {
+        var vals = nForm.getValues();
+        var input = {
+          temperatureC: vals.temperatureC, totalPressureBar: vals.totalPressureBar,
+          co2MolePercent: vals.co2MolePercent, ph: vals.ph,
+          flowVelocityMs: vals.flowVelocityMs, pipeIDmm: vals.pipeIDmm,
+          liquidDensityKgM3: vals.liquidDensityKgM3, liquidViscositymPaS: vals.liquidViscositymPaS,
+          glycolWtPercent: vals.glycolWtPercent, inhibitorEfficiencyPercent: vals.inhibitorEfficiencyPercent
+        };
+        if (vals.wallShearPa != null && vals.wallShearPa !== '') { input.wallShearPa = Number(vals.wallShearPa); }
+        renderNorsokResult(input);
+        norsokResult.scrollIntoView({ behavior: 'smooth' });
+      } }
+    });
+    var nSaveBtn = h.ui.el('button', { class: 'btn', text: h.t('norsok.inputs.save'),
+      on: { click: function () {
+        if (!mp.advanced) { mp.advanced = {}; }
+        if (!mp.advanced.norsok) { mp.advanced.norsok = {}; }
+        var vals = nForm.getValues();
+        mp.advanced.norsok.inputs = vals;
+        var mod = norsok506mod();
+        if (mod && typeof mod.computeCR === 'function') {
+          try {
+            var input = {
+              temperatureC: vals.temperatureC, totalPressureBar: vals.totalPressureBar,
+              co2MolePercent: vals.co2MolePercent, ph: vals.ph,
+              flowVelocityMs: vals.flowVelocityMs, pipeIDmm: vals.pipeIDmm,
+              liquidDensityKgM3: vals.liquidDensityKgM3, liquidViscositymPaS: vals.liquidViscositymPaS,
+              glycolWtPercent: vals.glycolWtPercent, inhibitorEfficiencyPercent: vals.inhibitorEfficiencyPercent
+            };
+            if (vals.wallShearPa != null && vals.wallShearPa !== '') { input.wallShearPa = Number(vals.wallShearPa); }
+            var result = mod.computeCR(input);
+            mp.advanced.norsok.result = result;
+            renderNorsokResult(input);
+          } catch (e) {}
+        }
+        h.repos.monitoringPoints.save(mp).then(function (saved) {
+          h.ui.toast(h.t('common.saved'));
+        }).catch(function () {});
+      } }
+    });
+    norsokPanel.appendChild(h.ui.el('div', { class: 'actions' }, nCalcBtn, nSaveBtn));
+    norsokPanel.appendChild(norsokResult);
+    section.appendChild(norsokPanel);
+
+    // ---- CUI panel ----
+    var cuiPanel = card(h, 'cui.title');
+    var cuiSaved = saved.cui || {};
+    var cuiResult = h.ui.el('div', { class: 'cui-result' });
+
+    function renderCuiResult(inputValues) {
+      cuiResult.textContent = '';
+      var mod = cui583mod();
+      if (!mod || typeof mod.assess !== 'function') {
+        cuiResult.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t('common.moduleLoading') }));
+        return;
+      }
+      try {
+        var r = mod.assess(inputValues);
+        var row = h.ui.el('div', { class: 'row' });
+        row.appendChild(ledBadge(h, r.riskLevel));
+        row.appendChild(h.ui.el('span', { class: 'pill', text: h.t('cui.risk.' + r.riskLevel) }));
+        row.appendChild(h.ui.el('span', { class: 'num', text: String(r.likelihoodScore) + '/10' }));
+        cuiResult.appendChild(row);
+
+        if (r.methods && r.methods.length) {
+          var mDiv = h.ui.el('div', { class: 'field-hint' });
+          r.methods.forEach(function (m) { mDiv.appendChild(h.ui.el('p', { text: h.t(m) })); });
+          cuiResult.appendChild(mDiv);
+        }
+        if (r.notes && r.notes.length) {
+          r.notes.forEach(function (n) { cuiResult.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t(n) })); });
+        }
+      } catch (err) {
+        cuiResult.appendChild(h.ui.el('p', { class: 'field-error', text: String(err) }));
+      }
+    }
+
+    // Auto-detect material class
+    function detectMaterialClass(materialId) {
+      if (!materialId) return 'cs';
+      var id = String(materialId).toLowerCase();
+      if (id.indexOf('ss-') === 0 || id.indexOf('stainless') >= 0 || id.indexOf('duplex') >= 0 || id.indexOf('super-duplex') >= 0) {
+        return 'ss';
+      }
+      return 'cs';
+    }
+
+    var cs = cuiSaved.inputs || {};
+    var matClass = cs.materialClass || detectMaterialClass(mp.material);
+    var cuiFields = [
+      { name: 'materialClass', labelKey: 'cui.inputs.material', type: 'select', options: [{ value: 'cs', labelKey: 'CS' }, { value: 'ss', labelKey: 'SS' }], value: matClass },
+      { name: 'operatingTempC', labelKey: 'cui.inputs.temp', type: 'number', value: cs.operatingTempC != null ? cs.operatingTempC : (mp.process && mp.process.tempC != null ? mp.process.tempC : 40) },
+      { name: 'insulationType', labelKey: 'cui.inputs.insulation', type: 'select', options: [{ value: 'closed-cell', label: 'Closed-cell' }, { value: 'mineral-wool', label: 'Mineral wool' }, { value: 'calcium-silicate', label: 'Calcium silicate' }, { value: 'none', label: 'None' }], value: cs.insulationType || 'mineral-wool' },
+      { name: 'coatingCondition', labelKey: 'cui.inputs.coating', type: 'select', options: [{ value: 'good', label: 'Good' }, { value: 'fair', label: 'Fair' }, { value: 'poor', label: 'Poor' }, { value: 'none', label: 'None' }], value: cs.coatingCondition || 'good' },
+      { name: 'environment', labelKey: 'cui.inputs.environment', type: 'select', options: [{ value: 'dry', label: 'Dry' }, { value: 'temperate', label: 'Temperate' }, { value: 'coastal', label: 'Coastal' }, { value: 'marine', label: 'Marine' }], value: cs.environment || 'temperate' }
+    ];
+
+    var cuiForm = buildForm(h, cuiFields, {}, 'cf-cui');
+    var cuiChecks = h.ui.el('div', { class: 'field-group' });
+    function addCheck(name, labelKey, def) {
+      var checked = cs[name] !== undefined ? cs[name] : (def || false);
+      var cb = h.ui.el('input', { attrs: { type: 'checkbox', id: 'cui-' + name } });
+      cb.checked = !!checked;
+      var lbl = h.ui.el('label', { class: 'field-label', attrs: { for: 'cui-' + name } }, cb, h.ui.el('span', { text: h.t(labelKey) }));
+      cuiChecks.appendChild(lbl);
+      cuiChecks.setAttribute('data-' + name, 'true');
+    }
+    addCheck('penetratingFeatures', 'cui.inputs.penetrating');
+    addCheck('cyclicService', 'cui.inputs.cyclic');
+    addCheck('steamTraced', 'cui.inputs.steam');
+
+    cuiPanel.appendChild(cuiForm.node);
+    cuiPanel.appendChild(cuiChecks);
+
+    if (cuiSaved.inputs) {
+      // Recalculate deterministically from the saved inputs so the last
+      // result is shown after a reload (no dependence on a stored output).
+      renderCuiResult(cuiSaved.inputs);
+    } else if (cuiSaved.result) {
+      renderCuiResult(cuiSaved.result.inputs || {});
+    }
+
+    function readCuiInputs() {
+      var vals = cuiForm.getValues();
+      var checks = cuiChecks.querySelectorAll('input[type=checkbox]');
+      checks.forEach(function (cb) { vals[cb.id.replace('cui-', '')] = cb.checked; });
+      // Coerce temp to number
+      if (vals.operatingTempC != null) vals.operatingTempC = Number(vals.operatingTempC);
+      return vals;
+    }
+
+    var cuiCalcBtn = h.ui.el('button', { class: 'btn btn-primary', text: h.t('norsok.inputs.calculate'),
+      on: { click: function () {
+        var vals = readCuiInputs();
+        renderCuiResult(vals);
+        cuiResult.scrollIntoView({ behavior: 'smooth' });
+      } }
+    });
+    var cuiSaveBtn = h.ui.el('button', { class: 'btn', text: h.t('norsok.inputs.save'),
+      on: { click: function () {
+        if (!mp.advanced) { mp.advanced = {}; }
+        if (!mp.advanced.cui) { mp.advanced.cui = {}; }
+        var vals = readCuiInputs();
+        mp.advanced.cui.inputs = vals;
+        var mod = cui583mod();
+        if (mod && typeof mod.assess === 'function') {
+          try {
+            mp.advanced.cui.result = mod.assess(vals);
+            renderCuiResult(vals);
+          } catch (e) {}
+        }
+        h.repos.monitoringPoints.save(mp).then(function () {
+          h.ui.toast(h.t('common.saved'));
+        }).catch(function () {});
+      } }
+    });
+    cuiPanel.appendChild(h.ui.el('div', { class: 'actions' }, cuiCalcBtn, cuiSaveBtn));
+    cuiPanel.appendChild(cuiResult);
+    section.appendChild(cuiPanel);
+
+    // ---- MIC panel ----
+    var micPanel = card(h, 'mic.title');
+    var micSaved = saved.mic || {};
+    var micResult = h.ui.el('div', { class: 'mic-result' });
+
+    function renderMicResult(inputValues) {
+      micResult.textContent = '';
+      var mod = micMod();
+      if (!mod || typeof mod.assess !== 'function') {
+        micResult.appendChild(h.ui.el('p', { class: 'field-hint', text: h.t('common.moduleLoading') }));
+        return;
+      }
+      try {
+        var r = mod.assess(inputValues);
+        var row = h.ui.el('div', { class: 'row' });
+        row.appendChild(ledBadge(h, r.riskLevel));
+        row.appendChild(h.ui.el('span', { class: 'pill', text: h.t('mic.risk.' + r.riskLevel) }));
+        row.appendChild(h.ui.el('span', { class: 'num', text: String(r.score) + '/15' }));
+        micResult.appendChild(row);
+
+        if (r.drivers && r.drivers.length) {
+          var dDiv = h.ui.el('div', { class: 'field-hint' });
+          r.drivers.forEach(function (d) { dDiv.appendChild(h.ui.el('p', { text: h.t(d) })); });
+          micResult.appendChild(dDiv);
+        }
+      } catch (err) {
+        micResult.appendChild(h.ui.el('p', { class: 'field-error', text: String(err) }));
+      }
+    }
+
+    var ms = micSaved.inputs || {};
+    var micChecks = h.ui.el('div', { class: 'field-group' });
+    function addMicCheck(name, labelKey, def) {
+      var checked = ms[name] !== undefined ? ms[name] : (def || false);
+      var cb = h.ui.el('input', { attrs: { type: 'checkbox', id: 'mic-' + name } });
+      cb.checked = !!checked;
+      var lbl = h.ui.el('label', { class: 'field-label', attrs: { for: 'mic-' + name } }, cb, h.ui.el('span', { text: h.t(labelKey) }));
+      micChecks.appendChild(lbl);
+    }
+    addMicCheck('freeWater', 'mic.factor.stagnant', false); // re-using stagnant label as it's the first
+    // Actually freeWater is the prerequisite, let me use specific labels.
+    // Clear and redo properly
+    micChecks.textContent = '';
+    function micField(name, labelKey, def) {
+      var checked = ms[name] !== undefined ? ms[name] : (def || false);
+      var cb = h.ui.el('input', { attrs: { type: 'checkbox', id: 'mic-' + name } });
+      cb.checked = !!checked;
+      var lbl = h.ui.el('label', { class: 'field-label', attrs: { for: 'mic-' + name } }, cb, h.ui.el('span', { text: h.t(labelKey) }));
+      micChecks.appendChild(lbl);
+    }
+    micField('freeWater', 'mic.factor.freeWater');
+    micField('stagnant', 'mic.factor.stagnant');
+    micField('sulfate', 'mic.factor.sulfate');
+    micField('deposits', 'mic.factor.deposits');
+    micField('nearNeutralPh', 'mic.factor.nearNeutralPh');
+    micField('sulfideSigns', 'mic.factor.sulfideSigns');
+    micField('historyMic', 'mic.factor.historyMic');
+    micField('highCounts', 'mic.factor.highCounts');
+
+    var micTempField = buildForm(h, [{ name: 'temperatureC', labelKey: 'mic.factor.temperature', type: 'number', value: ms.temperatureC != null ? ms.temperatureC : (mp.process && mp.process.tempC != null ? mp.process.tempC : '') }], {}, 'cf-mic');
+    micPanel.appendChild(micChecks);
+    micPanel.appendChild(micTempField.node);
+
+    if (micSaved.inputs) {
+      // Recalculate deterministically from the saved inputs so the last
+      // result is shown after a reload (no dependence on a stored output).
+      renderMicResult(micSaved.inputs);
+    } else if (micSaved.result) {
+      renderMicResult(micSaved.result.inputs || {});
+    }
+
+    function readMicInputs() {
+      var checks = micChecks.querySelectorAll('input[type=checkbox]');
+      var vals = {};
+      checks.forEach(function (cb) { vals[cb.id.replace('mic-', '')] = cb.checked; });
+      var tempVal = micTempField.getValues().temperatureC;
+      if (tempVal != null && tempVal !== '') vals.temperatureC = Number(tempVal);
+      return vals;
+    }
+
+    var micCalcBtn = h.ui.el('button', { class: 'btn btn-primary', text: h.t('norsok.inputs.calculate'),
+      on: { click: function () {
+        var vals = readMicInputs();
+        renderMicResult(vals);
+        micResult.scrollIntoView({ behavior: 'smooth' });
+      } }
+    });
+    var micSaveBtn = h.ui.el('button', { class: 'btn', text: h.t('norsok.inputs.save'),
+      on: { click: function () {
+        if (!mp.advanced) { mp.advanced = {}; }
+        if (!mp.advanced.mic) { mp.advanced.mic = {}; }
+        var vals = readMicInputs();
+        mp.advanced.mic.inputs = vals;
+        var mod = micMod();
+        if (mod && typeof mod.assess === 'function') {
+          try {
+            mp.advanced.mic.result = mod.assess(vals);
+            renderMicResult(vals);
+          } catch (e) {}
+        }
+        h.repos.monitoringPoints.save(mp).then(function () {
+          h.ui.toast(h.t('common.saved'));
+        }).catch(function () {});
+      } }
+    });
+    micPanel.appendChild(h.ui.el('div', { class: 'actions' }, micCalcBtn, micSaveBtn));
+    micPanel.appendChild(micResult);
+    section.appendChild(micPanel);
+
+    return section;
+  }
+
   function fichaTable(h, mp) {
     var m = materialById(mp.material);
     var pairs = [
@@ -976,6 +1364,7 @@
     frag.appendChild(buildSour(h, mp));
     frag.appendChild(buildCp(h, mp));
     frag.appendChild(buildCui(h, mp));
+    frag.appendChild(buildAdvancedCorrosion(h, mp));
 
     return frag;
   }

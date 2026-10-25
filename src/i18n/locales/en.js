@@ -110,7 +110,75 @@
       cpStatus: { pass: 'Pass', fail: 'Fail', insufficient: 'Insufficient data' },
       remainingLife: 'Remaining life', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: 'Set T-nom and T-min (mm) to calculate remaining life',
       outlier: 'Outlier', rulingMethod: 'Method',
-      trendLabels: { increasing: 'Increasing', decreasing: 'Decreasing', stable: 'Stable', insufficient: 'Insufficient' }
+      trendLabels: { increasing: 'Increasing', decreasing: 'Decreasing', stable: 'Stable', insufficient: 'Insufficient' },
+      advancedTitle: 'Advanced corrosion'
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: 'Missing required inputs for the calculation.',
+        E_TEMP_RANGE: 'Temperature outside the model range (5–150 °C).',
+        E_PH_RANGE: 'pH outside the model range (3.5–6.5).',
+        E_SHEAR_INPUT: 'Invalid shear stress or velocity inputs.'
+      },
+      title: 'NORSOK M-506 — CO₂ corrosion',
+      cr: 'Corrosion rate',
+      results: 'Results',
+      inputs: {
+        temp: 'Temperature (°C)', pressure: 'Total pressure (bar)', co2: 'CO₂ mole %',
+        ph: 'pH', shear: 'Wall shear (Pa)', velocity: 'Flow velocity (m/s)',
+        diameter: 'Pipe ID (mm)', density: 'Liquid density (kg/m³)',
+        viscosity: 'Viscosity (mPa·s)', glycol: 'Glycol wt %',
+        inhibitor: 'Inhibitor eff. %', calculate: 'Calculate', save: 'Save inputs'
+      },
+      breakdown: {
+        kt: 'Kt', fph: 'f(pH)', fco2: 'fCO₂', shear: 'Shear (S)',
+        exponent: 'Exponent', reduction: 'Reduction'
+      },
+      warn: {
+        W_ORGANIC_ACIDS: 'Model does not cover organic acids >100 ppm',
+        W_NO_H2S_O2: 'Not applicable for sour/oxygenated service',
+        W_PCO2_LOW: 'pCO₂ <0.5 bar may underestimate',
+        W_OUT_OF_ENVELOPE: 'fCO₂ outside 0.1–10 bar envelope',
+        W_SHEAR_RANGE: 'Shear stress outside 1–150 Pa range'
+      }
+    },
+
+    cui: {
+      title: 'CUI screening (API RP 583/571)',
+      inputs: {
+        material: 'Material class', temp: 'Operating temp (°C)',
+        insulation: 'Insulation type', coating: 'Coating condition',
+        environment: 'Environment', penetrating: 'Penetrating features',
+        cyclic: 'Cyclic service', steam: 'Steam traced'
+      },
+      risk: { low: 'Low', moderate: 'Moderate', high: 'High', critical: 'Critical' },
+      method: {
+        visual: 'Visual inspection', thermo: 'Thermography',
+        pec: 'Pulsed eddy current', rt: 'Radiography (RT)',
+        gw: 'Guided wave UT', utSpot: 'Spot UT',
+        utProgram: 'Programmed UT'
+      },
+      note: { pt: 'PT recommended for stainless steel (ECSCC)' }
+    },
+
+    mic: {
+      title: 'MIC screening (NACE TM0194 / API 571)',
+      factor: {
+        freeWater: 'Free water present',
+        stagnant: 'Stagnant water', temperature: 'Temperature 20–50 °C',
+        sulfate: 'Sulfate present', deposits: 'Deposits',
+        nearNeutralPh: 'Near-neutral pH', sulfideSigns: 'Sulfide signs',
+        historyMic: 'MIC history', highCounts: 'High bacterial counts'
+      },
+      driver: {
+        stagnant: 'Stagnant conditions', temperature: 'Mesophilic range (20–50 °C)',
+        sulfate: 'Sulfate-reducing bacteria', deposits: 'Under-deposit',
+        nearNeutralPh: 'Neutral pH', sulfideSigns: 'Sulfide indicators',
+        historyMic: 'Prior MIC events', highCounts: 'Elevated counts'
+      },
+      score: 'Score',
+      risk: { low: 'Low', moderate: 'Moderate', high: 'High' }
     },
 
     psv: {
@@ -346,7 +414,9 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
         R14: '{{tag}}: installed capacity is below required (margin {{margin}}%)',
         R15: '{{code}}: estimated remaining life {{rulMonths}} months below 12 (confidence: {{confidence}})',
         R16: '{{tag}}: PSV inspection overdue (API 576)',
-        R17: '{{code}}: ILI anomaly requires pressure above safe limit ({{required}} > {{safe}} bar)'
+        R17: '{{code}}: ILI anomaly requires pressure above safe limit ({{required}} > {{safe}} bar)',
+        R18: '{{code}}: CUI screening result — {{risk}} risk level',
+        R19: '{{code}}: MIC screening score {{score}}/15 — high risk'
       },
       name: {
         R1: 'Critical corrosion rate', R2: 'Corrosion rate escalation', R3: 'Low inhibitor efficiency',
@@ -355,7 +425,9 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
         R10: 'MTBF degradation', R11: 'Availability below threshold', R12: 'Repeated failures',
         R13: 'PSV test overdue', R14: 'Undersized relief valve', R15: 'Critical remaining life',
         R16: 'PSV inspection overdue',
-        R17: 'ILI anomaly exceeding safe pressure'
+        R17: 'ILI anomaly exceeding safe pressure',
+        R18: 'CUI high risk',
+        R19: 'MIC high risk'
       },
       histActions: { created: 'Created', triggered: 'Triggered', acked: 'Acknowledged', resolved: 'Resolved', reopened: 'Reopened' }
     },

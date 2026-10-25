@@ -277,7 +277,32 @@
         decreasing: "Diminuant",
         stable: "Stable",
         insufficient: "Insuffisant"
-      }
+      },
+      advancedTitle: "Corrosion avancée"
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: "Entrées obligatoires manquantes pour le calcul.",
+        E_TEMP_RANGE: "Température hors de la plage du modèle (5–150 °C).",
+        E_PH_RANGE: "pH hors de la plage du modèle (3,5–6,5).",
+        E_SHEAR_INPUT: "Contrainte de cisaillement ou vitesse invalide."
+      },
+      title: "NORSOK M-506 — Corrosion CO₂", cr: "Vitesse de corrosion", results: "Résultats",
+      inputs: { temp: "Température (°C)", pressure: "Pression totale (bar)", co2: "CO₂ % molaire", ph: "pH", shear: "Cisaillement pariétal (Pa)", velocity: "Vitesse (m/s)", diameter: "DI tuyau (mm)", density: "Densité (kg/m³)", viscosity: "Viscosité (mPa·s)", glycol: "Glycol % masse", inhibitor: "Effic. inhibiteur %", calculate: "Calculer", save: "Enregistrer" },
+      breakdown: { kt: "Kt", fph: "f(pH)", fco2: "fCO₂", shear: "Cisaillement (S)", exponent: "Exposant", reduction: "Réduction" },
+      warn: { W_ORGANIC_ACIDS: "Modèle ne couvre pas acides organiques >100 ppm", W_NO_H2S_O2: "Non applicable en service acide/oxygéné", W_PCO2_LOW: "pCO₂ <0,5 bar peut sous-estimer", W_OUT_OF_ENVELOPE: "fCO₂ hors enveloppe 0,1–10 bar", W_SHEAR_RANGE: "Cisaillement hors plage 1–150 Pa" }
+    },
+    cui: {
+      title: "Dépistage CUI (API RP 583/571)", inputs: { material: "Classe de matériau", temp: "Temp. de service (°C)", insulation: "Type d'isolant", coating: "État du revêtement", environment: "Environnement", penetrating: "Pénétrations", cyclic: "Service cyclique", steam: "Tracé vapeur" },
+      risk: { low: "Faible", moderate: "Modéré", high: "Élevé", critical: "Critique" },
+      method: { visual: "Inspection visuelle", thermo: "Thermographie", pec: "Courants de Foucault pulsés (PEC)", rt: "Radiographie (RT)", gw: "Ultrasons guidés", utSpot: "UT ponctuel", utProgram: "UT programmé" },
+      note: { pt: "PT recommandé pour acier inoxydable (ECSCC)" }
+    },
+    mic: {
+      title: "Dépistage MIC (NACE TM0194 / API 571)", factor: { freeWater: "Eau libre présente", stagnant: "Eau stagnante", temperature: "Température 20–50 °C", sulfate: "Sulfates présents", deposits: "Dépôts", nearNeutralPh: "pH quasi neutre", sulfideSigns: "Signes de sulfure", historyMic: "Historique MIC", highCounts: "Comptages bactériens élevés" },
+      driver: { stagnant: "Conditions stagnantes", temperature: "Plage mésophile (20–50 °C)", sulfate: "Bactéries sulfato-réductrices", deposits: "Sous dépôt", nearNeutralPh: "pH neutre", sulfideSigns: "Indicateurs de sulfure", historyMic: "Événements MIC antérieurs", highCounts: "Comptages élevés" },
+      score: "Score", risk: { low: "Faible", moderate: "Modéré", high: "Élevé" }
     },
     psv: {
       title: "Soupapes de sûreté",
@@ -702,7 +727,9 @@
         R14: "PSV {{tag}} sous-dimensionnée (marge {{margin}} %).",
         R15: "{{code}}: durée de vie restante estimée {{rulMonths}} mois sous 12 (confiance: {{confidence}})",
         R16: "{{tag}}: Inspection de PSV retardée (API 576)",
-        R17: "{{code}}: Anomalie ILI nécessite une pression supérieure à la limite sécurisée ({{required}} > {{safe}} bar)"
+        R17: "{{code}}: Anomalie ILI nécessite une pression supérieure à la limite sécurisée ({{required}} > {{safe}} bar)",
+        R18: "{{code}} : dépistage CUI — niveau de risque {{risk}}",
+        R19: "{{code}} : dépistage MIC score {{score}}/15 — risque élevé"
       },
       name: {
         R1: "Taux de corrosion sévère",
@@ -721,7 +748,9 @@
         R14: "PSV sous-dimensionnée",
         R15: "Durée de vie critique",
         R16: "Inspection de PSV retardée",
-        R17: "Anomalie ILI dépassant la pression sécurisée"
+        R17: "Anomalie ILI dépassant la pression sécurisée",
+        R18: "Risque élevé CUI",
+        R19: "Risque élevé MIC"
       },
       resolveNotePlaceholder: "Note de résolution…",
       actor: "Acteur",

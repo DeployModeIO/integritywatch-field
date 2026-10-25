@@ -277,7 +277,32 @@
         decreasing: "متناقص",
         stable: "مستقر",
         insufficient: "غير كاف"
-      }
+      },
+      advancedTitle: "تحليل تآكل متقدم"
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: "المدخلات الإلزامية للحساب مفقودة.",
+        E_TEMP_RANGE: "درجة الحرارة خارج نطاق النموذج (5–150 °م).",
+        E_PH_RANGE: "pH خارج نطاق النموذج (3.5–6.5).",
+        E_SHEAR_INPUT: "إجهاد القص أو السرعة غير صالحة."
+      },
+      title: "NORSOK M-506 — تآكل CO₂", cr: "معدل التآكل", results: "النتائج",
+      inputs: { temp: "درجة الحرارة (°م)", pressure: "الضغط الكلي (بار)", co2: "CO₂ % مول", ph: "pH", shear: "إجهاد القص (باسكال)", velocity: "سرعة التدفق (م/ث)", diameter: "القطر الداخلي (مم)", density: "كثافة السائل (كغم/م³)", viscosity: "اللزوجة (ملي باسكال·ث)", glycol: "غليكول % وزن", inhibitor: "كفاءة المثبط %", calculate: "حساب", save: "حفظ المدخلات" },
+      breakdown: { kt: "Kt", fph: "f(pH)", fco2: "fCO₂", shear: "إجهاد القص (S)", exponent: "الأس", reduction: "التخفيض" },
+      warn: { W_ORGANIC_ACIDS: "النموذج لا يغطي الأحماض العضوية >100 جزء في المليون", W_NO_H2S_O2: "لا ينطبق على الخدمة الحامضية/المؤكسجة", W_PCO2_LOW: "pCO₂ <0.5 بار قد يقلل التقدير", W_OUT_OF_ENVELOPE: "fCO₂ خارج النطاق 0.1–10 بار", W_SHEAR_RANGE: "إجهاد القص خارج النطاق 1–150 باسكال" }
+    },
+    cui: {
+      title: "فحص CUI (API RP 583/571)", inputs: { material: "فئة المادة", temp: "درجة حرارة التشغيل (°م)", insulation: "نوع العزل", coating: "حالة الطلاء", environment: "البيئة", penetrating: "اختراقات", cyclic: "خدمة دورية", steam: "تسخين بالبخار" },
+      risk: { low: "منخفض", moderate: "متوسط", high: "مرتفع", critical: "حرج" },
+      method: { visual: "فحص بصري", thermo: "تصوير حراري", pec: "التيارات الدوامية النبضية (PEC)", rt: "تصوير إشعاعي (RT)", gw: "موجات فوق صوتية موجهة", utSpot: "UT نقطي", utProgram: "UT مبرمج" },
+      note: { pt: "يوصى بفحص السوائل المتخللة (PT) للفولاذ المقاوم للصدأ (ECSCC)" }
+    },
+    mic: {
+      title: "فحص MIC (NACE TM0194 / API 571)", factor: { freeWater: "يوجد ماء حر", stagnant: "مياه راكدة", temperature: "درجة حرارة 20–50 °م", sulfate: "كبريتات موجودة", deposits: "ترسبات", nearNeutralPh: "pH شبه متعادل", sulfideSigns: "علامات الكبريتيد", historyMic: "تاريخ MIC", highCounts: "تعداد بكتيري مرتفع" },
+      driver: { stagnant: "ظروف راكدة", temperature: "نطاق محب للحرارة المتوسطة (20–50 °م)", sulfate: "بكتيريا مختزلة للكبريتات", deposits: "تحت الترسبات", nearNeutralPh: "pH متعادل", sulfideSigns: "مؤشرات الكبريتيد", historyMic: "أحداث MIC سابقة", highCounts: "تعدادات مرتفعة" },
+      score: "النتيجة", risk: { low: "منخفض", moderate: "متوسط", high: "مرتفع" }
     },
     psv: {
       title: "صمامات الأمان",
@@ -702,7 +727,9 @@
         R14: "صمام الأمان {{tag}} مقاسه غير كافٍ (الهامش {{margin}}%).",
         R15: "{{code}}: العمر المتبقي المقدر {{rulMonths}} شهراً أقل من 12 (الموثوقية: {{confidence}})",
         R16: "{{tag}}: تفتيش PSV متأخر (API 576)",
-        R17: "{{code}}: شذوذ ILI يتطلب ضغطا أعلى من الحد الآمن ({{required}} > {{safe}} بار)"
+        R17: "{{code}}: شذوذ ILI يتطلب ضغطا أعلى من الحد الآمن ({{required}} > {{safe}} بار)",
+        R18: "{{code}}: فحص CUI — مستوى الخطر {{risk}}",
+        R19: "{{code}}: فحص MIC النتيجة {{score}}/15 — خطر مرتفع"
       },
       name: {
         R1: "معدل تآكل حرج",
@@ -721,7 +748,9 @@
         R14: "مقاس صمام أمان غير كافٍ",
         R15: "عمر متبقٍ حرج",
         R16: "تفتيش PSV متأخر",
-        R17: "شذوذ ILI يتجاوز الضغط الآمن"
+        R17: "شذوذ ILI يتجاوز الضغط الآمن",
+        R18: "خطر CUI مرتفع",
+        R19: "خطر MIC مرتفع"
       },
       resolveNotePlaceholder: "ملاحظة الحل…",
       actor: "الفاعل",

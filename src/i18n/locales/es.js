@@ -273,12 +273,80 @@ pass: 'Aprobado',
       tMinHint: 'Defina T-nom y T-mín (mm) para calcular la vida remanente',
       outlier: 'Atípica',
       rulingMethod: 'Método',
-      trendLabels: {
+trendLabels: {
         increasing: 'Aumentando',
         decreasing: 'Disminuyendo',
         stable: 'Estable',
         insufficient: 'Insuficiente'
+      },
+      advancedTitle: 'Corrosión avanzada'
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: 'Faltan entradas obligatorias para el cálculo.',
+        E_TEMP_RANGE: 'Temperatura fuera del rango del modelo (5–150 °C).',
+        E_PH_RANGE: 'pH fuera del rango del modelo (3,5–6,5).',
+        E_SHEAR_INPUT: 'Esfuerzo de corte o velocidad inválidos.'
+      },
+      title: 'NORSOK M-506 — Corrosión CO₂',
+      cr: 'Tasa de corrosión',
+      results: 'Resultados',
+      inputs: {
+        temp: 'Temperatura (°C)', pressure: 'Presión total (bar)', co2: 'CO₂ % molar',
+        ph: 'pH', shear: 'Corte de pared (Pa)', velocity: 'Velocidad de flujo (m/s)',
+        diameter: 'DI tubería (mm)', density: 'Densidad del líquido (kg/m³)',
+        viscosity: 'Viscosidad (mPa·s)', glycol: 'Glicol % peso',
+        inhibitor: 'Efic. inhibidor %', calculate: 'Calcular', save: 'Guardar datos'
+      },
+      breakdown: {
+        kt: 'Kt', fph: 'f(pH)', fco2: 'fCO₂', shear: 'Corte (S)',
+        exponent: 'Exponente', reduction: 'Reducción'
+      },
+      warn: {
+        W_ORGANIC_ACIDS: 'El modelo no cubre ácidos orgánicos >100 ppm',
+        W_NO_H2S_O2: 'No aplica en servicio amargo/oxigenado',
+        W_PCO2_LOW: 'pCO₂ <0.5 bar puede subestimar',
+        W_OUT_OF_ENVELOPE: 'fCO₂ fuera del rango 0.1–10 bar',
+        W_SHEAR_RANGE: 'Corte fuera del rango 1–150 Pa'
       }
+    },
+
+    cui: {
+      title: 'Tamizaje CUI (API RP 583/571)',
+      inputs: {
+        material: 'Clase de material', temp: 'Temp. operativa (°C)',
+        insulation: 'Tipo de aislante', coating: 'Estado del recubrimiento',
+        environment: 'Entorno', penetrating: 'Penetraciones',
+        cyclic: 'Servicio cíclico', steam: 'Trazado de vapor'
+      },
+      risk: { low: 'Bajo', moderate: 'Moderado', high: 'Alto', critical: 'Crítico' },
+      method: {
+        visual: 'Inspección visual', thermo: 'Termografía',
+        pec: 'Corrientes de Foucault pulsadas (PEC)', rt: 'Radiografía (RT)',
+        gw: 'Ultrasonido guiado', utSpot: 'UT puntual',
+        utProgram: 'UT programado'
+      },
+      note: { pt: 'Se recomienda PT en acero inoxidable (ECSCC)' }
+    },
+
+    mic: {
+      title: 'Tamizaje MIC (NACE TM0194 / API 571)',
+      factor: {
+        freeWater: 'Agua libre presente',
+        stagnant: 'Agua estancada', temperature: 'Temperatura 20–50 °C',
+        sulfate: 'Sulfatos presentes', deposits: 'Depósitos',
+        nearNeutralPh: 'pH casi neutro', sulfideSigns: 'Señales de sulfuro',
+        historyMic: 'Historial MIC', highCounts: 'Conteos bacterianos altos'
+      },
+      driver: {
+        stagnant: 'Condiciones estancadas', temperature: 'Rango mesofílico (20–50 °C)',
+        sulfate: 'Bacterias sulfato-reductoras', deposits: 'Bajo depósito',
+        nearNeutralPh: 'pH neutro', sulfideSigns: 'Indicadores de sulfuro',
+        historyMic: 'Eventos MIC previos', highCounts: 'Conteos elevados'
+      },
+      score: 'Puntaje',
+      risk: { low: 'Bajo', moderate: 'Moderado', high: 'Alto' }
     },
     psv: {
       title: 'Válvulas de alivio',
@@ -738,7 +806,9 @@ consequences: {
         R14: '{{tag}}: la capacidad instalada es inferior a la requerida (margen {{margin}}%)',
         R15: '{{code}}: vida remanente estimada {{rulMonths}} meses por debajo de 12 (confianza: {{confidence}})',
         R16: '{{tag}}: inspección de PSV vencida (API 576)',
-        R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({{required}} > {{safe}} bar)'
+R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({{required}} > {{safe}} bar)',
+        R18: '{{code}}: tamizaje CUI — nivel de riesgo {{risk}}',
+        R19: '{{code}}: tamizaje MIC puntaje {{score}}/15 — riesgo alto'
       },
       name: {
         R1: 'Tasa de corrosión crítica',
@@ -757,7 +827,9 @@ consequences: {
         R14: 'Válvula de alivio subdimensionada',
         R15: 'Vida remanente crítica',
         R16: 'Inspección de PSV vencida',
-        R17: 'Anomalía ILI excede presión segura'
+        R17: 'Anomalía ILI excede presión segura',
+        R18: 'Riesgo alto CUI',
+        R19: 'Riesgo alto MIC'
       },
       histActions: {
         created: 'Creada',

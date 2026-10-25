@@ -356,4 +356,66 @@ describe("IntegrityWatch Field - Rules QA Tests", () => {
       assert.equal(result.toReopen[0].triggerCount, 2);
     });
   });
+
+  describe("R18/R19: advanced corrosion persisted shape", () => {
+    // The Save inputs buttons persist mp.advanced.cui/mic as
+    // { inputs: {...}, result: { riskLevel, ... } } — the rules must read
+    // the level from the stored result, not from a flat riskLevel field.
+    it("should fire R18 when persisted CUI result is critical", () => {
+      const state = makeState({
+        monitoringPoints: [{
+          id: "MP-CORR-001",
+          code: "MP001",
+          advanced: {
+            cui: {
+              inputs: { operatingTempC: 90, coatingCondition: "none", environment: "marine", penetratingFeatures: true },
+              result: { ok: true, likelihoodScore: 10, riskLevel: "critical", methods: [], notes: [] }
+            }
+          }
+        }]
+      });
+      const findings = evaluate(state);
+      const r18 = findings.find(f => f.ruleId === "R18");
+      assert.ok(r18, "R18 finding missing for persisted critical CUI result");
+      assert.equal(r18.severity, "high");
+      assert.equal(r18.entityId, "MP-CORR-001");
+      assert.equal(r18.params.risk, "critical");
+    });
+
+    it("should fire R19 when persisted MIC result is high", () => {
+      const state = makeState({
+        monitoringPoints: [{
+          id: "MP-CORR-001",
+          code: "MP001",
+          advanced: {
+            mic: {
+              inputs: { freeWater: true, stagnant: true, sulfate: true, deposits: true, sulfideSigns: true, historyMic: true, temperatureC: 40 },
+              result: { ok: true, score: 11, riskLevel: "high", drivers: [] }
+            }
+          }
+        }]
+      });
+      const findings = evaluate(state);
+      const r19 = findings.find(f => f.ruleId === "R19");
+      assert.ok(r19, "R19 finding missing for persisted high MIC result");
+      assert.equal(r19.severity, "warning");
+      assert.equal(r19.params.score, 11);
+    });
+
+    it("should NOT fire R18/R19 for low persisted results", () => {
+      const state = makeState({
+        monitoringPoints: [{
+          id: "MP-CORR-002",
+          code: "MP002",
+          advanced: {
+            cui: { inputs: {}, result: { ok: true, likelihoodScore: 0, riskLevel: "low", methods: [], notes: [] } },
+            mic: { inputs: {}, result: { ok: true, score: 0, riskLevel: "low", drivers: [] } }
+          }
+        }]
+      });
+      const findings = evaluate(state);
+      assert.equal(findings.find(f => f.ruleId === "R18"), undefined);
+      assert.equal(findings.find(f => f.ruleId === "R19"), undefined);
+    });
+  });
 });

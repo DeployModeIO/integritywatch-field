@@ -278,7 +278,32 @@
         decreasing: 'Diminuindo',
         stable: 'Estável',
         insufficient: 'Insuficiente'
-      }
+      },
+      advancedTitle: 'Corrosão avançada'
+    },
+
+    norsok: {
+      error: {
+        E_MISSING_INPUT: 'Faltam entradas obrigatórias para o cálculo.',
+        E_TEMP_RANGE: 'Temperatura fora da faixa do modelo (5–150 °C).',
+        E_PH_RANGE: 'pH fora da faixa do modelo (3,5–6,5).',
+        E_SHEAR_INPUT: 'Tensão de cisalhamento ou velocidade inválidos.'
+      },
+      title: 'NORSOK M-506 — Corrosão CO₂', cr: 'Taxa de corrosão', results: 'Resultados',
+      inputs: { temp: 'Temperatura (°C)', pressure: 'Pressão total (bar)', co2: 'CO₂ % molar', ph: 'pH', shear: 'Cisalhamento (Pa)', velocity: 'Velocidade (m/s)', diameter: 'DI tubo (mm)', density: 'Densidade (kg/m³)', viscosity: 'Viscosidade (mPa·s)', glycol: 'Glicol % peso', inhibitor: 'Efic. inibidor %', calculate: 'Calcular', save: 'Salvar dados' },
+      breakdown: { kt: 'Kt', fph: 'f(pH)', fco2: 'fCO₂', shear: 'Cisalhamento (S)', exponent: 'Expoente', reduction: 'Redução' },
+      warn: { W_ORGANIC_ACIDS: 'Modelo não cobre ácidos orgânicos >100 ppm', W_NO_H2S_O2: 'Não aplica em serviço ácido/oxigenado', W_PCO2_LOW: 'pCO₂ <0,5 bar pode subestimar', W_OUT_OF_ENVELOPE: 'fCO₂ fora do envelope 0,1–10 bar', W_SHEAR_RANGE: 'Cisalhamento fora de 1–150 Pa' }
+    },
+    cui: {
+      title: 'Triagem CUI (API RP 583/571)', inputs: { material: 'Classe de material', temp: 'Temp. operacional (°C)', insulation: 'Tipo de isolamento', coating: 'Condição do revestimento', environment: 'Ambiente', penetrating: 'Penetrações', cyclic: 'Serviço cíclico', steam: 'Traçado a vapor' },
+      risk: { low: 'Baixo', moderate: 'Moderado', high: 'Alto', critical: 'Crítico' },
+      method: { visual: 'Inspeção visual', thermo: 'Termografia', pec: 'Correntes de Foucault pulsadas (PEC)', rt: 'Radiografia (RT)', gw: 'Ultrassom guiado', utSpot: 'UT pontual', utProgram: 'UT programado' },
+      note: { pt: 'PT recomendado para aço inoxidável (ECSCC)' }
+    },
+    mic: {
+      title: 'Triagem MIC (NACE TM0194 / API 571)', factor: { freeWater: 'Água livre presente', stagnant: 'Água estagnada', temperature: 'Temperatura 20–50 °C', sulfate: 'Sulfatos presentes', deposits: 'Depósitos', nearNeutralPh: 'pH quase neutro', sulfideSigns: 'Sinais de sulfeto', historyMic: 'Histórico MIC', highCounts: 'Contagens bacterianas altas' },
+      driver: { stagnant: 'Condições estagnadas', temperature: 'Faixa mesofílica (20–50 °C)', sulfate: 'Bactérias redutoras de sulfato', deposits: 'Sob depósito', nearNeutralPh: 'pH neutro', sulfideSigns: 'Indicadores de sulfeto', historyMic: 'Eventos MIC anteriores', highCounts: 'Contagens elevadas' },
+      score: 'Pontuação', risk: { low: 'Baixo', moderate: 'Moderado', high: 'Alto' }
     },
     psv: {
       title: 'Válvulas de alívio',
@@ -708,7 +733,9 @@
         R14: '{{tag}}: a capacidade instalada é inferior à requerida (margem {{margin}}%)',
         R15: '{{code}}: vida remanescente estimada {{rulMonths}} meses abaixo de 12 (confiança: {{confidence}})',
         R16: '{{tag}}: Inspeção de PSV atrasada (API 576)',
-        R17: '{{code}}: Anomalia ILI requer pressão acima do limite seguro ({{required}} > {{safe}} bar)'
+        R17: '{{code}}: Anomalia ILI requer pressão acima do limite seguro ({{required}} > {{safe}} bar)',
+        R18: '{{code}}: triagem CUI — nível de risco {{risk}}',
+        R19: '{{code}}: triagem MIC pontuação {{score}}/15 — risco alto'
       },
       name: {
         R1: 'Taxa de corrosão crítica',
@@ -727,7 +754,9 @@
         R14: 'Válvula de alívio subdimensionada',
         R15: 'Vida remanescente crítica',
         R16: 'Inspeção de PSV Atrasada',
-        R17: 'Anomalia ILI Excedendo a Pressão Segura'
+        R17: 'Anomalia ILI Excedendo a Pressão Segura',
+        R18: 'Risco alto CUI',
+        R19: 'Risco alto MIC'
       },
       histActions: {
         created: 'Criada',

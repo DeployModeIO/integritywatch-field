@@ -559,6 +559,37 @@
     return findings;
   }
 
+  // R18: monitoring point with advanced CUI screening high or critical → high
+  function R18(state) {
+    var findings = [];
+    (state.monitoringPoints || []).forEach(function (mp) {
+      if (!mp.advanced || !mp.advanced.cui) { return; }
+      var cui = mp.advanced.cui;
+      // Save inputs persists { inputs, result: { riskLevel, ... } }; accept the
+      // stored result shape first, with the flat shape as legacy fallback.
+      var level = (cui.result && cui.result.riskLevel) || cui.riskLevel;
+      if (level === 'high' || level === 'critical') {
+        findings.push(makeFinding('R18', 'high', 'monitoringPoints', mp.id, { code: mp.code, risk: level }, mp.code));
+      }
+    });
+    return findings;
+  }
+
+  // R19: monitoring point with advanced MIC screening → high risk → warning
+  function R19(state) {
+    var findings = [];
+    (state.monitoringPoints || []).forEach(function (mp) {
+      if (!mp.advanced || !mp.advanced.mic) { return; }
+      var mic = mp.advanced.mic;
+      // Same persisted shape as CUI: read from result, fall back to flat.
+      var res = mic.result || mic;
+      if (res.riskLevel === 'high') {
+        findings.push(makeFinding('R19', 'warning', 'monitoringPoints', mp.id, { code: mp.code, score: res.score }, mp.code));
+      }
+    });
+    return findings;
+  }
+
   return {
     rules: [
       { id: 'R1', evaluate: R1 },
@@ -577,7 +608,9 @@
       { id: 'R14', evaluate: R14 },
       { id: 'R15', evaluate: R15 },
       { id: 'R16', evaluate: R16 },
-      { id: 'R17', evaluate: R17 }
+      { id: 'R17', evaluate: R17 },
+      { id: 'R18', evaluate: R18 },
+      { id: 'R19', evaluate: R19 }
     ]
   };
 });

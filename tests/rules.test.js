@@ -335,10 +335,10 @@ test('R15 RUL < 12 months with tNom+tMin and >=2 CR readings -> high; missing li
   assert.equal(ev('R15', mkState({ monitoringPoints: [mp3], readings: [rdg('MP-R15C', daysAgo(1), 120, 'r-x')] })).length, 0);
 });
 
-test('engine.evaluate aggregates all 17 rule definitions', () => {
-  assert.equal(definitions.rules.length, 17);
+test('engine.evaluate aggregates all 19 rule definitions', () => {
+  assert.equal(definitions.rules.length, 19);
   const ids = definitions.rules.map((r) => r.id);
-  for (let i = 1; i <= 17; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
+  for (let i = 1; i <= 19; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
   assert.equal(engine.evaluate(mkState({})).length, 0);
 });
 
