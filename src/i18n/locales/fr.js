@@ -895,6 +895,33 @@
       allowableStress: "Stress permis",
       utilization: "Utilization",
       needFields: "Entrez D, t, P et le matériau pour évaluer"
+    },
+    reliability: {
+      title: "Fiabilité (ISO 14224)",
+      beta: "β",
+      eta: "η",
+      b10: "B10",
+      pattern: "Mode",
+      patterns: {
+        earlyLife: "Défaillance précoce",
+        random: "Aléatoire",
+        wearOut: "Usure",
+        insufficient: "Insuffisant"
+      },
+      mtbfCi: "MTBF (IC 90%)",
+      probFail: "P(défaillance)",
+      needEvents: "Nécessite au moins 2 événements de défaillance avec données de temps entre défaillances pour l'analyse de fiabilité"
+    },
+    caseFile: {
+      title: "Dossier (.iwf)",
+      exportBtn: "Exporter le dossier (.iwf)",
+      importBtn: "Importer le dossier (.iwf)",
+      exported: "Dossier exporté",
+      imported: "Dossier importé",
+      badJson: "Format de fichier invalide (pas de JSON)",
+      badFormat: "Ce n'est pas un fichier .iwf valide",
+      badVersion: "Version .iwf non prise en charge",
+      badChecksum: "Le fichier a été altéré (somme de contrôle invalide)"
     }
   };
 });

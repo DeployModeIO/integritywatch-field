@@ -258,6 +258,35 @@ imported: "Imported {{n}} anomalies ({{ok}} assessed)",
       }
     },
 
+    reliability: {
+      title: 'Reliability (ISO 14224)',
+      beta: 'β',
+      eta: 'η',
+      b10: 'B10',
+      pattern: 'Pattern',
+      patterns: {
+        earlyLife: 'Early-life',
+        random: 'Random',
+        wearOut: 'Wear-out',
+        insufficient: 'Insufficient'
+      },
+      mtbfCi: 'MTBF (CI 90%)',
+      probFail: 'P(failure)',
+      needEvents: 'Need at least 2 failure events with time-between-failure data for reliability analysis'
+    },
+
+    caseFile: {
+      title: 'Expedient (.iwf)',
+      exportBtn: 'Export expedient (.iwf)',
+      importBtn: 'Import expedient (.iwf)',
+      exported: 'Expedient exported',
+      imported: 'Expedient imported',
+      badJson: 'Invalid file format (not JSON)',
+      badFormat: 'Not a valid .iwf expedition file',
+      badVersion: 'Unsupported .iwf version',
+      badChecksum: 'File has been tampered with (checksum mismatch)'
+    },
+
     ingest: {
       title: 'Data ingest', csvImport: 'CSV import', chooseFile: 'Choose file', orDrop: 'or drop file here',
       delimiterDetected: 'Delimiter detected', columnMapping: 'Column mapping', mapTo: 'Map to',

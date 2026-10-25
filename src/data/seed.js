@@ -325,7 +325,12 @@
       event('EV-018', 'APM-DN-004', 'maintenance', 45, 6),
       event('EV-019', 'APM-MD-105', 'failure', 12, 8, { description: 'Mechanical seal failure on pump P-201A', workOrderRef: 'OT-2026-612' }),
       event('EV-020', 'APM-MD-106', 'maintenance', 25, 6, { description: 'Preventive maintenance on emergency generator G-101', workOrderRef: 'OT-2026-618' }),
-      event('EV-021', 'APM-MD-108', 'inspection', 18, 0, { description: 'Inspection of foam deluge system FPS-01', workOrderRef: 'OT-2026-621' })
+      event('EV-021', 'APM-MD-108', 'inspection', 18, 0, { description: 'Inspection of foam deluge system FPS-01', workOrderRef: 'OT-2026-621' }),
+      // Wear-out demo for Weibull reliability faceplate (P-102 crude pump, 6 failure events
+      // with decreasing TBF: intervals 40→30→20→15→10→5 days → β>1.2 wear-out pattern).
+      event('EV-022', 'APM-DN-002', 'failure', 70, 10, { description: 'Bearing failure on P-102', workOrderRef: 'OT-2026-710' }),
+      event('EV-023', 'APM-DN-002', 'failure', 110, 14, { description: 'Mechanical seal failure on P-102', workOrderRef: 'OT-2026-705' }),
+      event('EV-024', 'APM-DN-002', 'failure', 160, 18, { description: 'Impeller wear on P-102', workOrderRef: 'OT-2026-698' })
     ];
   }
 

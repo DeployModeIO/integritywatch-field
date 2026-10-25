@@ -241,14 +241,8 @@ async function openPsvSizing(page) {
 }
 
 async function openApmDetail(page) {
-  await page.evaluate(() => { location.hash = '#/apm'; });
-  await page.waitForTimeout(500);
-  // Click first asset
-  const link = page.locator('.row-link').first();
-  try {
-    if (await link.isVisible({ timeout: 5000 })) { await link.click(); }
-    await page.waitForTimeout(500);
-  } catch (e) {}
+  await page.evaluate(() => { location.hash = '#/apm/APM-DN-002'; });
+  await page.waitForTimeout(900);
 }
 
 // ---- Main ----

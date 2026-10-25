@@ -17,8 +17,8 @@ Estilo visual obligatorio de todo lo nuevo: **"Experion® PKS-inspired"** (ISA-1
 | M5 | Fitness-For-Service Nivel 1 (pérdida general/local, picadura) | API 579-1/ASME FFS-1 | Fase 2 |
 | M6 | Ductos: importación de anomalías ILI + presión segura por tramo | ASME B31G/RSTRENG, DNV-RP-F101, API 1163 | Fase 2 |
 | M7 | PSV: historial e inspección de dispositivos | API 576 | Fase 2 |
-| M8 | Confiabilidad estadística (Weibull β/η, P(fallo) a 30/90/180 días, MTBF con IC) | ISO 14224 | Fase 3 |
-| M9 | Ingesta universal de campo (plantillas Excel multi-hoja, fotos con EXIF, firmas, expediente portátil `.iwf`) | — | Fase 3 |
+| M8 | Confiabilidad estadística (Weibull β/η, P(fallo) a 30/90/180 días, MTBF con IC) | ISO 14224 | ✅ Fase 3 (F3a) |
+| M9 | Ingesta universal de campo (plantillas Excel multi-hoja, fotos con EXIF, firmas, expediente portátil `.iwf`) | — | ✅ Parcial F3a (formato .iwf con checksum FNV-1a) |
 | M10 | Corrosión avanzada (NORSOK M-506, CUI API 583, MIC checklist) | NORSOK M-506, API 583 | Fase 4 |
 | M11 | IA analítica local (RAG offline de normas propias + asistente de causa raíz y redacción; LLM en navegador o GPU local) | — | Fase 4 |
 

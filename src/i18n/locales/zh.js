@@ -895,6 +895,33 @@
       allowableStress: "许用应力",
       utilization: "利用率",
       needFields: "请输入D, t, P 和材料以评估"
+    },
+    reliability: {
+      title: "可靠性 (ISO 14224)",
+      beta: "β",
+      eta: "η",
+      b10: "B10",
+      pattern: "模式",
+      patterns: {
+        earlyLife: "早期故障",
+        random: "随机",
+        wearOut: "磨损",
+        insufficient: "数据不足"
+      },
+      mtbfCi: "MTBF（置信度 90%）",
+      probFail: "P(故障)",
+      needEvents: "可靠性分析需要至少 2 次故障事件及故障间隔时间数据"
+    },
+    caseFile: {
+      title: "案卷 (.iwf)",
+      exportBtn: "导出案卷 (.iwf)",
+      importBtn: "导入案卷 (.iwf)",
+      exported: "案卷已导出",
+      imported: "案卷已导入",
+      badJson: "文件格式无效（非 JSON）",
+      badFormat: "不是有效的 .iwf 案卷文件",
+      badVersion: "不支持的 .iwf 版本",
+      badChecksum: "文件已被篡改（校验和不匹配）"
     }
   };
 });

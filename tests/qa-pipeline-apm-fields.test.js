@@ -147,11 +147,11 @@ test('10. seed.demo: counts exactos por store', async () => {
     coupons: 4,
     psvs: 5,
     apmAssets: 18,
-    apmEvents: 21,
+    apmEvents: 24,
     recommendations: 0
   });
   assert.strictEqual((await repos.lineAssets.list()).length, 12);
-  assert.strictEqual((await repos.apmEvents.list()).length, 21);
+  assert.strictEqual((await repos.apmEvents.list()).length, 24);
 
   // preserved from prior mega-test: enums y cordura de cupones
   const coupons = await repos.coupons.list();
@@ -223,7 +223,7 @@ test('13. seed APM: enums por sector y apmEvent.assetId existente', async () => 
   });
 
   const events = await repos.apmEvents.list();
-  assert.strictEqual(events.length, 21);
+  assert.strictEqual(events.length, 24);
   events.forEach((ev) => {
     assert.ok(['failure', 'maintenance', 'unplannedOutage', 'workOrder', 'inspection'].includes(ev.type), 'event.type ' + ev.type);
     assert.ok(assetIds.has(ev.assetId), 'apmEvent.assetId huérfano: ' + ev.assetId);

@@ -592,7 +592,7 @@
           instrumentation: 'Instrumentación',
           other: 'Otro'
         },
-        consequences: {
+consequences: {
           none: 'Ninguna',
           personal: 'Personal',
           environment: 'Ambiental',
@@ -600,6 +600,36 @@
         }
       }
     },
+
+    reliability: {
+      title: 'Fiabilidad (ISO 14224)',
+      beta: 'β',
+      eta: 'η',
+      b10: 'B10',
+      pattern: 'Patrón',
+      patterns: {
+        earlyLife: 'Mortalidad infantil',
+        random: 'Aleatorio',
+        wearOut: 'Desgaste',
+        insufficient: 'Insuficiente'
+      },
+      mtbfCi: 'MTBF (IC 90%)',
+      probFail: 'P(fallo)',
+      needEvents: 'Se necesitan al menos 2 eventos de fallo con tiempo entre fallos para análisis de fiabilidad'
+    },
+
+    caseFile: {
+      title: 'Expediente (.iwf)',
+      exportBtn: 'Exportar expediente (.iwf)',
+      importBtn: 'Importar expediente (.iwf)',
+      exported: 'Expediente exportado',
+      imported: 'Expediente importado',
+      badJson: 'Formato de archivo inválido (no es JSON)',
+      badFormat: 'No es un archivo .iwf válido',
+      badVersion: 'Versión .iwf no soportada',
+      badChecksum: 'El archivo ha sido alterado (checksum no coincide)'
+    },
+
     ingest: {
       title: 'Ingesta de datos',
       csvImport: 'Importación CSV',

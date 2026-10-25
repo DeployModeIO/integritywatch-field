@@ -379,6 +379,57 @@ si pAllow < opPressure con los parámetros SMYS/D/t del ducto → severidad **hi
 
 ---
 
+## 2.15 Confiabilidad estadística (Weibull — ISO 14224)
+
+**Motor:** `src/calc/reliability.js`
+
+**Método de estimación:**
+- **Median ranks (Bernard):** F_i = (i − 0.3) / (n + 0.4) para i = 1..n
+- **Estimación de parámetros:** regresión por mínimos cuadrados sobre x = ln(t), y = ln(−ln(1 − F_i)) (RRX)
+- **CDF de Weibull:** F(t) = 1 − exp(−(t/η)^β)
+- **B10 life:** t_B10 = η · (−ln 0.9)^(1/β)
+- **Clasificación del patrón de fallo (β):** early-life (β < 0.8), random (0.8 ≤ β ≤ 1.2), wear-out (β > 1.2), insufficient (n < 2)
+- **MTBF con intervalo de confianza:** método chi-cuadrado (supuesto exponencial), cuantiles chi-cuadrado vía aproximación Wilson-Hilferty: χ² ≈ df·(1 − 2/(9df) + z_p·√(2/(9df)))³. Los valores z usados: z_0.90 = 1.2816, z_0.95 = 1.6449, z_0.05 = −1.6449, z_0.10 = −1.2816.
+- **Horas operativas (supuesto para MTBF):** totalHours = diferencia temporal entre el momento actual y la fecha del primer evento de fallo registrado para el activo. Este es un supuesto documentado; en producción, las horas operativas deben obtenerse del sistema de control del equipo.
+
+**Limitaciones:**
+- El método RRX supone que los tiempos de fallo son independientes e idénticamente distribuidos según una Weibull de 2 parámetros.
+- El IC del MTBF asume distribución exponencial de los tiempos de fallo (caso particular β = 1.0 de la Weibull) y es válido solo para datos de campo sin censura (todos los equipos fallan durante la observación).
+- La aproximación Wilson-Hilferty pierde precisión para df < 10 (pocos fallos) o p extremas (fuera de [0.05, 0.95]).
+- Los tiempos de fallo nulos, negativos o no finitos se descartan automáticamente del ajuste.
+- El análisis requiere al menos 2 eventos de fallo con intervalos de tiempo entre fallos (TBF) medibles; con menos de 2 TBF, el resultado es insuficiente.
+
+---
+
+## 2.16 Formato de expediente portátil .iwf
+
+**Motor:** `src/core/caseFile.js`
+
+**Especificación del envelope:**
+```json
+{
+  "format": "iwf",
+  "version": 1,
+  "sector": "midstream",
+  "exportedAt": "2026-10-24T00:00:00.000Z",
+  "app": "1.0.0",
+  "checksum": "a82fb4a1",
+  "data": { "apmAssets": [...], "apmEvents": [...], ... }
+}
+```
+
+**Integridad criptográfica:**
+- **Checksum:** FNV-1a de 32 bits sobre `canonicalStringify(data)`. La función `canonicalStringify` serializa el objeto data con claves ordenadas lexicográficamente (recursivo) y sin espacios, produciendo una representación canónica determinista.
+- **Verificación en importación:** `parseCaseFile(text)`:
+  1. `JSON.parse` — fallo → `E_BAD_JSON`
+  2. `obj.format === 'iwf'` — fallo → `E_BAD_FORMAT`
+  3. `obj.version === 1` — versión futura → `E_VERSION`
+  4. `fnv1a(canonicalStringify(obj.data)) === obj.checksum` — fallo → `E_CHECKSUM` (archivo manipulado)
+
+**Uso:** el botón «Exportar expediente (.iwf)» en la vista Admin genera un archivo con extensión `.iwf` que contiene el envelope completo. El botón «Importar expediente (.iwf)» valida el envelope y restaura los stores usando la misma ruta de importación que el respaldo JSON estándar.
+
+---
+
 ## 4. Descargo de ingeniería completo
 
 IntegrityWatch Field es una **herramienta de apoyo a la decisión**. Sus resultados de cálculo (tasas de corrosión, dimensionamiento de válvulas, eficiencia de inhibidor, análisis de riesgo, intervalos de inspección) son **orientativos** y deben ser:

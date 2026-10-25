@@ -895,6 +895,33 @@
       allowableStress: "Allowable stress",
       utilization: "Использование",
       needFields: "Введите D, t, P и материал для оценки"
+    },
+    reliability: {
+      title: "Надёжность (ISO 14224)",
+      beta: "β",
+      eta: "η",
+      b10: "B10",
+      pattern: "Характер",
+      patterns: {
+        earlyLife: "Ранние отказы",
+        random: "Случайные",
+        wearOut: "Износ",
+        insufficient: "Недостаточно"
+      },
+      mtbfCi: "MTBF (ДИ 90%)",
+      probFail: "P(отказ)",
+      needEvents: "Нужно минимум 2 отказа с данными о наработке между отказами для анализа надёжности"
+    },
+    caseFile: {
+      title: "Досье (.iwf)",
+      exportBtn: "Экспорт досье (.iwf)",
+      importBtn: "Импорт досье (.iwf)",
+      exported: "Досье экспортировано",
+      imported: "Досье импортировано",
+      badJson: "Неверный формат файла (не JSON)",
+      badFormat: "Не является корректным файлом досье .iwf",
+      badVersion: "Неподдерживаемая версия .iwf",
+      badChecksum: "Файл был изменён (несовпадение контрольной суммы)"
     }
   };
 });

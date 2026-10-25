@@ -68,6 +68,7 @@
   function ui() { return root.IW.ui; }
   function lockApi() { return root.IW.security && root.IW.security.lock; }
   function calcApm() { return root.IW.calc && root.IW.calc.apm; }
+  function calcReliability() { return root.IW.calc && root.IW.calc.reliability; }
 
   function el(tag, attrs) {
     var u = ui();
@@ -500,13 +501,16 @@
             return [t('ISO 14224'), el('span', { class: 'row' }, parts)];
           })(),
           [t('common.notes'), document.createTextNode(asset.notes || t('common.none'))]
-        ])));
+        ].filter(function (row) { return row != null; }))));
 
       // Metrics
       var nowISO = new Date().toISOString();
       var m90 = computeMetrics(events, { nowISO: nowISO, windowDays: 90 });
       var mAll = computeMetrics(events, { nowISO: nowISO });
       container.appendChild(renderMetrics(asset, m90, mAll));
+
+      // Reliability faceplate (ISO 14224 Weibull) — F3a
+      container.appendChild(renderReliability(events, t));
 
       // RBI matrix
       container.appendChild(el('section', { class: 'card' },
@@ -574,6 +578,94 @@
       return el('section', { class: 'card' },
         el('h2', { class: 'section-title', text: t('apm.metrics') }),
         grid, note);
+    }
+
+    // Reliability (Weibull) faceplate — F3a.
+    // Extracts failure-event dates, computes time-between-failure (TBF) in hours,
+    // fits a 2-parameter Weibull via RRX, and displays β/η/B10/MTBF-with-CI and
+    // P(failure) projections.
+    function renderReliability(events, t) {
+      var rel = calcReliability();
+      var failures = (events || []).filter(function (e) { return e.type === 'failure'; });
+      var card = el('section', { class: 'card' });
+      card.appendChild(el('h2', { class: 'section-title', text: t('reliability.title') }));
+
+      if (failures.length < 2) {
+        card.appendChild(el('p', { class: 'empty-state', text: t('reliability.needEvents') }));
+        return card;
+      }
+
+      // Sort failure events by start date → compute TBF intervals (hours).
+      var sorted = failures.slice().sort(function (a, b) { return a.start < b.start ? -1 : 1; });
+      var tbfHours = [];
+      for (var i = 1; i < sorted.length; i++) {
+        var s = Date.parse(sorted[i - 1].start);
+        var e = Date.parse(sorted[i].start);
+        if (!isNaN(s) && !isNaN(e) && e > s) { tbfHours.push((e - s) / HOUR_MS); }
+      }
+
+      if (tbfHours.length < 2) {
+        card.appendChild(el('p', { class: 'empty-state', text: t('reliability.needEvents') }));
+        return card;
+      }
+
+      var fit = rel.weibullFit(tbfHours);
+      if (fit.insufficient) {
+        card.appendChild(el('p', { class: 'empty-state', text: t('reliability.needEvents') }));
+        return card;
+      }
+
+      var beta = fit.beta;
+      var etaHours = fit.eta;
+      var etaDays = etaHours / 24;
+      var b10 = rel.b10Life(beta, etaHours);
+      var b10Days = b10 != null ? b10 / 24 : null;
+      var pattern = rel.failurePattern(beta);
+
+      // Operating hours since first event (documented assumption).
+      var firstISO = sorted[0].start;
+      var totalHours = Math.max(0, (Date.parse(new Date().toISOString()) - Date.parse(firstISO)) / HOUR_MS);
+      var ci = rel.mtbfWithCi(totalHours, failures.length, 0.9);
+      var probs = rel.failureProbabilities(beta, etaHours, [30, 90, 180]);
+
+      // Pattern chip
+      var chipClass = (pattern === 'wear-out') ? 'badge-moderate' : (pattern === 'early-life') ? 'badge-severe' : 'badge-neutral';
+      var patternKey = pattern.replace(/-([a-z])/g, function (m, c) { return c.toUpperCase(); });
+      var patternChip = pattern !== 'insufficient' ? el('span', { class: 'badge ' + chipClass, text: t('reliability.patterns.' + patternKey) }) : document.createTextNode('');
+
+      // MTBF confidence interval
+      var mtbfText = ci.mtbf !== Infinity ? fmtNum(ci.mtbf, 0) + ' h' : '—';
+      var ciText = (ci.lo != null && ci.hi != null) ? (' [' + fmtNum(ci.lo, 0) + ' – ' + fmtNum(ci.hi, 0) + ' h]') : '';
+
+      // Key-value rows
+      var kv = [
+        [t('reliability.beta'), el('div', { class: 'row' }, el('span', { class: 'num', text: fmtNum(beta, 2) }), patternChip)],
+        [t('reliability.eta'), el('span', { class: 'num', text: fmtNum(etaDays, 1) + ' ' + t('common.days') })],
+        [t('reliability.b10'), el('span', { class: 'num', text: b10Days != null ? fmtNum(b10Days, 1) + ' ' + t('common.days') : '—' })],
+        [t('reliability.mtbfCi'), el('span', { class: 'num' }, document.createTextNode(mtbfText + ciText))]
+      ];
+      card.appendChild(u.keyValueTable(kv));
+
+      // P(failure) table
+      var probsTitle = el('h3', { class: 'section-title', text: t('reliability.probFail') });
+      var probsTbl = el('table', { class: 'data' });
+      probsTbl.appendChild(el('thead', null, el('tr', null,
+        el('th', { attrs: { scope: 'col' }, text: t('common.days') }),
+        el('th', { attrs: { scope: 'col' }, text: t('reliability.probFail'), class: 'num' }),
+        el('th', { attrs: { scope: 'col' }, text: t('common.hours'), class: 'num' }))));
+      var probsBody = el('tbody');
+      probs.forEach(function (p) {
+        probsBody.appendChild(el('tr', null,
+          el('td', { class: 'num', text: String(p.days) }),
+          el('td', { class: 'num', text: fmtNum(p.prob * 100, 1) + ' %' }),
+          el('td', { class: 'num', text: fmtNum(p.hours, 0) })));
+      });
+      probsTbl.appendChild(probsBody);
+      var probsWrap = el('div', { class: 'table-wrap' }, probsTbl);
+      card.appendChild(probsTitle);
+      card.appendChild(probsWrap);
+
+      return card;
     }
 
     function metricCard(labelKey, value, iconName) {

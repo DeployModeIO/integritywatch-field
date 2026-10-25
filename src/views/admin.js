@@ -15,6 +15,7 @@
   function ui() { return root.IW.ui; }
   function lock() { return root.IW.security ? root.IW.security.lock : null; }
   function exportImport() { return root.IW.core ? root.IW.core.exportImport : null; }
+  function caseFile() { return root.IW.core ? root.IW.core.caseFile : null; }
   function syncQueue() { return root.IW.core ? root.IW.core.syncQueue : null; }
   function theme() { return root.IW.app ? root.IW.app.theme : null; }
   function i18n() { return root.IW.i18n; }
@@ -128,6 +129,14 @@
       var resetBtn = el('button', { class: 'btn', on: { click: onResetDemo } }, icon('refresh', 18), el('span', { text: t('admin.resetDemo') }));
       var clearBtn = el('button', { class: 'btn btn-danger', on: { click: onClearAll } }, icon('trash', 18), el('span', { text: t('admin.clearAll') }));
       dataCard.appendChild(el('div', { class: 'row' }, exportBtn, importBtn, importFileInput, resetBtn));
+      // .iwf expedition format export/import — F3a
+      var iwfExportBtn = el('button', { class: 'btn', on: { click: onExportIwf } }, icon('download', 18), el('span', { text: t('caseFile.exportBtn') }));
+      var iwfImportFileInput = el('input', { class: 'visually-hidden', attrs: { type: 'file', id: 'admin-iwf-import-file', accept: '.iwf,application/json' } });
+      var iwfImportBtn = el('button', { class: 'btn', on: { click: function () { iwfImportFileInput.click(); } } }, icon('upload', 18), el('span', { text: t('caseFile.importBtn') }));
+      iwfImportFileInput.addEventListener('change', function () {
+        if (iwfImportFileInput.files && iwfImportFileInput.files.length) { onImportIwf(iwfImportFileInput.files[0]); }
+      });
+      dataCard.appendChild(el('div', { class: 'row' }, iwfExportBtn, iwfImportBtn, iwfImportFileInput));
       dataCard.appendChild(el('div', { class: 'row' }, clearBtn));
       grid.appendChild(dataCard);
 
@@ -255,6 +264,56 @@
             var ei = exportImport();
             if (!ei) { return; }
             ei.importAll(repos, payload, { mode: 'merge' }).then(function () { toast('ingest.importDone', 'info'); });
+          };
+          reader.onerror = function () { toast('common.error', 'critical'); };
+          reader.readAsText(file);
+        });
+      }
+
+      // ---- .iwf expedition format (F3a) ----
+      function onExportIwf() {
+        var ei = exportImport();
+        var cf = caseFile();
+        if (!ei || !cf) { return; }
+        return ei.exportAll(repos).then(function (payload) {
+          var envelope = cf.buildCaseFile(payload.data, { sector: 'midstream' });
+          var blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          var d = new Date();
+          var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+          a.href = url;
+          a.download = 'integritywatch-case-file-' + stamp + '.iwf';
+          a.style.position = 'fixed';
+          a.style.insetInlineStart = '-9999px';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast('caseFile.exported', 'info');
+        });
+      }
+
+      function onImportIwf(file) {
+        return isLockedOut().then(function (lockedOut) {
+          if (lockedOut) { toast('admin.roles.admin', 'warning'); return; }
+          var reader = new FileReader();
+          reader.onload = function () {
+            var cf = caseFile();
+            var ei = exportImport();
+            if (!cf || !ei) { return; }
+            var result = cf.parseCaseFile(String(reader.result || ''));
+            if (!result.ok) {
+              if (result.error === 'E_BAD_JSON') { toast('caseFile.badJson', 'critical'); }
+              else if (result.error === 'E_BAD_FORMAT') { toast('caseFile.badFormat', 'critical'); }
+              else if (result.error === 'E_VERSION') { toast('caseFile.badVersion', 'critical'); }
+              else if (result.error === 'E_CHECKSUM') { toast('caseFile.badChecksum', 'critical'); }
+              else { toast('common.error', 'critical'); }
+              return;
+            }
+            ei.importAll(repos, { data: result.payload.data }, { mode: 'merge' }).then(function () {
+              toast('caseFile.imported', 'info');
+            });
           };
           reader.onerror = function () { toast('common.error', 'critical'); };
           reader.readAsText(file);

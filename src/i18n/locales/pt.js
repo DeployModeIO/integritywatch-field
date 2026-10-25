@@ -896,6 +896,33 @@
       allowableStress: 'Estresse Permitido',
       utilization: 'Utilização',
       needFields: 'Insira D, t, P e material para avaliar'
+    },
+    reliability: {
+      title: 'Reliabilidade (ISO 14224)',
+      beta: 'β',
+      eta: 'η',
+      b10: 'B10',
+      pattern: 'Padrão',
+      patterns: {
+        earlyLife: 'Falha precoce',
+        random: 'Aleatório',
+        wearOut: 'Desgaste',
+        insufficient: 'Insuficiente'
+      },
+      mtbfCi: 'MTBF (IC 90%)',
+      probFail: 'P(Falha)',
+      needEvents: 'São necessários pelo menos 2 eventos de falha com dados de tempo entre falhas para a análise de confiabilidade'
+    },
+    caseFile: {
+      title: 'Expediente (.iwf)',
+      exportBtn: 'Exportar expediente (.iwf)',
+      importBtn: 'Importar expediente (.iwf)',
+      exported: 'Expediente exportado',
+      imported: 'Expediente importado',
+      badJson: 'Formato de arquivo inválido (não é JSON)',
+      badFormat: 'Não é um arquivo de expediente .iwf válido',
+      badVersion: 'Versão .iwf não suportada',
+      badChecksum: 'O arquivo foi alterado (verificação de soma inválida)'
     }
   };
 });

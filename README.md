@@ -95,7 +95,7 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 *Listado APM con criticidad, banda RBI y estado de salud; las métricas MTBF/MTTR/OEE se muestran en la ficha de cada activo.*
 
 ![Detalle de activo APM — claro (ES)](docs/evidence/apm-detail-light-es.png)
-*Detalle de activo APM con análisis de riesgo RBI (tema claro).*
+*Detalle de activo APM con análisis de riesgo RBI (tema claro). La ficha incluye faceplate de fiabilidad Weibull (β/η/B10, MTBF con IC 90%, P(fallo) a 30/90/180 días).*
 
 ![Detalle de activo APM — oscuro (ES)](docs/evidence/apm-detail-dark-es.png)
 *Detalle de activo APM en tema oscuro.*
@@ -132,7 +132,7 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 ### Administración
 
 ![Administración — claro (ES)](docs/evidence/admin-light-es.png)
-*Ajustes generales, idioma, tema, respaldo/restauración, PIN y estado offline.*
+*Ajustes generales, idioma, tema, respaldo/restauración, expediente portátil .iwf, PIN y estado offline.*
 
 ---
 

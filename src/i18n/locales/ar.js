@@ -895,6 +895,33 @@
       allowableStress: "الإجهاد المسموح",
       utilization: "استخدام",
       needFields: "يرجى إدخال D, t, P والمواد لتقييم"
+    },
+    reliability: {
+      title: "الموثوقية (ISO 14224)",
+      beta: "β",
+      eta: "η",
+      b10: "B10",
+      pattern: "النمط",
+      patterns: {
+        earlyLife: "فشل مبكر",
+        random: "عشوائي",
+        wearOut: "إهتراء",
+        insufficient: "غير كافٍ"
+      },
+      mtbfCi: "MTBF (CI 90%)",
+      probFail: "P(الفشل)",
+      needEvents: "يلزم سجلّا فشل على الأقل مع بيانات الزمن بين الأعطال لتحليل الموثوقية"
+    },
+    caseFile: {
+      title: "ملف القضية (.iwf)",
+      exportBtn: "تصدير ملف القضية (.iwf)",
+      importBtn: "استيراد ملف القضية (.iwf)",
+      exported: "تم تصدير ملف القضية",
+      imported: "تم استيراد ملف القضية",
+      badJson: "صيغة ملف غير صالحة (ليس JSON)",
+      badFormat: "ليس ملف قضية .iwf صالحًا",
+      badVersion: "إصدار .iwf غير مدعوم",
+      badChecksum: "تم التلاعب بالملف (تباين في مجموع الاختبار)"
     }
   };
 });
