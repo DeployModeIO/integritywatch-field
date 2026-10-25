@@ -110,8 +110,8 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 
 ### Recomendaciones
 
-![Motor de recomendaciones R1–R15 — claro (ES)](docs/evidence/recommendations-light-es.png)
-*Motor de recomendaciones R1–R15 con acciones abrir/reconocer/resolver/reabrir.*
+![Motor de recomendaciones R1–R17 — claro (ES)](docs/evidence/recommendations-light-es.png)
+*Motor de recomendaciones R1–R17 con acciones abrir/reconocer/resolver/reabrir.*
 
 ### Informes
 
@@ -157,7 +157,7 @@ Recorrido grabado de extremo a extremo de la aplicación: arranque y panel, nave
 | **Mapa esquemático** | Vista esquemática del sistema de línea con activos posicionados por kilómetro; navegable con teclado y accesible. | ISA-101, API RP 1165 |
 | **Desempeño de activos (APM)** | Fiabilidad y disponibilidad (MTBF, MTTR, OEE), análisis de riesgo RBI (API 580/581), intervalos de inspección sugeridos. | ISO 55000, ISO 14224, API 580/581, ISO 10218-2 |
 | **Ingesta de datos** | Importación CSV/WITSML-lite con validación, mapeo de columnas, historial de importaciones. | API 520/526 (validación), WITSML-lite (estándar) |
-| **Recomendaciones** | Motor R1–R15 para detectar condiciones de riesgo y generar acciones (abrir, reconocer, resolver, reabrir). | API 580/581, ISO 13849-1, ISO 62061 |
+| **Recomendaciones** | Motor R1–R17 para detectar condiciones de riesgo y generar acciones (abrir, reconocer, resolver, reabrir). | API 580/581, ISO 13849-1, ISO 62061 |
 | **Informes** | Trimestral, por punto de monitoreo, ficha de válvula; exportación a PDF con impresión del navegador. | ISO 55000, API 580/581, NFPA 20/25 |
 | **Glosario** | Términos técnicos en múltiples idiomas con referencia normativa y buscador. | ISO 13709, API 610/682/674/616, BS 5306, EEMUA 191 |
 | **Administración** | Ajustes generales, idioma, tema, respaldo/restauración, PIN, estado offline. | ISO 13849-1, NFPA 20/25/11, BS EN 12845 |
@@ -339,7 +339,7 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 
 **Capas:**
 - **Acceso a datos:** IndexedDB (`integritywatch`), service worker cache-first con versión `iw-vN`
-- **Reglas de negocio:** R1–R15, evaluación en tiempo real, reconciliación con historial
+- **Reglas de negocio:** R1–R17, evaluación en tiempo real, reconciliación con historial
 - **Visualización:** 7 idiomas (idioma RTL árabe), tema claro/oscuro/sistema, componentes accesibles WCAG AA
 - **Router:** Basado en hash `#/modulo/:id`, precargado por T1b
 - **Service worker:** Registro solo HTTP/HTTPS, update automático, caché con nombres de versión

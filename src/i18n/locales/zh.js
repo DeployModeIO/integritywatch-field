@@ -9,7 +9,12 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
   return {
-    __meta: { code: "zh", name: "Chinese (Simplified)", nativeName: "简体中文", dir: "ltr" },
+    __meta: {
+      code: "zh",
+      name: "Chinese (Simplified)",
+      nativeName: "简体中文",
+      dir: "ltr"
+    },
     common: {
       appName: "IntegrityWatch Field",
       tagline: "面向油气田现场的完整性与合规运营中心",
@@ -83,11 +88,14 @@
       keyboardHint: "键盘提示",
       updateAvailable: "有可用更新",
       reload: "重新加载",
-      confidence: '置信度',
+      confidence: "置信度",
       bootError: "启动错误",
       viewError: "视图错误",
       moduleLoading: "模块加载中…",
-      inMemoryNotice: "IndexedDB 不可用；正在使用内存存储运行。更改可能不会保留。"
+      inMemoryNotice: "IndexedDB 不可用；正在使用内存存储运行。更改可能不会保留。",
+      pass: "通过",
+      fail: "失败",
+      na: "N/A"
     },
     nav: {
       dashboard: "仪表盘",
@@ -257,9 +265,18 @@
         fail: "不合格",
         insufficient: "数据不足"
       },
-      remainingLife: '剩余寿命', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: '设定T-nom和T-min（mm）以计算剩余寿命',
-      outlier: '异常值', rulingMethod: '方法',
-      trendLabels: { increasing: '上升', decreasing: '下降', stable: '稳定', insufficient: '不足' }
+      remainingLife: "剩余寿命",
+      tNom: "T-nom (mm)",
+      tMin: "T-min (mm)",
+      tMinHint: "设定T-nom和T-min（mm）以计算剩余寿命",
+      outlier: "异常值",
+      rulingMethod: "方法",
+      trendLabels: {
+        increasing: "上升",
+        decreasing: "下降",
+        stable: "稳定",
+        insufficient: "不足"
+      }
     },
     psv: {
       title: "泄压阀",
@@ -338,7 +355,14 @@
       },
       warn: {
         reRange: "雷诺数低于 100：粘度修正的有效性有限"
-      }
+      },
+      inspHistory: "检验历史（API 576）",
+      lastInsp: "上次检验",
+      nextInspDue: "下次检验到期",
+      inspResult: "结果",
+      inspOverdue: "检验逾期",
+      inspOk: "检验有效",
+      inspMissing: "无检验记录"
     },
     pipelines: {
       title: "管道",
@@ -375,7 +399,7 @@
         row: "管廊带（ROW）",
         meteringStation: "计量站"
       },
-      stationKm: "里程（公里）",
+      stationKm: "桩号（km）",
       side: "侧",
       sides: {
         left: "左",
@@ -423,7 +447,25 @@
       deleteLineAssetConfirm: "删除该线路设施？",
       deleteInspectionConfirm: "删除该检查？",
       openAsset: "打开设施",
-      reportRef: "报告编号"
+      reportRef: "报告编号",
+      iliImport: "导入内检测异常",
+      iliAnomalies: "内检测异常",
+      depthPct: "深度（%）",
+      lengthMm: "长度（mm）",
+      widthMm: "宽度（mm）",
+      anomalyType: "类型",
+      metalLoss: "金属损失",
+      crack: "裂纹",
+      dent: "凹陷",
+      failurePressure: "爆破压力",
+      safePressure: "安全压力",
+      smys: "SMYS（MPa）",
+      method: "方法",
+      designFactor: "设计系数",
+      exceeds: "超过安全压力",
+      imported: "已导入 {{n}} 条异常（{{ok}} 条已评定）",
+      noIli: "未加载内检测异常",
+      opPressure: "操作压力"
     },
     apm: {
       title: "资产绩效",
@@ -432,7 +474,11 @@
       assetCode: "资产编号",
       category: "类别",
       criticality: "关键度",
-      crit: { A: "A", B: "B", C: "C" },
+      crit: {
+        A: "A",
+        B: "B",
+        C: "C"
+      },
       assetStatus: "资产状态",
       statuses: {
         running: "运行",
@@ -534,13 +580,23 @@
         bad: "风险"
       },
       iso14224: {
-        failureMode: '故障模式 (ISO 14224)', failureConsequence: '后果 (ISO 14224)',
+        failureMode: "故障模式 (ISO 14224)",
+        failureConsequence: "后果 (ISO 14224)",
         failureModes: {
-          mechanical: '机械', wear: '磨损', fatigue: '疲劳',
-          corrosion: '腐蚀', electrical: '电气', instrumentation: '仪表',
-          other: '其他'
+          mechanical: "机械",
+          wear: "磨损",
+          fatigue: "疲劳",
+          corrosion: "腐蚀",
+          electrical: "电气",
+          instrumentation: "仪表",
+          other: "其他"
         },
-        consequences: { none: '无', personal: '人身', environment: '环境', costs: '成本' }
+        consequences: {
+          none: "无",
+          personal: "人身",
+          environment: "环境",
+          costs: "成本"
+        }
       }
     },
     ingest: {
@@ -642,7 +698,9 @@
         R12: "{{name}} 在最近 90 天内发生 {{count}} 次故障。",
         R13: "泄压阀 {{tag}} 校验已逾期 {{days}} 天。",
         R14: "泄压阀 {{tag}} 尺寸不足（余量 {{margin}}%）。",
-        R15: '{{code}}: 估计剩余寿命 {{rulMonths}} 个月低于12（置信度: {{confidence}}）'
+        R15: "{{code}}: 估计剩余寿命 {{rulMonths}} 个月低于12（置信度: {{confidence}}）",
+        R16: "{{tag}}：PSV 检验已逾期（API 576）",
+        R17: "{{code}}：内检测异常要求压力超过安全限值（{{required}} > {{safe}} bar）"
       },
       name: {
         R1: "严重腐蚀速率",
@@ -659,7 +717,9 @@
         R12: "重复故障",
         R13: "泄压阀校验逾期",
         R14: "泄压阀尺寸不足",
-        R15: '关键剩余寿命'
+        R15: "关键剩余寿命",
+        R16: "PSV 检验逾期",
+        R17: "内检测异常超过安全压力"
       },
       resolveNotePlaceholder: "解决备注…",
       actor: "操作者",
@@ -822,6 +882,19 @@
       water: "水",
       "crude-oil": "原油",
       diesel: "柴油"
+    },
+    ffs: {
+      title: "适用性评价（API 579 L1）",
+      mawpAllowed: "允许最大工作压力",
+      mawpAssessed: "评定最大工作压力",
+      pass: "评价通过",
+      fail: "评价未通过",
+      tRequired: "所需壁厚",
+      corrosionAllowance: "腐蚀裕量",
+      jointEfficiency: "接头系数",
+      allowableStress: "许用应力",
+      utilization: "利用率",
+      needFields: "请输入D, t, P 和材料以评估"
     }
   };
 });

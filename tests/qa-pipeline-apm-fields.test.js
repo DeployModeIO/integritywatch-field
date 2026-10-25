@@ -141,6 +141,7 @@ test('10. seed.demo: counts exactos por store', async () => {
     pipelineSystems: 1,
     lineAssets: 12,
     lineInspections: 5,
+    iliAnomalies: 6,
     monitoringPoints: 8,
     readings: 120,
     coupons: 4,

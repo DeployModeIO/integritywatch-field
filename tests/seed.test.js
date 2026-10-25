@@ -34,6 +34,7 @@ test('seed produces exact deterministic counts and returns them', async () => {
     pipelineSystems: 1,
     lineAssets: 12,
     lineInspections: 5,
+    iliAnomalies: 6,
     monitoringPoints: 8,
     readings: 120,
     coupons: 4,
@@ -45,6 +46,7 @@ test('seed produces exact deterministic counts and returns them', async () => {
   assert.equal((await s.pipelineSystems.list()).length, 1);
   assert.equal((await s.lineAssets.list()).length, 12);
   assert.equal((await s.lineInspections.list()).length, 5);
+  assert.equal((await s.iliAnomalies.list()).length, 6);
   assert.equal((await s.monitoringPoints.list()).length, 8);
   assert.equal((await s.readings.list()).length, 120);
   assert.equal((await s.coupons.list()).length, 4);

@@ -10,7 +10,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
   return {
+
     __meta: { code: 'en', name: 'English', nativeName: 'English', dir: 'ltr' },
+
+    ffs: {title:"Fitness-for-service (API 579 L1)",mawpAllowed:"Allowable MAWP",mawpAssessed:"Assessed MAWP",pass:"Assessment passed",fail:"Assessment failed",tRequired:"Required thickness",corrosionAllowance:"Corrosion allowance",jointEfficiency:"Joint efficiency",allowableStress:"Allowable stress",utilization:"Utilization",needFields:"Enter D, t, P, and material to assess"},
 
     common: {
       appName: 'IntegrityWatch Field',
@@ -33,7 +36,10 @@
       updateAvailable: 'Update available', reload: 'Reload', confidence: 'Confidence',
       bootError: 'Boot error', viewError: 'View error',
       moduleLoading: 'module loading…',
-      inMemoryNotice: 'IndexedDB unavailable; running with in-memory storage. Changes may not persist.'
+      inMemoryNotice: 'IndexedDB unavailable; running with in-memory storage. Changes may not persist.',
+
+
+      pass: 'Pass', fail: 'Fail', na: 'N/A'
     },
 
     nav: {
@@ -88,7 +94,7 @@
       cuiTitle: 'Corrosion under insulation', insulated: 'Insulated', jacketType: 'Jacket type',
       lastCuiInspection: 'Last CUI inspection', pointDossier: 'Point dossier',
       deletePointConfirm: 'Delete this monitoring point and all its data?',
-      pointName: 'Point name', system: 'System', stationKm: 'Station (km)', location: 'Location',
+      pointName: 'Point name', system: 'System', stationKm: "Station (km)", location: 'Location',
       crMpy: 'Corrosion rate (mpy)', startDate: 'Start date', endDate: 'End date',
       codeDuplicate: 'A point with this code already exists',
       wfGtWi: 'Final weight cannot exceed initial weight',
@@ -130,6 +136,13 @@
       tagDuplicate: 'A PSV with this tag already exists',
       deleteDisabled: 'Cannot delete: this PSV has an associated asset or inspection record',
       types: { conventional: 'Conventional', balanced: 'Balanced bellows', pilot: 'Pilot operated' },
+    inspHistory: "Inspection history (API 576)",
+    lastInsp: "Last inspection",
+    nextInspDue: "Next inspection due",
+    inspResult: "Result",
+    inspOverdue: "Inspection overdue",
+    inspOk: "Inspection current",
+    inspMissing: "No inspection records",
       err: {
         empty: 'Required field', set: 'Set pressure must be greater than 0',
         z: 'Compressibility factor must be greater than 0', k: 'k (cp/cv) must be greater than 1',
@@ -162,8 +175,26 @@
       noAssets: 'No line assets', noInspections: 'No inspections',
       deleteLineAssetConfirm: 'Delete this line asset?', deleteInspectionConfirm: 'Delete this inspection?',
       openAsset: 'Open asset', reportRef: 'Report ref',
-      products: { crude: 'Crude', gas: 'Gas', products: 'Products', water: 'Water' },
-      types: {
+products: { crude: 'Crude', gas: 'Gas', products: 'Products', water: 'Water' },
+    iliImport: 'Import ILI anomalies',
+    iliAnomalies: "ILI anomalies",
+    depthPct: "Depth (%)",
+    lengthMm: "Length (mm)",
+    widthMm: "Width (mm)",
+    anomalyType: "Type",
+    metalLoss: "Metal loss",
+    crack: "Crack",
+    dent: "Dent",
+    failurePressure: "Failure pressure",
+    safePressure: "Safe pressure",
+    smys: "SMYS (MPa)",
+    method: "Method",
+    designFactor: "Design factor",
+    exceeds: "Exceeds safe pressure",
+imported: "Imported {{n}} anomalies ({{ok}} assessed)",
+    noIli: "No ILI anomalies loaded",
+    opPressure: "Operating pressure",
+    types: {
         sectionValve: 'Section valve', blockValve: 'Block valve', flange: 'Flange', fitting: 'Fitting',
         pumpStation: 'Pump station', compressorStation: 'Compressor station', tank: 'Tank', sump: 'Sump',
         valveChamber: 'Valve chamber', crossing: 'Crossing', row: 'Right of way', meteringStation: 'Metering station'
@@ -264,7 +295,7 @@
       entity: 'Entity', rule: 'Rule', condition: 'Condition', noRecs: 'No recommendations',
       filterStatus: 'Filter by status', sweepInterval: 'Sweep interval', runNow: 'Run now',
       lastRun: 'Last run', newCriticalToast: 'New critical recommendation',
-      alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendations',
+alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendations',
       alarmBannerWarning: '{{n}} warnings active · {{total}} open recommendations',
       resolveNotePlaceholder: 'Resolution note',
       actor: 'Actor', history: 'History', lastTriggered: 'Last triggered', triggerCount: 'Triggers',
@@ -283,14 +314,18 @@
         R12: '{{name}}: {{count}} failure events in the last 90 days',
         R13: '{{tag}}: PSV test overdue by {{days}} days',
         R14: '{{tag}}: installed capacity is below required (margin {{margin}}%)',
-        R15: '{{code}}: estimated remaining life {{rulMonths}} months below 12 (confidence: {{confidence}})'
+        R15: '{{code}}: estimated remaining life {{rulMonths}} months below 12 (confidence: {{confidence}})',
+        R16: '{{tag}}: PSV inspection overdue (API 576)',
+        R17: '{{code}}: ILI anomaly requires pressure above safe limit ({{required}} > {{safe}} bar)'
       },
       name: {
         R1: 'Critical corrosion rate', R2: 'Corrosion rate escalation', R3: 'Low inhibitor efficiency',
         R4: 'Inhibitor residual out of band', R5: 'Sensor anomaly', R6: 'Coupon expired',
         R7: 'Model deviation', R8: 'Sour service screening', R9: 'Inspection overdue',
         R10: 'MTBF degradation', R11: 'Availability below threshold', R12: 'Repeated failures',
-        R13: 'PSV test overdue', R14: 'Undersized relief valve', R15: 'Critical remaining life'
+        R13: 'PSV test overdue', R14: 'Undersized relief valve', R15: 'Critical remaining life',
+        R16: 'PSV inspection overdue',
+        R17: 'ILI anomaly exceeding safe pressure'
       },
       histActions: { created: 'Created', triggered: 'Triggered', acked: 'Acknowledged', resolved: 'Resolved', reopened: 'Reopened' }
     },

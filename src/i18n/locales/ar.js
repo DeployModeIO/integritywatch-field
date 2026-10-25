@@ -9,7 +9,12 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
   return {
-    __meta: { code: "ar", name: "Arabic", nativeName: "العربية", dir: "rtl" },
+    __meta: {
+      code: "ar",
+      name: "Arabic",
+      nativeName: "العربية",
+      dir: "rtl"
+    },
     common: {
       appName: "IntegrityWatch Field",
       tagline: "مركز عمليات السلامة والامتثال للاستخدام الميداني في قطاع النفط والغاز",
@@ -87,7 +92,10 @@
       bootError: "خطأ في بدء التشغيل",
       viewError: "خطأ في العرض",
       moduleLoading: "جارٍ تحميل الوحدة…",
-      inMemoryNotice: "IndexedDB غير متاح؛ التشغيل باستخدام تخزين في الذاكرة. قد لا يتم حفظ التغييرات."
+      inMemoryNotice: "IndexedDB غير متاح؛ التشغيل باستخدام تخزين في الذاكرة. قد لا يتم حفظ التغييرات.",
+      pass: "نقطة التحقق",
+      fail: "فشل التحقق",
+      na: "N/A"
     },
     nav: {
       dashboard: "لوحة القيادة",
@@ -257,9 +265,18 @@
         fail: "غير مطابق",
         insufficient: "بيانات غير كافية"
       },
-      remainingLife: "العمر المتبقي", tNom: "T-nom (مم)", tMin: "T-min (مم)", tMinHint: "حدد T-nom وT-min (مم) لحساب العمر المتبقي",
-      outlier: "قيمة شاذة", rulingMethod: "الطريقة",
-      trendLabels: { increasing: "متزايد", decreasing: "متناقص", stable: "مستقر", insufficient: "غير كاف" }
+      remainingLife: "العمر المتبقي",
+      tNom: "T-nom (مم)",
+      tMin: "T-min (مم)",
+      tMinHint: "حدد T-nom وT-min (مم) لحساب العمر المتبقي",
+      outlier: "قيمة شاذة",
+      rulingMethod: "الطريقة",
+      trendLabels: {
+        increasing: "متزايد",
+        decreasing: "متناقص",
+        stable: "مستقر",
+        insufficient: "غير كاف"
+      }
     },
     psv: {
       title: "صمامات الأمان",
@@ -338,7 +355,14 @@
       },
       warn: {
         reRange: "عدد رينولدز أقل من 100: تصحيح اللزوجة محدود الصلاحية"
-      }
+      },
+      inspHistory: "سجل التفتيش (API 576)",
+      lastInsp: "آخر تفتيش",
+      nextInspDue: "موعد التفتيش القادم",
+      inspResult: "النتيجة",
+      inspOverdue: "تفتيش متأخر",
+      inspOk: "تفتيش محدث",
+      inspMissing: "لا توجد سجلات تفتيش"
     },
     pipelines: {
       title: "خطوط الأنابيب",
@@ -375,7 +399,7 @@
         row: "حرم المسار (ROW)",
         meteringStation: "محطة قياس"
       },
-      stationKm: "كم (المحطة)",
+      stationKm: "المحطة (كم)",
       side: "الجانب",
       sides: {
         left: "يسار",
@@ -423,7 +447,25 @@
       deleteLineAssetConfirm: "حذف عنصر الخط هذا؟",
       deleteInspectionConfirm: "حذف هذا الفحص؟",
       openAsset: "فتح العنصر",
-      reportRef: "مرجع التقرير"
+      reportRef: "مرجع التقرير",
+      iliImport: "استيراد شذوذ ILI",
+      iliAnomalies: "شذوذ ILI",
+      depthPct: "العمق (٪)",
+      lengthMm: "الطول (مم)",
+      widthMm: "العرض (مم)",
+      anomalyType: "النوع",
+      metalLoss: "فقدان المعدن",
+      crack: "شق",
+      dent: "انبعاج",
+      failurePressure: "ضغط الانهيار",
+      safePressure: "الضغط الآمن",
+      smys: "SMYS (مبا)",
+      method: "الطريقة",
+      designFactor: "معامل التصميم",
+      exceeds: "يتجاوز الضغط الآمن",
+      imported: "تم استيراد {{n}} شذوذا ({{ok}} مُقيَّمة)",
+      noIli: "لا توجد شذوذ ILI محمّلة",
+      opPressure: "الضغط التشغيلي"
     },
     apm: {
       title: "أداء الأصول",
@@ -432,7 +474,11 @@
       assetCode: "رمز الأصل",
       category: "الفئة",
       criticality: "الأهمية",
-      crit: { A: "A", B: "B", C: "C" },
+      crit: {
+        A: "A",
+        B: "B",
+        C: "C"
+      },
       assetStatus: "حالة الأصل",
       statuses: {
         running: "قيد التشغيل",
@@ -534,13 +580,23 @@
         bad: "تحت الخطر"
       },
       iso14224: {
-        failureMode: 'نمط الفشل (ISO 14224)', failureConsequence: 'العاقبة (ISO 14224)',
+        failureMode: "نمط الفشل (ISO 14224)",
+        failureConsequence: "العاقبة (ISO 14224)",
         failureModes: {
-          mechanical: 'ميكانيكي', wear: 'تآكل', fatigue: 'إعياء',
-          corrosion: 'تآكل', electrical: 'كهربائي', instrumentation: 'أجهزة',
-          other: 'أخرى'
+          mechanical: "ميكانيكي",
+          wear: "تآكل",
+          fatigue: "إعياء",
+          corrosion: "تآكل",
+          electrical: "كهربائي",
+          instrumentation: "أجهزة",
+          other: "أخرى"
         },
-        consequences: { none: 'لا شيء', personal: 'شخصي', environment: 'بيئي', costs: 'تكاليف' }
+        consequences: {
+          none: "لا شيء",
+          personal: "شخصي",
+          environment: "بيئي",
+          costs: "تكاليف"
+        }
       }
     },
     ingest: {
@@ -642,7 +698,9 @@
         R12: "{{count}} أعطال على الأصل {{name}} خلال آخر 90 يومًا.",
         R13: "اختبار صمام الأمان {{tag}} متأخر {{days}} يومًا.",
         R14: "صمام الأمان {{tag}} مقاسه غير كافٍ (الهامش {{margin}}%).",
-        R15: "{{code}}: العمر المتبقي المقدر {{rulMonths}} شهراً أقل من 12 (الموثوقية: {{confidence}})"
+        R15: "{{code}}: العمر المتبقي المقدر {{rulMonths}} شهراً أقل من 12 (الموثوقية: {{confidence}})",
+        R16: "{{tag}}: تفتيش PSV متأخر (API 576)",
+        R17: "{{code}}: شذوذ ILI يتطلب ضغطا أعلى من الحد الآمن ({{required}} > {{safe}} بار)"
       },
       name: {
         R1: "معدل تآكل حرج",
@@ -658,7 +716,10 @@
         R11: "إتاحية منخفضة",
         R12: "أعطال متكررة",
         R13: "اختبار صمام أمان متأخر",
-        R14: "مقاس صمام أمان غير كافٍ", R15: "عمر متبقٍ حرج"
+        R14: "مقاس صمام أمان غير كافٍ",
+        R15: "عمر متبقٍ حرج",
+        R16: "تفتيش PSV متأخر",
+        R17: "شذوذ ILI يتجاوز الضغط الآمن"
       },
       resolveNotePlaceholder: "ملاحظة الحل…",
       actor: "الفاعل",
@@ -821,6 +882,19 @@
       water: "ماء",
       "crude-oil": "نفط خام",
       diesel: "ديزل"
+    },
+    ffs: {
+      title: "الصلاحية للخدمة (API 579 L1)",
+      mawpAllowed: "MAWP المسموح",
+      mawpAssessed: "MAWP المُقيَّم",
+      pass: "اجتاز التقييم",
+      fail: "فشل التقييم",
+      tRequired: "السماكة المطلوبة",
+      corrosionAllowance: "سماحية التآكل",
+      jointEfficiency: "كفاءة الوصل",
+      allowableStress: "الإجهاد المسموح",
+      utilization: "استخدام",
+      needFields: "يرجى إدخال D, t, P والمواد لتقييم"
     }
   };
 });

@@ -9,7 +9,12 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
   return {
-    __meta: { code: "ru", name: "Russian", nativeName: "Русский", dir: "ltr" },
+    __meta: {
+      code: "ru",
+      name: "Russian",
+      nativeName: "Русский",
+      dir: "ltr"
+    },
     common: {
       appName: "IntegrityWatch Field",
       tagline: "Центр операций по целостности и соответствию для нефтегазовых объектов",
@@ -83,11 +88,14 @@
       keyboardHint: "Подсказка клавиатуры",
       updateAvailable: "Доступно обновление",
       reload: "Перезагрузить",
-      confidence: 'Достоверность',
+      confidence: "Достоверность",
       bootError: "Ошибка запуска",
       viewError: "Ошибка представления",
       moduleLoading: "загрузка модуля…",
-      inMemoryNotice: "IndexedDB недоступна; работа в режиме хранения в памяти. Изменения могут не сохраниться."
+      inMemoryNotice: "IndexedDB недоступна; работа в режиме хранения в памяти. Изменения могут не сохраниться.",
+      pass: "Pass",
+      fail: "Fail",
+      na: "N/A"
     },
     nav: {
       dashboard: "Панель",
@@ -257,9 +265,18 @@
         fail: "Не соответствует",
         insufficient: "Недостаточно данных"
       },
-      remainingLife: 'Остаточный ресурс', tNom: 'T-nom (мм)', tMin: 'T-min (мм)', tMinHint: 'Задайте T-nom и T-min (мм) для расчёта остаточного ресурса',
-      outlier: 'Выброс', rulingMethod: 'Метод',
-      trendLabels: { increasing: 'Рост', decreasing: 'Снижение', stable: 'Стабильно', insufficient: 'Недостаточно' }
+      remainingLife: "Остаточный ресурс",
+      tNom: "T-nom (мм)",
+      tMin: "T-min (мм)",
+      tMinHint: "Задайте T-nom и T-min (мм) для расчёта остаточного ресурса",
+      outlier: "Выброс",
+      rulingMethod: "Метод",
+      trendLabels: {
+        increasing: "Рост",
+        decreasing: "Снижение",
+        stable: "Стабильно",
+        insufficient: "Недостаточно"
+      }
     },
     psv: {
       title: "Предохранительные клапаны",
@@ -338,7 +355,14 @@
       },
       warn: {
         reRange: "Число Рейнольдса ниже 100: поправка на вязкость имеет ограниченную применимость"
-      }
+      },
+      inspHistory: "История инспекций (API 576)",
+      lastInsp: "Последняя инспекция",
+      nextInspDue: "Следующая инспекция из-за-захода",
+      inspResult: "Результат инспекции",
+      inspOverdue: "Инспекция просрочена",
+      inspOk: "Инспекция текущая",
+      inspMissing: "Отсутствие записей инспекции"
     },
     pipelines: {
       title: "Трубопроводы",
@@ -375,7 +399,7 @@
         row: "Полоса отвода (ROW)",
         meteringStation: "Узел учёта"
       },
-      stationKm: "Км (станция)",
+      stationKm: "Station (km)",
       side: "Сторона",
       sides: {
         left: "Левая",
@@ -423,7 +447,25 @@
       deleteLineAssetConfirm: "Удалить этот линейный объект?",
       deleteInspectionConfirm: "Удалить это обследование?",
       openAsset: "Открыть объект",
-      reportRef: "Ссылка на отчёт"
+      reportRef: "Ссылка на отчёт",
+      iliImport: "Import ILI anomalies",
+      iliAnomalies: "Anomalies of ILI",
+      depthPct: "Depth (%)",
+      lengthMm: "Length (mm)",
+      widthMm: "Width (mm)",
+      anomalyType: "Type",
+      metalLoss: "Metal loss",
+      crack: "Crack",
+      dent: "Dent",
+      failurePressure: "Failure pressure",
+      safePressure: "Safe pressure",
+      smys: "SMYS (MPa)",
+      method: "Method",
+      designFactor: "Design factor",
+      exceeds: "Exceeds safe pressure",
+      imported: "Imported {{n}} anomalies ({{ok}} assessed)",
+      noIli: "No ILI anomalies loaded",
+      opPressure: "Operating pressure"
     },
     apm: {
       title: "Надёжность активов",
@@ -432,7 +474,11 @@
       assetCode: "Код актива",
       category: "Категория",
       criticality: "Критичность",
-      crit: { A: "A", B: "B", C: "C" },
+      crit: {
+        A: "A",
+        B: "B",
+        C: "C"
+      },
       assetStatus: "Статус актива",
       statuses: {
         running: "В работе",
@@ -534,13 +580,23 @@
         bad: "Под риском"
       },
       iso14224: {
-        failureMode: 'Режим отказа (ISO 14224)', failureConsequence: 'Последствие (ISO 14224)',
+        failureMode: "Режим отказа (ISO 14224)",
+        failureConsequence: "Последствие (ISO 14224)",
         failureModes: {
-          mechanical: 'Механический', wear: 'Износ', fatigue: 'Усталость',
-          corrosion: 'Коррозия', electrical: 'Электрический', instrumentation: 'КИП',
-          other: 'Прочее'
+          mechanical: "Механический",
+          wear: "Износ",
+          fatigue: "Усталость",
+          corrosion: "Коррозия",
+          electrical: "Электрический",
+          instrumentation: "КИП",
+          other: "Прочее"
         },
-        consequences: { none: 'Отсутствует', personal: 'Персонал', environment: 'Окружающая среда', costs: 'Затраты' }
+        consequences: {
+          none: "Отсутствует",
+          personal: "Персонал",
+          environment: "Окружающая среда",
+          costs: "Затраты"
+        }
       }
     },
     ingest: {
@@ -642,7 +698,9 @@
         R12: "{{count}} отказов актива {{name}} за последние 90 дней.",
         R13: "Испытание ПСК {{tag}} просрочено на {{days}} дн.",
         R14: "ПСК {{tag}} имеет недостаточный размер (запас {{margin}}%).",
-        R15: '{{code}}: расчётный остаточный ресурс {{rulMonths}} мес. ниже 12 (достоверность: {{confidence}})'
+        R15: "{{code}}: расчётный остаточный ресурс {{rulMonths}} мес. ниже 12 (достоверность: {{confidence}})",
+        R16: "{{tag}}: Инспекция PSV просрочена (API 576)",
+        R17: "{{code}}: Аномалия ILI требует давления выше безопасного предела ({{required}} > {{safe}} бар)"
       },
       name: {
         R1: "Критическая скорость коррозии",
@@ -659,7 +717,9 @@
         R12: "Повторные отказы",
         R13: "Испытание ПСК просрочено",
         R14: "Недостаточный размер ПСК",
-        R15: 'Критический остаточный ресурс'
+        R15: "Критический остаточный ресурс",
+        R16: "Инспекция PSV просрочена",
+        R17: "Аномалия ILI, превышающая безопасное давление"
       },
       resolveNotePlaceholder: "Примечание к решению…",
       actor: "Исполнитель",
@@ -822,6 +882,19 @@
       water: "Вода",
       "crude-oil": "Сырая нефть",
       diesel: "Дизельное топливо"
+    },
+    ffs: {
+      title: "Фитнес для использования (API 579 L1)",
+      mawpAllowed: "Allowable MAWP",
+      mawpAssessed: "Assessed MAWP",
+      pass: "Assessment passed",
+      fail: "Assessment failed",
+      tRequired: "Required thickness",
+      corrosionAllowance: "Allowance for corrosion",
+      jointEfficiency: "Efficiency of joint",
+      allowableStress: "Allowable stress",
+      utilization: "Использование",
+      needFields: "Введите D, t, P и материал для оценки"
     }
   };
 });

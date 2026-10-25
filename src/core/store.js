@@ -193,6 +193,7 @@
       pipelineSystems: makeRepo(adapter, 'pipelineSystems', enqueue),
       lineAssets: makeRepo(adapter, 'lineAssets', enqueue),
       lineInspections: makeRepo(adapter, 'lineInspections', enqueue),
+      iliAnomalies: makeRepo(adapter, 'iliAnomalies', enqueue),
       apmAssets: makeRepo(adapter, 'apmAssets', enqueue),
       apmEvents: makeRepo(adapter, 'apmEvents', enqueue),
       recommendations: makeRepo(adapter, 'recommendations', enqueue),

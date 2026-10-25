@@ -28,6 +28,9 @@ Catálogo completo de `src/data/standards.js` (33 normas):
 | 14 | API 581 | Risk-Based Inspection Methodology | Verificar edición vigente | APM/RBI (matriz de riesgo), informes |
 | 15 | NACE SP0169 | Control of External Corrosion on Underground or Submerged Metallic Piping Systems | Verificar edición vigente | Corrosión (protección catódica), informes |
 | 16 | OGMP 2.0 | Oil & Gas Methane Partnership 2.0 Framework | Verificar edición vigente | Informes |
+| 34 | API 579-1 / ASME FFS-1 | Fitness-For-Service — Part 3: Assessment of Existing Equipment for Brittle Fracture | Verificar edición vigente | FFS Nivel 1 (pérdida general de metal, screening de picaduras) |
+| 35 | ASME B31G | Manual for Determining the Remaining Strength of Corroded Pipelines | Verificar edición vigente | Ductos: evaluación de defectos por pérdida de metal (original + Modified) |
+| 36 | API 576 | Inspection of Pressure-relieving Devices | Verificar edición vigente | PSV: historial e inspección de dispositivos de alivio |
 
 ### Equipos de proceso, potencia y protección — por región
 
@@ -258,6 +261,111 @@ OEE  = disponibilidad × rendimiento × calidad
 ```
 
 Estas métricas alimentan las reglas APM (R9–R12) y los KPIs del panel.
+
+### 2.12 Espesor requerido y MAWP — API 579-1/ASME FFS-1 Parte 3 Nivel 1
+
+```
+t_req = P · Ri / (S · E − 0.6 · P) + CA
+```
+
+| Símbolo | Significado | Unidades |
+|---------|-------------|----------|
+| t_req | Espesor mínimo requerido (required minimum thickness) | mm |
+| P | Presión de diseño (design pressure) | MPa |
+| Ri | Radio interno (inside radius) | mm |
+| S | Esfuerzo permisible del material (allowable stress) | MPa |
+| E | Eficiencia de junta soldada (joint efficiency) | 0..1 |
+| CA | Margen de corrosión (corrosion allowance) | mm |
+
+MAWP evaluado (pared adelgazada):
+
+```
+MAWP = S · E · (t − CA) / (Ri + 0.6 · (t − CA))
+```
+
+donde `t` es el espesor medido (mm). Si `t − CA ≤ 0`, MAWP = 0.
+
+**Criterio de aceptación:** `t_medido ≥ t_req` → pasa.
+
+**Screening de picaduras L1 (conservador):** `pitDepth ≤ t_medido − t_req`. 
+El screening completo API 579 L2/L3 requiere reglas de interacción de LTAs, 
+RSF y tensión de referencia, que no están implementados en este nivel.
+
+**Supuestos y limitaciones (regla de oro):**
+- Fórmula de tensión circunferencial para cascarones cilíndricos (aproximación de pared delgada).
+- Nivel 1 solamente: pérdida general uniforme de metal, sin interacción de picaduras ni 
+  eficiencia de junta para metales disímiles.
+- El margen de corrosión (CA) reduce el espesor efectivo para la evaluación del MAWP.
+
+### 2.13 Presión de fallo de ducto — ASME B31G (original) y Modified B31G
+
+**B31G original:**
+
+```
+Sf = 1.25 · SMYS
+Q = sqrt(1 + 0.628 · L² / (D · t))
+Pf = (2/3) · Sf · t · [1 − (a/t)] / [1 − (a/t) / Q] / D
+```
+
+**Modified B31G:**
+
+```
+Sf = SMYS + 68.95 MPa     (SMYS + 10 000 psi)
+b = 2 · sqrt(D · t)
+L'_mod = min(L, b · 0.85)
+Q = sqrt(1 + 0.628 · L'_mod² / (D · t))
+Pf = (2/3) · Sf · t · [1 − (a/t)] / [1 − (a/t) / Q] / D
+```
+
+| Símbolo | Significado | Unidades |
+|---------|-------------|----------|
+| D | Diámetro exterior del ducto (outside diameter) | mm |
+| t | Espesor nominal de pared (nominal wall thickness) | mm |
+| SMYS | Límite elástico mínimo especificado (specified minimum yield strength) | MPa |
+| a | Profundidad máxima de la pérdida de metal (depth = depthPct/100 · t) | mm |
+| L | Longitud axial del defecto (axial length) | mm |
+| Q | Factor de abultamiento (bulging factor) | — |
+| Pf | Presión de fallo predicha (predicted failure pressure) | MPa |
+
+**Presión de operación permisible:**
+
+```
+pAllow = Pf / (1.43 · DF)
+```
+
+donde `DF` es el factor de diseño (típicamente 0.72 para gasoductos en zona rural clase 1).
+
+**Supuestos y limitaciones (regla de oro):**
+- Defecto aislado único de pérdida de metal en tubería recta.
+- No modela defectos interactuantes (RSTRENG), grietas ni abolladuras.
+- No considera cargas axiales ni de flexión.
+- La forma métrica de Q (`0.628 · L² / (D · t)`) es la equivalente de la forma 
+  original en unidades USC (`67 · L² / (D · t)` con L en pulgadas y D, t en pulgadas).
+- Modified B31G usa un flow stress más conservador (`SMYS + 10 000 psi`) que 
+  el original (`1.25 · SMYS`) y optimiza la longitud efectiva con el parámetro `b`.
+- Modified ≤ original en el mismo defecto (es más conservador).
+
+### 2.14 Inspección de dispositivos de alivio — API 576
+
+Campos de historial de inspección en la ficha de cada PSV:
+
+| Campo | Significado |
+|-------|-------------|
+| inspLast | Fecha de la última inspección (API 576) |
+| inspNext | Fecha de la próxima inspección programada |
+| inspResult | Resultado de la última inspección: pass / fail / na |
+
+**Regla R16:** PSV con `inspNext < hoy` → severidad **high** (inspección vencida per API 576).
+
+**Regla R17:** Anomalía ILI evaluada contra la presión de operación del line system: 
+si pAllow < opPressure con los parámetros SMYS/D/t del ducto → severidad **high**.
+
+**Supuestos (regla de oro):**
+- API 576 no prescribe intervalos fijos: la fecha `inspNext` la define el operador según 
+  su programa de inspección.
+- La regla R17 usa B31G original para evaluar cada anomalía contra la presión de operación 
+  del ducto (no Modified).
+- SMYS por defecto = 414 MPa (API 5L X52) si el material no está en el catálogo.
 
 ---
 

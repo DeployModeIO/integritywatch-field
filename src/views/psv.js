@@ -168,6 +168,34 @@
     return c;
   }
 
+  function buildInspHistory(h, psv) {
+    var panel = card(h, 'psv.inspHistory');
+    var nowMs = Date.now();
+    var inspNextMs = psv.inspNext ? Date.parse(psv.inspNext) : NaN;
+    var overdue = !isNaN(inspNextMs) && inspNextMs < nowMs;
+
+    // LED status
+    var ledCls = 'led led-warn';
+    var ledLabel = h.t('psv.inspMissing');
+    if (psv.inspNext) {
+      ledCls = overdue ? 'led led-crit' : 'led led-ok';
+      ledLabel = overdue ? h.t('psv.inspOverdue') : h.t('psv.inspOk');
+    }
+
+    var ledNode = h.ui.el('span', { class: ledCls, attrs: { 'data-led': overdue ? 'crit' : (psv.inspNext ? 'ok' : 'warn') } });
+    ledNode.appendChild(h.ui.el('span', { text: ledLabel }));
+
+    // Faceplate table
+    var pairs = [
+      ['psv.lastInsp', h.ui.el('span', { text: psv.inspLast ? fmtDate(psv.inspLast, { dateStyle: 'short' }) : '—' })],
+      ['psv.nextInspDue', h.ui.el('span', { text: psv.inspNext ? fmtDate(psv.inspNext, { dateStyle: 'short' }) : '—' })],
+      ['psv.inspResult', h.ui.el('span', { class: 'badge ' + (psv.inspResult === 'fail' ? 'badge-severe' : psv.inspResult === 'pass' ? 'badge-low' : 'badge-neutral'), text: psv.inspResult ? h.t('common.' + psv.inspResult) : '—' })],
+      ['common.status', ledNode]
+    ];
+    panel.appendChild(h.ui.keyValueTable(pairs));
+    return panel;
+  }
+
   function emptyState(h, key) {
     return h.ui.el('p', { class: 'empty-state', text: h.t(key || 'common.empty') });
   }
@@ -238,6 +266,14 @@
       { name: 'lastTestDate', labelKey: 'psv.lastTest', type: 'date' },
       { name: 'nextTestDate', labelKey: 'psv.nextTest', type: 'date' },
       { name: 'certifiedCapacity', labelKey: 'psv.certified', type: 'number', min: 0 },
+      { name: 'inspLast', labelKey: 'psv.lastInsp', type: 'date' },
+      { name: 'inspNext', labelKey: 'psv.nextInspDue', type: 'date' },
+      { name: 'inspResult', labelKey: 'psv.inspResult', type: 'select', options: [
+        { value: '', labelKey: 'common.none' },
+        { value: 'pass', labelKey: 'common.pass' },
+        { value: 'fail', labelKey: 'common.fail' },
+        { value: 'na', labelKey: 'common.na' }
+      ] },
       { name: 'notes', labelKey: 'common.notes', type: 'textarea' }
     ];
     var values = {
@@ -258,6 +294,9 @@
       lastTestDate: existing && existing.lastTestDate ? existing.lastTestDate.slice(0, 10) : '',
       nextTestDate: existing && existing.nextTestDate ? existing.nextTestDate.slice(0, 10) : '',
       certifiedCapacity: existing && existing.certifiedCapacity != null ? existing.certifiedCapacity : '',
+      inspLast: existing && existing.inspLast ? existing.inspLast.slice(0, 10) : '',
+      inspNext: existing && existing.inspNext ? existing.inspNext.slice(0, 10) : '',
+      inspResult: existing && existing.inspResult ? existing.inspResult : '',
       notes: existing ? existing.notes : ''
     };
     return { fields: fields, values: values };
@@ -284,6 +323,9 @@
     rec.lastTestDate = vals.lastTestDate || undefined;
     rec.nextTestDate = vals.nextTestDate || undefined;
     rec.certifiedCapacity = numOrUndef(vals.certifiedCapacity);
+    rec.inspLast = vals.inspLast || undefined;
+    rec.inspNext = vals.inspNext || undefined;
+    rec.inspResult = vals.inspResult || undefined;
     rec.notes = vals.notes ? String(vals.notes).trim() : undefined;
     if (!existing) { rec.id = rec.tag; }
     return rec;
@@ -641,6 +683,10 @@
     ]));
     if (psv.notes) { summary.appendChild(h.ui.el('p', { text: psv.notes })); }
     frag.appendChild(summary);
+
+    // API 576 Inspection history (faceplate panel)
+    var inspPanel = buildInspHistory(h, psv);
+    frag.appendChild(inspPanel);
 
     // Sizing.
     var sizing = card(h, 'psv.sizingTitle');

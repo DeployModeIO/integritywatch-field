@@ -187,19 +187,28 @@
     var natGas = { id: 'natural-gas', name: 'Natural gas', phase: 'gas', M: 19.0, k: 1.30, Z: 0.95 };
     var crude = { id: 'crude-oil', name: 'Crude oil', phase: 'liquid', G: 0.85, viscCp: 15 };
 
-    return [
+    var out = [
       gas('PSV-520-001', 'PSV-520-001', methane, 150, 50000, 140, 0, 'conventional', 'APM-MD-003', 'Compressor K-101 discharge', 10),
       gas('PSV-520-002', 'PSV-520-002', natGas, 100, 30000, 120, 0, 'conventional', 'APM-UP-002', 'Platform A gas header', 25),
       liquid('PSV-520-003', 'PSV-520-003', crude, 100, 300, 10, 'conventional', 'APM-MD-001', 'Pump station 16 discharge', 60),
       gas('PSV-520-004', 'PSV-520-004', methane, 120, 15000, 100, 5, 'pilot', 'APM-MD-003', 'Gas plant inlet', 15),
       gas('PSV-520-005', 'PSV-520-005', methane, 130, 20000, 140, 0, 'conventional', 'APM-DN-001', 'Heat exchanger E-101 shell', 40)
     ];
+    // API 576 inspection records (demo): PSV-001 overdue (R16 fires), PSV-003 current
+    out[0].inspLast = new Date(nowMs - 400 * 86400000).toISOString();
+    out[0].inspNext = new Date(nowMs - 35 * 86400000).toISOString();
+    out[0].inspResult = 'pass';
+    out[2].inspLast = new Date(nowMs - 30 * 86400000).toISOString();
+    out[2].inspNext = new Date(nowMs + 335 * 86400000).toISOString();
+    out[2].inspResult = 'pass';
+    return out;
   }
 
   function buildPipelineSystem() {
     return {
       id: 'SYS-NORTE-16', name: 'Norte 16" Crude', operator: 'Norte Operator S.A.', product: 'crude',
       dnIn: 16, wallThicknessMm: 9.53, material: 'api5l-x52', coating: 'FBE',
+      opPressureMpa: 6.0,
       lengthKm: 120, stationFromKm: 0, stationToKm: 120
     };
   }
@@ -275,6 +284,17 @@
     ];
   }
 
+  function buildIliAnomalies() {
+    return [
+      { id: 'ILI-N16-001', assetId: 'LA-N16-011', systemId: 'SYS-NORTE-16', stationKm: 106.2, depthPct: 18, lengthMm: 45, widthMm: 15, type: 'metalLoss', inspectionId: 'INSP-N16-001', date: '2025-08-01T00:00:00.000Z' },
+      { id: 'ILI-N16-002', assetId: 'LA-N16-003', systemId: 'SYS-NORTE-16', stationKm: 24.5, depthPct: 42, lengthMm: 120, widthMm: 30, type: 'metalLoss', inspectionId: 'INSP-N16-004', date: '2025-09-15T00:00:00.000Z' },
+      { id: 'ILI-N16-003', assetId: 'LA-N16-005', systemId: 'SYS-NORTE-16', stationKm: 40.8, depthPct: 12, lengthMm: 60, widthMm: 18, type: 'dent', inspectionId: 'INSP-N16-003', date: '2025-09-15T00:00:00.000Z' },
+      { id: 'ILI-N16-004', assetId: 'LA-N16-009', systemId: 'SYS-NORTE-16', stationKm: 85.1, depthPct: 58, lengthMm: 200, widthMm: 50, type: 'metalLoss', inspectionId: 'INSP-N16-004', date: '2025-09-15T00:00:00.000Z' },
+      { id: 'ILI-N16-005', assetId: 'LA-N16-002', systemId: 'SYS-NORTE-16', stationKm: 13.7, depthPct: 25, lengthMm: 80, widthMm: 22, type: 'crack', inspectionId: 'INSP-N16-002', date: '2025-07-20T00:00:00.000Z' },
+      { id: 'ILI-N16-006', assetId: 'LA-N16-010', systemId: 'SYS-NORTE-16', stationKm: 92.3, depthPct: 8, lengthMm: 30, widthMm: 10, type: 'metalLoss', inspectionId: 'INSP-N16-001', date: '2025-08-01T00:00:00.000Z' }
+    ];
+  }
+
   function buildApmEvents(nowMs) {
     function event(id, assetId, type, startDaysAgo, downtimeH, extra) {
       var rec = { id: id, assetId: assetId, type: type, start: daysAgo(nowMs, startDaysAgo), downtimeH: downtimeH };
@@ -324,6 +344,7 @@
     var pipelineSystems = [buildPipelineSystem()];
     var lineAssets = buildLineAssets(nowMs);
     var lineInspections = buildLineInspections(nowMs);
+    var iliAnomalies = buildIliAnomalies();
     var apmAssets = buildApmAssets(nowMs);
     var apmEvents = buildApmEvents(nowMs);
 
@@ -335,6 +356,7 @@
     pipelineSystems.forEach(function (r) { writes.push(repos.pipelineSystems.save(r, nowISO)); });
     lineAssets.forEach(function (r) { writes.push(repos.lineAssets.save(r, nowISO)); });
     lineInspections.forEach(function (r) { writes.push(repos.lineInspections.save(r, nowISO)); });
+    iliAnomalies.forEach(function (r) { writes.push(repos.iliAnomalies.save(r, nowISO)); });
     apmAssets.forEach(function (r) { writes.push(repos.apmAssets.save(r, nowISO)); });
     apmEvents.forEach(function (r) { writes.push(repos.apmEvents.save(r, nowISO)); });
 
@@ -344,6 +366,7 @@
           pipelineSystems: pipelineSystems.length,
           lineAssets: lineAssets.length,
           lineInspections: lineInspections.length,
+          iliAnomalies: iliAnomalies.length,
           monitoringPoints: monitoringPoints.length,
           readings: readings.length,
           coupons: coupons.length,

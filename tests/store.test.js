@@ -14,11 +14,11 @@ function freshStore() {
   return storeApi.create(dbMemory.create());
 }
 
-test('store create exposes 13 repos + meta.get/set', async () => {
+test('store create exposes 14 repos + meta.get/set', async () => {
   const s = freshStore();
   const names = ['meta', 'monitoringPoints', 'readings', 'coupons', 'psvs', 'pipelineSystems',
-    'lineAssets', 'lineInspections', 'apmAssets', 'apmEvents', 'recommendations', 'importLog', 'mutationQueue'];
-  assert.equal(names.length, 13);
+    'lineAssets', 'lineInspections', 'iliAnomalies', 'apmAssets', 'apmEvents', 'recommendations', 'importLog', 'mutationQueue'];
+  assert.equal(names.length, 14);
   for (const name of names) {
     assert.ok(s[name], 'missing repo ' + name);
   }

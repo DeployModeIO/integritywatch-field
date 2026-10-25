@@ -1,5 +1,5 @@
 /* IntegrityWatch Field — rules engine
-   Rule evaluation, reconciliation and sweep over repository state (R1–R14). */
+   Rule evaluation, reconciliation and sweep over repository state (R1–R17). */
 (function (root, factory) {
   'use strict';
   var api = factory(root);
@@ -153,7 +153,9 @@
       repos.apmEvents.list(),
       repos.recommendations.list(),
       repos.lineAssets.list(),
-      repos.lineInspections.list()
+      repos.lineInspections.list(),
+      repos.pipelineSystems.list(),
+      repos.iliAnomalies.list()
     ]).then(function (data) {
       var state = {
         nowISO: nowISO,
@@ -164,6 +166,8 @@
         apmAssets: data[4],
         apmEvents: data[5],
         recommendations: data[6],
+        pipelineSystems: data[9],
+        iliAnomalies: data[10],
         settings: cfg
       };
       var findings = evaluate(state);

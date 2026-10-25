@@ -335,11 +335,52 @@ test('R15 RUL < 12 months with tNom+tMin and >=2 CR readings -> high; missing li
   assert.equal(ev('R15', mkState({ monitoringPoints: [mp3], readings: [rdg('MP-R15C', daysAgo(1), 120, 'r-x')] })).length, 0);
 });
 
-test('engine.evaluate aggregates all 15 rule definitions', () => {
-  assert.equal(definitions.rules.length, 15);
+test('engine.evaluate aggregates all 17 rule definitions', () => {
+  assert.equal(definitions.rules.length, 17);
   const ids = definitions.rules.map((r) => r.id);
-  for (let i = 1; i <= 15; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
+  for (let i = 1; i <= 17; i++) { assert.ok(ids.includes('R' + i), 'missing R' + i); }
   assert.equal(engine.evaluate(mkState({})).length, 0);
+});
+
+test('R16: PSV with inspNext overdue triggers high', () => {
+  const psv = { id: 'PSV-A', tag: 'PSV-A', inspNext: daysAgo(10) };
+  const r = ev('R16', mkState({ psvs: [psv] }));
+  assert.equal(r.length, 1);
+  assert.equal(r[0].severity, 'high');
+  assert.equal(r[0].entityStore, 'psvs');
+});
+
+test('R16: PSV with future inspNext does not trigger', () => {
+  const psv = { id: 'PSV-A', tag: 'PSV-A', inspNext: daysAhead(30) };
+  assert.equal(ev('R16', mkState({ psvs: [psv] })).length, 0);
+});
+
+test('R16: PSV without inspNext does not trigger', () => {
+  const psv = { id: 'PSV-A', tag: 'PSV-A' };
+  assert.equal(ev('R16', mkState({ psvs: [psv] })).length, 0);
+});
+
+test('R17: ILI anomaly exceeding safe pressure triggers high', () => {
+  var matData = globalThis.IW.data;
+  globalThis.IW.data = globalThis.IW.data || {};
+  globalThis.IW.data.materials = globalThis.IW.data.materials || { byId: function () { return null; } };
+  require('../src/calc/pipelineAssessment.js');
+  const sys = { id: 'SYS-1', opPressureMpa: 6, wallThicknessMm: 9.5, dnIn: 16, material: 'api5l-x52' };
+  const anomaly = { id: 'ILI-1', systemId: 'SYS-1', depthPct: 70, lengthMm: 200 };
+  const r = ev('R17', mkState({ pipelineSystems: [sys], iliAnomalies: [anomaly] }));
+  // 70% depth on 16in pipe with 9.5mm wall → very low safe pressure → should exceed 6 MPa
+  assert.ok(r.length >= 1, 'expected at least 1 finding, got ' + r.length);
+  if (r.length > 0) {
+    assert.equal(r[0].severity, 'high');
+    assert.equal(r[0].entityStore, 'iliAnomalies');
+  }
+});
+
+test('R17: no trigger when opPressure undefined', () => {
+  require('../src/calc/pipelineAssessment.js');
+  const sys = { id: 'SYS-1', wallThicknessMm: 9.5, dnIn: 16, material: 'api5l-x52' };
+  const anomaly = { id: 'ILI-1', systemId: 'SYS-1', depthPct: 70, lengthMm: 200 };
+  assert.equal(ev('R17', mkState({ pipelineSystems: [sys], iliAnomalies: [anomaly] })).length, 0);
 });
 
 test('reconcile new -> toCreate, open -> toUpdate, resolved -> toReopen, absent -> no change (TESTS §11)', () => {

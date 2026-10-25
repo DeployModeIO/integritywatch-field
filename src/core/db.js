@@ -11,7 +11,7 @@
   'use strict';
 
   var DB_NAME = 'integritywatch';
-  var DB_VERSION = 1;
+  var DB_VERSION = 2;
 
   var SCHEMA = [
     { name: 'meta', keyPath: 'key', indexes: [] },
@@ -22,6 +22,7 @@
     { name: 'pipelineSystems', keyPath: 'id', indexes: ['operator'] },
     { name: 'lineAssets', keyPath: 'id', indexes: ['systemId', 'stationKm', 'type'] },
     { name: 'lineInspections', keyPath: 'id', indexes: ['systemId', 'lineAssetId', 'date'] },
+    { name: 'iliAnomalies', keyPath: 'id', indexes: ['assetId', 'systemId', 'stationKm'] },
     { name: 'apmAssets', keyPath: 'id', indexes: ['sector', 'category', 'criticality'] },
     { name: 'apmEvents', keyPath: 'id', indexes: ['assetId', 'start'] },
     { name: 'recommendations', keyPath: 'id', indexes: ['status', 'severity', 'fingerprint', 'entityStore'] },

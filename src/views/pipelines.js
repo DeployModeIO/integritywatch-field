@@ -16,6 +16,7 @@
   var SEVERITIES = ['low', 'moderate', 'high', 'severe'];
   var PRODUCTS = ['crude', 'gas', 'products', 'water'];
   var SIDES = ['left', 'right', 'center'];
+  var ANOMALY_TYPES = ['metalLoss', 'crack', 'dent'];
   var DAY_MS = 86400000;
 
   var _session = null;
@@ -115,6 +116,12 @@
   function sideOptions() {
     return SIDES.map(function (s) { return { value: s, labelKey: 'pipelines.sides.' + s }; });
   }
+
+  function anomalyTypeOptions() {
+    return ANOMALY_TYPES.map(function (s) { return { value: s, labelKey: 'pipelines.' + s }; });
+  }
+
+  function pipelineAssessmentApi() { return (root.IW && root.IW.calc) ? root.IW.calc.pipelineAssessment : null; }
 
   // Pure: group inspections into campaigns by type + month (YYYY-MM).
   function groupCampaigns(inspections) {
@@ -285,12 +292,14 @@
       Promise.all([
         repos.pipelineSystems.get(systemId),
         repos.lineAssets.list(),
-        repos.lineInspections.list()
+        repos.lineInspections.list(),
+        repos.iliAnomalies.list()
       ]).then(function (res) {
         if (!_session || !_session.active) { return; }
         var system = res[0];
         var allAssets = res[1] || [];
         var allInspections = res[2] || [];
+        var allAnomalies = res[3] || [];
         if (!system) {
           container.textContent = '';
           container.appendChild(el('p', { class: 'empty-state', text: t('pipelines.noSystems') }));
@@ -302,14 +311,15 @@
           if (i.systemId === system.id) { return true; }
           return assets.some(function (a) { return a.id === i.lineAssetId; });
         });
+        var anomalies = allAnomalies.filter(function (a) { return a.systemId === system.id; });
         container.textContent = '';
-        renderDetail(system, assets, inspections);
+        renderDetail(system, assets, inspections, anomalies);
       }).catch(function (err) {
         if (_session && _session.active) { container.textContent = ''; container.appendChild(banner(err)); }
       });
     }
 
-    function renderDetail(system, assets, inspections) {
+    function renderDetail(system, assets, inspections, anomalies) {
       var nowMs = Date.now();
       var locked = isOperatorLocked();
 
@@ -335,6 +345,7 @@
           [t('pipelines.coating'), document.createTextNode(system.coating || t('common.none'))],
           [t('pipelines.length'), el('span', { class: 'num', text: fmtNum(system.lengthKm, 2) + ' ' + t('units.km') })],
           [t('pipelines.stationRange'), el('span', { class: 'num', text: fmtNum(system.stationFromKm, 2) + ' – ' + fmtNum(system.stationToKm, 2) + ' ' + t('units.km') })],
+          [t('pipelines.opPressure'), el('span', { class: 'num', text: system.opPressureMpa != null ? fmtNum(system.opPressureMpa, 2) + ' MPa' : '—' })],
           [t('common.notes'), document.createTextNode(system.notes || t('common.none'))]
         ])));
 
@@ -406,6 +417,11 @@
           }))));
       }
 
+      // ILI Anomalies panel (Experion)
+      renderIliPanel(system, anomalies);
+      // FFS faceplate (API 579-1 L1)
+      renderFfsFaceplate(system);
+
       if (_pendingScrollAsset) {
         var target = _pendingScrollAsset;
         _pendingScrollAsset = null;
@@ -414,6 +430,237 @@
           if (row && typeof row.scrollIntoView === 'function') { row.scrollIntoView({ block: 'center' }); }
         }, 0);
       }
+    }
+
+    function ffsApi() { return (root.IW && root.IW.calc) ? root.IW.calc.ffs : null; }
+
+    function renderFfsFaceplate(system) {
+      var panel = el('section', { class: 'card' });
+      panel.appendChild(el('h2', { class: 'section-title', text: t('ffs.title') }));
+
+      // Check required fields.
+      if (system.dnIn == null || system.wallThicknessMm == null || system.opPressureMpa == null) {
+        panel.appendChild(el('p', { class: 'field-hint', text: t('ffs.needFields') }));
+        container.appendChild(panel);
+        return;
+      }
+
+      var ffsMod = ffsApi();
+      if (!ffsMod || typeof ffsMod.assessLineSystem !== 'function') {
+        panel.appendChild(el('p', { class: 'muted', text: t('common.none') }));
+        container.appendChild(panel);
+        return;
+      }
+
+      var mats = root.IW && root.IW.data && root.IW.data.materials;
+      var result = ffsMod.assessLineSystem(system, mats);
+      if (!result) {
+        panel.appendChild(el('p', { class: 'muted', text: t('common.none') }));
+        container.appendChild(panel);
+        return;
+      }
+
+      // LED status
+      var ledClass = 'led';
+      var ledLabel;
+      if (!result.pass) {
+        ledClass += ' led--crit';
+        ledLabel = t('ffs.fail');
+      } else if (result.utilization > 0.9) {
+        ledClass += ' led--warn';
+        ledLabel = t('ffs.pass') + ' · ' + t('ffs.utilization') + ' ' + fmtNum(result.utilization * 100, 0) + '%';
+      } else {
+        ledClass += ' led--ok';
+        ledLabel = t('ffs.pass') + ' · ' + t('ffs.utilization') + ' ' + fmtNum(result.utilization * 100, 0) + '%';
+      }
+
+      // Faceplate key-value table (dense, Experion style)
+      var pairs = [
+        [t('ffs.tRequired'), el('span', { class: 'num', text: fmtNum(result.tRequired, 2) + ' mm' })],
+        [t('ffs.mawpAllowed'), el('span', { class: 'num', text: fmtNum(result.opPressureMpa, 2) + ' MPa' })],
+        [t('ffs.mawpAssessed'), el('span', { class: 'num', text: fmtNum(result.mawpAssessed, 2) + ' MPa' })],
+        [t('ffs.corrosionAllowance'), el('span', { class: 'num', text: fmtNum(result.CA, 1) + ' mm' })],
+        [t('ffs.jointEfficiency'), el('span', { class: 'num', text: fmtNum(result.E, 2) })],
+        [t('ffs.allowableStress'), el('span', { class: 'num', text: fmtNum(result.S, 0) + ' MPa' })],
+        [t('common.status'), el('span', { class: ledClass, attrs: { 'data-led': result.pass ? (result.utilization > 0.9 ? 'warn' : 'ok') : 'crit' } }, el('span', { text: ledLabel }))]
+      ];
+      panel.appendChild(u.keyValueTable(pairs));
+      container.appendChild(panel);
+    }
+
+    function renderIliPanel(system, anomalies) {
+      var pa = pipelineAssessmentApi();
+      var hasOpPressure = system.opPressureMpa != null && system.opPressureMpa > 0;
+      var hasWallData = system.wallThicknessMm != null && system.dnIn != null && system.material;
+
+      // Chip summary
+      var exceedCount = 0;
+      var assessed = [];
+
+      if (pa && hasWallData && anomalies.length > 0) {
+        var Su = 414; // default X52 SMYS; override if material in catalogue
+        var mats = root.IW.data && root.IW.data.materials;
+        if (mats && mats.byId) {
+          var mat = mats.byId(system.material);
+          if (mat && mat.smysMpa) { Su = mat.smysMpa; }
+        }
+        assessed = pa.assessAnomalies([], anomalies, {
+          Su: Su,
+          D: system.dnIn * 25.4, // inches to mm
+          t: system.wallThicknessMm,
+          designFactor: 0.72,
+          opPressure: hasOpPressure ? system.opPressureMpa : 0
+        });
+      }
+
+      var anomalyItems = anomalies.map(function (a, idx) {
+        var r = assessed[idx] || {};
+        if (r.exceeds) { exceedCount++; }
+        return {
+          stationKm: a.stationKm,
+          type: a.type || 'metalLoss',
+          depthPct: a.depthPct,
+          Pf: r.Pf,
+          pAllow: r.pAllow,
+          exceeds: r.exceeds
+        };
+      });
+
+      var headerChip = '';
+      if (anomalies.length > 0) {
+        headerChip = anomalies.length + ' ' + t('pipelines.iliAnomalies');
+        if (exceedCount > 0) {
+          headerChip += ' · ' + exceedCount + ' ' + t('pipelines.exceeds');
+        }
+      }
+
+      // Panel
+      var panel = el('section', { class: 'card' });
+
+      // Header row
+      var hdrRow = el('div', { class: 'row' });
+      hdrRow.appendChild(el('h2', { class: 'section-title', text: t('pipelines.iliAnomalies') }));
+      if (headerChip) {
+        hdrRow.appendChild(el('span', { class: 'pill', text: headerChip }));
+      }
+
+      // Import button
+      var importBtn = el('button', { class: 'btn', on: { click: function () { importIliCsv(system); } } },
+        el('span', { text: t('pipelines.iliImport') }));
+      hdrRow.appendChild(el('div', { class: 'actions' }, importBtn));
+      panel.appendChild(hdrRow);
+
+      if (anomalies.length === 0) {
+        panel.appendChild(el('p', { class: 'empty-state', text: t('pipelines.noIli') }));
+      } else {
+        var wrap = el('div', { class: 'table-wrap' });
+        var tbl = el('table', { class: 'data' });
+        var thead = el('thead');
+        var htr = el('tr');
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.stationKm') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.anomalyType') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.depthPct') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.failurePressure') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.safePressure') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.status') }));
+        thead.appendChild(htr);
+        tbl.appendChild(thead);
+        var tbody = el('tbody');
+
+        anomalyItems.forEach(function (item) {
+          var tr = el('tr');
+          tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.stationKm, 2) })));
+
+          // Type badge with LED style
+          var typeClass = 'badge badge-neutral';
+          if (item.type === 'metalLoss') { typeClass = 'badge badge-moderate'; }
+          else if (item.type === 'crack') { typeClass = 'badge badge-severe'; }
+          var typeTd = el('td');
+          typeTd.appendChild(el('span', { class: typeClass, text: t('pipelines.' + item.type) }));
+          tr.appendChild(typeTd);
+
+          tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.depthPct, 1) + ' %' })));
+
+          var pfText = item.Pf != null && item.Pf > 0 ? fmtNum(item.Pf, 1) + ' MPa' : '—';
+          tr.appendChild(el('td', null, el('span', { class: 'num', text: pfText })));
+
+          var safeText = item.pAllow != null && item.pAllow > 0 ? fmtNum(item.pAllow, 1) + ' MPa' : '—';
+          if (hasOpPressure && item.exceeds) {
+            tr.appendChild(el('td', null, el('span', { class: 'badge badge-severe', text: safeText })));
+          } else {
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: safeText })));
+          }
+
+          var statusTd = el('td');
+          if (hasOpPressure && item.exceeds) {
+            statusTd.appendChild(el('span', { class: 'led led-crit', attrs: { 'aria-label': t('pipelines.exceeds'), 'data-led': 'crit' } }));
+            statusTd.appendChild(el('span', { class: 'badge badge-severe', text: 'EXCEEDS' }));
+          } else if (assessed.length > 0) {
+            statusTd.appendChild(el('span', { class: 'led led-ok', attrs: { 'aria-label': t('common.ok'), 'data-led': 'ok' } }));
+            statusTd.appendChild(el('span', { class: 'pill', text: t('common.ok') }));
+          } else {
+            statusTd.appendChild(el('span', { class: 'muted', text: '—' }));
+          }
+          tr.appendChild(statusTd);
+          tbody.appendChild(tr);
+        });
+
+        tbl.appendChild(tbody);
+        wrap.appendChild(tbl);
+        panel.appendChild(wrap);
+      }
+      container.appendChild(panel);
+    }
+
+    function importIliCsv(system) {
+      var fileInput = el('input', { attrs: { type: 'file', accept: '.csv,.txt,text/csv' } });
+      fileInput.addEventListener('change', function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) { return; }
+        var reader = new FileReader();
+        reader.onload = function () {
+          var csvMod = root.IW.ingest && root.IW.ingest.csv;
+          if (!csvMod) { return; }
+          var parsed = csvMod.parse(reader.result);
+          var cols = csvMod.mapColumns(parsed.headers);
+          var anomalyRows = parsed.rows.map(function (row) {
+            var obj = {};
+            Object.keys(cols.mapping).forEach(function (h) {
+              var idx = parsed.headers.indexOf(h);
+              obj[cols.mapping[h]] = idx >= 0 ? (row[idx] || '') : '';
+            });
+            return obj;
+          }).filter(function (r) { return r.station_km || r.depth_pct; });
+
+          var imported = anomalyRows.map(function (r, idx) {
+            return {
+              id: 'ILI-IMP-' + Date.now().toString(36) + '-' + idx,
+              assetId: '',
+              systemId: system.id,
+              stationKm: Number(r.station_km) || 0,
+              depthPct: Number(r.depth_pct) || 0,
+              lengthMm: Number(r.length_mm) || 0,
+              widthMm: Number(r.width_mm) || 0,
+              type: (r.type === 'metalLoss' || r.type === 'crack' || r.type === 'dent') ? r.type : 'metalLoss',
+              inspectionId: 'import',
+              date: new Date().toISOString()
+            };
+          });
+
+          var ok = 0;
+          var jobs = imported.map(function (rec) { ok++; return repos.iliAnomalies.save(rec); });
+          Promise.all(jobs).then(function () {
+            if (u && typeof u.toast === 'function') {
+              var msg = t('pipelines.imported').replace('{{n}}', String(imported.length)).replace('{{ok}}', String(ok));
+              u.toast(msg, { severity: 'info' });
+            }
+          }).catch(function () {
+            if (u && typeof u.toast === 'function') { u.toast(t('common.error'), { severity: 'critical' }); }
+          });
+        };
+        reader.readAsText(file);
+      });
+      fileInput.click();
     }
 
     function buildFilterBar(assets) {
@@ -575,12 +822,14 @@
         { name: 'lengthKm', labelKey: 'pipelines.length', type: 'number', min: 0, required: true },
         { name: 'stationFromKm', labelKey: 'pipelines.stationFromKm', type: 'number', min: 0, required: true },
         { name: 'stationToKm', labelKey: 'pipelines.stationToKm', type: 'number', min: 0, required: true },
+        { name: 'opPressureMpa', labelKey: 'pipelines.opPressure', type: 'number', min: 0 },
         { name: 'notes', labelKey: 'common.notes', type: 'textarea' }
       ];
       var values = system ? {
         name: system.name, operator: system.operator, product: system.product, dnIn: system.dnIn,
         wallThicknessMm: system.wallThicknessMm, material: system.material, coating: system.coating,
-        lengthKm: system.lengthKm, stationFromKm: system.stationFromKm, stationToKm: system.stationToKm, notes: system.notes
+        lengthKm: system.lengthKm, stationFromKm: system.stationFromKm, stationToKm: system.stationToKm,
+        opPressureMpa: system.opPressureMpa, notes: system.notes
       } : { product: 'crude', material: (materialOptions()[0] && materialOptions()[0].value) };
       var f = u.form(fields, values);
       var dlg = u.dialog({
@@ -603,7 +852,9 @@
                 name: v.name, operator: v.operator, product: v.product || 'crude',
                 dnIn: v.dnIn, wallThicknessMm: v.wallThicknessMm, material: v.material,
                 coating: v.coating || undefined, lengthKm: v.lengthKm,
-                stationFromKm: from, stationToKm: to, notes: v.notes || undefined
+                stationFromKm: from, stationToKm: to,
+                opPressureMpa: v.opPressureMpa != null && v.opPressureMpa !== '' ? Number(v.opPressureMpa) : undefined,
+                notes: v.notes || undefined
               };
               repos.pipelineSystems.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
               return false;

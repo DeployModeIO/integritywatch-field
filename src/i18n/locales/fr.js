@@ -9,7 +9,12 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
   return {
-    __meta: { code: "fr", name: "French", nativeName: "Français", dir: "ltr" },
+    __meta: {
+      code: "fr",
+      name: "French",
+      nativeName: "Français",
+      dir: "ltr"
+    },
     common: {
       appName: "IntegrityWatch Field",
       tagline: "Centre d'opérations d'intégrité et de conformité pour le terrain pétrole et gaz",
@@ -83,11 +88,14 @@
       keyboardHint: "Astuce clavier",
       updateAvailable: "Mise à jour disponible",
       reload: "Recharger",
-      confidence: 'Confiance',
+      confidence: "Confiance",
       bootError: "Erreur de démarrage",
       viewError: "Erreur d'affichage",
       moduleLoading: "chargement du module…",
-      inMemoryNotice: "IndexedDB indisponible ; exécution avec un stockage en mémoire. Les modifications peuvent ne pas être conservées."
+      inMemoryNotice: "IndexedDB indisponible ; exécution avec un stockage en mémoire. Les modifications peuvent ne pas être conservées.",
+      pass: "Pass",
+      fail: "Fail",
+      na: "N/A"
     },
     nav: {
       dashboard: "Tableau de bord",
@@ -257,9 +265,18 @@
         fail: "Non conforme",
         insufficient: "Données insuffisantes"
       },
-      remainingLife: 'Durée de vie restante', tNom: 'T-nom (mm)', tMin: 'T-min (mm)', tMinHint: 'Définir T-nom et T-min (mm) pour calculer la durée de vie',
-      outlier: 'Anomalie', rulingMethod: 'Méthode',
-      trendLabels: { increasing: 'Augmentant', decreasing: 'Diminuant', stable: 'Stable', insufficient: 'Insuffisant' }
+      remainingLife: "Durée de vie restante",
+      tNom: "T-nom (mm)",
+      tMin: "T-min (mm)",
+      tMinHint: "Définir T-nom et T-min (mm) pour calculer la durée de vie",
+      outlier: "Anomalie",
+      rulingMethod: "Méthode",
+      trendLabels: {
+        increasing: "Augmentant",
+        decreasing: "Diminuant",
+        stable: "Stable",
+        insufficient: "Insuffisant"
+      }
     },
     psv: {
       title: "Soupapes de sûreté",
@@ -338,7 +355,14 @@
       },
       warn: {
         reRange: "Reynolds inférieur à 100 : la correction de viscosité a une validité limitée"
-      }
+      },
+      inspHistory: "Historique d'inspection (API 576)",
+      lastInsp: "Dernière inspection",
+      nextInspDue: "Inspection prochaine due",
+      inspResult: "Résultat",
+      inspOverdue: "Inspection retardée",
+      inspOk: "Inspection actuelle",
+      inspMissing: "Aucune donnée d'inspection"
     },
     pipelines: {
       title: "Pipelines",
@@ -375,7 +399,7 @@
         row: "Emprise (ROW)",
         meteringStation: "Station de comptage"
       },
-      stationKm: "Km (station)",
+      stationKm: "Station (km)",
       side: "Côté",
       sides: {
         left: "Gauche",
@@ -423,7 +447,25 @@
       deleteLineAssetConfirm: "Supprimer cet élément de ligne ?",
       deleteInspectionConfirm: "Supprimer cette inspection ?",
       openAsset: "Ouvrir l'élément",
-      reportRef: "Réf. du rapport"
+      reportRef: "Réf. du rapport",
+      iliImport: "Importation d'anomalies ILI",
+      iliAnomalies: "Anomalies ILI",
+      depthPct: "Profondeur (%)",
+      lengthMm: "Longueur (mm)",
+      widthMm: "Largeur (mm)",
+      anomalyType: "Type",
+      metalLoss: "Perte de métal",
+      crack: "Fente",
+      dent: "Détrempe",
+      failurePressure: "Pression de défaillance",
+      safePressure: "Pression sécurisée",
+      smys: "SMYS (MPa)",
+      method: "Méthode",
+      designFactor: "Facteur de conception",
+      exceeds: "Exceeds pressure sécurisée",
+      imported: "Anomalies {{n}} importés ({{ok}} évalués)",
+      noIli: "Aucune anomalie ILI non chargée",
+      opPressure: "Pression opérationnelle"
     },
     apm: {
       title: "Performance des actifs",
@@ -432,7 +474,11 @@
       assetCode: "Code actif",
       category: "Catégorie",
       criticality: "Criticité",
-      crit: { A: "A", B: "B", C: "C" },
+      crit: {
+        A: "A",
+        B: "B",
+        C: "C"
+      },
       assetStatus: "Statut de l'actif",
       statuses: {
         running: "En service",
@@ -534,13 +580,23 @@
         bad: "À risque"
       },
       iso14224: {
-        failureMode: 'Mode de défaillance (ISO 14224)', failureConsequence: 'Conséquence (ISO 14224)',
+        failureMode: "Mode de défaillance (ISO 14224)",
+        failureConsequence: "Conséquence (ISO 14224)",
         failureModes: {
-          mechanical: 'Mécanique', wear: 'Usure', fatigue: 'Fatigue',
-          corrosion: 'Corrosion', electrical: 'Électrique', instrumentation: 'Instrumentation',
-          other: 'Autre'
+          mechanical: "Mécanique",
+          wear: "Usure",
+          fatigue: "Fatigue",
+          corrosion: "Corrosion",
+          electrical: "Électrique",
+          instrumentation: "Instrumentation",
+          other: "Autre"
         },
-        consequences: { none: 'Aucune', personal: 'Personnel', environment: 'Environnement', costs: 'Coûts' }
+        consequences: {
+          none: "Aucune",
+          personal: "Personnel",
+          environment: "Environnement",
+          costs: "Coûts"
+        }
       }
     },
     ingest: {
@@ -642,7 +698,9 @@
         R12: "{{count}} défaillances sur {{name}} au cours des 90 derniers jours.",
         R13: "Essai de la PSV {{tag}} en retard de {{days}} jours.",
         R14: "PSV {{tag}} sous-dimensionnée (marge {{margin}} %).",
-        R15: '{{code}}: durée de vie restante estimée {{rulMonths}} mois sous 12 (confiance: {{confidence}})'
+        R15: "{{code}}: durée de vie restante estimée {{rulMonths}} mois sous 12 (confiance: {{confidence}})",
+        R16: "{{tag}}: Inspection de PSV retardée (API 576)",
+        R17: "{{code}}: Anomalie ILI nécessite une pression supérieure à la limite sécurisée ({{required}} > {{safe}} bar)"
       },
       name: {
         R1: "Taux de corrosion sévère",
@@ -659,7 +717,9 @@
         R12: "Défaillances répétées",
         R13: "Essai PSV en retard",
         R14: "PSV sous-dimensionnée",
-        R15: 'Durée de vie critique'
+        R15: "Durée de vie critique",
+        R16: "Inspection de PSV retardée",
+        R17: "Anomalie ILI dépassant la pression sécurisée"
       },
       resolveNotePlaceholder: "Note de résolution…",
       actor: "Acteur",
@@ -822,6 +882,19 @@
       water: "Eau",
       "crude-oil": "Pétrole brut",
       diesel: "Diesel"
+    },
+    ffs: {
+      title: "Fitness-for-service (API 579 L1)",
+      mawpAllowed: "Allowable MAWP",
+      mawpAssessed: "Assessed MAWP",
+      pass: "Assessment passed",
+      fail: "Assessment failed",
+      tRequired: "Thickness required",
+      corrosionAllowance: "Allowance de corrosion",
+      jointEfficiency: "Efficacité des jonctions",
+      allowableStress: "Stress permis",
+      utilization: "Utilization",
+      needFields: "Entrez D, t, P et le matériau pour évaluer"
     }
   };
 });

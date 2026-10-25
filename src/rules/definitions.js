@@ -495,6 +495,70 @@
     return findings;
   }
 
+  // R16: PSV with API 576 inspNext overdue -> high
+  function R16(state) {
+    var nowMs = parse(state.nowISO);
+    var findings = [];
+    (state.psvs || []).forEach(function (p) {
+      if (!p.inspNext) { return; }
+      var nextMs = parse(p.inspNext);
+      if (isNaN(nextMs)) { return; }
+      if (nextMs < nowMs) {
+        findings.push(makeFinding('R16', 'high', 'psvs', p.id, { tag: p.tag || p.id }, p.tag || p.id));
+      }
+    });
+    return findings;
+  }
+
+  // R17: ILI anomaly exceeds safe pressure on asset with opPressure -> high
+  function R17(state) {
+    var findings = [];
+    var pipelineSystems = state.pipelineSystems || [];
+    var iliAnomalies = state.iliAnomalies || [];
+    if (!pipelineSystems.length || !iliAnomalies.length) { return findings; }
+
+    // Build a map of systemId -> { Su, D, t, opPressure }
+    var sysMap = {};
+    // We need material->SMYS lookup
+    var materials = (root.IW && root.IW.data && root.IW.data.materials) ? root.IW.data.materials : null;
+
+    pipelineSystems.forEach(function (sys) {
+      if (sys.opPressureMpa == null || sys.wallThicknessMm == null || sys.dnIn == null) { return; }
+      var Su = 414; // default X52
+      if (materials && materials.byId && sys.material) {
+        var mat = materials.byId(sys.material);
+        if (mat && mat.smysMpa) { Su = mat.smysMpa; }
+      }
+      sysMap[sys.id] = { Su: Su, D: sys.dnIn * 25.4, t: sys.wallThicknessMm, opPressure: sys.opPressureMpa };
+    });
+
+    iliAnomalies.forEach(function (a) {
+      var sysParams = sysMap[a.systemId];
+      if (!sysParams) { return; }
+      // Compute Pf using B31G
+      var pa = (root.IW && root.IW.calc) ? root.IW.calc.pipelineAssessment : null;
+      if (!pa || typeof pa.b31g !== 'function') { return; }
+      var r = pa.b31g({
+        D: sysParams.D,
+        t: sysParams.t,
+        Su: sysParams.Su,
+        depthPct: a.depthPct,
+        lengthMm: a.lengthMm,
+        modified: false
+      });
+      var Pf = r.Pf;
+      var pAllow = Pf > 0 ? Pf / (1.43 * 0.72) : 0;
+      if (pAllow > 0 && sysParams.opPressure > pAllow) {
+        findings.push(makeFinding('R17', 'high', 'iliAnomalies', a.id, {
+          code: a.id,
+          required: r2(sysParams.opPressure),
+          safe: r2(pAllow)
+        }, a.id));
+      }
+    });
+    return findings;
+  }
+
   return {
     rules: [
       { id: 'R1', evaluate: R1 },
@@ -511,7 +575,9 @@
       { id: 'R12', evaluate: R12 },
       { id: 'R13', evaluate: R13 },
       { id: 'R14', evaluate: R14 },
-      { id: 'R15', evaluate: R15 }
+      { id: 'R15', evaluate: R15 },
+      { id: 'R16', evaluate: R16 },
+      { id: 'R17', evaluate: R17 }
     ]
   };
 });
