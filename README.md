@@ -44,102 +44,103 @@ IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed speci
 flowchart TB
     %% Styling
     classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef app fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef storage fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    classDef engine fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef access fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef pwa fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef calc fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    classDef external fill:#efebe9,stroke:#4e342e,stroke-width:2px
-    classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef rules fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef data fill:#eceff1,stroke:#37474f,stroke-width:2px
+    classDef desktop fill:#ffebee,stroke:#c62828,stroke-width:2px
 
-    %% User
-    U[Field Operator / Integrity Engineer]:::user
+    %% Top layer: User
+    U[User<br/>Field Operator /<br/>Integrity Engineer]:::user
 
-    %% Access & Security
-    subgraph Access["Access & Security"]
-        LOCK[PIN Lock]:::security
-        THEME[Theme & Language]:::app
+    %% Layer 1: Access & Security
+    subgraph L1["Access & Security"]
+        LOCK[PIN Lock<br/>PBKDF2 • Lockout]:::access
+        THEME[Theme & Language<br/>7 languages • RTL Arabic]:::access
     end
 
-    %% PWA / Browser
-    subgraph PWA["PWA - Browser offline-first"]
-        SW[Service Worker]:::app
-        IDB[(IndexedDB)]:::storage
-        UI[UI Shell]:::app
+    %% Layer 2: PWA Browser
+    subgraph L2["PWA - Browser<br/>offline-first"]
+        SW[Service Worker<br/>cache-first iw-vN]:::pwa
+        IDB[(IndexedDB<br/>local storage)]:::pwa
+        UI[UI Shell<br/>router • installable]:::pwa
     end
 
-    %% Calculation engines
-    subgraph Calc["Calculation engines"]
-        ASTM[ASTM G4]:::engine
-        DWM[De Waard-Milliams]:::engine
-        MR[MR0175]:::engine
-        CP[SP0169]:::engine
-        PSV[API 520/526]:::engine
-        B31G[ASME B31G]:::engine
-        NORSK[NORSOK M-506]:::engine
-        REL[Reliability Weibull]:::engine
+    %% Layer 3: Calculation engines
+    subgraph L3["Calculation engines<br/>vanilla JS"]
+        ASTM[ASTM G4<br/>corrosion rate]:::calc
+        DWM[De Waard-Milliams<br/>CO2 model]:::calc
+        MR[MR0175<br/>sour service]:::calc
+        CP[SP0169<br/>cathodic protection]:::calc
+        PSV[API 520/526<br/>PSV sizing]:::calc
+        B31G[ASME B31G<br/>pipeline anomalies]:::calc
+        NORSK[NORSOK M-506<br/>corrosion model]:::calc
+        REL[Reliability<br/>Weibull MTBF/OEE]:::calc
     end
 
-    %% Modules
-    subgraph Modules["Operational modules"]
-        DASH[Dashboard]:::module
-        CORR[Corrosion]:::module
-        PSVV[Pressure Relief Valves]:::module
-        PIPE[Pipelines & Line Assets]:::module
-        MAP[Schematic Map]:::module
-        APM[Asset Performance Mgmt]:::module
-        INGEST[Data Ingestion]:::module
-        REC[Recommendations]:::module
-        REPORTS[Reports]:::module
-        GLOSS[Glossary]:::module
-        ADMIN[Administration]:::module
+    %% Layer 4: Operational modules
+    subgraph L4["Operational modules"]
+        DASH[Dashboard<br/>KPIs • heatmap • alerts]:::module
+        CORR[Corrosion<br/>monitoring points • readings]:::module
+        PSVV[Pressure Relief<br/>Valves • test records]:::module
+        PIPE[Pipelines & Line<br/>Assets • ILD/UT]:::module
+        MAP[Schematic Map<br/>assets by kilometer]:::module
+        APM[Asset Performance<br/>Mgmt RBI API 580/581]:::module
+        INGEST[Data Ingestion<br/>CSV • WITSML-lite]:::module
+        REC[Recommendations<br/>R1–R17 rules]:::module
+        REPORTS[Reports<br/>quarterly • datasheet]:::module
+        GLOSS[Glossary<br/>multilingual terms]:::module
+        ADMIN[Administration<br/>backup .iwf • PIN]:::module
     end
 
-    %% Rule engine R1-R17
-    subgraph Rules["Recommendation engine R1-R17"]
-        R1[R1 Corrosion Critical]:::engine
-        R2[R2 Corrosion Trend]:::engine
-        R3[R3 Inhibitor Efficiency]:::engine
-        R4[R4 Inhibitor Residual Band]:::engine
-        R5[R5 Stuck Sensor]:::engine
-        R6[R6 Inspection Overdue]:::engine
-        R7[R7 DWM Model]:::engine
-        R8[R8 Sour Service]:::engine
-        R9[R9 Next Inspection]:::engine
-        R10[R10 MTBF Warning]:::engine
-        R11[R11 Availability]:::engine
-        R12[R12 Repeated Failures]:::engine
-        R13[R13 PSV Test Overdue]:::engine
-        R14[R14 PSV Margin Negative]:::engine
-        R15[R15 RUL < 12 months]:::engine
-        R16[R16 PSV Inspection]:::engine
-        R17[R17 ILI Anomaly]:::engine
+    %% Layer 5: Rule engine R1-R17
+    subgraph L5["Rule engine<br/>R1–R17"]
+        R1[R1 Corrosion Critical]:::rules
+        R2[R2 Corrosion Trend]:::rules
+        R3[R3 Inhibitor Efficiency]:::rules
+        R4[R4 Inhibitor Residual]:::rules
+        R5[R5 Stuck Sensor]:::rules
+        R6[R6 Inspection Overdue]:::rules
+        R7[R7 DWM Model]:::rules
+        R8[R8 Sour Service]:::rules
+        R9[R9 Next Inspection]:::rules
+        R10[R10 MTBF Warning]:::rules
+        R11[R11 Availability]:::rules
+        R12[R12 Repeated Failures]:::rules
+        R13[R13 PSV Test Overdue]:::rules
+        R14[R14 PSV Margin Neg]:::rules
+        R15[R15 RUL < 12 mo]:::rules
+        R16[R16 PSV Inspection]:::rules
+        R17[R17 ILI Anomaly]:::rules
     end
 
-    %% Data exchange
-    subgraph Data["Data exchange offline"]
-        CSV[CSV import]:::external
-        WITSML[WITSML-lite import]:::external
-        IWF[.iwf portable case file]:::external
+    %% Layer 6: Data exchange
+    subgraph L6["Data exchange<br/>offline"]
+        CSV[CSV import]:::data
+        WITSML[WITSML-lite<br/>import]:::data
+        IWF[.iwf portable<br/>case file]:::data
     end
 
-    %% Desktop
-    subgraph Desktop["Desktop optional"]
-        E[Electron portable exe]:::external
+    %% Layer 7: Desktop & PDF
+    subgraph L7["Desktop & Output"]
+        E[Electron<br/>portable .exe]:::desktop
+        PDF[PDF output<br/>browser print]:::data
     end
 
-    %% PDF output
-    PDF[PDF output browser print]:::external
-
-    %% Connections
+    %% Connections - Layer 0 -> 1 -> 2
     U --> LOCK
     LOCK --> UI
     U --> THEME
     THEME --> UI
 
+    %% Connections - Layer 2: PWA internal
     UI --> SW
     SW --> IDB
     IDB <--> UI
 
+    %% Connections - Layer 2 -> 3 -> 4 -> 5
     CORR --> ASTM
     CORR --> DWM
     CORR --> MR
@@ -168,6 +169,7 @@ flowchart TB
     APM --> R11
     APM --> R12
 
+    %% Rules write back to IDB
     R1 --> IDB
     R2 --> IDB
     R3 --> IDB
@@ -186,17 +188,21 @@ flowchart TB
     R16 --> IDB
     R17 --> IDB
 
+    %% Layer 6: Data exchange
     CSV --> IDB
     WITSML --> IDB
     IDB --> IWF
 
+    %% Layer 4 -> 7: Reports & PDF
     REPORTS --> IDB
     REPORTS --> PDF
     GLOSS --> IDB
     ADMIN --> IDB
     MAP --> IDB
     INGEST --> IDB
+    DASH --> IDB
 
+    %% Desktop
     E --> SW
 
     linkStyle default stroke-width:2px,fill:none,stroke:#666
