@@ -111,6 +111,29 @@ flowchart TD
     linkStyle default stroke-width:2px,fill:none,stroke:#666
 ```
 
+### Data ingestion flow
+
+```mermaid
+flowchart TB
+    A[CSV File] --> B[Validate CSV]
+    C[WITSML File] --> D[Validate WITSML]
+    B --> E[Import Module]
+    D --> E
+    E --> F[IndexedDB]
+    F --> G[UI Render]
+```
+
+### Rules engine flow
+
+```mermaid
+flowchart TB
+    A[IDB Data] --> B[Load Rules R1-R17]
+    B --> C[Evaluate Rules]
+    C --> D[Generate Recommendations]
+    D --> E[Store in IDB]
+    E --> F[Update UI]
+```
+
 ---
 
 ## Screenshots
