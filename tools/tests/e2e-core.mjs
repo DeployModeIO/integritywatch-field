@@ -480,6 +480,28 @@ async function main() {
     return `button="${clip(label, 40)}"`;
   });
 
+  // 13 --- assistant ----------------------------------------------------------
+  await check('assistant', async () => {
+    const errorsBefore = allConsoleErrors.length;
+    await page.evaluate(() => { if (location.hash !== '#/assistant') location.hash = '#/assistant'; });
+    await page.waitForSelector('#assistant-input', { timeout: 15000 });
+    const inputCount = await page.locator('#assistant-input').count();
+    assert(inputCount >= 1, '#assistant-input no encontrado');
+    const suggestions = await page.locator('.assistant-suggestions button').count();
+    assert(suggestions >= 3, `suggestions=${suggestions} (<3)`);
+    const registered = await page.evaluate(() => {
+      const iw = window.IW || {};
+      return {
+        view: !!((iw.views || {}) && (iw.views || {}).assistant),
+        engine: !!((iw.app || {}) && (iw.app || {}).assistantEngine)
+      };
+    });
+    assert(registered.view, 'IW.views.assistant no registrado');
+    assert(registered.engine, 'IW.app.assistantEngine no registrado');
+    assert(allConsoleErrors.length === errorsBefore, `nuevos errores de consola en #/assistant`);
+    return `input=${inputCount} suggestions=${suggestions} view=${registered.view} engine=${registered.engine} consola=limpia`;
+  });
+
   await browser.close();
   await new Promise((r) => server.close(r));
 

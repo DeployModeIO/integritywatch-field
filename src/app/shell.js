@@ -48,7 +48,7 @@
   var SECTORS = ['upstream', 'midstream', 'downstream'];
 
   var NAV_GROUPS = [
-    { labelKey: 'nav.groupOps', items: [['dashboard', 'dashboard', '#/dashboard'], ['recommendations', 'recs', '#/recommendations'], ['reports', 'reports', '#/reports']] },
+    { labelKey: 'nav.groupOps', items: [['dashboard', 'dashboard', '#/dashboard'], ['recommendations', 'recs', '#/recommendations'], ['reports', 'reports', '#/reports'], ['assistant', 'assistant', '#/assistant']] },
     { labelKey: 'nav.groupIntegrity', items: [['corrosion', 'corrosion', '#/corrosion'], ['psv', 'valve', '#/psv'], ['pipelines', 'pipeline', '#/pipelines'], ['apm', 'apm', '#/apm']] },
     { labelKey: 'nav.groupData', items: [['ingest', 'ingest', '#/ingest'], ['glossary', 'glossary', '#/glossary'], ['admin', 'admin', '#/admin']] }
   ];

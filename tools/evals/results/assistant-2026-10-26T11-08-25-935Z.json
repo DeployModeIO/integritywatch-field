@@ -1,0 +1,178 @@
+{
+  "model": "qwen3-4b-instruct",
+  "startedAt": "2026-10-26T11:08:25.937Z",
+  "perQuestion": [
+    {
+      "q": "¿Qué parámetros utiliza NORSOK M-506 para calcular la tasa de corrosión por CO2?",
+      "answer": "NORSOK M-506 utiliza los siguientes parámetros para calcular la tasa de corrosión por CO₂:\n\n- **Kt**: constante dependiente de la temperatura (tabulada para rangos de 5 a 150 °C, con interpolación lineal).  \n- **fCO₂**: fugacidad del CO₂ en bar, calculada como \\( f_{CO₂} = a \\cdot p_{CO₂} \\), donde \\( p_{CO₂} = \\left(\\% \\text{mol CO}_2 / 100\\right) \\cdot P_{\\text{total}} \\) (máximo 250 bar) y \\( a = 10^{P_{\\text{capa}} \\cdot (0.0031 - 1.4/TK)} \\).  \n- **S**: esfuerzo de corte en la pared (Pa), que si no se proporciona directamente, se calcula mediante el modelo de Dukler para flujo turbulento en tramo recto:  \n  \\[\n  f = 0.001375 \\cdot \\left[1 + \\left(20000 \\cdot \\frac{k}{D} + 10^6 \\cdot \\frac{\\mu}{\\rho \\cdot u \\cdot D}\\right)^{1/3}\\right], \\quad S = 0.5 \\cdot \\rho \\cdot f \\cdot u^2\n  \\]  \n- **f(pH)**: factor que depende del pH de la solución.  \n- **R**: constante de proporcionalidad (usualmente 1 en unidades de mm/año).  \n\nLa ecuación base para la tasa de corrosión es:\n\n\\[\nCR = K_t \\cdot f_{CO₂}^{0.62}",
+      "hitsSources": [
+        "docs/STANDARDS.md",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "README.md",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json"
+      ],
+      "keywordsFound": 2,
+      "passed": true,
+      "seconds": "9.98"
+    },
+    {
+      "q": "¿Cuándo se clasifica un punto como CUI Critical en el screening API RP 583/571?",
+      "answer": "Un punto se clasifica como **CUI Critical** en el screening según la **API RP 583/571** cuando el **puntaje total de riesgo alcanza el rango de 9 a 10**, que corresponde al nivel de riesgo \"crítico\" [2]. Este puntaje se obtiene mediante un **modelo cualitativo basado en factores de susceptibilidad y condiciones ambientales**, como:\n\n- Aditivos (por ejemplo, penetraciones, recubrimiento ausente, entorno marino, etc.), que contribuyen con un puntaje de 0 a 2 [2].\n- Factores de susceptibilidad del material (por ejemplo, acero al carbono o inoxidable austenítico), que se evalúan según su temperatura de operación y exposición [5].\n- El puntaje base se asigna como: **2 si el material está dentro de la banda de susceptibilidad (in-band)**, **4 si está en la temperatura de pico**, y **0 si está fuera de banda**, aunque puede aumentar a 1 si hay servicio cíclico o trazado de vapor [5].\n\nAdemás, el **método de inspección recomendado** para niveles críticos (puntaje 9–10) es **UT programado** (ultrasonido programado), según las recomendaciones del screening [2].\n\nPor lo tanto, la clasificación como **CUI Critical** se basa en un **puntaje de riesgo total entre 9 y 10**, derivado de la evaluación cualitativa de factores como temperatura, exposición ambiental, recubrimiento, servicio y tipo de material, conforme a la guía API RP 583/571 [2]. \n\n> **Fuente:** [2] (docs/STAND",
+      "hitsSources": [
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "docs/STANDARDS.md",
+        "README.md",
+        "docs/seed-assistant.json",
+        "docs/STANDARDS.md",
+        "docs/STANDARDS.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "docs/STANDARDS.md"
+      ],
+      "keywordsFound": 2,
+      "passed": true,
+      "seconds": "9.77"
+    },
+    {
+      "q": "¿A partir de qué puntuación se considera MIC High según NACE TM0194 y qué factores suman?",
+      "answer": "Según **NACE TM0194**, se considera **MIC High** cuando el **puntaje total en la lista de factores supera o iguala 11**.\n\nEste criterio se basa en un **modelo de checklist ponderado cualitativo**, donde se suman puntos por la presencia de factores que favorecen el crecimiento bacteriano y el riesgo de corrosión por microorganismos (MIC). Los factores que suman puntos son:\n\n- Agua estancada: +3  \n- Temperatura en rango mesofílico (20–50°C): +3  \n- Sulfatos presentes: +2  \n- Depósitos: +2  \n- pH cercano a neutro: +2  \n- Señales de sulfuro: +3  \n- Historial MIC: +3  \n- Conteos bacterianos elevados: +3  \n- Cap en 15 (límite de puntuación máxima)\n\n**Nivel de riesgo definido:**\n- <6 → bajo  \n- 6–10 → moderado  \n- **≥11 → alto (MIC High)**\n\nEste sistema no es predictivo, sino un **tamiz cualitativo** para identificar condiciones de alto riesgo de MIC [1].\n\n> **Nota:** Aunque la norma NACE TM0194 se menciona en el contexto, la clasificación de riesgo por puntuación se deriva directamente del modelo de checklist descrito en la fuente [1], que es la única que especifica los criterios de puntuación y el umbral para \"MIC High\".\n\n**Fuente:** [1] (docs/STANDARDS.md: 2.20 Screening MIC — checklist (adaptación de guía pública))",
+      "hitsSources": [
+        "docs/STANDARDS.md",
+        "docs/seed-assistant.json",
+        "docs/STANDARDS.md",
+        "docs/STANDARDS.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "docs/STANDARDS.md",
+        "docs/VISUAL-SPEC.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md"
+      ],
+      "keywordsFound": 3,
+      "passed": true,
+      "seconds": "10.49"
+    },
+    {
+      "q": "¿Qué evalúa el FFS de nivel 1 de API 579-1 en este sistema?",
+      "answer": "El FFS de nivel 1 de API 579-1 evalúa la **pérdida general de metal y la picadura** (screening de picaduras) en los componentes de equipos, como tuberías o vasos, mediante un análisis de screening para determinar si existen condiciones críticas que puedan comprometer la integridad estructural [3]. Este nivel de evaluación es un paso inicial que permite identificar posibles fallas sin requerir un análisis detallado como el nivel 2 o 3, que implican reglas más complejas y análisis de interacción de LTAs [5].\n\nEste tipo de evaluación se alinea con el objetivo de garantizar la integridad de los activos mediante un enfoque basado en estándares como API 579-1/ASME FFS-1, y se implementa como parte del motor M5 en el sistema, que está en fase 2 del roadmap [4]. \n\nPor lo tanto, el FFS de nivel 1 evalúa:\n\n- Pérdida general de metal  \n- Picaduras (local)  \n- Como parte de un proceso de screening inicial para detectar condiciones de riesgo [3].\n\n**Fuente:** [3] (docs/STANDARDS.md: 1. Normas implementadas) y [4] (docs/ROADMAP-ANALISIS-OFFLINE.md)",
+      "hitsSources": [
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "README.md",
+        "docs/STANDARDS.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "docs/STANDARDS.md",
+        "docs/STANDARDS.md",
+        "README.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md"
+      ],
+      "keywordsFound": 2,
+      "passed": true,
+      "seconds": "8.28"
+    },
+    {
+      "q": "¿Para qué sirve el dimensionado de PSV según API 520 Parte I?",
+      "answer": "El dimensionado de válvulas de alivio (PSV) según API 520 Parte I sirve para determinar el tamaño y el diseño adecuado de las válvulas de seguridad basándose en las condiciones de presión, flujo, backpressure y margen de capacidad, asegurando que la válvula pueda liberar el exceso de presión de forma segura y eficaz en caso de sobrepresión [6]. Este proceso incluye el cálculo de la capacidad de la válvula para manejar las condiciones de operación y de diseño, así como el cumplimiento de los requisitos de seguridad establecidos en la norma [1]. La norma API 520 Parte I proporciona las guías para el dimensionamiento, selección e instalación de dispositivos de alivio de presión, garantizando su funcionalidad en situaciones de emergencia [8].",
+      "hitsSources": [
+        "README.md",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/STANDARDS.md",
+        "docs/STANDARDS.md"
+      ],
+      "keywordsFound": 2,
+      "passed": true,
+      "seconds": "5.59"
+    },
+    {
+      "q": "¿Qué riesgo avanzado presenta el punto de monitoreo MP-CORR-001?",
+      "answer": "El punto de monitoreo MP-CORR-001 presenta un riesgo avanzado debido a que su tasa de corrosión ha registrado un pico de 12.4 mpy hace 6 horas, lo cual supera significativamente la base de 3.2 mpy y ha sido clasificado como \"crítico\" por la regla R1 [1]. Además, el promedio de las 31 lecturas registradas es de 3.4 mpy, con un máximo de 12.4 mpy, indicando una variabilidad elevada y una posible deterioro acelerado del material [3]. Este comportamiento sugiere un riesgo elevado de falla estructural en el corto plazo si no se toman medidas correctivas inmediatas.",
+      "hitsSources": [
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json"
+      ],
+      "keywordsFound": 1,
+      "passed": false,
+      "seconds": "4.12"
+    },
+    {
+      "q": "¿Qué anomalías ILI tiene el pipeline SYS-NORTE-16 y en qué estado están?",
+      "answer": "El pipeline SYS-NORTE-16 presenta las siguientes anomalías ILI:\n\n- **ILI-N16-005**: Fractura (crack) en km 13.7, profundidad del 25% (80×22 mm), detectada en el examen ILI del 2025-07-20. [1]  \n- **ILI-N16-002**: Pérdida de metal (metal loss) en km 24.5, profundidad del 42% (120×30 mm), detectada en el examen ILI del 2025-09-15. [2]  \n- **ILI-N16-004**: Pérdida de metal en km 85.1, profundidad del 58% (200×50 mm), detectada en el examen ILI del 2025-09-15. [3]  \n- **ILI-N16-003**: Diente (dent) en km 40.8, profundidad del 12% (60×18 mm), detectada en el examen ILI del 2025-09-15. [4]  \n- **ILI-N16-001**: Pérdida de metal en km 106.2, profundidad del 18% (45×15 mm), detectada en el examen ILI del 2025-08-01. [5]  \n- **ILI-N16-006**: Pérdida de metal en km 92.3, profundidad del 8% (30×10 mm), detectada en el examen ILI del 2025-0",
+      "hitsSources": [
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json"
+      ],
+      "keywordsFound": 2,
+      "passed": true,
+      "seconds": "8.32"
+    },
+    {
+      "q": "¿Qué válvula de alivio de ejemplo incluye los datos seed del repo?",
+      "answer": "La válvula de alivio de ejemplo que incluye los datos seed del repositorio es aquella cuyo estado y datos están indexados en el archivo `docs/seed-assistant.json`, que forma parte del **corpus indexado** del asistente offline [3]. Este archivo contiene 42 hechos de planta, incluyendo información sobre PSVs (válvulas de seguridad y alivio), como su número de identificación (por ejemplo, \"PSV-520-001\"), estado de prueba, vencimiento, anomalías ILI, inspecciones y otros datos operativos [3].\n\nPor lo tanto, aunque no se especifica una válvula en particular como ejemplo, **la referencia a PSV-520-001** (como ejemplo de una válvula de alivio con datos de estado) está presente en el corpus indexado y se puede usar como ejemplo de cómo los datos seed incluyen información detallada sobre válvulas de alivio [3].\n\n**Fuente:** [3] (README.md: Asistente offline (F5))",
+      "hitsSources": [
+        "docs/STANDARDS.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "docs/VISUAL-SPEC.md"
+      ],
+      "keywordsFound": 1,
+      "passed": false,
+      "seconds": "6.58"
+    },
+    {
+      "q": "¿Cómo está construida la app IntegrityWatch Field?",
+      "answer": "La aplicación **IntegrityWatch Field** está construida como una **aplicación web progresiva (PWA) offline-first**, diseñada para funcionar completamente en el dispositivo del usuario sin necesidad de conexión a internet ni servidor centralizado [1]. Funciona localmente en el navegador, utilizando el almacenamiento local **IndexedDB** para guardar datos, lo que permite su uso en entornos sin conexión [2].  \n\nEs una **herramienta de apoyo** para profesionales de integridad en campo petrolero, integrando tareas clave como el monitoreo de corrosión, análisis de válvulas de alivio (PSV), gestión de oleoductos, inspecciones, recomendaciones y elaboración de informes [8].  \n\nLa aplicación se puede descargar como un **paquete portátil** (IntegrityWatch-Field-Portable), que incluye el código fuente (JS vanilla), un service worker, un manifest de PWA y un ejecutable portátil de Electron (`.exe`) para ejecutarla sin instalación ni conexión a internet [6].  \n\nEn cuanto al diseño visual, se sigue un estilo obligatorio inspirado en **Experion® PKS**, con características como colores solo para lo anómalo, faceplates planos, badges cuadrados con efecto LED, tipografía mono y ausencia de gradientes o estilos inline [4].  \n\nEs importante destacar que **los resultados de cálculo (como tasas de corrosión, dimensionamiento de válvulas, eficiencia de inhibidores o análisis de riesgo) son orientativos** y deben ser verificados contra normas vigentes, datos del fabricante y revisados por ingenieros cualificados antes de tomar decisiones de diseño o operación [5][7].  \n\nEn resumen, IntegrityWatch Field es una solución offline-first, portátil, visual",
+      "hitsSources": [
+        "README.md",
+        "README.md",
+        "README.md",
+        "docs/ROADMAP-ANALISIS-OFFLINE.md",
+        "README.md",
+        "README.md",
+        "docs/STANDARDS.md",
+        "README.md"
+      ],
+      "keywordsFound": 3,
+      "passed": true,
+      "seconds": "9.45"
+    },
+    {
+      "q": "MP-CORR-001 está CUI Critical y MIC High: ¿qué recomienda el sistema?",
+      "answer": "El sistema identifica que MP-CORR-001 tiene una tasa de corrosión crítica (CUI Critical) y una intensidad de riesgo de corrosión alta (MIC High), basándose en la lectura reciente de 12.4 mpy, que es un pico significativo en comparación con la base de 3.2 mpy [1]. Este valor supera los umbrales establecidos para clasificar como \"crítico\" según la regla R1 [1]. Además, los datos de los muestras (coupons) muestran una eficiencia del inhibidor de aproximadamente 65% en P2 y 92.5% en P1, lo que indica que el inhibidor está funcionando bien en condiciones de inhibición, pero no es suficiente para prevenir el aumento repentino de la tasa de corrosión [2][3].\n\nDado que el valor máximo registrado en MP-CORR-001 es 12.4 mpy (más alto que en otros puntos como MP-CORR-002, 6.0 mpy; MP-CORR-006, 3.1 mpy), y que este evento ocurrió hace solo 6 horas, el sistema recomienda **una intervención inmediata** para evaluar la causa del pico de corrosión, revisar la calidad del inhibidor, verificar la integridad de la línea de tubería, y considerar la posibilidad de un fallo en el sistema de control o en la composición del medio (por ejemplo, presencia de contaminantes o cambios en el pH). También se sugiere realizar una revisión de los parámetros de operación y una evaluación de la eficacia del inhibidor en condiciones reales, especialmente en comparación con los resultados de los coupons [2][3].",
+      "hitsSources": [
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json",
+        "docs/seed-assistant.json"
+      ],
+      "keywordsFound": 0,
+      "passed": false,
+      "seconds": "8.40"
+    }
+  ],
+  "passed": 7,
+  "total": 10
+}

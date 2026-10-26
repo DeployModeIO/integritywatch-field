@@ -43,10 +43,29 @@
     },
 
     nav: {
+      assistant: 'Assistant',
       dashboard: 'Dashboard', corrosion: 'Corrosion', psv: 'Relief valves', pipelines: 'Pipelines',
       apm: 'Asset performance', ingest: 'Data ingest', recommendations: 'Recommendations',
       reports: 'Reports', glossary: 'Glossary', admin: 'Admin',
       groupOps: 'Operations', groupIntegrity: 'Integrity & assets', groupData: 'Data & system'
+    },
+
+    assistant: {
+      model: 'Model',
+      title: 'Offline Assistant',
+      subtitle: 'Answers from your standards and plant data with cited sources [n]. Runs fully offline on this machine.',
+      placeholder: 'Ask about standards, assets, procedures...',
+      send: 'Send',
+      thinking: 'Consulting context and thinking...',
+      sources: 'Sources',
+      offline: 'Assistant unavailable: the local stack (chat or database) is not responding.',
+      empty: 'Ask something to start. Suggestions:',
+      suggest1: 'What does MIC High mean and what do I do?',
+      suggest2: 'Which PSV has an overdue inspection?',
+      suggest3: 'How is the CO2 corrosion rate calculated?',
+      history: 'Recent',
+      clear: 'Clear',
+      errorUnknown: 'Unexpected error consulting the local stack.',
     },
 
     severity: {

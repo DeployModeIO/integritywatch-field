@@ -1,0 +1,66 @@
+/* IntegrityWatch Field — assistant view (F5)
+   ISA-101 Experion look: flat surfaces, tokens only (light/dark safe). */
+
+.view-assistant .assistant-hint { margin: 4px 0 12px; opacity: 0.85; font-size: 0.9rem; }
+
+.assistant-status {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 2px;
+  font-size: 0.9rem;
+}
+.assistant-status.error { border-left: 4px solid #b33; }
+
+.assistant-suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+
+.assistant-log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 140px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 2px;
+}
+
+.assistant-empty-hint { opacity: 0.7; font-size: 0.9rem; padding: 6px 2px; }
+
+.assistant-msg {
+  max-width: 88%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.assistant-msg-user { align-self: flex-end; border-left: 4px solid var(--accent); }
+.assistant-msg-bot { align-self: flex-start; border-left: 4px solid var(--border); }
+.assistant-msg-think { font-style: italic; opacity: 0.75; }
+.assistant-msg-error { font-weight: 600; }
+
+.assistant-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.assistant-form { display: flex; gap: 8px; margin-top: 12px; }
+.assistant-form .assistant-input { flex: 1; }
+
+.assistant-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.assistant-model-note { margin-top: 8px; opacity: 0.75; font-size: 0.82rem; }

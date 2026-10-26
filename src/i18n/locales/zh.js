@@ -99,6 +99,7 @@
       saved: "已保存"
     },
     nav: {
+      assistant: "助手",
       dashboard: "仪表盘",
       corrosion: "腐蚀",
       psv: "泄压阀",
@@ -113,6 +114,24 @@
       groupIntegrity: "完整性与资产",
       groupData: "数据与系统"
     },
+    assistant: {
+      model: "模型",
+      title: "离线助手",
+      subtitle: "基于您的标准与设施数据回答问题，并引用来源 [n]。完全在本机离线运行。",
+      placeholder: "询问标准、资产、规程...",
+      send: "发送",
+      thinking: "正在检索上下文并思考...",
+      sources: "来源",
+      offline: "助手不可用：本地服务（聊天或数据库）未响应。",
+      empty: "开始提问吧。建议：",
+      suggest1: "MIC High 意味着什么？该如何处理？",
+      suggest2: "哪台安全阀检验逾期？",
+      suggest3: "CO2 腐蚀速率如何计算？",
+      history: "最近",
+      clear: "清空",
+      errorUnknown: "调用本地服务时出现意外错误。",
+    },
+
     severity: {
       low: "低",
       moderate: "中等",

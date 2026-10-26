@@ -1,0 +1,186 @@
+{
+  "generated": "2026-10-25T23:44:32.418Z",
+  "generator": "tools/rag/gen-seed-assistant.mjs",
+  "counts": {
+    "monitoringPoints": 8,
+    "readings": 120,
+    "coupons": 4,
+    "psvs": 5,
+    "pipelineSystems": 1,
+    "lineAssets": 12,
+    "lineInspections": 5,
+    "iliAnomalies": 6,
+    "apmAssets": 18,
+    "apmEvents": 24
+  },
+  "facts": [
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-001 \"Wellhead Norte 1\" (upstream, material api5l-x52, sensor couponGravimetric) at km 12 — km 12, wellhead. Process: H2S 2000 ppm, CO2 12000 ppm, 6895 kPa, 60 °C, BSW 5%, velocity 1.2 m/s, inhibitor target 25 ppm / residual 24 ppm."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-002 \"Flowline A\" (upstream, material api5l-gr-b, sensor couponGravimetric) at km 5 — km 5, flowline. Process: CO2 8000 ppm, 4137 kPa, 55 °C, BSW 8%, velocity 0.9 m/s."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-003 \"Trunk Norte 16\" (midstream, material a106-b, sensor erProbe) at km 40 — km 40, trunk. Process: H2S 50 ppm, CO2 3000 ppm, 517 kPa, 40 °C."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-004 \"Station suction\" (midstream, material api5l-x60, sensor lprProbe) at km 84 — km 84, pump suction. Process: CO2 2000 ppm, 690 kPa, 35 °C."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-005 \"Separator outlet\" (downstream, material ss-316l, sensor couponGravimetric) — Separator V-101 outlet. Process: CO2 500 ppm, 200 kPa, 70 °C."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-006 \"Gas lift header\" (upstream, material duplex-2205, sensor h2Probe) at km 18 — km 18, gas lift header. Process: H2S 500 ppm, 4137 kPa, 80 °C."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-007 \"Column overhead\" (downstream, material a516-70, sensor utInspection) — Column C-201 overhead. Process: CO2 300 ppm, 150 kPa, 90 °C."
+    },
+    {
+      "section": "monitoring-points",
+      "text": "MP-CORR-008 \"ROW crossing\" (midstream, material cs-coated, sensor visual) at km 104 — km 104, river crossing. Process: no gas data (visual monitoring point)."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-001: 31 corrosion-rate readings; latest 12.4 mpy (2026-10-24), max 12.4 mpy, mean 3.4 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-002: 30 corrosion-rate readings; latest 6.0 mpy (2026-10-24), max 6.0 mpy, mean 2.5 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-003: 12 corrosion-rate readings; latest 4.0 mpy (2026-10-22), max 4.0 mpy, mean 4.0 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-004: 10 corrosion-rate readings; latest 1.9 mpy (2026-10-22), max 2.4 mpy, mean 2.0 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-005: 10 corrosion-rate readings; latest 1.8 mpy (2026-10-24), max 2.1 mpy, mean 1.8 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-006: 10 corrosion-rate readings; latest 2.3 mpy (2026-10-25), max 3.1 mpy, mean 2.6 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-007: 9 corrosion-rate readings; latest 1.2 mpy (2026-10-23), max 1.5 mpy, mean 1.3 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-008: 8 corrosion-rate readings; latest 1.0 mpy (2026-10-22), max 1.2 mpy, mean 1.0 mpy."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-001 seeded story: ~3.2 mpy baseline over 90 days plus a 12.4 mpy spike 6 hours ago; rule R1 classifies this as critical corrosion rate."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-002 seeded story: 1.5 mpy baseline shifted to 6.0 mpy over the last 7 days; rule R2 (residual band trend) triggers."
+    },
+    {
+      "section": "readings",
+      "text": "MP-CORR-003 seeded story: 12 identical 4.0 mpy ER-probe readings; rule R5 flags a stuck sensor."
+    },
+    {
+      "section": "coupons",
+      "text": "Coupon pair P1 on MP-CORR-001 (api5l-x52, 30 days): blank 8 mpy vs inhibited 0.6 mpy → inhibitor efficiency ≈ 92.5%."
+    },
+    {
+      "section": "coupons",
+      "text": "Coupon pair P2 on MP-CORR-001 (api5l-x52, 30 days): blank 10 mpy vs inhibited 3.5 mpy → inhibitor efficiency ≈ 65%."
+    },
+    {
+      "section": "psv",
+      "text": "PSV-520-001: Methane conventional PSV, set 150 psig, backpressure 0 psig, orifice P, capacity margin 30.5%; API 576 inspection OVERDUE (rule R16 fires). Location: Compressor K-101 discharge."
+    },
+    {
+      "section": "psv",
+      "text": "PSV-520-002: Natural gas conventional PSV, set 100 psig, backpressure 0 psig, orifice N, capacity margin 13.4%. Location: Platform A gas header."
+    },
+    {
+      "section": "psv",
+      "text": "PSV-520-003: Crude oil conventional PSV, set 100 psig, backpressure 10 psig, orifice J, capacity margin 14.1%. Location: Pump station 16 discharge."
+    },
+    {
+      "section": "psv",
+      "text": "PSV-520-004: Methane pilot PSV, set 120 psig, backpressure 5 psig, orifice K, capacity margin 5.9%. Location: Gas plant inlet."
+    },
+    {
+      "section": "psv",
+      "text": "PSV-520-005: Methane conventional PSV, set 130 psig, backpressure 0 psig, orifice L, capacity margin 28.0%. Location: Heat exchanger E-101 shell."
+    },
+    {
+      "section": "pipeline",
+      "text": "SYS-NORTE-16 \"Norte 16\" Crude\": crude pipeline, API API5L-X52, DN16\", wall 9.53 mm, FBE coating, MAOP 6 MPa, 120 km, operator Norte Operator S.A.."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-001: metalLoss anomaly at km 106.2 of SYS-NORTE-16, depth 18% (45×15 mm), from ILI run 2025-08-01; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-002: metalLoss anomaly at km 24.5 of SYS-NORTE-16, depth 42% (120×30 mm), from ILI run 2025-09-15; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-003: dent anomaly at km 40.8 of SYS-NORTE-16, depth 12% (60×18 mm), from ILI run 2025-09-15; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-004: metalLoss anomaly at km 85.1 of SYS-NORTE-16, depth 58% (200×50 mm), from ILI run 2025-09-15; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-005: crack anomaly at km 13.7 of SYS-NORTE-16, depth 25% (80×22 mm), from ILI run 2025-07-20; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "ili-anomalies",
+      "text": "ILI-N16-006: metalLoss anomaly at km 92.3 of SYS-NORTE-16, depth 8% (30×10 mm), from ILI run 2025-08-01; assessed against MAOP 6 MPa in the pipelines view."
+    },
+    {
+      "section": "line-inspections",
+      "text": "INSP-N16-001: ild inspection on LA-N16-011 (SYS-NORTE-16), severity moderate, km 100–120: Metal loss at river crossing."
+    },
+    {
+      "section": "line-inspections",
+      "text": "INSP-N16-002: externalCorrosion inspection on LA-N16-002 (SYS-NORTE-16), severity low, km 10–14: Minor coating damage."
+    },
+    {
+      "section": "line-inspections",
+      "text": "INSP-N16-003: visual inspection on LA-N16-005 (SYS-NORTE-16), severity high, km 38–42: Severe pitting on discharge flange."
+    },
+    {
+      "section": "line-inspections",
+      "text": "INSP-N16-004: ut inspection on LA-N16-003 (SYS-NORTE-16), severity severe, km 22–26: Wall thickness below minimum at block valve."
+    },
+    {
+      "section": "line-inspections",
+      "text": "INSP-N16-005: visual inspection on LA-N16-008 (SYS-NORTE-16), severity low, km 70–74: Routine visual inspection."
+    },
+    {
+      "section": "apm-assets",
+      "text": "18 APM assets seeded; criticality A (highest): PLAT-01 (Platform A); PPS-01 (Pump station 16); PMP-02 (Crude pump P-102); PUMP-201A (Centrifugal pump P-201A (API 610)); GEN-101 (Emergency generator G-101 — 2.5 MW (ISO 8528)); FP-01 (Fire water pump FP-01 (NFPA 20)); FPS-01 (Foam deluge system — tank farm (NFPA 11 / NBR 13714))."
+    },
+    {
+      "section": "apm-events",
+      "text": "24 APM events seeded, including failures, inspections and maintenance across wells, platform, pump stations, gas plant and downstream equipment."
+    },
+    {
+      "section": "apm-events",
+      "text": "APM-DN-002 (crude pump P-102): 6 failure events with decreasing time between failures (40→30→20→15→10→5 days) — Weibull wear-out pattern (β > 1.2) shown in the reliability faceplate."
+    },
+    {
+      "section": "apm-events",
+      "text": "APM-MD-105 (pump P-201A): mechanical seal failure 12 days ago, work order OT-2026-612. APM-MD-106 (generator G-101): preventive maintenance 25 days ago, OT-2026-618."
+    }
+  ]
+}
