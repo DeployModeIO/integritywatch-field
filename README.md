@@ -38,100 +38,143 @@ IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed speci
 
 ---
 
+## System architecture
+
+```mermaid
+flowchart TD
+    %% Styling
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#01579b
+    classDef app fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100
+    classDef storage fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#2e7d32
+    classDef engine fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#7b1fa2
+    classDef external fill:#efebe9,stroke:#4e342e,stroke-width:2px,color:#4e342e
+
+    %% User
+    U[Field Operator / Engineer]:::user
+
+    %% PWA / Browser layer
+    subgraph PWA["PWA — Browser (offline-first)"]
+        SW[Service Worker<br/>cache-first • iw-vN]:::app
+        IDB[(IndexedDB<br/>meta • MPs • readings<br/>coupons • PSVs • APM<br/>recommendations • importLog)]:::storage
+        UI[UI Shell<br/>7 languages • RTL Arabic<br/>light/dark/system theme]:::app
+    end
+
+    %% Calculation engines
+    subgraph Engines["Calculation engines (vanilla JS)"]
+        CORR[Corrosion<br/>ASTM G4 • De Waard-Milliams<br/>MR0175 • SP0169]:::engine
+        PSV[Pressure Relief Valves<br/>API 520/526 sizing]:::engine
+        APM[Asset Performance<br/>RBI API 580/581<br/>MTBF/MTTR/OEE]:::engine
+        PIPE[Pipelines<br/>ASME B31.4/B31.8 • B31G]:::engine
+    end
+
+    %% Rule engine
+    subgraph Rules["Recommendation engine"]
+        R[Rules R1–R17<br/>open → acknowledge → resolve → reopen]:::engine
+    end
+
+    %% Data layer
+    subgraph Data["Data exchange (offline)"]
+        CSV[CSV import / validation]:::external
+        WITSML[WITSML-lite import]:::external
+        IWF[Portable case file<br/>.iwf export / import]:::external
+    end
+
+    %% Optional desktop
+    subgraph Desktop["Desktop (optional)"]
+        E[Electron<br/>portable .exe<br/>no installation]:::external
+    end
+
+    %% Connections
+    U -->|interacts| UI
+    UI -->|renders| SW
+    SW -->|cache-first| IDB
+    IDB <-->|reads/writes| UI
+    
+    UI -->|triggers| CORR
+    UI -->|triggers| PSV
+    UI -->|triggers| APM
+    UI -->|triggers| PIPE
+    
+    CORR -->|results| R
+    PSV -->|results| R
+    APM -->|results| R
+    PIPE -->|results| R
+    
+    R -->|writes| IDB
+    
+    CSV -->|imports| IDB
+    WITSML -->|imports| IDB
+    IDB -->|exports| IWF
+    
+    E -->|loads| SW
+
+    %% Layout hints
+    linkStyle default stroke-width:2px,fill:none,stroke:#666
+```
+
+---
+
 ## Screenshots
 
 Visual evidence gallery organized by module. All captures live in `docs/evidence/` and correspond to real views rendered with demo data.
 
 ### Panel and operation
 
-![Dashboard — light theme (EN)](docs/evidence/dashboard-light-es.png)
+![Dashboard — light theme](docs/evidence/dashboard-light-es.png)
 *Main panel with key indicators, heatmap, and recent alerts (light theme).*
 
-![Dashboard — dark theme (EN)](docs/evidence/dashboard-dark-es.png)
+![Dashboard — dark theme](docs/evidence/dashboard-dark-es.png)
 *Main panel in dark theme.*
 
-![Dashboard — Arabic (RTL)](docs/evidence/dashboard-light-ar.png)
+![Dashboard — Arabic RTL](docs/evidence/dashboard-light-ar.png)
 *Main panel in Arabic with RTL reading direction.*
 
 ### Corrosion
 
-![Monitoring point detail — light theme (EN)](docs/evidence/corrosion-detail-light-es.png)
+![Monitoring point detail — light theme](docs/evidence/corrosion-detail-light-es.png)
 *Monitoring point detail with readings, coupons, and corrosion rate (light theme).*
-
-![Monitoring point detail — dark theme (EN)](docs/evidence/corrosion-detail-dark-es.png)
-*Monitoring point detail in dark theme.*
 
 ### Pressure Relief Valves (PSV) · API 520/526
 
-![PSV list — light theme (EN)](docs/evidence/psv-list-light-es.png)
+![PSV list — light theme](docs/evidence/psv-list-light-es.png)
 *List of safety and relief valves with test status.*
 
-![PSV sizing API 520/526 — light theme (EN)](docs/evidence/psv-sizing-light-es.png)
+![PSV sizing API 520/526 — light theme](docs/evidence/psv-sizing-light-es.png)
 *Valve sizing per API 520/526 (light theme).*
-
-![PSV sizing API 520/526 — dark theme (EN)](docs/evidence/psv-sizing-dark-es.png)
-*Valve sizing per API 520/526 (dark theme).*
 
 ### Pipelines and line assets
 
-![Line systems — light theme (EN)](docs/evidence/pipelines-light-es.png)
-*Line systems with assets by station kilometer.*
-
-![Schematic map — light theme (EN)](docs/evidence/map-light-es.png)
+![Schematic map — light theme](docs/evidence/map-light-es.png)
 *Schematic map of pipelines with assets positioned by kilometer (light theme).*
-
-![Schematic map — dark theme (EN)](docs/evidence/map-dark-es.png)
-*Schematic map in dark theme.*
-
-![Schematic map — Arabic (RTL)](docs/evidence/map-light-ar.png)
-*Schematic map in Arabic with RTL direction.*
-
-![Schematic map — mobile (EN)](docs/evidence/map-mobile-light-es.png)
-*Schematic map in mobile viewport.*
 
 ### Asset Performance Management (APM)
 
-![APM asset list — light theme (EN)](docs/evidence/apm-list-light-es.png)
-*APM asset list with criticality, RBI band, and health status; MTBF/MTTR/OEE metrics are shown on each asset detail.*
-
-![APM asset detail — light theme (EN)](docs/evidence/apm-detail-light-es.png)
-*APM asset detail with RBI risk analysis (light theme). The sheet includes a Weibull reliability faceplate (β/η/B10, MTBF with 90% CI, P(failure) at 30/90/180 days).*
-
-![APM asset detail — dark theme (EN)](docs/evidence/apm-detail-dark-es.png)
-*APM asset detail in dark theme.*
+![APM asset detail — light theme](docs/evidence/apm-detail-light-es.png)
+*APM asset detail with RBI risk analysis (light theme).*
 
 ### Data ingestion
 
-![CSV column mapping — light theme (EN)](docs/evidence/ingest-mapping-light-es.png)
+![CSV column mapping — light theme](docs/evidence/ingest-mapping-light-es.png)
 *Column mapping during CSV/WITSML-lite import.*
-
-![Import validation — light theme (EN)](docs/evidence/ingest-validation-light-es.png)
-*Import validation with row-by-row error table.*
 
 ### Recommendations
 
-![Recommendation engine R1–R17 — light theme (EN)](docs/evidence/recommendations-light-es.png)
+![Recommendation engine R1–R17 — light theme](docs/evidence/recommendations-light-es.png)
 *Recommendation engine R1–R17 with open/acknowledge/resolve/reopen actions.*
 
 ### Reports
 
-![Reports — light theme (EN)](docs/evidence/reports-light-es.png)
+![Reports — light theme](docs/evidence/reports-light-es.png)
 *Quarterly, per monitoring point, and PSV datasheet reports (light theme).*
-
-![Reports — dark theme (EN)](docs/evidence/reports-dark-es.png)
-*Reports in dark theme.*
 
 ### Glossary
 
-![Technical glossary — light theme (EN)](docs/evidence/glossary-light-es.png)
-*Multilingual technical glossary with normative references (EN).*
-
-![Technical glossary — Arabic (RTL)](docs/evidence/glossary-light-ar.png)
-*Technical glossary in Arabic with RTL direction.*
+![Technical glossary — light theme](docs/evidence/glossary-light-es.png)
+*Multilingual technical glossary with normative references.*
 
 ### Administration
 
-![Administration — light theme (EN)](docs/evidence/admin-light-es.png)
+![Administration — light theme](docs/evidence/admin-light-es.png)
 *General settings, language, theme, backup/restore, portable case file .iwf, PIN, and offline status.*
 
 ---
