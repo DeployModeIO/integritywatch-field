@@ -245,22 +245,6 @@ async function openApmDetail(page) {
   await page.waitForTimeout(900);
 }
 
-// ---- Pre-action: hace una pregunta real al asistente y espera respuesta + fuentes ----
-async function askAssistant(page) {
-  const input = page.locator('#assistant-input');
-  if ((await input.count()) === 0) { return; }
-  await input.fill('¿Qué significa MIC High y qué hago?');
-  await page.waitForTimeout(300);
-  const btn = page.locator('.assistant-form button').first();
-  if ((await btn.count()) > 0) { await btn.click({ timeout: 5000 }).catch(() => {}); }
-  // Espera a que haya un mensaje del bot y al menos una pill de fuente (pila :9999/:6333 viva).
-  await page.waitForFunction(() => {
-    const log = document.querySelector('.assistant-log');
-    return !!(log && log.querySelector('.assistant-msg-bot') && log.querySelector('.pill'));
-  }, { timeout: 100000 }).catch(() => {});
-  await page.waitForTimeout(400);
-}
-
 // ---- Main ----
 async function main() {
   if (!fs.existsSync(EVID)) { fs.mkdirSync(EVID, { recursive: true }); }
@@ -323,17 +307,13 @@ async function main() {
     { file: 'glossary-light-ar.png', hash: '#/glossary', locale: 'ar', theme: 'light', viewport: DESKTOP },
     // 27: admin-light-es
     { file: 'admin-light-es.png', hash: '#/admin', locale: 'es', theme: 'light', viewport: DESKTOP },
-    // 28: assistant-light-es (respuesta + fuentes visibles)
-    { file: 'assistant-light-es.png', hash: '#/assistant', locale: 'es', theme: 'light', viewport: DESKTOP, preAction: askAssistant },
-    // 29: assistant-dark-es (respuesta + fuentes visibles)
-    { file: 'assistant-dark-es.png', hash: '#/assistant', locale: 'es', theme: 'dark', viewport: DESKTOP, preAction: askAssistant },
   ];
 
   let passCount = 0;
   try {
     for (let i = 0; i < captures.length; i++) {
       const c = captures[i];
-      console.log(`\n[${String(i + 1).padStart(2, '0')}/26] ${c.file}`);
+      console.log(`\n[${String(i + 1).padStart(2, '0')}/24] ${c.file}`);
       const ok = await capture(browser, c);
       if (ok) passCount++;
     }
@@ -344,7 +324,7 @@ async function main() {
 
   // Summary
   console.log('\n' + '='.repeat(70));
-  console.log(`SUMMARY: ${passCount}/26 PASS (${failures} FAIL)`);
+  console.log(`SUMMARY: ${passCount}/24 PASS (${failures} FAIL)`);
   captureResults.forEach((r) => {
     console.log(`${r.status === 'PASS' ? '  ✓' : '  ✗'} ${pad(r.file, 42)} ${r.status === 'PASS' ? pad(String(r.size), 8) + ' bytes' : r.error || 'FAIL'}`);
   });
@@ -353,7 +333,7 @@ async function main() {
     console.error(`\n${failures} capture(s) failed. Check docs/evidence/ for missing files.`);
     process.exit(1);
   }
-  console.log('\nAll 26 captures PASS. Evidence in docs/evidence/');
+  console.log('\nAll 24 captures PASS. Evidence in docs/evidence/');
   process.exit(0);
 }
 

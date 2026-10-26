@@ -99,7 +99,6 @@
       saved: "Enregistré"
     },
     nav: {
-      assistant: "Assistant",
       dashboard: "Tableau de bord",
       corrosion: "Corrosion",
       psv: "Soupapes de sûreté",
@@ -114,24 +113,6 @@
       groupIntegrity: "Intégrité et actifs",
       groupData: "Données et système"
     },
-    assistant: {
-      model: "Modèle",
-      title: "Assistant hors ligne",
-      subtitle: "Répond à partir de vos normes et données d'installation en citant les sources [n]. Fonctionne 100% hors ligne sur cette machine.",
-      placeholder: "Posez une question sur les normes, les équipements, les procédures...",
-      send: "Envoyer",
-      thinking: "Consultation du contexte et réflexion...",
-      sources: "Sources",
-      offline: "Assistant indisponible : la pile locale (chat ou base de données) ne répond pas.",
-      empty: "Posez une question pour commencer. Suggestions :",
-      suggest1: "Que signifie MIC High et que faire ?",
-      suggest2: "Quelle PSV a une inspection en retard ?",
-      suggest3: "Comment calcule-t-on la vitesse de corrosion par CO2 ?",
-      history: "Récentes",
-      clear: "Effacer",
-      errorUnknown: "Erreur inattendue de la pile locale.",
-    },
-
     severity: {
       low: "Faible",
       moderate: "Modéré",

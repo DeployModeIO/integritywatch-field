@@ -134,14 +134,6 @@ Galería de evidencia visual organizada por módulo. Todas las capturas viven en
 ![Administración — claro (ES)](docs/evidence/admin-light-es.png)
 *Ajustes generales, idioma, tema, respaldo/restauración, expediente portátil .iwf, PIN y estado offline.*
 
-### Asistente IA offline (F5)
-
-![Asistente offline — claro (ES)](docs/evidence/assistant-light-es.png)
-*Vista #/assistant con una respuesta y sus fuentes citadas [n] (tema claro).*
-
-![Asistente offline — oscuro (ES)](docs/evidence/assistant-dark-es.png)
-*Vista #/assistant con respuesta y fuentes en tema oscuro.*
-
 ---
 
 ## Recorrido en vídeo
@@ -412,7 +404,7 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | **Unidad (motores)** | corrosión 100 %, PSV 98 %, APM 93 %, units 90 %, reglas 96–98 % | `node --test` | **300/300 verde** |
 | **Datos/ingesta** | CSV parse + validación + 12 aliases + fronteras; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glosario; i18n paridad 7 locales | 119 tests `qa-*.test.js` | ✅ |
 | **Integración (sin DOM)** | pipeline CSV→repos→reglas→recomendaciones; ciclo ack→resolve→reopen; deduplicación; hooks de store | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
-| **Navegador (manual, MCP chrome-devtools)** | 12 vistas renderizadas; RTL árabe; tema oscuro; hot-switch i18n; mapa por teclado; informe A4; consola 0 errores | capturas `docs/evidence/*.png` (26) | ✅ |
+| **Navegador (manual, MCP chrome-devtools)** | 12 vistas renderizadas; RTL árabe; tema oscuro; hot-switch i18n; mapa por teclado; informe A4; consola 0 errores | capturas `docs/evidence/*.png` (27) | ✅ |
 | **Datos reales de campo** | CSV 41 filas importado E2E: 35 válidas/4 errores/2 duplicadas/3 puntos creados | `datos-prueba/INFORME-CARGA-DATOS.md` | ✅ |
 | **Seguridad (parcial)** | CSP sin inline; Semgrep sobre 8 módulos críticos (1 ReDoS corregido); DOM-seguro (textContent); 0 secretos; lock probado | fase F + `qa-data-integrity` | ✅ |
 | **Campos (inventario UI)** | ~200 campos de formulario inventariados uno a uno (6 diálogos + 4 vistas inline) | auditoría de esta campaña | ✅ |
@@ -445,23 +437,6 @@ Cifras documentadas en las suites de `tools/tests/` y en `docs/TESTS.md`:
 
 **Gestión:** `node --test --experimental-test-coverage`
 **Umbral:** ≥80 % en `src/calc/**` y `src/rules/**`
-
----
-
-## Asistente offline (F5)
-
-**Qué es:** un chat RAG 100 % offline en la vista `#/assistant`. El operador escribe una pregunta en lenguaje natural (español); la app la incrusta en `:5106`, busca los fragmentos más parecidos en la colección Qdrant `integritywatch_rag` (`:6333`) y pide respuesta al LLM local residente en `:9999` (modelo por defecto `qwen3-4b-instruct`). Cada respuesta cita sus fuentes con `[n]` y nunca se inventa datos: si no hay contexto suficiente, el asistente lo dice explícitamente (anti-alucinación).
-
-**Qué necesita vivo (en esta máquina, sin internet):**
-| Puerto | Servicio | Para qué |
-|--------|----------|----------|
-| `:5106` | Embeddings (qwen3-embedding-0.6b, 1024 dims) | Vectorizar la pregunta |
-| `:6333` | Qdrant, colección `integritywatch_rag` | Búsqueda semántica de fragmentos |
-| `:8081` | LLM local (llama-server, qwen3-4b-instruct) | Generar la respuesta citando fuentes |
-
-**Corpus indexado:** `README.md`, `docs/STANDARDS.md`, `docs/ROADMAP-ANALISIS-OFFLINE.md`, `docs/VISUAL-SPEC.md` y `docs/seed-assistant.json` (42 hechos de planta: MPs, lecturas, cupones, PSVs, anomalías ILI, inspecciones, APM). Un chunk por hecho de planta, para que preguntas concretas (p.ej. "PSV-520-001 vencida") hallen su dato.
-
-**Límite honesto:** el asistente solo sabe lo que está indexado en docs + seed. No consulta bases de planta en tiempo real ni normas fuera del corpus. Las palabras clave de las evals se eligieron lenguaje-neutras (códigos/números y términos en español) porque el modelo responde en español y no siempre cita anglicismos como "Critical"/"R18". Evals: ≥7/10 (umbral 70 % sin tocar).
 
 ---
 
@@ -572,7 +547,7 @@ A PWA offline-first integrity and compliance operations center for oil & gas fie
 - **Multi-language UI** (7 languages, RTL Arabic support)
 - **Offline-first PWA** (IndexedDB + service worker cache-first)
 - **Desktop wrapper** (Electron portable)
-- **Visual evidence gallery** (26 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
+- **Visual evidence gallery** (24 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
 
 **Tech stack:** Vanilla JS, IndexedDB, service worker, CSP strict, WCAG AA accessibility, UMD-lite modules
 
@@ -655,5 +630,5 @@ IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first para 
 
 *Archivo README.md de IntegrityWatch Field*
 *Secciones: 18 (todas completas)*
-*Imágenes verificadas: 26 (galería por módulo) + 1 vídeo de recorrido*
+*Imágenes verificadas: 24 (galería por módulo) + 1 vídeo de recorrido*
 *Capturas referenciadas: todas existentes en docs/evidence/*

@@ -26,7 +26,6 @@
     'reports/dossier/:mpId',
     'reports/datasheet/:psvId',
     'glossary',
-    'assistant',
     'admin'
   ]);
 
@@ -46,7 +45,6 @@
     'reports/dossier/:mpId': 'reports',
     'reports/datasheet/:psvId': 'reports',
     'glossary': 'glossary',
-    'assistant': 'assistant',
     'admin': 'admin'
   };
 

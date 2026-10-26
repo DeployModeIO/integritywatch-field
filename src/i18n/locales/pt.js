@@ -100,7 +100,6 @@
       saved: 'Salvo'
     },
     nav: {
-      assistant: 'Assistente',
       dashboard: 'Painel',
       corrosion: 'Corrosão',
       psv: 'Válvulas de alívio',
@@ -115,24 +114,6 @@
       groupIntegrity: 'Integridade e ativos',
       groupData: 'Dados e sistema'
     },
-    assistant: {
-      model: 'Modelo',
-      title: 'Assistente offline',
-      subtitle: 'Responde com seus padrões e dados de planta citando fontes [n]. Funciona 100% offline nesta máquina.',
-      placeholder: 'Pergunte sobre padrões, ativos, procedimentos...',
-      send: 'Enviar',
-      thinking: 'Consultando o contexto e pensando...',
-      sources: 'Fontes',
-      offline: 'Assistente indisponível: a pilha local (chat ou banco de dados) não responde.',
-      empty: 'Pergunte algo para começar. Sugestões:',
-      suggest1: 'O que significa MIC High e o que fazer?',
-      suggest2: 'Qual PSV tem inspeção vencida?',
-      suggest3: 'Como se calcula a taxa de corrosão por CO2?',
-      history: 'Recentes',
-      clear: 'Limpar',
-      errorUnknown: 'Erro inesperado na pilha local.',
-    },
-
     severity: {
       low: 'Baixa',
       moderate: 'Moderada',

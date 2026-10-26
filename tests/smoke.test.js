@@ -105,9 +105,8 @@ test('T1b.d views registry has 11 views with {id,titleKey,icon,render}', () => {
   }
 });
 
-test('T1b.e router ROUTES frozen table has 17 patterns (F5 assistant)', () => {
-  assert.equal(router.ROUTES.length, 17);
-  assert.ok(router.ROUTES.includes('assistant'));
+test('T1b.e router ROUTES frozen table has 16 patterns', () => {
+  assert.equal(router.ROUTES.length, 16);
 });
 
 test('T1b.f icons cover all §4.14 names and severity() covers 4 levels', () => {
