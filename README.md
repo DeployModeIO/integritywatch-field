@@ -41,71 +41,168 @@ IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed speci
 ## System architecture
 
 ```mermaid
-flowchart TD
+flowchart TB
     %% Styling
     classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#01579b
     classDef app fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100
     classDef storage fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#2e7d32
     classDef engine fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#7b1fa2
+    classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#1565c0
     classDef external fill:#efebe9,stroke:#4e342e,stroke-width:2px,color:#4e342e
+    classDef security fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#c62828
 
     %% User
-    U[Field Operator / Engineer]:::user
+    U[Field Operator / Integrity Engineer]:::user
+
+    %% Access layer
+    subgraph Access["Access & Security"]
+        LOCK[PIN Lock<br/>PBKDF2 • lockout<br/>role-based access]:::security
+        THEME[Theme & Language<br/>7 languages • RTL Arabic<br/>light / dark / system]:::app
+    end
 
     %% PWA / Browser layer
     subgraph PWA["PWA — Browser (offline-first)"]
-        SW[Service Worker<br/>cache-first • iw-vN]:::app
-        IDB[(IndexedDB<br/>meta • MPs • readings<br/>coupons • PSVs • APM<br/>recommendations • importLog)]:::storage
-        UI[UI Shell<br/>7 languages • RTL Arabic<br/>light/dark/system theme]:::app
+        SW[Service Worker<br/>cache-first • iw-vN<br/>offline reload]:::app
+        IDB[(IndexedDB<br/>meta • MPs • readings<br/>coupons • PSVs • APM<br/>recommendations • importLog<br/>case files • audit trail)]:::storage
+        UI[UI Shell<br/>router #/modulo/:id<br/>PWA installable]:::app
     end
 
     %% Calculation engines
-    subgraph Engines["Calculation engines (vanilla JS)"]
-        CORR[Corrosion<br/>ASTM G4 • De Waard-Milliams<br/>MR0175 • SP0169]:::engine
-        PSV[Pressure Relief Valves<br/>API 520/526 sizing]:::engine
-        APM[Asset Performance<br/>RBI API 580/581<br/>MTBF/MTTR/OEE]:::engine
-        PIPE[Pipelines<br/>ASME B31.4/B31.8 • B31G]:::engine
+    subgraph Calc["Calculation engines (vanilla JS)"]
+        ASTM[ASTM G4<br/>corrosion rate<br/>weight loss]:::engine
+        DWM[De Waard-Milliams<br/>CO2 corrosion model]:::engine
+        MR[MR0175<br/>sour service<br/>screening]:::engine
+        CP[SP0169<br/>cathodic protection]:::engine
+        PSV[API 520/526<br/>PSV sizing<br/>orifice selection]:::engine
+        B31G[ASME B31G<br/>pipeline anomalies<br/>remaining strength]:::engine
+        NORSK[NORSOK M-506<br/>corrosion rate<br/>CO2 model]:::engine
+        REL[Reliability<br/>Weibull β/η/B10<br/>MTBF/MTTR/OEE]:::engine
+    end
+
+    %% Modules
+    subgraph Modules["Operational modules"]
+        DASH[Dashboard<br/>KPIs • heatmap • alerts<br/>critical points • expired PSVs]:::module
+        CORR_VIEW[Corrosion<br/>monitoring points • readings<br/>coupons • inhibitor efficiency]:::module
+        PSV_VIEW[Pressure Relief Valves<br/>register • test records<br/>sizing results]:::module
+        PIPE_VIEW[Pipelines & Line Assets<br/>station kilometer tracking<br/>ILD / UT / visual inspections<br/>field evidence: signature • EXIF/GPS photos • sketches]:::module
+        MAP_VIEW[Schematic Map<br/>assets by kilometer<br/>keyboard & accessible navigation]:::module
+        APM_VIEW[Asset Performance Mgmt<br/>RBI API 580/581<br/>inspection intervals<br/>health status]:::module
+        INGEST[Data Ingestion<br/>CSV import / validation<br/>WITSML-lite import<br/>column mapping • error table]:::module
+        REC[Recommendations<br/>R1–R17 rules<br/>open → acknowledge → resolve → reopen<br/>fingerprint • history]:::module
+        REPORTS[Reports<br/>quarterly • per monitoring point<br/>PSV datasheet<br/>PDF export (browser print)]:::module
+        GLOSS[Glossary<br/>multilingual technical terms<br/>normative references • search]:::module
+        ADMIN[Administration<br/>settings • backup / restore .iwf<br/>PIN • offline status]:::module
     end
 
     %% Rule engine
-    subgraph Rules["Recommendation engine"]
-        R[Rules R1–R17<br/>open → acknowledge → resolve → reopen]:::engine
+    subgraph Rules["Recommendation engine (R1–R17)"]
+        R1[R1 Corrosion Rate Critical]:::engine
+        R2[R2 Corrosion Trend]:::engine
+        R3[R3 Inhibitor Efficiency]:::engine
+        R4[R4 Inhibitor Residual Band]:::engine
+        R5[R5 Stuck Sensor]:::engine
+        R6[R6 Inspection Overdue]:::engine
+        R7[R7 DWM Model]:::engine
+        R8[R8 Sour Service]:::engine
+        R9[R9 Next Inspection]:::engine
+        R10[R10 MTBF Warning]:::engine
+        R11[R11 Availability]:::engine
+        R12[R12 Repeated Failures]:::engine
+        R13[R13 PSV Test Overdue]:::engine
+        R14[R14 PSV Margin Negative]:::engine
+        R15[R15 RUL < 12 months]:::engine
+        R16[R16 PSV Inspection]:::engine
+        R17[R17 ILI Anomaly]:::engine
     end
 
-    %% Data layer
+    %% Data exchange
     subgraph Data["Data exchange (offline)"]
         CSV[CSV import / validation]:::external
         WITSML[WITSML-lite import]:::external
         IWF[Portable case file<br/>.iwf export / import]:::external
     end
 
-    %% Optional desktop
+    %% Desktop
     subgraph Desktop["Desktop (optional)"]
-        E[Electron<br/>portable .exe<br/>no installation]:::external
+        E[Electron<br/>portable .exe<br/>no installation<br/>functional parity with web]:::external
     end
 
-    %% Connections
-    U -->|interacts| UI
+    %% Connections — Access
+    U -->|authenticates| LOCK
+    LOCK -->|unlocks| UI
+    U -->|selects| THEME
+    THEME -->|applies| UI
+
+    %% Connections — PWA
     UI -->|renders| SW
     SW -->|cache-first| IDB
     IDB <-->|reads/writes| UI
-    
-    UI -->|triggers| CORR
-    UI -->|triggers| PSV
-    UI -->|triggers| APM
-    UI -->|triggers| PIPE
-    
-    CORR -->|results| R
-    PSV -->|results| R
-    APM -->|results| R
-    PIPE -->|results| R
-    
-    R -->|writes| IDB
-    
+
+    %% Connections — Modules → Calc engines
+    DASH -->|reads| IDB
+    CORR_VIEW -->|triggers| ASTM
+    CORR_VIEW -->|triggers| DWM
+    CORR_VIEW -->|triggers| MR
+    CORR_VIEW -->|triggers| CP
+    CORR_VIEW -->|triggers| NORSK
+    PSV_VIEW -->|triggers| PSV
+    PIPE_VIEW -->|triggers| B31G
+    APM_VIEW -->|triggers| REL
+
+    %% Connections — Calc engines → Rule engine
+    ASTM -->|results| R1
+    DWM -->|results| R7
+    MR -->|results| R8
+    CP -->|results| R1
+    PSV -->|results| R14
+    B31G -->|results| R17
+    REL -->|results| R15
+
+    %% Connections — Modules → Rule engine
+    CORR_VIEW -->|feeds| R1
+    CORR_VIEW -->|feeds| R2
+    CORR_VIEW -->|feeds| R3
+    CORR_VIEW -->|feeds| R5
+    PSV_VIEW -->|feeds| R13
+    PSV_VIEW -->|feeds| R16
+    APM_VIEW -->|feeds| R6
+    APM_VIEW -->|feeds| R10
+    APM_VIEW -->|feeds| R11
+    APM_VIEW -->|feeds| R12
+
+    %% Connections — Rule engine → IDB
+    R1 -->|writes| IDB
+    R2 -->|writes| IDB
+    R3 -->|writes| IDB
+    R4 -->|writes| IDB
+    R5 -->|writes| IDB
+    R6 -->|writes| IDB
+    R7 -->|writes| IDB
+    R8 -->|writes| IDB
+    R9 -->|writes| IDB
+    R10 -->|writes| IDB
+    R11 -->|writes| IDB
+    R12 -->|writes| IDB
+    R13 -->|writes| IDB
+    R14 -->|writes| IDB
+    R15 -->|writes| IDB
+    R16 -->|writes| IDB
+    R17 -->|writes| IDB
+
+    %% Connections — Data exchange
     CSV -->|imports| IDB
     WITSML -->|imports| IDB
     IDB -->|exports| IWF
-    
+
+    %% Connections — Reports & other modules
+    REPORTS -->|reads| IDB
+    REPORTS -->|exports| PDF[PDF output<br/>browser print • A4]:::external
+    GLOSS -->|reads| IDB
+    ADMIN -->|reads/writes| IDB
+    MAP_VIEW -->|reads| IDB
+    INGEST -->|writes| IDB
+
+    %% Connections — Desktop
     E -->|loads| SW
 
     %% Layout hints
