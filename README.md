@@ -52,51 +52,56 @@ flowchart TB
     classDef data fill:#eceff1,stroke:#37474f,stroke-width:2px
     classDef desktop fill:#ffebee,stroke:#c62828,stroke-width:2px
 
-    %% Top layer: User
+    %% Top: User
     U[User<br/>Field Operator /<br/>Integrity Engineer]:::user
 
     %% Layer 1: Access & Security
     subgraph L1["Access & Security"]
+        direction TB
         LOCK[PIN Lock<br/>PBKDF2 • Lockout]:::access
         THEME[Theme & Language<br/>7 languages • RTL Arabic]:::access
     end
 
     %% Layer 2: PWA Browser
     subgraph L2["PWA - Browser<br/>offline-first"]
+        direction TB
         SW[Service Worker<br/>cache-first iw-vN]:::pwa
         IDB[(IndexedDB<br/>local storage)]:::pwa
         UI[UI Shell<br/>router • installable]:::pwa
     end
 
-    %% Layer 3: Calculation engines
-    subgraph L3["Calculation engines<br/>vanilla JS"]
-        ASTM[ASTM G4<br/>corrosion rate]:::calc
-        DWM[De Waard-Milliams<br/>CO2 model]:::calc
-        MR[MR0175<br/>sour service]:::calc
-        CP[SP0169<br/>cathodic protection]:::calc
-        PSV[API 520/526<br/>PSV sizing]:::calc
-        B31G[ASME B31G<br/>pipeline anomalies]:::calc
-        NORSK[NORSOK M-506<br/>corrosion model]:::calc
-        REL[Reliability<br/>Weibull MTBF/OEE]:::calc
+    %% Layer 3: Calculation engines (vertical stack)
+    subgraph L3["Calculation engines"]
+        direction TB
+        ASTM[ASTM G4]:::calc
+        DWM[De Waard-Milliams]:::calc
+        MR[MR0175]:::calc
+        CP[SP0169]:::calc
+        PSV[API 520/526]:::calc
+        B31G[ASME B31G]:::calc
+        NORSK[NORSOK M-506]:::calc
+        REL[Reliability Weibull]:::calc
     end
 
-    %% Layer 4: Operational modules
+    %% Layer 4: Operational modules (vertical stack)
     subgraph L4["Operational modules"]
-        DASH[Dashboard<br/>KPIs • heatmap • alerts]:::module
-        CORR[Corrosion<br/>monitoring points • readings]:::module
-        PSVV[Pressure Relief<br/>Valves • test records]:::module
-        PIPE[Pipelines & Line<br/>Assets • ILD/UT]:::module
-        MAP[Schematic Map<br/>assets by kilometer]:::module
-        APM[Asset Performance<br/>Mgmt RBI API 580/581]:::module
-        INGEST[Data Ingestion<br/>CSV • WITSML-lite]:::module
-        REC[Recommendations<br/>R1–R17 rules]:::module
-        REPORTS[Reports<br/>quarterly • datasheet]:::module
-        GLOSS[Glossary<br/>multilingual terms]:::module
-        ADMIN[Administration<br/>backup .iwf • PIN]:::module
+        direction TB
+        DASH[Dashboard]:::module
+        CORR[Corrosion]:::module
+        PSVV[Pressure Relief Valves]:::module
+        PIPE[Pipelines & Line Assets]:::module
+        MAP[Schematic Map]:::module
+        APM[Asset Performance Mgmt]:::module
+        INGEST[Data Ingestion]:::module
+        REC[Recommendations]:::module
+        REPORTS[Reports]:::module
+        GLOSS[Glossary]:::module
+        ADMIN[Administration]:::module
     end
 
-    %% Layer 5: Rule engine R1-R17
-    subgraph L5["Rule engine<br/>R1–R17"]
+    %% Layer 5: Rule engine R1-R17 (vertical stack)
+    subgraph L5["Rule engine R1-R17"]
+        direction TB
         R1[R1 Corrosion Critical]:::rules
         R2[R2 Corrosion Trend]:::rules
         R3[R3 Inhibitor Efficiency]:::rules
@@ -116,31 +121,33 @@ flowchart TB
         R17[R17 ILI Anomaly]:::rules
     end
 
-    %% Layer 6: Data exchange
+    %% Layer 6: Data exchange (vertical stack)
     subgraph L6["Data exchange<br/>offline"]
+        direction TB
         CSV[CSV import]:::data
-        WITSML[WITSML-lite<br/>import]:::data
+        WITSML[WITSML-lite import]:::data
         IWF[.iwf portable<br/>case file]:::data
     end
 
-    %% Layer 7: Desktop & PDF
+    %% Layer 7: Desktop & Output (vertical stack)
     subgraph L7["Desktop & Output"]
+        direction TB
         E[Electron<br/>portable .exe]:::desktop
         PDF[PDF output<br/>browser print]:::data
     end
 
-    %% Connections - Layer 0 -> 1 -> 2
+    %% Connections - User -> Access -> PWA
     U --> LOCK
     LOCK --> UI
     U --> THEME
     THEME --> UI
 
-    %% Connections - Layer 2: PWA internal
+    %% PWA internal
     UI --> SW
     SW --> IDB
     IDB <--> UI
 
-    %% Connections - Layer 2 -> 3 -> 4 -> 5
+    %% Modules -> Calc engines
     CORR --> ASTM
     CORR --> DWM
     CORR --> MR
@@ -150,6 +157,7 @@ flowchart TB
     PIPE --> B31G
     APM --> REL
 
+    %% Calc engines -> Rules
     ASTM --> R1
     DWM --> R7
     MR --> R8
@@ -158,6 +166,7 @@ flowchart TB
     B31G --> R17
     REL --> R15
 
+    %% Modules -> Rules
     CORR --> R1
     CORR --> R2
     CORR --> R3
@@ -169,7 +178,7 @@ flowchart TB
     APM --> R11
     APM --> R12
 
-    %% Rules write back to IDB
+    %% Rules -> IDB
     R1 --> IDB
     R2 --> IDB
     R3 --> IDB
@@ -188,12 +197,12 @@ flowchart TB
     R16 --> IDB
     R17 --> IDB
 
-    %% Layer 6: Data exchange
+    %% Data exchange
     CSV --> IDB
     WITSML --> IDB
     IDB --> IWF
 
-    %% Layer 4 -> 7: Reports & PDF
+    %% Reports & modules -> IDB / PDF
     REPORTS --> IDB
     REPORTS --> PDF
     GLOSS --> IDB
