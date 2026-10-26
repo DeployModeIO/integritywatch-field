@@ -41,177 +41,71 @@ IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed speci
 ## System architecture
 
 ```mermaid
-flowchart TB
+flowchart TD
     %% Styling
-    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef access fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef pwa fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    classDef calc fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef module fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    classDef rules fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    classDef data fill:#eceff1,stroke:#37474f,stroke-width:2px
-    classDef desktop fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#01579b
+    classDef app fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100
+    classDef storage fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#2e7d32
+    classDef engine fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#7b1fa2
+    classDef external fill:#efebe9,stroke:#4e342e,stroke-width:2px,color:#4e342e
 
-    %% Top: User
-    U[User<br/>Field Operator /<br/>Integrity Engineer]:::user
+    %% User
+    U[Field Operator / Engineer]:::user
 
-    %% Layer 1: Access & Security
-    subgraph L1["Access & Security"]
-        direction TB
-        LOCK[PIN Lock<br/>PBKDF2 • Lockout]:::access
-        THEME[Theme & Language<br/>7 languages • RTL Arabic]:::access
+    %% PWA / Browser layer
+    subgraph PWA["PWA — Browser (offline-first)"]
+        SW[Service Worker<br/>cache-first • iw-vN]:::app
+        IDB[(IndexedDB<br/>meta • MPs • readings<br/>coupons • PSVs • APM<br/>recommendations • importLog)]:::storage
+        UI[UI Shell<br/>7 languages • RTL Arabic<br/>light/dark/system theme]:::app
     end
 
-    %% Layer 2: PWA Browser
-    subgraph L2["PWA - Browser<br/>offline-first"]
-        direction TB
-        SW[Service Worker<br/>cache-first iw-vN]:::pwa
-        IDB[(IndexedDB<br/>local storage)]:::pwa
-        UI[UI Shell<br/>router • installable]:::pwa
+    %% Calculation engines
+    subgraph Engines["Calculation engines (vanilla JS)"]
+        CORR[Corrosion<br/>ASTM G4 • De Waard-Milliams<br/>MR0175 • SP0169]:::engine
+        PSV[Pressure Relief Valves<br/>API 520/526 sizing]:::engine
+        APM[Asset Performance<br/>RBI API 580/581<br/>MTBF/MTTR/OEE]:::engine
+        PIPE[Pipelines<br/>ASME B31.4/B31.8 • B31G]:::engine
     end
 
-    %% Layer 3: Calculation engines (vertical stack)
-    subgraph L3["Calculation engines"]
-        direction TB
-        ASTM[ASTM G4]:::calc
-        DWM[De Waard-Milliams]:::calc
-        MR[MR0175]:::calc
-        CP[SP0169]:::calc
-        PSV[API 520/526]:::calc
-        B31G[ASME B31G]:::calc
-        NORSK[NORSOK M-506]:::calc
-        REL[Reliability Weibull]:::calc
+    %% Rule engine
+    subgraph Rules["Recommendation engine"]
+        R[Rules R1–R17<br/>open → acknowledge → resolve → reopen]:::engine
     end
 
-    %% Layer 4: Operational modules (vertical stack)
-    subgraph L4["Operational modules"]
-        direction TB
-        DASH[Dashboard]:::module
-        CORR[Corrosion]:::module
-        PSVV[Pressure Relief Valves]:::module
-        PIPE[Pipelines & Line Assets]:::module
-        MAP[Schematic Map]:::module
-        APM[Asset Performance Mgmt]:::module
-        INGEST[Data Ingestion]:::module
-        REC[Recommendations]:::module
-        REPORTS[Reports]:::module
-        GLOSS[Glossary]:::module
-        ADMIN[Administration]:::module
+    %% Data exchange
+    subgraph Data["Data exchange (offline)"]
+        CSV[CSV import / validation]:::external
+        WITSML[WITSML-lite import]:::external
+        IWF[Portable case file<br/>.iwf export / import]:::external
     end
 
-    %% Layer 5: Rule engine R1-R17 (vertical stack)
-    subgraph L5["Rule engine R1-R17"]
-        direction TB
-        R1[R1 Corrosion Critical]:::rules
-        R2[R2 Corrosion Trend]:::rules
-        R3[R3 Inhibitor Efficiency]:::rules
-        R4[R4 Inhibitor Residual]:::rules
-        R5[R5 Stuck Sensor]:::rules
-        R6[R6 Inspection Overdue]:::rules
-        R7[R7 DWM Model]:::rules
-        R8[R8 Sour Service]:::rules
-        R9[R9 Next Inspection]:::rules
-        R10[R10 MTBF Warning]:::rules
-        R11[R11 Availability]:::rules
-        R12[R12 Repeated Failures]:::rules
-        R13[R13 PSV Test Overdue]:::rules
-        R14[R14 PSV Margin Neg]:::rules
-        R15[R15 RUL < 12 mo]:::rules
-        R16[R16 PSV Inspection]:::rules
-        R17[R17 ILI Anomaly]:::rules
+    %% Optional desktop
+    subgraph Desktop["Desktop (optional)"]
+        E[Electron<br/>portable .exe<br/>no installation]:::external
     end
 
-    %% Layer 6: Data exchange (vertical stack)
-    subgraph L6["Data exchange<br/>offline"]
-        direction TB
-        CSV[CSV import]:::data
-        WITSML[WITSML-lite import]:::data
-        IWF[.iwf portable<br/>case file]:::data
-    end
-
-    %% Layer 7: Desktop & Output (vertical stack)
-    subgraph L7["Desktop & Output"]
-        direction TB
-        E[Electron<br/>portable .exe]:::desktop
-        PDF[PDF output<br/>browser print]:::data
-    end
-
-    %% Connections - User -> Access -> PWA
-    U --> LOCK
-    LOCK --> UI
-    U --> THEME
-    THEME --> UI
-
-    %% PWA internal
+    %% Connections
+    U --> UI
     UI --> SW
     SW --> IDB
     IDB <--> UI
-
-    %% Modules -> Calc engines
-    CORR --> ASTM
-    CORR --> DWM
-    CORR --> MR
-    CORR --> CP
-    CORR --> NORSK
-    PSVV --> PSV
-    PIPE --> B31G
-    APM --> REL
-
-    %% Calc engines -> Rules
-    ASTM --> R1
-    DWM --> R7
-    MR --> R8
-    CP --> R1
-    PSV --> R14
-    B31G --> R17
-    REL --> R15
-
-    %% Modules -> Rules
-    CORR --> R1
-    CORR --> R2
-    CORR --> R3
-    CORR --> R5
-    PSVV --> R13
-    PSVV --> R16
-    APM --> R6
-    APM --> R10
-    APM --> R11
-    APM --> R12
-
-    %% Rules -> IDB
-    R1 --> IDB
-    R2 --> IDB
-    R3 --> IDB
-    R4 --> IDB
-    R5 --> IDB
-    R6 --> IDB
-    R7 --> IDB
-    R8 --> IDB
-    R9 --> IDB
-    R10 --> IDB
-    R11 --> IDB
-    R12 --> IDB
-    R13 --> IDB
-    R14 --> IDB
-    R15 --> IDB
-    R16 --> IDB
-    R17 --> IDB
-
-    %% Data exchange
+    
+    UI --> CORR
+    UI --> PSV
+    UI --> APM
+    UI --> PIPE
+    
+    CORR --> R
+    PSV --> R
+    APM --> R
+    PIPE --> R
+    
+    R --> IDB
+    
     CSV --> IDB
     WITSML --> IDB
     IDB --> IWF
-
-    %% Reports & modules -> IDB / PDF
-    REPORTS --> IDB
-    REPORTS --> PDF
-    GLOSS --> IDB
-    ADMIN --> IDB
-    MAP --> IDB
-    INGEST --> IDB
-    DASH --> IDB
-
-    %% Desktop
+    
     E --> SW
 
     linkStyle default stroke-width:2px,fill:none,stroke:#666
