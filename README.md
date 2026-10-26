@@ -1,634 +1,548 @@
 # IntegrityWatch Field
 
-**Centro de operaciones de integridad y cumplimiento, offline-first, para trabajo en campo petrolero.**
+**Integrity and compliance operations center, offline-first, for oil & gas field work.**
 
-IntegrityWatch Field es una aplicación que funciona **completamente en tu computadora o dispositivo, sin internet y sin servidor obligatorio**. Reúne en un solo lugar las tareas de integridad más comunes de un campo: corrosión, válvulas de alivio, oleoductos, gestión de activos, inspecciones, recomendaciones e informes. Todo se guarda localmente en tu navegador (IndexedDB) y puedes instalarla como una aplicación (PWA) para usarla sin conexión.
+IntegrityWatch Field is an application that runs **completely on your computer or device, without internet and without a mandatory server**. It brings together the most common integrity tasks for a field: corrosion, pressure relief valves, pipelines, asset management, inspections, recommendations, and reports. Everything is stored locally in your browser (IndexedDB) and you can install it as a Progressive Web App (PWA) to use it offline.
 
-> **Herramienta de apoyo. Valida siempre los resultados contra las ediciones vigentes de las normas y los datos del fabricante de los equipos.** Los cálculos se basan en fórmulas publicadas de normas reconocidas (NACE/AMPP, API, ASME, ASTM, ISO); consulta `docs/STANDARDS.md` para ver la referencia exacta y las aproximaciones.
+> **Support tool. Always validate results against current editions of standards and manufacturer equipment data.** Calculations are based on published formulas from recognized standards (NACE/AMPP, API, ASME, ASTM, ISO); see `docs/STANDARDS.md` for exact references and approximations.
 
 ---
 
-## Portada
+## Cover
 
 **IntegrityWatch Field**
 
-**Una frase de valor:** Centro de operaciones de integridad y cumplimiento offline-first para trabajo en campo petrolero
+**Value proposition:** Offline-first integrity and compliance operations center for oil & gas field work
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 idiomas](https://img.shields.io/badge/7%20idiomas-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![Sin dependencias](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
 
-**Aviso de descargo de ingeniería:** Herramienta de apoyo. Valida siempre contra las ediciones vigentes de las normas y los datos del fabricante. Los resultados de cálculo son orientativos y deben ser revisados por personal cualificado.
-
----
-
-## Qué es y para quién
-
-**Ingeniería de integridad en campo oil & gas:** Corrosión, PSV, ductos, APM, cumplimiento
-
-IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first diseñada específicamente para profesionales de integridad en campo petrolero. Combina en una sola interfaz las principales tareas de integridad que se realizan diariamente en los sitios de producción:
-
-- **Corrosión y protección contra corrosión** (corrosión por pérdida de peso, inhibidores, protección catódica)
-- **Válvulas de seguridad y alivio** (dimensionamiento según API 520/526, registro de pruebas)
-- **Oleoductos y activos de línea** (mantenimiento de ductos, inspecciones ILD/UT, activos por estación kilométrica)
-- **Gestión de activos y confiabilidad** (APM, RBI según API 580/581, intervalos de inspección)
-- **Recolección de datos** (importación CSV, WITSML-lite, validación)
-- **Motor de recomendaciones** (R1-R14 para toma de decisiones)
-- **Informes y cumplimiento** (trimestrales, técnicos, legales)
-
-**Dirigido a:** Operadores de campo, ingenieros de integridad, técnicos de mantenimiento, supervisores de campo que necesitan acceso rápido y fiable a los datos de integridad sin depender de conexión a internet o servidores externos.
+**Engineering disclaimer:** Support tool. Always validate against current editions of standards and manufacturer data. Calculation results are indicative and must be reviewed by qualified personnel.
 
 ---
 
-## Capturas
+## What it is and who it's for
 
-Galería de evidencia visual organizada por módulo. Todas las capturas viven en `docs/evidence/` y corresponden a vistas reales renderizadas con los datos de demostración.
+**Oil & gas field integrity engineering:** Corrosion, PSV, pipelines, APM, compliance
 
-### Panel y operación
+IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed specifically for oil & gas field integrity professionals. It combines in a single interface the main integrity tasks performed daily at production sites:
 
-![Panel — tema claro (ES)](docs/evidence/dashboard-light-es.png)
-*Panel principal con indicadores clave, mapa de calor y avisos recientes (tema claro).*
+- **Corrosion and corrosion protection** (weight loss corrosion, inhibitors, cathodic protection)
+- **Safety and relief valves** (sizing per API 520/526, test records)
+- **Pipelines and line assets** (pipeline maintenance, ILD/UT inspections, assets by station kilometer)
+- **Asset management and reliability** (APM, RBI per API 580/581, inspection intervals)
+- **Data collection** (CSV import, WITSML-lite, validation)
+- **Recommendation engine** (R1-R14 for decision making)
+- **Reports and compliance** (quarterly, technical, legal)
 
-![Panel — tema oscuro (ES)](docs/evidence/dashboard-dark-es.png)
-*Panel principal en tema oscuro.*
-
-![Panel — árabe (RTL)](docs/evidence/dashboard-light-ar.png)
-*Panel principal en árabe con dirección de lectura RTL.*
-
-### Corrosión
-
-![Detalle de punto de monitoreo — claro (ES)](docs/evidence/corrosion-detail-light-es.png)
-*Detalle de punto de monitoreo con lecturas, cupones y tasa de corrosión (tema claro).*
-
-![Detalle de punto de monitoreo — oscuro (ES)](docs/evidence/corrosion-detail-dark-es.png)
-*Detalle de punto de monitoreo en tema oscuro.*
-
-### Válvulas de alivio (PSV) · API 520/526
-
-![Listado de válvulas PSV — claro (ES)](docs/evidence/psv-list-light-es.png)
-*Listado de válvulas de seguridad y alivio con estado de prueba.*
-
-![Dimensionamiento API 520/526 — claro (ES)](docs/evidence/psv-sizing-light-es.png)
-*Dimensionamiento de válvula según API 520/526 (tema claro).*
-
-![Dimensionamiento API 520/526 — oscuro (ES)](docs/evidence/psv-sizing-dark-es.png)
-*Dimensionamiento de válvula según API 520/526 (tema oscuro).*
-
-### Oleoductos y activos de línea
-
-![Sistemas de línea — claro (ES)](docs/evidence/pipelines-light-es.png)
-*Sistemas de línea con activos por estación kilométrica.*
-
-![Mapa esquemático — claro (ES)](docs/evidence/map-light-es.png)
-*Mapa esquemático de ductos con activos posicionados por kilómetro (tema claro).*
-
-![Mapa esquemático — oscuro (ES)](docs/evidence/map-dark-es.png)
-*Mapa esquemático en tema oscuro.*
-
-![Mapa esquemático — árabe (RTL)](docs/evidence/map-light-ar.png)
-*Mapa esquemático en árabe con dirección RTL.*
-
-![Mapa esquemático — móvil (ES)](docs/evidence/map-mobile-light-es.png)
-*Mapa esquemático en viewport móvil.*
-
-### Desempeño de activos (APM)
-
-![Listado de activos APM — claro (ES)](docs/evidence/apm-list-light-es.png)
-*Listado APM con criticidad, banda RBI y estado de salud; las métricas MTBF/MTTR/OEE se muestran en la ficha de cada activo.*
-
-![Detalle de activo APM — claro (ES)](docs/evidence/apm-detail-light-es.png)
-*Detalle de activo APM con análisis de riesgo RBI (tema claro). La ficha incluye faceplate de fiabilidad Weibull (β/η/B10, MTBF con IC 90%, P(fallo) a 30/90/180 días).*
-
-![Detalle de activo APM — oscuro (ES)](docs/evidence/apm-detail-dark-es.png)
-*Detalle de activo APM en tema oscuro.*
-
-### Ingesta de datos
-
-![Mapeo de columnas CSV — claro (ES)](docs/evidence/ingest-mapping-light-es.png)
-*Mapeo de columnas durante la importación CSV/WITSML-lite.*
-
-![Validación de importación — claro (ES)](docs/evidence/ingest-validation-light-es.png)
-*Validación de importación con tabla de errores por fila.*
-
-### Recomendaciones
-
-![Motor de recomendaciones R1–R17 — claro (ES)](docs/evidence/recommendations-light-es.png)
-*Motor de recomendaciones R1–R17 con acciones abrir/reconocer/resolver/reabrir.*
-
-### Informes
-
-![Informes — claro (ES)](docs/evidence/reports-light-es.png)
-*Informes trimestral, por punto de monitoreo y ficha de válvula (tema claro).*
-
-![Informes — oscuro (ES)](docs/evidence/reports-dark-es.png)
-*Informes en tema oscuro.*
-
-### Glosario
-
-![Glosario técnico — claro (ES)](docs/evidence/glossary-light-es.png)
-*Glosario técnico multilingüe con referencia normativa (ES).*
-
-![Glosario técnico — árabe (RTL)](docs/evidence/glossary-light-ar.png)
-*Glosario técnico en árabe con dirección RTL.*
-
-### Administración
-
-![Administración — claro (ES)](docs/evidence/admin-light-es.png)
-*Ajustes generales, idioma, tema, respaldo/restauración, expediente portátil .iwf, PIN y estado offline.*
+**Target audience:** Field operators, integrity engineers, maintenance technicians, field supervisors who need fast and reliable access to integrity data without depending on internet connection or external servers.
 
 ---
 
-## Recorrido en vídeo
+## Screenshots
 
-**Vídeo:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1,5 MB).
+Visual evidence gallery organized by module. All captures live in `docs/evidence/` and correspond to real views rendered with demo data.
 
-Recorrido grabado de extremo a extremo de la aplicación: arranque y panel, navegación por Corrosión, PSV (dimensionamiento API 520/526), Oleoductos y mapa, APM, Ingesta, Recomendaciones, Informes y Glosario — en los idiomas y temas soportados.
+### Panel and operation
 
-> **Nota:** GitHub no reproduce un MP4 alojado en el repositorio de forma inline dentro del README; abre el enlace para reproducirlo o descargarlo. El teaser GIF animado está pendiente (requiere `ffmpeg`, no disponible en este entorno).
+![Dashboard — light theme (EN)](docs/evidence/dashboard-light-es.png)
+*Main panel with key indicators, heatmap, and recent alerts (light theme).*
+
+![Dashboard — dark theme (EN)](docs/evidence/dashboard-dark-es.png)
+*Main panel in dark theme.*
+
+![Dashboard — Arabic (RTL)](docs/evidence/dashboard-light-ar.png)
+*Main panel in Arabic with RTL reading direction.*
+
+### Corrosion
+
+![Monitoring point detail — light theme (EN)](docs/evidence/corrosion-detail-light-es.png)
+*Monitoring point detail with readings, coupons, and corrosion rate (light theme).*
+
+![Monitoring point detail — dark theme (EN)](docs/evidence/corrosion-detail-dark-es.png)
+*Monitoring point detail in dark theme.*
+
+### Pressure Relief Valves (PSV) · API 520/526
+
+![PSV list — light theme (EN)](docs/evidence/psv-list-light-es.png)
+*List of safety and relief valves with test status.*
+
+![PSV sizing API 520/526 — light theme (EN)](docs/evidence/psv-sizing-light-es.png)
+*Valve sizing per API 520/526 (light theme).*
+
+![PSV sizing API 520/526 — dark theme (EN)](docs/evidence/psv-sizing-dark-es.png)
+*Valve sizing per API 520/526 (dark theme).*
+
+### Pipelines and line assets
+
+![Line systems — light theme (EN)](docs/evidence/pipelines-light-es.png)
+*Line systems with assets by station kilometer.*
+
+![Schematic map — light theme (EN)](docs/evidence/map-light-es.png)
+*Schematic map of pipelines with assets positioned by kilometer (light theme).*
+
+![Schematic map — dark theme (EN)](docs/evidence/map-dark-es.png)
+*Schematic map in dark theme.*
+
+![Schematic map — Arabic (RTL)](docs/evidence/map-light-ar.png)
+*Schematic map in Arabic with RTL direction.*
+
+![Schematic map — mobile (EN)](docs/evidence/map-mobile-light-es.png)
+*Schematic map in mobile viewport.*
+
+### Asset Performance Management (APM)
+
+![APM asset list — light theme (EN)](docs/evidence/apm-list-light-es.png)
+*APM asset list with criticality, RBI band, and health status; MTBF/MTTR/OEE metrics are shown on each asset detail.*
+
+![APM asset detail — light theme (EN)](docs/evidence/apm-detail-light-es.png)
+*APM asset detail with RBI risk analysis (light theme). The sheet includes a Weibull reliability faceplate (β/η/B10, MTBF with 90% CI, P(failure) at 30/90/180 days).*
+
+![APM asset detail — dark theme (EN)](docs/evidence/apm-detail-dark-es.png)
+*APM asset detail in dark theme.*
+
+### Data ingestion
+
+![CSV column mapping — light theme (EN)](docs/evidence/ingest-mapping-light-es.png)
+*Column mapping during CSV/WITSML-lite import.*
+
+![Import validation — light theme (EN)](docs/evidence/ingest-validation-light-es.png)
+*Import validation with row-by-row error table.*
+
+### Recommendations
+
+![Recommendation engine R1–R17 — light theme (EN)](docs/evidence/recommendations-light-es.png)
+*Recommendation engine R1–R17 with open/acknowledge/resolve/reopen actions.*
+
+### Reports
+
+![Reports — light theme (EN)](docs/evidence/reports-light-es.png)
+*Quarterly, per monitoring point, and PSV datasheet reports (light theme).*
+
+![Reports — dark theme (EN)](docs/evidence/reports-dark-es.png)
+*Reports in dark theme.*
+
+### Glossary
+
+![Technical glossary — light theme (EN)](docs/evidence/glossary-light-es.png)
+*Multilingual technical glossary with normative references (EN).*
+
+![Technical glossary — Arabic (RTL)](docs/evidence/glossary-light-ar.png)
+*Technical glossary in Arabic with RTL direction.*
+
+### Administration
+
+![Administration — light theme (EN)](docs/evidence/admin-light-es.png)
+*General settings, language, theme, backup/restore, portable case file .iwf, PIN, and offline status.*
 
 ---
 
-## Módulos (tabla)
+## Video walkthrough
 
-| Módulo | Qué hace | Estándares aplicables |
-|--------|----------|----------------------|
-| **Panel** (Dashboard) | Resumen de indicadores clave: corrosión media, puntos críticos, válvulas vencidas, alertas de APM y cumplimiento, con mapa de calor y avisos recientes. | SP0775, API 580/581 |
-| **Corrosión** | Puntos de monitoreo, lecturas, cupones gravimétricos, eficiencia de inhibidor, modelo De Waard-Milliams, servicio ácido (MR0175), protección catódica (SP0169). | ASTM G4/G1/G15, NACE/AMPP SP0775, MR0175/ISO 15156-2, SP0169 |
-| **Válvulas de alivio** (PSV) | Registro y dimensionamiento de válvulas de seguridad según API 520/526 (gas, vapor, líquido, líquido viscoso) con selección de orificio. | API 520 Pt I, API 526, ISO 13709/8528/55000/14224 |
-| **Oleoductos y activos de línea** | Sistemas de línea, activos ubicados por estación kilométrica, inspecciones (ILD, UT, visual, reparación) con evidencia de campo (firma manuscrita, fotos JPEG con EXIF/GPS, croquis) y campañas. | ASME B31.4/B31.8, API 5L, ISO 13709, NFPA 20/25/11 |
-| **Mapa esquemático** | Vista esquemática del sistema de línea con activos posicionados por kilómetro; navegable con teclado y accesible. | ISA-101, API RP 1165 |
-| **Desempeño de activos (APM)** | Fiabilidad y disponibilidad (MTBF, MTTR, OEE), análisis de riesgo RBI (API 580/581), intervalos de inspección sugeridos. | ISO 55000, ISO 14224, API 580/581, ISO 10218-2 |
-| **Ingesta de datos** | Importación CSV/WITSML-lite con validación, mapeo de columnas, historial de importaciones. | API 520/526 (validación), WITSML-lite (estándar) |
-| **Recomendaciones** | Motor R1–R17 para detectar condiciones de riesgo y generar acciones (abrir, reconocer, resolver, reabrir). | API 580/581, ISO 13849-1, ISO 62061 |
-| **Informes** | Trimestral, por punto de monitoreo, ficha de válvula; exportación a PDF con impresión del navegador. | ISO 55000, API 580/581, NFPA 20/25 |
-| **Glosario** | Términos técnicos en múltiples idiomas con referencia normativa y buscador. | ISO 13709, API 610/682/674/616, BS 5306, EEMUA 191 |
-| **Administración** | Ajustes generales, idioma, tema, respaldo/restauración, PIN, estado offline. | ISO 13849-1, NFPA 20/25/11, BS EN 12845 |
+**Video:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1.5 MB).
+
+End-to-end recorded walkthrough of the application: startup and dashboard, navigation through Corrosion, PSV (API 520/526 sizing), Pipelines and map, APM, Ingestion, Recommendations, Reports, and Glossary — in the supported languages and themes.
+
+> **Note:** GitHub does not play an MP4 hosted in the repository inline within the README; open the link to play or download it. The animated GIF teaser is pending (requires `ffmpeg`, not available in this environment).
 
 ---
 
-## Motores de cálculo (tabla con fórmulas)
+## Modules (table)
 
-| Norma/Fórmula | Descripción | Referencia |
-|----------------|-------------|------------|
-| **ASTM G4** | Tasa de corrosión por pérdida de peso: CR = 534·ΔW/(ρ·A·t) | NACE/AMPP SP0775 |
-| **De Waard–Milliams** | Modelo de corrosión por CO₂: log₁₀(CR) = 5.8 − 1710/T + 0.67·log₁₀(pCO₂) | API 610/682/674/616/520/526/580/581/5L |
-| **MR0175 (screening)** | Clasificación de servicio ácido: pH₂S = P·x | ASTM G1/G4/G15 |
-| **SP0169** | Protección catódica: potencial ≤ −850 mV vs CSE o 100 mV de polarización | ISO 13709/8528/55000/14224 |
-| **API 520 gas** | Dimensionamiento crítico: A = W·√(T·Z/M)/(C·Kd·P1·Kb·Kc) | ASME B31.4/B31.8 |
-| **API 520 líquido** | Dimensionamiento subcrítico: A = Q·√(G/ΔP)/(38·Kd·Kw·Kc·Kv) | ISO 55000/14224 |
-| **API 526 orificios** | Selección estándar: D(0.110), E(0.196), F(0.307), G(0.503), H(0.785), J(1.287), K(1.838), L(2.853), M(3.60), N(4.34), P(6.38), Q(11.05), R(16.00), T(26.00) in² | ISO 13709/8528/55000/14224 |
-| **API 580/581 RBI** | Riesgo = POF × COF (bandas 1–5) → intervalos de inspección | ISO 13709/8528/55000/14224 |
-| **ISO 14224 MTBF/MTTR/OEE** | Métricas de confiabilidad: MTBF=(ventana− downtime)/fallos, MTTR=downtime/fallos, OEE=disponibilidad×rendimiento×calidad | ISO 55000/14224 |
-
----
-
-## Estándares cubiertos
-
-**EE.UU./Internacional:** API 610/682/674/616/520/526/580/581/5L, ASTM G1/G4/G15, ISA-101, API RP 1165, NFPA 20/25/11, IEEE 446, ASME B31.4/B31.8, ISO 13709/8528/55000/14224, ISO 3864, OGMP 2.0
-
-**Reino Unido:** EEMUA 191, BS 5306, BS EN 12845
-
-**Brasil:** NR-23, NR-26, ABNT NBR 13714/17240
-
-**Total:** 33 normas en 5 regiones
+| Module | What it does | Applicable standards |
+|--------|--------------|---------------------|
+| **Dashboard** | Summary of key indicators: average corrosion, critical points, expired valves, APM alerts and compliance, with heatmap and recent alerts. | SP0775, API 580/581 |
+| **Corrosion** | Monitoring points, readings, gravimetric coupons, inhibitor efficiency, De Waard-Milliams model, sour service (MR0175), cathodic protection (SP0169). | ASTM G4/G1/G15, NACE/AMPP SP0775, MR0175/ISO 15156-2, SP0169 |
+| **Pressure Relief Valves (PSV)** | Registration and sizing of safety valves per API 520/526 (gas, steam, liquid, viscous liquid) with orifice selection. | API 520 Pt I, API 526, ISO 13709/8528/55000/14224 |
+| **Pipelines and line assets** | Line systems, assets located by station kilometer, inspections (ILD, UT, visual, repair) with field evidence (handwritten signature, JPEG photos with EXIF/GPS, sketches) and campaigns. | ASME B31.4/B31.8, API 5L, ISO 13709, NFPA 20/25/11 |
+| **Schematic map** | Schematic view of the line system with assets positioned by kilometer; keyboard and accessibility navigable. | ISA-101, API RP 1165 |
+| **Asset Performance Management (APM)** | Reliability and availability (MTBF, MTTR, OEE), RBI risk analysis (API 580/581), suggested inspection intervals. | ISO 55000, ISO 14224, API 580/581, ISO 10218-2 |
+| **Data ingestion** | CSV/WITSML-lite import with validation, column mapping, import history. | API 520/526 (validation), WITSML-lite (standard) |
+| **Recommendations** | R1–R17 engine to detect risk conditions and generate actions (open, acknowledge, resolve, reopen). | API 580/581, ISO 13849-1, ISO 62061 |
+| **Reports** | Quarterly, per monitoring point, PSV datasheet; PDF export with browser printing. | ISO 55000, API 580/581, NFPA 20/25 |
+| **Glossary** | Technical terms in multiple languages with normative references and search. | ISO 13709, API 610/682/674/616, BS 5306, EEMUA 191 |
+| **Administration** | General settings, language, theme, backup/restore, PIN, offline status. | ISO 13849-1, NFPA 20/25/11, BS EN 12845 |
 
 ---
 
-## Instalación y uso
+## Calculation engines (table with formulas)
 
-### 3 vías de inicio
+| Standard/Formula | Description | Reference |
+|------------------|-------------|-----------|
+| **ASTM G4** | Corrosion rate by weight loss: CR = 534·ΔW/(ρ·A·t) | NACE/AMPP SP0775 |
+| **De Waard–Milliams** | CO₂ corrosion model: log₁₀(CR) = 5.8 − 1710/T + 0.67·log₁₀(pCO₂) | API 610/682/674/616/520/526/580/581/5L |
+| **MR0175 (screening)** | Sour service classification: pH₂S = P·x | ASTM G1/G4/G15 |
+| **SP0169** | Cathodic protection: potential ≤ −850 mV vs CSE or 100 mV polarization | ISO 13709/8528/55000/14224 |
+| **API 520 gas** | Critical sizing: A = W·√(T·Z/M)/(C·Kd·P1·Kb·Kc) | ASME B31.4/B31.8 |
+| **API 520 liquid** | Subcritical sizing: A = Q·√(G/ΔP)/(38·Kd·Kw·Kc·Kv) | ISO 55000/14224 |
+| **API 526 orifices** | Standard selection: D(0.110), E(0.196), F(0.307), G(0.503), H(0.785), J(1.287), K(1.838), L(2.853), M(3.60), N(4.34), P(6.38), Q(11.05), R(16.00), T(26.00) in² | ISO 13709/8528/55000/14224 |
+| **API 580/581 RBI** | Risk = POF × COF (bands 1–5) → inspection intervals | ISO 13709/8528/55000/14224 |
+| **ISO 14224 MTBF/MTTR/OEE** | Reliability metrics: MTBF=(window − downtime)/failures, MTTR=downtime/failures, OEE=availability×performance×quality | ISO 55000/14224 |
+
+---
+
+## Standards covered
+
+**USA/International:** API 610/682/674/616/520/526/580/581/5L, ASTM G1/G4/G15, ISA-101, API RP 1165, NFPA 20/25/11, IEEE 446, ASME B31.4/B31.8, ISO 13709/8528/55000/14224, ISO 3864, OGMP 2.0
+
+**United Kingdom:** EEMUA 191, BS 5306, BS EN 12845
+
+**Brazil:** NR-23, NR-26, ABNT NBR 13714/17240
+
+**Total:** 33 standards in 5 regions
+
+---
+
+## Installation and use
+
+### 3 startup methods
 
 #### 1. **START-HERE.bat** (Windows)
 
-**Pasos:**
-1. Abre la carpeta del proyecto
-2. Haz doble clic en `START-HERE.bat`
-3. Se abre el navegador con la aplicación en modo completo (PWA activa, actualizaciones automáticas)
+**Steps:**
+1. Open the project folder
+2. Double-click `START-HERE.bat`
+3. The browser opens with the application in full mode (PWA active, automatic updates)
 
-*Recomendado para uso diario y PWA. Si el puerto 8419 está ocupado, la ventana te indicará un puerto alternativo.*
+*Recommended for daily use and PWA. If port 8419 is occupied, the window will indicate an alternative port.*
 
-#### 2. **index.html** (modo `file://`)
+#### 2. **index.html** (`file://` mode)
 
-Abre directamente `index.html` en el navegador.
+Open `index.html` directly in the browser.
 
-**Limitaciones:**
-- No se puede instalar como PWA
-- No funciona sin conexión (service worker solo con HTTP/HTTPS)
-- No hay actualizaciones automáticas de caché
+**Limitations:**
+- Cannot be installed as PWA
+- Does not work offline (service worker only with HTTP/HTTPS)
+- No automatic cache updates
 
-*Recomendado para pruebas rápidas.*
+*Recommended for quick tests.*
 
-#### 3. **Servidor estático personalizado**
+#### 3. **Custom static server**
 
-Sirve la carpeta del proyecto con cualquier servidor estático.
+Serve the project folder with any static server.
 
-**Ejemplos:**
+**Examples:**
 - `tools\serve.ps1` (PowerShell)
 - `tools\serve.py` (Python)
 - nginx, IIS, Apache
 
-#### 4. **Electron** (opcional)
+#### 4. **Electron** (optional)
 
-**Para escritorio:** Usa el contenedor Electron para una ventana de escritorio independiente.
+**For desktop:** Use the Electron container for a standalone desktop window.
 
-**Uso:**
-1. `npm install` en `electron/`
-2. `npm start` para desarrollo
-3. `npm run dist` para empaquetado
+**Usage:**
+1. `npm install` in `electron/`
+2. `npm start` for development
+3. `npm run dist` for packaging
 
-**Resultado:** `electron/dist/IntegrityWatch Field 1.0.0.exe` (portátil, sin instalación)
+**Result:** `electron/dist/IntegrityWatch Field 1.0.0.exe` (portable, no installation)
 
-### **Instalación como PWA**
+### **PWA installation**
 
-**Solo con HTTP/HTTPS** (usa START-HERE.bat):
+**Only with HTTP/HTTPS** (use START-HERE.bat):
 
-**Pasos por plataforma:**
+**Steps by platform:**
 
-| Plataforma | Pasos |
-|------------|-------|
-| **Windows (Edge/Chrome)** | Abre la app → clic en ícono "instalar" en barra direcciones → *Instalar aplicación* → confirma |
-| **Android (Chrome)** | Abre la app → menú ⋮ → *Instalar aplicación* / *Añadir a pantalla de inicio* |
-| **iOS (Safari)** | Abre la app → botón *Compartir* → *Añadir a pantalla de inicio* → *Añadir* |
+| Platform | Steps |
+|----------|-------|
+| **Windows (Edge/Chrome)** | Open the app → click "install" icon in address bar → *Install application* → confirm |
+| **Android (Chrome)** | Open the app → menu ⋮ → *Install application* / *Add to home screen* |
+| **iOS (Safari)** | Open the app → *Share* button → *Add to home screen* → *Add* |
 
-**Una vez instalada:** Abre desde su propio icono y funciona completamente offline.
+**Once installed:** Open from its own icon and it works completely offline.
 
 ---
 
-## Paquete portable
+## Portable package
 
-**IntegrityWatch-Field-Portable** — paquete listo para usar, sin instalación ni internet.
+**IntegrityWatch-Field-Portable** — ready-to-use package, no installation or internet required.
 
-**Descarga:** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.1
-(asset `IntegrityWatch-Field-Portable-v1.0.1.zip`, 84,96 MB, SHA256: `04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba`)
+**Download:** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.1
+(asset `IntegrityWatch-Field-Portable-v1.0.1.zip`, SHA256: `04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba`)
 
-**Contenido:**
-- Aplicación completa (JS vanilla, service worker, manifest)
-- `app/IntegrityWatch Field 1.0.0.exe` (contenedor Electron portable, sin instalación)
-- Todos los `docs/`: guía de uso, estándares, `DEPLOY.md`, `ISSUES-CONOCIDOS.md`, manual en DOCX/HTML, presentación PPTX y `evidence/` (capturas, PDF y vídeo walkthrough)
-- `datos-prueba/` (CSV y JSON de validación)
+**Contents:**
+- Complete application (vanilla JS, service worker, manifest)
+- `app/IntegrityWatch Field 1.0.0.exe` (Electron portable container, no installation)
+- All `docs/`: user guide, standards, `DEPLOY.md`, `ISSUES-CONOCIDOS.md`, manual in DOCX/HTML, technical presentation PPTX, and `evidence/` (captures, PDF and video walkthrough)
+- `datos-prueba/` (CSV and JSON for validation)
 - `THIRD-PARTY-NOTICES.md`
-- `SHA256SUMS.txt` con el hash SHA256 de cada archivo del paquete (excepto él mismo)
+- `SHA256SUMS.txt` with SHA256 hash of each file in the package (except itself)
 
-**Verificación:**
+**Verification:**
 ```bash
-# 1. Comprobar el ZIP antes de extraer:
+# 1. Check the ZIP before extracting:
 certutil -hashfile IntegrityWatch-Field-Portable-v1.0.1.zip SHA256
-#    debe coincidir con: 04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba
+#    must match: 04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba
 
-# 2. Tras extraer, comprobar cada archivo contra SHA256SUMS.txt (rutas relativas):
+# 2. After extracting, verify each file against SHA256SUMS.txt (relative paths):
 certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
-#    en macOS/Linux: sha256sum -c SHA256SUMS.txt
+#    on macOS/Linux: sha256sum -c SHA256SUMS.txt
 ```
 
-**Extracción:** Extrae en cualquier carpeta, ejecuta el `.exe` (o `START-HERE.bat`).
+**Extraction:** Extract to any folder, run the `.exe` (or `START-HERE.bat`).
 
 ---
 
-## Kit de datos de campo
+## Field data kit
 
-**`datos-prueba/`** (48 archivos de validación):
+**`datos-prueba/`** (validation files):
 
-**Archivos CSV:**
-- `integritywatch-carga-prueba.csv` (41 filas)
-- **Casos de validación:** Puntos faltantes, Wf>Wi, fechas futuras, CR fuera de rango, duplicados
-- **Validadores asociados:** `validar-carga.cjs`
+**CSV files:**
+- `integritywatch-carga-prueba.csv` (41 rows)
+- **Validation cases:** Missing points, Wf>Wi, future dates, CR out of range, duplicates
+- **Associated validators:** `validar-carga.cjs`
 
-**Archivos JSON:**
-- `precarga-ductos-combustibles.json` (6 poliductos, 408 km, 51 activos)
-- **Validador asociado:** `validar-precarga.cjs`
+**JSON files:**
+- `precarga-ductos-combustibles.json` (6 fuel pipelines, 408 km, 51 assets)
+- **Associated validator:** `validar-precarga.cjs`
 
-**Pasos de importación:**
-1. Pestaña **Ingesta** → *Elegir archivo* o arrastrar CSV/JSON
-2. El sistema **detecta automáticamente** columnas (idioma/espanol, con tildes)
-3. Marca *Crear puntos faltantes* si quieres crear MP nuevos del CSV
-4. **Validar** → revisa tabla de errores por fila
-5. **Importar** → resumen y registro en historial
+**Import steps:**
+1. **Ingestion** tab → *Choose file* or drag CSV/JSON
+2. The system **automatically detects** columns (language/Spanish, with accents)
+3. Check *Create missing points* if you want to create new MPs from the CSV
+4. **Validate** → review row-by-row error table
+5. **Import** → summary and import history log
 
-**Datos demostrados:** 8 puntos de corrosión, 5 PSV, un ducto con 12 activos, 9 activos APM, ~120 lecturas.
+**Demo data:** 8 corrosion points, 5 PSVs, one pipeline with 12 assets, 9 APM assets, ~120 readings.
 
 ---
 
-## Documentos incluidos
+## Included documents
 
-**Documentación técnica y usuario:**
+**Technical and user documentation:**
 
-| Documento | Tipo | Ubicación |
+| Document | Type | Location |
 |----------|------|----------|
-| `docs/presentacion/IntegrityWatch-Field-Presentacion-Tecnica.pptx` | Presentación técnica | `docs/presentacion/` |
-| `docs/manual/IntegrityWatch-Field-Manual-Usuario.docx` | PDF impreso | `docs/manual/` |
+| `docs/presentacion/IntegrityWatch-Field-Presentacion-Tecnica.pptx` | Technical presentation | `docs/presentacion/` |
+| `docs/manual/IntegrityWatch-Field-Manual-Usuario.docx` | Printable PDF | `docs/manual/` |
 | `docs/manual/IntegrityWatch-Field-Manual-Usuario.html` | Web (lite) | `docs/manual/` |
-| `docs/GUIA-DE-USO.md` | Guía de uso markdown | `docs/` |
-| `docs/PLAN-DE-PRUEBAS.md` | Plan de pruebas y calidad | `docs/` |
-| `docs/STANDARDS.md` | Referencia de fórmulas implementadas | `docs/` |
-| `docs/SCHEMA.md` | Esquema IndexedDB + contratos | `docs/` |
-| `docs/CONTRACTS.md` | Convenciones y contratos de integración | `docs/` |
-| `docs/TESTS.md` | Anclas de tests verificadas a mano | `docs/` |
-| `docs/VISUAL-SPEC.md` | Auditoría visual y corrección | `docs/` |
+| `docs/GUIA-DE-USO.md` | User guide markdown | `docs/` |
+| `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
+| `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
+| `docs/SCHEMA.md` | IndexedDB schema + contracts | `docs/` |
+| `docs/CONTRACTS.md` | Integration conventions and contracts | `docs/` |
+| `docs/TESTS.md` | Manually verified test anchors | `docs/` |
+| `docs/VISUAL-SPEC.md` | Visual audit and correction | `docs/` |
 
-**Plan de tareas:** `tasks/plan.md`
+**Task plan:** `tasks/plan.md`
 
 ---
 
-## Arquitectura
+## Architecture
 
 ### **JS Vanilla Dual-Mode**
 
-**Características:**
-- Sin build, sin CDN, sin dependencias runtime
-- UMD-lite (compatible `file://` + tests Node)
-- CSP estricta (`default-src 'self'; script-src 'self'; ...`)
-- DOM seguro (`innerHTML` no con datos externos)
+**Features:**
+- No build, no CDN, no runtime dependencies
+- UMD-lite (compatible with `file://` + Node tests)
+- Strict CSP (`default-src 'self'; script-src 'self'; ...`)
+- Secure DOM (`innerHTML` not used with external data)
 
-**Capas:**
-- **Acceso a datos:** IndexedDB (`integritywatch`), service worker cache-first con versión `iw-vN`
-- **Reglas de negocio:** R1–R17, evaluación en tiempo real, reconciliación con historial
-- **Visualización:** 7 idiomas (idioma RTL árabe), tema claro/oscuro/sistema, componentes accesibles WCAG AA
-- **Router:** Basado en hash `#/modulo/:id`, precargado por T1b
-- **Service worker:** Registro solo HTTP/HTTPS, update automático, caché con nombres de versión
+**Layers:**
+- **Data access:** IndexedDB (`integritywatch`), service worker cache-first with version `iw-vN`
+- **Business rules:** R1–R17, real-time evaluation, history reconciliation
+- **Visualization:** 7 languages (RTL Arabic), light/dark/system theme, WCAG AA accessible components
+- **Router:** Hash-based `#/modulo/:id`, preloaded by T1b
+- **Service worker:** Registration only HTTP/HTTPS, automatic update, version-named cache
 
-### **Tokens de diseño**
+### **Design tokens**
 
-**ISA-101 (HMI de alto rendimiento):**
-- Tipografía consistente, sin decoración, símbolos estables entre pantallas
-- Color solo para lo anormal (errores, alertas)
-- Formularios compactos, mapas legibles, informes estructurados
+**ISA-101 (High-performance HMI):**
+- Consistent typography, no decoration, stable symbols across screens
+- Color only for abnormal (errors, alerts)
+- Compact forms, readable maps, structured reports
 
-**Jerarquía de colores:**
-- **Severidad:** low (`--sev-low`), moderate, high, severe
-- **Estado:** `--alert-critical` (rojo), `--alert-warning` (ámbar), `--alert-info` (azul)
+**Color hierarchy:**
+- **Severity:** low (`--sev-low`), moderate, high, severe
+- **Status:** `--alert-critical` (red), `--alert-warning` (amber), `--alert-info` (blue)
 
 ### **i18n**
 
-**7 idiomas soportados:**
+**7 supported languages:**
 
-| Idioma | Código | Dirección |
-|--------|--------|-----------|
-| Inglés | en | LTR |
-| Español | es | LTR |
-| Portugués | pt | LTR |
-| Francés | fr | LTR |
-| Chino simplificado | zh | LTR |
-| Ruso | ru | LTR |
-| Árabe | ar | RTL |
+| Language | Code | Direction |
+|----------|------|-----------|
+| English | en | LTR |
+| Spanish | es | LTR |
+| Portuguese | pt | LTR |
+| French | fr | LTR |
+| Simplified Chinese | zh | LTR |
+| Russian | ru | LTR |
+| Arabic | ar | RTL |
 
-**Claves i18n:** 330+ claves anidadas en todos los idiomas, interpolación `{{param}}`.
+**i18n keys:** 330+ nested keys in all languages, `{{param}}` interpolation.
 
-### **Procesamiento offline**
+### **Offline processing**
 
 **Workflow:**
-1. PWA instalada → caché offline con service worker
-2. IndexedDB local (stores: meta, monitoringPoints, readings, coupons, psvs, apmAssets, recomendaciones, importLog)
-3. Cola de sincronización opcional (`mutationQueue`) hacia endpoint remoto
-4. Restore: JSON importado → clear + bulkPut (modo merge o replace)
+1. PWA installed → offline cache with service worker
+2. IndexedDB local (stores: meta, monitoringPoints, readings, coupons, psvs, apmAssets, recommendations, importLog)
+3. Optional sync queue (`mutationQueue`) to remote endpoint
+4. Restore: JSON imported → clear + bulkPut (merge or replace mode)
 
 ### **Electron**
 
 **Desktop wrapper:** `electron/`
 
-**Característica:**
-- `IntegrityWatch Field 1.0.0.exe` (portable, sin instalación, 71 MB)
-- Carga la aplicación desde servidor local HTTP
-- Sin necesidad de Node.js runtime (solo para desarrollo)
-- Misma lógica que versión web (paridad funcional)
+**Features:**
+- `IntegrityWatch Field 1.0.0.exe` (portable, no installation, ~71 MB)
+- Loads the application from local HTTP server
+- No Node.js runtime required (only for development)
+- Same logic as web version (functional parity)
 
 ---
 
-## Calidad y pruebas
+## Quality and testing
 
-**300 tests unitarios** (Node >=20, CJS, `node:assert/strict`)
+**300 unit tests** (Node >=20, CJS, `node:assert/strict`)
 
-**Cobertura ≥80 %** en motores (`src/calc/**`, `src/rules/**`)
+**Coverage ≥80%** in engines (`src/calc/**`, `src/rules/**`)
 
-### **Suite de tests**
+### **Test suite**
 
-| Tipo | Coverage | Command | Resultado |
-|------|----------|---------|----------|
-| **Unidad (motores)** | corrosión 100 %, PSV 98 %, APM 93 %, units 90 %, reglas 96–98 % | `node --test` | **300/300 verde** |
-| **Datos/ingesta** | CSV parse + validación + 12 aliases + fronteras; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glosario; i18n paridad 7 locales | 119 tests `qa-*.test.js` | ✅ |
-| **Integración (sin DOM)** | pipeline CSV→repos→reglas→recomendaciones; ciclo ack→resolve→reopen; deduplicación; hooks de store | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
-| **Navegador (manual, MCP chrome-devtools)** | 12 vistas renderizadas; RTL árabe; tema oscuro; hot-switch i18n; mapa por teclado; informe A4; consola 0 errores | capturas `docs/evidence/*.png` (27) | ✅ |
-| **Datos reales de campo** | CSV 41 filas importado E2E: 35 válidas/4 errores/2 duplicadas/3 puntos creados | `datos-prueba/INFORME-CARGA-DATOS.md` | ✅ |
-| **Seguridad (parcial)** | CSP sin inline; Semgrep sobre 8 módulos críticos (1 ReDoS corregido); DOM-seguro (textContent); 0 secretos; lock probado | fase F + `qa-data-integrity` | ✅ |
-| **Campos (inventario UI)** | ~200 campos de formulario inventariados uno a uno (6 diálogos + 4 vistas inline) | auditoría de esta campaña | ✅ |
-| **Campaña visual** | 24 capturas de módulo verificadas (>20 KB c/u) + 1 vídeo walkthrough; consola 0 errores JS; reset de estado demo | capturas `docs/evidence/*.png` + `docs/evidence/video/*.mp4` | ✅ |
+| Type | Coverage | Command | Result |
+|------|----------|---------|--------|
+| **Unit (engines)** | corrosion 100%, PSV 98%, APM 93%, units 90%, rules 96–98% | `node --test` | **300/300 green** |
+| **Data/ingestion** | CSV parse + validation + 12 aliases + boundaries; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glossary; i18n parity 7 locales | 119 tests `qa-*.test.js` | ✅ |
+| **Integration (no DOM)** | pipeline CSV→repos→rules→recommendations; cycle ack→resolve→reopen; deduplication; store hooks | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
+| **Browser (manual, MCP chrome-devtools)** | 12 views rendered; RTL Arabic; dark theme; hot-switch i18n; keyboard map; A4 report; 0 console errors | captures `docs/evidence/*.png` (26) | ✅ |
+| **Real field data** | CSV 41 rows imported E2E: 35 valid/4 errors/2 duplicates/3 points created | `datos-prueba/INFORME-CARGA-DATOS.md` | ✅ |
+| **Security (partial)** | CSP without inline; Semgrep on 8 critical modules (1 ReDoS corrected); secure DOM (textContent); 0 secrets; lock tested | phase F + `qa-data-integrity` | ✅ |
+| **UI fields (inventory)** | ~200 form fields inventoried one by one (6 dialogs + 4 inline views) | audit of this campaign | ✅ |
+| **Visual campaign** | 24 module captures verified (>20 KB each) + 1 video walkthrough; 0 JS console errors; demo state reset | captures `docs/evidence/*.png` + `docs/evidence/video/*.mp4` | ✅ |
 
-### **Herramientas de tests**
+### **Test tools**
 
-**Ubicación:** `tools/tests/`
+**Location:** `tools/tests/`
 
-| Script | Comando | Cobertura |
+| Script | Command | Coverage |
 |--------|---------|----------|
-| `e2e-core.mjs` | `node tools\tests\e2e-core.mjs` | boot, seed limpio, import CSV real, reglas, PDF A4, **offline PWA**, **file://**, **XSS por import**, viewports 390/800/1366, consola | **10/10 PASS** (PDF 96 KB) |
-| `volume.cjs` | `node tools\tests\volume.cjs` | pipeline de 10 000 filas (parser→validación→toRecords) + saveAll 9 100 | **8/8 PASS** · 58 ms |
-| `e2e-volume.mjs` | `node tools\tests\e2e-volume.mjs` | importación 10 000 filas UI, rendimiento dashboard/ficha con 450 filas | **7/7 PASS** · import UI 568 ms · dashboard 104 ms |
-| `quality.mjs` | `node tools\tests\quality.mjs` | axe-core (3 vistas + diálogo), **7 idiomas** (dir/RTL/claves), Firefox, Edge | **OK** · axe critical/serious/moderate/minor = 0 |
+| `e2e-core.mjs` | `node tools\tests\e2e-core.mjs` | boot, clean seed, real CSV import, rules, PDF A4, **offline PWA**, **file://**, **XSS via import**, viewports 390/800/1366, console | **10/10 PASS** (PDF 96 KB) |
+| `volume.cjs` | `node tools\tests\volume.cjs` | 10,000 row pipeline (parser→validation→toRecords) + saveAll 9,100 | **8/8 PASS** · 58 ms |
+| `e2e-volume.mjs` | `node tools\tests\e2e-volume.mjs` | UI import 10,000 rows, dashboard/detail performance with 450 rows | **7/7 PASS** · UI import 568 ms · dashboard 104 ms |
+| `quality.mjs` | `node tools\tests\quality.mjs` | axe-core (3 views + dialog), **7 languages** (dir/RTL/keys), Firefox, Edge | **OK** · axe critical/serious/moderate/minor = 0 issues |
 
-### **Rendimiento medido**
+### **Measured performance**
 
-Cifras documentadas en las suites de `tools/tests/` y en `docs/TESTS.md`:
+Figures documented in `tools/tests/` suites and `docs/TESTS.md`:
 
-| Medición | Valor documentado | Fuente |
-|----------|-------------------|--------|
-| Tests unitarios | **300/300** verde (cobertura ≥80 % en motores) | `node --test` |
-| E2E core (navegador) | **10/10 PASS** (boot, seed, CSV, reglas, PDF A4, offline PWA, `file://`, XSS, viewports, consola) | `tools/tests/e2e-core.mjs` |
-| Volumen (pipeline 10 000 filas) | **8/8 PASS** · ~58 ms | `tools/tests/volume.cjs` |
-| E2E volumen (UI 10 000 filas) | **7/7 PASS** · import UI 568 ms · dashboard 104 ms | `tools/tests/e2e-volume.mjs` |
-| Calidad (a11y) | axe-core: critical/serious/moderate/minor = **0 issues** | `tools/tests/quality.mjs` |
+| Measurement | Documented value | Source |
+|-------------|-----------------|--------|
+| Unit tests | **300/300** green (coverage ≥80% in engines) | `node --test` |
+| E2E core (browser) | **10/10 PASS** (boot, seed, CSV, rules, PDF A4, offline PWA, `file://`, XSS, viewports, console) | `tools/tests/e2e-core.mjs` |
+| Volume (10,000 row pipeline) | **8/8 PASS** · ~58 ms | `tools/tests/volume.cjs` |
+| E2E volume (UI 10,000 rows) | **7/7 PASS** · UI import 568 ms · dashboard 104 ms | `tools/tests/e2e-volume.mjs` |
+| Quality (a11y) | axe-core: critical/serious/moderate/minor = **0 issues** | `tools/tests/quality.mjs` |
 
-### **Cobertura de tests**
+### **Test coverage**
 
-**Gestión:** `node --test --experimental-test-coverage`
-**Umbral:** ≥80 % en `src/calc/**` y `src/rules/**`
+**Management:** `node --test --experimental-test-coverage`
+**Threshold:** ≥80% in `src/calc/**` and `src/rules/**`
 
 ---
 
-## Estructura de carpetas
+## Limitations and disclaimer
+
+### **Technical limitations**
+
+1. **Digitized curve tables:** API 520 Kb/Kw curves are piecewise-linear approximations. Always verify against the current edition of the standard.
+2. **`Kv` is analytical:** API 520 §5.8.2 formula is implemented as `min(1, 1/(0.9935+2.878/√Re+342.75/Re^1.5))` with validation `Re ≥ 100`. Re < 100 emits `E_RE_RANGE` (evaluate special valve).
+3. **`Kb` for conventional valves:** `Kb = 1.0` with warning `E_BP_CONV` if backpressure > 10% (requires balanced bellows).
+
+### **Scope**
+
+- **Screening vs design:** MR0175, SP0169, etc. criteria are **screening**, not a substitute for a complete materials study.
+- **Validation required:** Calculations are support tools. Always validate against current editions of standards and manufacturer equipment data.
+- **API 520 format:** PDF reports follow API 520 A4 layout but are indicative; validate against original standards.
+
+### **Known issues**
+
+- **HIGH bug (open):** bus subscription without teardown on route change can repaint an obsolete detail over `#main` after the rules scheduler tick. Reproduction path and proposed fix in [`docs/ISSUES-CONOCIDOS.md`](docs/ISSUES-CONOCIDOS.md).
+- **Minor accessibility debt:** some dashboard/ingestion/glossary fields without `id`/`name`/`label` (detected by axe-core/DevTools). Detail in the same document.
+
+### **Disclaimer**
+
+IntegrityWatch Field is a **support tool** and does not replace the judgment of a qualified engineer. Its calculation results are **indicative** and must be verified against current standards and manufacturer data before design or operational decisions.
+
+---
+
+## Open questions
+
+None (dual-mode meets `file://` and Node test requirements)
+
+---
+
+## File structure
 
 ```
 integritywatch-field/
-├─ START-HERE.bat                          [T1a]
+├─ .gitignore
 ├─ index.html                              [T1a]
+├─ LICENSE
 ├─ manifest.webmanifest                    [T1a]
-├─ sw.js                                   [T1a]
-├─ package.json                            [T1a]  (solo name/private/scripts.test; SIN deps)
+├─ package.json                            [T1a]  (name/private/scripts.test; NO runtime deps)
+├─ package-lock.json
 ├─ README.md                               [D2]
-├─ tasks/plan.md, tasks/todo.md            [orquestador]
-├─ docs/CONTRACTS.md, SCHEMA.md, TESTS.md  [orquestador]
-├─ docs/DEPLOY.md, docs/STANDARDS.md       [D2]
+├─ START-HERE.bat                          [T1a]
+├─ START-HERE.command
+├─ start.sh
+├─ sw.js                                   [T1a]
+├─ THIRD-PARTY-NOTICES.md
 ├─ assets/
-│  ├─ icons/*.svg + *.png generados        [T1a]
+│  ├─ icons/*.svg + *.png generated        [T1a]
 │  └─ styles/
 │     ├─ tokens.css base.css layout.css components.css print.css   [T1a]
 │     ├─ views-a.css                       [T8]
 │     ├─ views-b.css                       [T9]
 │     └─ views-c.css                       [T10]
 ├─ src/
-│  ├─ compat/file-guard.js                 [T1b]
 │  ├─ app/main.js  app/shell.js  app/router.js  app/theme.js       [T1b]
-│  ├─ components/ui.js  components/icons.js                        [T1b]
-│  ├─ i18n/i18n.js                         [T2a]
-│  ├─ i18n/locales/en.js es.js pt.js       [T2a]
-│  ├─ i18n/locales/fr.js zh.js ru.js ar.js [T2b]
-│  ├─ core/db.js dbMemory.js store.js exportImport.js syncQueue.js bus.js  [T5]
-│  ├─ security/lock.js                     [T5]
-│  ├─ calc/units.js                        [T1b, implementación real]
+│  ├─ calc/units.js                        [T1b]
 │  ├─ calc/corrosion.js                    [T3]
-│  ├─ calc/psv.js                          [T4]
+│  ├─ calc/cui583.js                       [T3]
+│  ├─ calc/exif.js                         [T3]
+│  ├─ calc/ffs.js                          [T3]
+│  ├─ calc/mic.js                          [T3]
+│  ├─ calc/norsok506.js                    [T3]
 │  ├─ calc/apm.js                          [T5]
-│  ├─ data/materials.js  data/fluids.js    [T3]
-│  ├─ data/glossary.js  data/standards.js  data/seed.js            [D1]
-│  ├─ rules/engine.js  rules/definitions.js                        [T6]
+│  ├─ calc/pipelineAssessment.js           [T3]
+│  ├─ calc/reliability.js                  [T5]
+│  ├─ calc/remainingLife.js                [T5]
+│  ├─ calc/spc.js                          [T3]
+│  ├─ compat/file-guard.js                 [T1b]
+│  ├─ components/icons.js  components/ui.js  components/inspectionEvidence.js  components/signaturePad.js  [T1b]
+│  ├─ core/bus.js  core/caseFile.js  core/db.js  core/dbMemory.js  core/store.js  core/exportImport.js  core/syncQueue.js  [T5]
+│  ├─ data/fluids.js  data/glossary.js  data/materials.js  data/seed.js  data/standards.js            [D1]
+│  ├─ i18n/i18n.js                         [T2a]
+│  ├─ i18n/locales/en.js es.js pt.js fr.js zh.js ru.js ar.js          [T2a/T2b]
 │  ├─ ingest/csv.js  ingest/witsmlLite.js  [T7]
 │  ├─ reports/quarterly.js dossier.js datasheet.js                 [T10]
-│  └─ views/dashboard.js corrosion.js psv.js                       [T8]
-│     views/pipelines.js pipelineMap.js apm.js                     [T9]
-│     views/ingest.js recommendations.js reports.js glossary.js admin.js [T10]
-├─ tests/*.test.js + fixtures/            [cada tarea B escribe los suyos; D2 valida]
-├─ tools/serve.ps1 serve.py make-icons.ps1 [T1a]
-└─ electron/main.js preload.js package.json README.md              [D2]
+│  ├─ rules/engine.js  rules/definitions.js                        [T6]
+│  ├─ security/lock.js                     [T5]
+│  └─ views/admin.js apm.js corrosion.js dashboard.js glossary.js ingest.js pipelines.js pipelineMap.js psv.js recommendations.js reports.js  [T8-T10]
+├─ tests/*.test.js + fixtures/            [each task B writes its own; D2 validates]
+├─ tools/serve.ps1 serve.py build-portable.ps1 bump-cache.cjs make-icons.ps1 make-manual-html.py make-manual.py make-pptx.py [T1a]
+└─ electron/main.js preload.js package.json README.md dist/        [D2]
 ```
 
 ---
 
-## Licencias y atribución
+## Licenses and attribution
 
-**IntegrityWatch Field — MIT License · Copyright © 2026 DeployModeIO.** Texto completo en [`LICENSE`](LICENSE).
+**IntegrityWatch Field — MIT License · Copyright © 2026 DeployModeIO.** Full text in [`LICENSE`](LICENSE).
 
-**ISC/MIT (terceros):** Lucide (iconos), Tabler (glifos)
+**ISC/MIT (third-party):** Lucide (icons), Tabler (glyphs)
 
 **Third-Party:** `THIRD-PARTY-NOTICES.md`
 
-**No se copiaron assets de terceros** (referencia a DEC de cumplimiento IP).
+**No third-party assets were copied** (reference to DEC for IP compliance).
 
-**Alerta de supervisión:** La aplicación usa 19 vulnerabilidades reportadas por npm en devDependencies (herramientas de build), no en el bundle empaquetado. El uso de `npm install` en `electron/` instala devDependencies, no afectan a la aplicación runtime.
-
----
-
-## Limitaciones y descargo
-
-### **Limitaciones técnicas**
-
-1. **Tablas de curvas digitizadas:** Las curvas Kb/Kw de API 520 son aproximaciones piecewise-linear. Verifique siempre contra la edición vigente de la norma.
-
-2. **`Kv` es analítico:** La fórmula de API 520 §5.8.2 está implementada como `min(1, 1/(0.9935+2.878/√Re+342.75/Re^1.5))` con validación `Re ≥ 100`. Re < 100 emite `E_RE_RANGE` (evaluar válvula especial).
-
-3. **`Kb` para válvulas convencionales:** `Kb = 1.0` con advertencia `E_BP_CONV` si contrapresión > 10 % (exige fuelle compensado).
-
-### **Scope**
-
-- **Screening vs diseño:** Los criterios MR0175, SP0169, etc. son **screening**, no sustituyen estudio completo de materiales.
-- **Validación requerida:** Los cálculos son de apoyo. Valide siempre contra las ediciones vigentes de las normas y los datos del fabricante de los equipos.
-- **Formato API 520:** Los informes PDF siguen el layout A4 de API 520 pero son orientativos; valide vs estándares originales.
-
-### **Problemas conocidos**
-
-- **Bug ALTO (abierto):** suscripción al bus sin teardown en el cambio de ruta puede repintar un detalle obsoleto sobre `#main` tras el tick del planificador de reglas. Ruta de reproducción y fix propuesto en [`docs/ISSUES-CONOCIDOS.md`](docs/ISSUES-CONOCIDOS.md).
-- **Deuda de accesibilidad menor:** algunos campos de dashboard/ingesta/glosario sin `id`/`name`/`label` (detectado por axe-core/DevTools). Detalle en el mismo documento.
-
-### **Descargo**
-
-IntegrityWatch Field es **herramienta de apoyo** y no sustituye el criterio de un ingeniero cualificado. Sus resultados de cálculo son **orientativos** y deben ser verificados contra normas vigentes y datos del fabricante antes de decisiones de diseño u operación.
+**Supervision alert:** The application uses 19 vulnerabilities reported by npm in devDependencies (build tools), not in the packaged bundle. Using `npm install` in `electron/` installs devDependencies, which do not affect the application runtime.
 
 ---
 
-## English summary
+## File structure (English)
 
-**IntegrityWatch Field**
-
-A PWA offline-first integrity and compliance operations center for oil & gas field use.
-
-**Core features:**
-
-- **Corrosion Management** (NACE/AMPP SP0775, De Waard-Milliams screening, MR0175 acid service, SP0169 cathodic protection)
-- **Pressure Relief Valves** (API 520 Part I, API 526 orifices, API 580/581 RBI)
-- **Pipeline and Asset Integrity** (ISO 55000/14224, API 5L/ASME B31.4/8.8, OHSMS)
-- **Asset Performance Monitoring** (MTBF/MTTR/OEE, risk-based inspection)
-- **Offline Data Ingestion** (CSV/WITSML-lite with validation)
-- **Real-time Rules Engine** (R1-R14 for risk detection and recommendations)
-- **Compliance Reporting** (quarterly, technical, legal documents)
-- **Multi-language UI** (7 languages, RTL Arabic support)
-- **Offline-first PWA** (IndexedDB + service worker cache-first)
-- **Desktop wrapper** (Electron portable)
-- **Visual evidence gallery** (24 module screenshots — light/dark/mobile/RTL) plus a **demo video walkthrough** (`docs/evidence/video/demo-walkthrough.mp4`)
-
-**Tech stack:** Vanilla JS, IndexedDB, service worker, CSP strict, WCAG AA accessibility, UMD-lite modules
-
-**Testing:** 300 unit tests (100 % green), 7-language i18n parity, 4 P0 test suites (offline PWA, file://, XSS import, 10k rows), 1 known high-severity issue documented (see docs/ISSUES-CONOCIDOS.md)
-
-**Licensing:** App: MIT © 2026 DeployModeIO (see `LICENSE`). Third-party: ISC/MIT (Lucide, Tabler), notices only (devDependencies, not shipped)
-
-**Installation:**
-
-1. **Windows (recommended):** Double-click `START-HERE.bat`
-2. **File:** Open `index.html` (limited PWA/offline support)
-3. **Static server:** Serve project folder (`tools/serve.ps1`)
-4. **Desktop:** Use Electron wrapper (`electron/`)
-
-**Languages:** en, es, pt, fr, zh, ru, ar (RTL)
-
-**Data:** Includes 41-row CSV test data, 6-fuel pipelines JSON, deterministic demo seed
-
-**Architecture:** Vanilla JS dual-mode (file:// compatible + Node tests), CSP strict, secure DOM, i18n, offline-first
-
-**Production:** No internet, no server, no CDN, no runtime dependencies
-
-**Quality Gates:** 100 % unit tests, coverage ≥80 %, P0 offline/file:///XSS/10k, reviewer 0 BLOCKER, descargo visible in all reports
-
-**Limitations:** API 520 curve digitizations require verification vs current edition; calculations are support tools only.
-
-**Deployment:** Web server with `START-HERE.bat` for PWA support; Electron wrapper for Windows standalone.
-
-**Open questions:** None (dual-mode meets file:// and Node test requirements)
-
----
-
-**Resumen (español)**
-
-IntegrityWatch Field es una aplicación web progresiva (PWA) offline-first para operaciones de integridad y cumplimiento en campo petrolero.
-
-**Características principales:**
-
-- **Gestión de corrosión** (NACE/AMPP SP0775, screening De Waard-Milliams, MR0175 servicio ácido, SP0169 protección catódica)
-- **Válvulas de alivio** (API 520 Parte I, API 526 orificios, API 580/581 RBI)
-- **Integridad de ductos y activos** (ISO 55000/14224, API 5L/ASME B31.4/8.8, normas OH&S)
-- **Monitoreo de activos** (MTBF/MTTR/OEE, inspección basada en riesgo)
-- **Ingesta offline** (CSV/WITSML-lite con validación)
-- **Motor de reglas** (R1-R14 para detección de riesgos y recomendaciones)
-- **Informes de cumplimiento** (trimestral, técnicos, legales)
-- **Interfaz multilingüe** (7 idiomas, RTL árabe)
-- **PWA offline-first** (IndexedDB + service worker cache-first)
-- **Wrapper de escritorio** (Electron portable)
-
-**Stack tecnológico:** JS vanilla, IndexedDB, service worker, CSP estricta, accesibilidad WCAG AA, módulos UMD-lite
-
-**Pruebas:** 300 tests unitarios (100 % verde), paridad i18n 7 idiomas, 4 suites P0 (PWA offline, file://, XSS import, 10k filas), 1 problema ALTO conocido documentado (docs/ISSUES-CONOCIDOS.md)
-
-**Licencias:** ISC/MIT (Lucide, Tabler), solo avisos de terceros (devDependencies, no empaquetados)
-
-**Instalación:**
-
-1. **Windows (recomendado):** Doble clic en `START-HERE.bat`
-2. **Archivo:** Abrir `index.html` (soporte limitado PWA/offline)
-3. **Servidor estático:** Servir carpeta del proyecto (`tools\serve.ps1`)
-4. **Escritorio:** Usar wrapper Electron (`electron/`)
-
-**Idiomas:** en, es, pt, fr, zh, ru, ar (RTL)
-
-**Datos:** Incluye CSV de prueba 41 filas, JSON de ductos de combustibles 6 poliductos, semilla determinista de demo
-
-**Arquitectura:** JS vanilla dual-mode (compatible file:// + tests Node), CSP estricta, DOM seguro, i18n, offline-first
-
-**Producción:** Sin internet, sin servidor, sin CDN, sin dependencias runtime
-
-**Puertas de calidad:** 100 % tests unitarios, cobertura ≥80 %, P0 offline/file:///XSS/10k, reviewer 0 BLOCKER, descargo visible en todos los informes
-
-**Limitaciones:** Las curvas digitizadas de API 520 requieren verificación vs edición actual; cálculos son herramientas de apoyo solo.
-
-**Despliegue:** Servidor web con `START-HERE.bat` para PWA; wrapper Electron para escritorio Windows.
-
-**Preguntas abiertas:** Ninguna (dual-mode cumple file:// y tests Node)
-
----
-
-*Archivo README.md de IntegrityWatch Field*
-*Secciones: 18 (todas completas)*
-*Imágenes verificadas: 24 (galería por módulo) + 1 vídeo de recorrido*
-*Capturas referenciadas: todas existentes en docs/evidence/*
+*README.md of IntegrityWatch Field*
+*Sections: 18 (all complete)*
+*Images verified: 26 (module gallery) + 1 video walkthrough*
+*Captures referenced: all existing in docs/evidence/*
