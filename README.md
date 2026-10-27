@@ -358,6 +358,24 @@ There is no `.bat` on Android, so use one of these three routes:
 
 ---
 
+## User manuals (7 languages)
+
+Plain-language field manuals — install, modules, CSV import, reports and troubleshooting:
+
+| Language | Manual |
+|----------|--------|
+| English | [docs/manual/MANUAL.en.md](docs/manual/MANUAL.en.md) |
+| Español | [docs/manual/MANUAL.es.md](docs/manual/MANUAL.es.md) |
+| Français | [docs/manual/MANUAL.fr.md](docs/manual/MANUAL.fr.md) |
+| Português | [docs/manual/MANUAL.pt.md](docs/manual/MANUAL.pt.md) |
+| Русский | [docs/manual/MANUAL.ru.md](docs/manual/MANUAL.ru.md) |
+| 简体中文 | [docs/manual/MANUAL.zh.md](docs/manual/MANUAL.zh.md) |
+| العربية | [docs/manual/MANUAL.ar.md](docs/manual/MANUAL.ar.md) |
+
+Printable full manual (Spanish): [DOCX](docs/manual/IntegrityWatch-Field-Manual-Usuario.docx) · [HTML](docs/manual/IntegrityWatch-Field-Manual-Usuario.html) · Detailed guide: [GUIA-DE-USO.md](docs/GUIA-DE-USO.md)
+
+---
+
 ## Portable package
 
 **IntegrityWatch-Field-Portable** — ready-to-use package, no installation or internet required. Split into two RAR volumes so it uploads and downloads cleanly.
@@ -437,8 +455,8 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | `docs/presentacion/IntegrityWatch-Field-Presentacion-Tecnica.pptx` | Technical presentation | `docs/presentacion/` |
 | `docs/manual/IntegrityWatch-Field-Manual-Usuario.docx` | Printable PDF | `docs/manual/` |
 | `docs/manual/IntegrityWatch-Field-Manual-Usuario.html` | Web (lite) | `docs/manual/` |
-| `docs/manual/MANUAL.en.md` | User manual — English | `docs/manual/` |
-| `docs/manual/MANUAL.es.md` · `MANUAL.fr.md` · `MANUAL.pt.md` · `MANUAL.ru.md` · `MANUAL.zh.md` · `MANUAL.ar.md` | User manual — Español, Français, Português, Русский, 简体中文, العربية | `docs/manual/` |
+| [docs/manual/MANUAL.en.md](docs/manual/MANUAL.en.md) | User manual — English | `docs/manual/` |
+| [MANUAL.es.md](docs/manual/MANUAL.es.md) · [MANUAL.fr.md](docs/manual/MANUAL.fr.md) · [MANUAL.pt.md](docs/manual/MANUAL.pt.md) · [MANUAL.ru.md](docs/manual/MANUAL.ru.md) · [MANUAL.zh.md](docs/manual/MANUAL.zh.md) · [MANUAL.ar.md](docs/manual/MANUAL.ar.md) | User manual — Español, Français, Português, Русский, 简体中文, العربية | `docs/manual/` |
 | `docs/GUIA-DE-USO.md` | User guide markdown | `docs/` |
 | `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
 | `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
