@@ -269,9 +269,11 @@ flowchart TD
     D -->|Windows| E[Double-click START-HERE.bat]
     D -->|macOS| F[Double-click START-HERE.command]
     D -->|Linux| G[Run ./start.sh]
+    D -->|Android| K[Copy folder to tablet, serve with Termux]
     E --> H[Browser opens http://localhost:8419]
     F --> H
     G --> H
+    K --> H
     H --> I[Click the Install icon to add the PWA]
     I --> J[Works 100% offline from its own icon]
     linkStyle default stroke-width:2px,fill:none,stroke:#666
@@ -333,6 +335,27 @@ Serve the project folder with any static server.
 
 **Once installed:** Open from its own icon and it works completely offline.
 
+### Android phones and tablets
+
+There is no `.bat` on Android, so use one of these three routes:
+
+**A. Full install on the tablet (recommended)** — a local server via Termux:
+1. Install **Termux** from [f-droid.org](https://f-droid.org/packages/com.termux/) (not the Play Store build).
+2. Copy the extracted portable folder to your tablet storage (USB, SD or shared folder).
+3. In Termux run: `termux-setup-storage && pkg install python -y`
+4. Start the server: `cd storage/<your-folder>/IntegrityWatch-Field-Portable && python -m http.server 8419`
+5. Open `http://localhost:8419` in Chrome → menu ⋮ → **Install app** / *Add to home screen*.
+6. Chrome treats `localhost` as secure, so the service worker registers: after this first install the app icon opens **fully offline** — Termux no longer needs to be running.
+
+**B. Query mode from a laptop server (no install, no extra apps)**:
+1. Start the app on a laptop on the same network (field Wi-Fi or phone hotspot): `START-HERE.bat`.
+2. Find the laptop's IP (`ipconfig` on Windows) and open `http://<laptop-IP>:8419` on the tablet browser.
+3. Full app for viewing and logging while the laptop is on network. Data is saved in the tablet's browser; the PWA icon/offline does **not** apply over LAN addresses (no secure context).
+
+**C. Quick open from file (limited mode)**: open `index.html` directly from the tablet's file manager. Works read-and-capture, with a banner warning that PWA/offline features are disabled.
+
+> The interface is responsive: it works on 7-inch tablets and phones with the collapsible side menu. Seven languages including Arabic (right-to-left).
+
 ---
 
 ## Portable package
@@ -340,6 +363,10 @@ Serve the project folder with any static server.
 **IntegrityWatch-Field-Portable** — ready-to-use package, no installation or internet required. Split into two RAR volumes so it uploads and downloads cleanly.
 
 **Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.0-portable
+
+Direct links to the two volumes:
+- part1: https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.0.0-portable/IntegrityWatch-Field-Portable.part1.rar
+- part2: https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.0.0-portable/IntegrityWatch-Field-Portable.part2.rar
 
 | Volume | Size | SHA-256 |
 |--------|------|---------|
