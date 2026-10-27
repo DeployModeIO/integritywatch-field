@@ -40,7 +40,7 @@ function Copy-Recursive {
         if ($skip) { continue }
 
         $rel = $item.FullName.Substring($src.Length).TrimStart('\')
-        $dest = Join-Path -Path $dst -Path $rel
+        $dest = Join-Path $dst $rel
 
         if ($item.PSIsContainer) {
             # Special: electron\dist â€” include ONLY the EXE, skip everything else
@@ -94,15 +94,19 @@ $startFile = (Join-Path $portableDir "start.sh")
 ) | Out-File -FilePath $startFile -Encoding ASCII
 
 # 5. Servidor: tools\serve.ps1, tools\serve.py
-Copy-Item -Path (Join-Path $srcRoot "tools\serve.ps1") -Destination (Join-Path $portableDir "tools\serve.ps1") -Force
-Copy-Item -Path (Join-Path $srcRoot "tools\serve.py") -Destination (Join-Path $portableDir "tools\serve.py") -Force
+$toolsDst = Join-Path $portableDir "tools"
+if (-not (Test-Path $toolsDst)) { New-Item -ItemType Directory -Path $toolsDst -Force | Out-Null }
+Copy-Item -Path (Join-Path $srcRoot "tools\serve.ps1") -Destination (Join-Path $toolsDst "serve.ps1") -Force
+Copy-Item -Path (Join-Path $srcRoot "tools\serve.py") -Destination (Join-Path $toolsDst "serve.py") -Force
 
-# 6. DocumentaciÃ³n
+# 6. Documentacion
 $docsFiles = @("GUIA-DE-USO.md","PLAN-DE-PRUEBAS.md","STANDARDS.md","SCHEMA.md","CONTRACTS.md","TESTS.md","VISUAL-SPEC.md")
+$docsRootDst = Join-Path $portableDir "docs"
+if (-not (Test-Path $docsRootDst)) { New-Item -ItemType Directory -Path $docsRootDst -Force | Out-Null }
 foreach ($f in $docsFiles) {
-    $src = (Join-Path $srcRoot "docs" $f)
-    if (Test-Path -Path $src) {
-        Copy-Item -Path $src -Destination (Join-Path $portableDir $f) -Force
+    $src = Join-Path (Join-Path $srcRoot "docs") $f
+    if (Test-Path $src) {
+        Copy-Item $src -Destination (Join-Path $docsRootDst $f) -Force
     }
 }
 
@@ -213,9 +217,7 @@ foreach ($file in $allFiles) {
     if ($file.Name -eq "SHA256SUMS.txt") { continue }
     if ($excludePdfs -and $file.Extension -eq ".pdf") { continue }
 
-    $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
-    $hash = [System.Hash]::new([System.HashAlgorithmName]::SHA256).ComputeHash($bytes)
-    $hashHex = -join ($hash | % { $_.ToString("x2") })
+    $hashHex = (Get-FileHash -Algorithm SHA256 -LiteralPath $file.FullName).Hash.ToLower()
     $relPath = $file.FullName.Substring($portableDir.Length).TrimStart('\')
     $sumsLines += "$hashHex  $relPath"
 }
@@ -239,14 +241,9 @@ Write-Host "Creando ZIP: $zipPath ..."
 $fileCount = (Get-ChildItem -Path $portableDir -Recurse -File).Count
 $folderSize = (Get-ChildItem -Path $portableDir -Recurse -File | Measure-Object -Property Length -Sum).Sum
 
-# Build archive item list
-$archiveItems = @()
-$itemsToAdd = Get-ChildItem -Path $portableDir -Recurse -Force
-foreach ($item in $itemsToAdd) {
-    if (-not ($item.Name -eq "SHA256SUMS.txt" -and $item.FullName -match "$portableDir\\SHA256SUMS.txt")) {
-        $archiveItems += $item.FullName
-    }
-}
+# Build archive item list: top-level entries only (Compress-Archive recurses
+# into directories itself; listing nested items too would duplicate them)
+$archiveItems = @(Get-ChildItem -Path $portableDir -Force | ForEach-Object { $_.FullName })
 
 if (Test-Path -Path $zipPath) {
     Remove-Item -Path $zipPath -Force
@@ -259,9 +256,7 @@ $zipItem = Get-Item -Path $zipPath
 $zipSize = $zipItem.Length
 
 # Compute SHA-256 of the ZIP
-$zipBytes = [System.IO.File]::ReadAllBytes($zipPath)
-$zipHash = [System.Hash]::new([System.HashAlgorithmName]::SHA256).ComputeHash($zipBytes)
-$zipHashHex = -join ($zipHash | % { $_.ToString("x2") })
+$zipHashHex = (Get-FileHash -Algorithm SHA256 -LiteralPath $zipPath).Hash.ToLower()
 
 # Print summary
 Write-Host ""

@@ -14,7 +14,7 @@ IntegrityWatch Field is an application that runs **completely on your computer o
 
 **Value proposition:** Offline-first integrity and compliance operations center for oil & gas field work
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![300 tests](https://img.shields.io/badge/300%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![512 tests](https://img.shields.io/badge/512%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
 
 **Engineering disclaimer:** Support tool. Always validate against current editions of standards and manufacturer data. Calculation results are indicative and must be reviewed by qualified personnel.
 
@@ -31,7 +31,7 @@ IntegrityWatch Field is a Progressive Web App (PWA) offline-first designed speci
 - **Pipelines and line assets** (pipeline maintenance, ILD/UT inspections, assets by station kilometer)
 - **Asset management and reliability** (APM, RBI per API 580/581, inspection intervals)
 - **Data collection** (CSV import, WITSML-lite, validation)
-- **Recommendation engine** (R1-R14 for decision making)
+- **Recommendation engine** (R1-R17 for decision making)
 - **Reports and compliance** (quarterly, technical, legal)
 
 **Target audience:** Field operators, integrity engineers, maintenance technicians, field supervisors who need fast and reliable access to integrity data without depending on internet connection or external servers.
@@ -259,6 +259,24 @@ End-to-end recorded walkthrough of the application: startup and dashboard, navig
 
 ## Installation and use
 
+### Install at a glance
+
+```mermaid
+flowchart TD
+    A[Download part1 + part2 from Releases] --> B[Put both files in one folder]
+    B --> C[Extract with WinRAR or 7-Zip]
+    C --> D{Your OS?}
+    D -->|Windows| E[Double-click START-HERE.bat]
+    D -->|macOS| F[Double-click START-HERE.command]
+    D -->|Linux| G[Run ./start.sh]
+    E --> H[Browser opens http://localhost:8419]
+    F --> H
+    G --> H
+    H --> I[Click the Install icon to add the PWA]
+    I --> J[Works 100% offline from its own icon]
+    linkStyle default stroke-width:2px,fill:none,stroke:#666
+```
+
 ### 3 startup methods
 
 #### 1. **START-HERE.bat** (Windows)
@@ -319,31 +337,43 @@ Serve the project folder with any static server.
 
 ## Portable package
 
-**IntegrityWatch-Field-Portable** — ready-to-use package, no installation or internet required.
+**IntegrityWatch-Field-Portable** — ready-to-use package, no installation or internet required. Split into two RAR volumes so it uploads and downloads cleanly.
 
-**Download:** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.1
-(asset `IntegrityWatch-Field-Portable-v1.0.1.zip`, SHA256: `04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba`)
+**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.0.0-portable
+
+| Volume | Size | SHA-256 |
+|--------|------|---------|
+| `IntegrityWatch-Field-Portable.part1.rar` | 45 MB | `a49c6c3f07e15b77af613397d7c0b6cef9ccf6aa600b8d6329dce793943f6929` |
+| `IntegrityWatch-Field-Portable.part2.rar` | 37 MB | `f8315051385fa978a7c3d75984886774b4141afa511fb791e7f113303d9803c1` |
+
+Both parts contain one ZIP (`IntegrityWatch-Field-Portable.zip`, SHA-256 `b8e6241bd16b149c0700fa05900cfed157a3b2a1aec40cfd74d369fb49e26c38`).
+
+**How to install (2 minutes):**
+1. Download **both** parts and put them in the same folder.
+2. Right-click `part1.rar` → **Extract here** (WinRAR or 7-Zip). You get the ZIP; extract it too.
+3. Run `START-HERE.bat` (Windows), `START-HERE.command` (macOS) or `./start.sh` (Linux).
 
 **Contents:**
 - Complete application (vanilla JS, service worker, manifest)
 - `app/IntegrityWatch Field 1.0.0.exe` (Electron portable container, no installation)
-- All `docs/`: user guide, standards, `DEPLOY.md`, `ISSUES-CONOCIDOS.md`, manual in DOCX/HTML, technical presentation PPTX, and `evidence/` (captures, PDF and video walkthrough)
+- All `docs/`: user guide, standards, technical manuals, and **user manuals in 7 languages** (`docs/manual/MANUAL.en|es|fr|pt|ru|zh|ar.md`, plus DOCX/HTML printable manual)
 - `datos-prueba/` (CSV and JSON for validation)
 - `THIRD-PARTY-NOTICES.md`
 - `SHA256SUMS.txt` with SHA256 hash of each file in the package (except itself)
 
 **Verification:**
 ```bash
-# 1. Check the ZIP before extracting:
-certutil -hashfile IntegrityWatch-Field-Portable-v1.0.1.zip SHA256
-#    must match: 04c64dcf59bd7e31a440a17027735ec6c184911f0f75472aec21f656f2a097ba
+# 1. Check each downloaded volume against the table above:
+certutil -hashfile IntegrityWatch-Field-Portable.part1.rar SHA256
 
-# 2. After extracting, verify each file against SHA256SUMS.txt (relative paths):
+# 2. After extracting the ZIP, verify its overall hash:
+certutil -hashfile IntegrityWatch-Field-Portable.zip SHA256
+#    must match: b8e6241bd16b149c0700fa05900cfed157a3b2a1aec40cfd74d369fb49e26c38
+
+# 3. After extracting, verify each file against SHA256SUMS.txt (relative paths):
 certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 #    on macOS/Linux: sha256sum -c SHA256SUMS.txt
 ```
-
-**Extraction:** Extract to any folder, run the `.exe` (or `START-HERE.bat`).
 
 ---
 
@@ -380,6 +410,8 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | `docs/presentacion/IntegrityWatch-Field-Presentacion-Tecnica.pptx` | Technical presentation | `docs/presentacion/` |
 | `docs/manual/IntegrityWatch-Field-Manual-Usuario.docx` | Printable PDF | `docs/manual/` |
 | `docs/manual/IntegrityWatch-Field-Manual-Usuario.html` | Web (lite) | `docs/manual/` |
+| `docs/manual/MANUAL.en.md` | User manual — English | `docs/manual/` |
+| `docs/manual/MANUAL.es.md` · `MANUAL.fr.md` · `MANUAL.pt.md` · `MANUAL.ru.md` · `MANUAL.zh.md` · `MANUAL.ar.md` | User manual — Español, Français, Português, Русский, 简体中文, العربية | `docs/manual/` |
 | `docs/GUIA-DE-USO.md` | User guide markdown | `docs/` |
 | `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
 | `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
