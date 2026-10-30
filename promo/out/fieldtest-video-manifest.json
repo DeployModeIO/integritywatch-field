@@ -1,0 +1,76 @@
+{
+  "video": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-fieldtest-en.mp4",
+  "duration": 83.733333,
+  "size_bytes": 10092805,
+  "subtitles": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-fieldtest-en.srt",
+  "voice": "en-US-ChristopherNeural",
+  "scenes": [
+    {
+      "id": "s1",
+      "kind": "card",
+      "start": 0.0,
+      "duration": 11.832,
+      "text": "Offshore and onshore, integrity teams still run on paper, on spreadsheets, and on the last bar of signal. The well does not wait for the office."
+    },
+    {
+      "id": "s2",
+      "kind": "broll",
+      "start": 11.832,
+      "duration": 13.224,
+      "text": "When the connection drops, the measurement survives. The evidence does not. Decisions wait for a report that never gets written, and the next inspection repeats the same trip."
+    },
+    {
+      "id": "s3",
+      "kind": "screen",
+      "start": 25.056,
+      "duration": 15.628,
+      "text": "IntegrityWatch Field is an offline-first integrity and compliance centre. It runs entirely on the tablet. No server, no cloud, no connection, and nothing to synchronise before you can decide."
+    },
+    {
+      "id": "s4",
+      "kind": "screen",
+      "start": 40.684,
+      "duration": 14.284,
+      "text": "Import a field CSV. The app detects the delimiter, maps the columns, validates every row and commits the readings on the device. Thirty two rows, zero skipped."
+    },
+    {
+      "id": "s5",
+      "kind": "screen",
+      "start": 54.968,
+      "duration": 8.62,
+      "text": "Register the asset from real line data, set the risk band, and let the app calculate the inspection interval."
+    },
+    {
+      "id": "s5b",
+      "kind": "screen",
+      "start": 63.588,
+      "duration": 11.404,
+      "text": "Then generate the point dossier on the same device. Real line attributes in. A document you can print, sign and defend."
+    },
+    {
+      "id": "s6",
+      "kind": "card",
+      "start": 74.992,
+      "duration": 8.712,
+      "text": "IntegrityWatch Field. Field data, field decisions, no signal required."
+    }
+  ],
+  "recorded_segments": {
+    "s3": [
+      25.99999580000076,
+      41.13978180000049
+    ],
+    "s4": [
+      8.200213100000838,
+      22.044323600001007
+    ],
+    "s5": [
+      42.04612350000025,
+      50.26367609999943
+    ],
+    "s5b": [
+      50.26367609999943,
+      61.19815270000072
+    ]
+  }
+}

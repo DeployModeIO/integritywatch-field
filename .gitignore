@@ -18,3 +18,8 @@ desktop.ini
 
 # Backups transitorios de subagentes
 backups/
+
+# Promo build intermediates (regenerables)
+promo/out/.fieldtest/
+promo/out/frame_*.jpg
+promo/out/*-nosubs.mp4
