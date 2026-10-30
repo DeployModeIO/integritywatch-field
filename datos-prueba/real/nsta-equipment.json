@@ -1,0 +1,418 @@
+{
+  "fetched_at": "2026-10-30T22:21:42.193392+00:00",
+  "source": "NSTA Open Data (UKCS offshore infrastructure)",
+  "endpoints": {
+    "linear": "https://services-eu1.arcgis.com/OZMfUznmLTnWccBc/arcgis/rest/services/UKCS_offshore_infrastructure_pipeline_linear_%28WGS84%29/FeatureServer/1/query",
+    "points": "https://services-eu1.arcgis.com/OZMfUznmLTnWccBc/arcgis/rest/services/UKCS%20offshore%20infrastructure%20pipeline%20points%20WGS84/FeatureServer/1/query"
+  },
+  "where": "STATUS='ACTIVE' AND INF_TYPE='PIPELINE' AND DIAMETERMM>=100 AND THICKNESS>0 AND MX_OP_PRES>0 AND LENGTH_M>=1000",
+  "licence": "NSTA Open Data - NSTA User Agreement",
+  "count": 45,
+  "records": [
+    {
+      "NSTAPIPNO": "PL1236",
+      "NAME": "PL1236 TEAL WI VALVE STRUCTUE",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1569110400000,
+      "DESCRIPTIO": "TEAL WI VALVE STRUCTUE PL1236",
+      "COMMENTS": "WITHIN FPSO 500M ZONE"
+    },
+    {
+      "NSTAPIPNO": "PL1235",
+      "NAME": "TEALP1/P2 VALVE SKID (PL2374/PL1235)",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1169251200000,
+      "DESCRIPTIO": "TEALP1/P2 VALVE SKID (PL2374/PL1235)",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1575",
+      "NAME": "Machar Water Flood Manifold",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL2603",
+      "NAME": "Machar Towhead",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Gate Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL2602",
+      "NAME": "Machar Towhead",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Gate Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1357",
+      "NAME": "Machar Production Manifold",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Farragon F2 Bundle Towhead",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "CATS VSS Manifold",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Andrew SSIV",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "ETAP PDR",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Clair",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Clair",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Andrew SSIV",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "ETAP PDR",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Gate Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Andrew PLEM",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Andrew",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Mungo",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "ETAP PDR",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Andrew",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Clair",
+      "INF_TYPE": "VALVE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "Ball Valve",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1954",
+      "NAME": "GUILLEMOT GAS LIFT MANIFOLD",
+      "INF_TYPE": "MANIFOLD",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1047859200000,
+      "DESCRIPTIO": "GUILLEMOT GAS LIFT MANIFOLD",
+      "COMMENTS": "RELATING TO PL1954, PL1954JP2, PL3145, PL4309 AND PL4726"
+    },
+    {
+      "NSTAPIPNO": "PL1238",
+      "NAME": "GUILLEMOT MANIFOLD",
+      "INF_TYPE": "MANIFOLD",
+      "STATUS": "ACTIVE",
+      "START_DATE": 788918400000,
+      "DESCRIPTIO": "GUILLEMOT MANIFOLD",
+      "COMMENTS": "V32 Transfered from Shell"
+    },
+    {
+      "NSTAPIPNO": "PL1234",
+      "NAME": "TEAL GAS EXPORT PLEM",
+      "INF_TYPE": "MANIFOLD",
+      "STATUS": "ACTIVE",
+      "START_DATE": 788918400000,
+      "DESCRIPTIO": "TEAL GAS EXPORT PLEM",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1237",
+      "NAME": "TEAL UMBILICAL TERMINATION ASSEMBLY UTA",
+      "INF_TYPE": "MANIFOLD",
+      "STATUS": "ACTIVE",
+      "START_DATE": 788918400000,
+      "DESCRIPTIO": "TEAL UMBILICAL TERMINATION ASSEMBLY UTA",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL2376",
+      "NAME": "TEAL P2 BUTA SKID",
+      "INF_TYPE": "MANIFOLD",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1169251200000,
+      "DESCRIPTIO": "TEAL P2 BUTA SKID",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL721\r\n",
+      "NAME": "EVEREST TEE",
+      "INF_TYPE": "TEE PIECE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 631152000000,
+      "DESCRIPTIO": "EVEREST TEE MANIFOLD PL779 TO CONNECT TO PL721 INCLUDES PROTECTION",
+      "COMMENTS": " "
+    },
+    {
+      "NSTAPIPNO": "PL721\r\n",
+      "NAME": "BUZZARD TEE",
+      "INF_TYPE": "TEE PIECE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1167609600000,
+      "DESCRIPTIO": "BUZZARD TEE MANIFOLD PL2012 TO CONNECT TO PL721 INCLUDES PROTECTION",
+      "COMMENTS": " "
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "PL4435/PL6159 TEE PIECE",
+      "INF_TYPE": "TEE PIECE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "PL4435/PL6159 TEE PIECE",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "IOM TEE PIECE",
+      "INF_TYPE": "TEE PIECE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1041379200000,
+      "DESCRIPTIO": "ISLE OF MAN IN-LINE TEE",
+      "COMMENTS": "Enclosed within protection structure with asociated valves and piping"
+    },
+    {
+      "NSTAPIPNO": "PL762",
+      "NAME": "SAGE PL762 ALVHEIM TEE",
+      "INF_TYPE": "TEE PIECE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 712627200000,
+      "DESCRIPTIO": "ALVHEIM TEE",
+      "COMMENTS": " "
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "Unknown",
+      "INF_TYPE": "PIG LAUNCH/TRAP",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "PIG",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL823",
+      "NAME": "SPR – SUBSEA PIG RECEIVER",
+      "INF_TYPE": "PIG LAUNCH/TRAP",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "SPR – SUBSEA PIG RECEIVER",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL6110 AND PL6113",
+      "NAME": "TRITON FPSO PIG",
+      "INF_TYPE": "PIG LAUNCH/TRAP",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "TRITON FPSO PIG LAUNCHER/TRITON FPSO PIG RECEIVER",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL2169",
+      "NAME": "FORVIE PL2169 SUBSEA PIG RECEIVER",
+      "INF_TYPE": "PIG LAUNCH/TRAP",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "FORVIE PL2169 SUBSEA PIG RECEIVER",
+      "COMMENTS": " "
+    },
+    {
+      "NSTAPIPNO": "PL1054",
+      "NAME": "PL1054 PIG LAUNCHER",
+      "INF_TYPE": "PIG LAUNCH/TRAP",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "DAVY PL1054 PIG LAUNCHER",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1238",
+      "NAME": "GUILLEMOT RISER BASE AT FPSO ANASURIA",
+      "INF_TYPE": "RISER BASE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 788918400000,
+      "DESCRIPTIO": "GUILLEMOT RISER BASE AT FPSO ANASURIA",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1235",
+      "NAME": "TEAL RISER BASE AT FPSO ANASURIA",
+      "INF_TYPE": "RISER BASE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "TEAL RISER BASE AT FPSO ANASURIA",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1716",
+      "NAME": "COOK RISER BASE AT FPSO ANASURIA",
+      "INF_TYPE": "RISER BASE",
+      "STATUS": "ACTIVE",
+      "START_DATE": null,
+      "DESCRIPTIO": "COOK RISER BASE AT FPSO ANASURIA",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL2850",
+      "NAME": "WINGATE RISER BASE",
+      "INF_TYPE": "RISER BASE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1305331200000,
+      "DESCRIPTIO": "WINGATE RISER BASE",
+      "COMMENTS": "WINGATE RISER BASE"
+    },
+    {
+      "NSTAPIPNO": null,
+      "NAME": "OTHER-RISER BREAKOUT BOX :1402",
+      "INF_TYPE": "RISER BASE",
+      "STATUS": "ACTIVE",
+      "START_DATE": 964569600000,
+      "DESCRIPTIO": "OTHER-RISER BREAKOUT BOX",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1238",
+      "NAME": "GUILLEMOT RISER BASE ANODE SKID 01",
+      "INF_TYPE": "ANODE ASSEMBLY (PIPELINE)",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1651536000000,
+      "DESCRIPTIO": "GUILLEMOT RISER BASE ANODE SKID 01",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1238",
+      "NAME": "GUILLEMOT RISER BASE ANODE SKID 02",
+      "INF_TYPE": "ANODE ASSEMBLY (PIPELINE)",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1651536000000,
+      "DESCRIPTIO": "GUILLEMOT RISER BASE ANODE SKID 02",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1235",
+      "NAME": "TEAL RISER BASE NORTHERN ANODE SKID",
+      "INF_TYPE": "ANODE ASSEMBLY (PIPELINE)",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1692144000000,
+      "DESCRIPTIO": "TEAL RISER BASE NORTHERN ANODE SKID",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL1235",
+      "NAME": "TEAL RISER BASE SOUTHERN ANODE SKID",
+      "INF_TYPE": "ANODE ASSEMBLY (PIPELINE)",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1692144000000,
+      "DESCRIPTIO": "TEAL RISER BASE SOUTHERN ANODE SKID",
+      "COMMENTS": null
+    },
+    {
+      "NSTAPIPNO": "PL3144",
+      "NAME": "ANODE SKID - GUILLEMOT P5",
+      "INF_TYPE": "ANODE ASSEMBLY (PIPELINE)",
+      "STATUS": "ACTIVE",
+      "START_DATE": 1402012800000,
+      "DESCRIPTIO": "ANODE SKID PL3144",
+      "COMMENTS": "FOR PROTECTION OF WARMING SPOOLS ON PL3144"
+    }
+  ]
+}

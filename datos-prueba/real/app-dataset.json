@@ -1,0 +1,1090 @@
+{
+  "generated_at": "2026-10-30T22:21:42.197064+00:00",
+  "pipelines": [
+    {
+      "id": "SYS-PL774",
+      "name": "CATS PIPELINE",
+      "operator": "UKCS Operator 11",
+      "product": "gas",
+      "dnIn": 36.0,
+      "wallThicknessMm": 28.4,
+      "material": "api5l-x52",
+      "coating": "FBE",
+      "opPressureMpa": 17.93,
+      "lengthKm": 404.974,
+      "stationFromKm": 0,
+      "stationToKm": 404.974,
+      "provenance": {
+        "nsta_pipeline_no": "PL774",
+        "fluid_source": "GAS",
+        "commissioned": "1993-01-26",
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    },
+    {
+      "id": "SYS-PL139",
+      "name": "MAGNUS TO NINIAN",
+      "operator": "UKCS Operator 06",
+      "product": "crude",
+      "dnIn": 24.0,
+      "wallThicknessMm": 16.0,
+      "material": "api5l-x52",
+      "coating": "5mm GFE CTE",
+      "opPressureMpa": 6.19,
+      "lengthKm": 91.233,
+      "stationFromKm": 0,
+      "stationToKm": 91.233,
+      "provenance": {
+        "nsta_pipeline_no": "PL139",
+        "fluid_source": "OIL",
+        "commissioned": "2000-04-17",
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    },
+    {
+      "id": "SYS-PL1257A",
+      "name": "ERSKINE TO LOMOND GAS CONDENSATE LINE",
+      "operator": "UKCS Operator 08",
+      "product": "condensate",
+      "dnIn": 16.0,
+      "wallThicknessMm": 15.9,
+      "material": "api5l-x52",
+      "coating": "PipeinPipe LDPU Foam",
+      "opPressureMpa": 11.8,
+      "lengthKm": 30.246,
+      "stationFromKm": 0,
+      "stationToKm": 30.246,
+      "provenance": {
+        "nsta_pipeline_no": "PL1257A",
+        "fluid_source": "CONDENSATE",
+        "commissioned": "2001-09-25",
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    },
+    {
+      "id": "SYS-PL6385",
+      "name": "AFFLECK PRODUCTION PIPE-IN-PIPE FROM AFFLECK MANIFOLD TO TALBOT MANIFOLD",
+      "operator": "UKCS Operator 09",
+      "product": "multiphase",
+      "dnIn": 8.63,
+      "wallThicknessMm": 20.6,
+      "material": "api5l-x52",
+      "coating": "No coating on 8 inch inner pipe. 2.5mm of 3LPP on carrier pipe.",
+      "opPressureMpa": 34.5,
+      "lengthKm": 20.97,
+      "stationFromKm": 0,
+      "stationToKm": 20.97,
+      "provenance": {
+        "nsta_pipeline_no": "PL6385",
+        "fluid_source": "MIXED HYDROCARBONS",
+        "commissioned": null,
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    }
+  ],
+  "monitoringPoints": [
+    {
+      "id": "MP-PL774",
+      "code": "MP-PL774",
+      "name": "CATS PIPELINE",
+      "sector": "midstream",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "line": "SYS-PL774",
+      "stationKm": 0,
+      "product": "gas",
+      "location": "NSTA PL774 upstream end",
+      "process": {
+        "h2sPpm": 0,
+        "co2Ppm": 8000,
+        "totalPressureKpa": 17930.0,
+        "tempC": 55,
+        "bswPct": 2,
+        "velocityMs": 1.1,
+        "inhibitorTargetPpm": 25,
+        "inhibitorResidualPpm": 22,
+        "provenance": "DERIVED from line pressure/fluid; chemistry not public"
+      }
+    },
+    {
+      "id": "MP-PL139",
+      "code": "MP-PL139",
+      "name": "MAGNUS TO NINIAN",
+      "sector": "midstream",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "line": "SYS-PL139",
+      "stationKm": 0,
+      "product": "crude",
+      "location": "NSTA PL139 upstream end",
+      "process": {
+        "h2sPpm": 350,
+        "co2Ppm": 8000,
+        "totalPressureKpa": 6190.0,
+        "tempC": 55,
+        "bswPct": 2,
+        "velocityMs": 1.1,
+        "inhibitorTargetPpm": 25,
+        "inhibitorResidualPpm": 22,
+        "provenance": "DERIVED from line pressure/fluid; chemistry not public"
+      }
+    },
+    {
+      "id": "MP-PL1257A",
+      "code": "MP-PL1257A",
+      "name": "ERSKINE TO LOMOND GAS CONDENSATE LINE",
+      "sector": "midstream",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "line": "SYS-PL1257A",
+      "stationKm": 0,
+      "product": "condensate",
+      "location": "NSTA PL1257A upstream end",
+      "process": {
+        "h2sPpm": 350,
+        "co2Ppm": 8000,
+        "totalPressureKpa": 11800.0,
+        "tempC": 55,
+        "bswPct": 2,
+        "velocityMs": 1.1,
+        "inhibitorTargetPpm": 25,
+        "inhibitorResidualPpm": 22,
+        "provenance": "DERIVED from line pressure/fluid; chemistry not public"
+      }
+    },
+    {
+      "id": "MP-PL6385",
+      "code": "MP-PL6385",
+      "name": "AFFLECK PRODUCTION PIPE-IN-PIPE FROM AFFLECK MANIFOLD TO TAL",
+      "sector": "midstream",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "line": "SYS-PL6385",
+      "stationKm": 0,
+      "product": "multiphase",
+      "location": "NSTA PL6385 upstream end",
+      "process": {
+        "h2sPpm": 350,
+        "co2Ppm": 8000,
+        "totalPressureKpa": 34500.0,
+        "tempC": 55,
+        "bswPct": 2,
+        "velocityMs": 1.1,
+        "inhibitorTargetPpm": 25,
+        "inhibitorResidualPpm": 22,
+        "provenance": "DERIVED from line pressure/fluid; chemistry not public"
+      }
+    }
+  ],
+  "apmAssets": [
+    {
+      "id": "APM-PL1236-001",
+      "code": "VALVE-PL1236-001",
+      "name": "PL1236 TEAL WI VALVE STRUCTUE",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": "2019-09-22",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1235-002",
+      "code": "VALVE-PL1235-002",
+      "name": "TEALP1/P2 VALVE SKID (PL2374/PL1235)",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": "2007-01-20",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1575-003",
+      "code": "VALVE-PL1575-003",
+      "name": "Machar Water Flood Manifold",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL2603-004",
+      "code": "VALVE-PL2603-004",
+      "name": "Machar Towhead",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL2602-005",
+      "code": "VALVE-PL2602-005",
+      "name": "Machar Towhead",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1357-006",
+      "code": "VALVE-PL1357-006",
+      "name": "Machar Production Manifold",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ6-007",
+      "code": "VALVE-EQ6-007",
+      "name": "Farragon F2 Bundle Towhead",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ7-008",
+      "code": "VALVE-EQ7-008",
+      "name": "CATS VSS Manifold",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ8-009",
+      "code": "VALVE-EQ8-009",
+      "name": "Andrew SSIV",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ9-010",
+      "code": "VALVE-EQ9-010",
+      "name": "ETAP PDR",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ10-011",
+      "code": "VALVE-EQ10-011",
+      "name": "Clair",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ11-012",
+      "code": "VALVE-EQ11-012",
+      "name": "Clair",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ12-013",
+      "code": "VALVE-EQ12-013",
+      "name": "Andrew SSIV",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ13-014",
+      "code": "VALVE-EQ13-014",
+      "name": "ETAP PDR",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ14-015",
+      "code": "VALVE-EQ14-015",
+      "name": "Andrew PLEM",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ15-016",
+      "code": "VALVE-EQ15-016",
+      "name": "Andrew",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ16-017",
+      "code": "VALVE-EQ16-017",
+      "name": "Mungo",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ17-018",
+      "code": "VALVE-EQ17-018",
+      "name": "ETAP PDR",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ18-019",
+      "code": "VALVE-EQ18-019",
+      "name": "Andrew",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ19-020",
+      "code": "VALVE-EQ19-020",
+      "name": "Clair",
+      "sector": "midstream",
+      "category": "valve",
+      "criticality": "B",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "VALVE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1954-021",
+      "code": "MANIFOLD-PL1954-021",
+      "name": "GUILLEMOT GAS LIFT MANIFOLD",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "MANIFOLD",
+        "status_source": "ACTIVE",
+        "start_date": "2003-03-17",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1238-022",
+      "code": "MANIFOLD-PL1238-022",
+      "name": "GUILLEMOT MANIFOLD",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "MANIFOLD",
+        "status_source": "ACTIVE",
+        "start_date": "1995-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1234-023",
+      "code": "MANIFOLD-PL1234-023",
+      "name": "TEAL GAS EXPORT PLEM",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "MANIFOLD",
+        "status_source": "ACTIVE",
+        "start_date": "1995-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1237-024",
+      "code": "MANIFOLD-PL1237-024",
+      "name": "TEAL UMBILICAL TERMINATION ASSEMBLY UTA",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "MANIFOLD",
+        "status_source": "ACTIVE",
+        "start_date": "1995-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL2376-025",
+      "code": "MANIFOLD-PL2376-025",
+      "name": "TEAL P2 BUTA SKID",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "MANIFOLD",
+        "status_source": "ACTIVE",
+        "start_date": "2007-01-20",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL721-026",
+      "code": "TEE PIECE-PL721-026",
+      "name": "EVEREST TEE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "TEE PIECE",
+        "status_source": "ACTIVE",
+        "start_date": "1990-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL721-027",
+      "code": "TEE PIECE-PL721-027",
+      "name": "BUZZARD TEE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "TEE PIECE",
+        "status_source": "ACTIVE",
+        "start_date": "2007-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ27-028",
+      "code": "TEE PIECE-EQ27-028",
+      "name": "PL4435/PL6159 TEE PIECE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "TEE PIECE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ28-029",
+      "code": "TEE PIECE-EQ28-029",
+      "name": "IOM TEE PIECE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "TEE PIECE",
+        "status_source": "ACTIVE",
+        "start_date": "2003-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL762-030",
+      "code": "TEE PIECE-PL762-030",
+      "name": "SAGE PL762 ALVHEIM TEE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "TEE PIECE",
+        "status_source": "ACTIVE",
+        "start_date": "1992-08-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ30-031",
+      "code": "PIG LAUNCH/T-EQ30-031",
+      "name": "Unknown",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "PIG LAUNCH/TRAP",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL823-032",
+      "code": "PIG LAUNCH/T-PL823-032",
+      "name": "SPR – SUBSEA PIG RECEIVER",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "PIG LAUNCH/TRAP",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL6110ANDPL6113-033",
+      "code": "PIG LAUNCH/T-PL6110ANDPL6113-033",
+      "name": "TRITON FPSO PIG",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "PIG LAUNCH/TRAP",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL2169-034",
+      "code": "PIG LAUNCH/T-PL2169-034",
+      "name": "FORVIE PL2169 SUBSEA PIG RECEIVER",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "PIG LAUNCH/TRAP",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1054-035",
+      "code": "PIG LAUNCH/T-PL1054-035",
+      "name": "PL1054 PIG LAUNCHER",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "PIG LAUNCH/TRAP",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1238-036",
+      "code": "RISER BASE-PL1238-036",
+      "name": "GUILLEMOT RISER BASE AT FPSO ANASURIA",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "RISER BASE",
+        "status_source": "ACTIVE",
+        "start_date": "1995-01-01",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1235-037",
+      "code": "RISER BASE-PL1235-037",
+      "name": "TEAL RISER BASE AT FPSO ANASURIA",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "RISER BASE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1716-038",
+      "code": "RISER BASE-PL1716-038",
+      "name": "COOK RISER BASE AT FPSO ANASURIA",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "RISER BASE",
+        "status_source": "ACTIVE",
+        "start_date": null,
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL2850-039",
+      "code": "RISER BASE-PL2850-039",
+      "name": "WINGATE RISER BASE",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "RISER BASE",
+        "status_source": "ACTIVE",
+        "start_date": "2011-05-14",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-EQ39-040",
+      "code": "RISER BASE-EQ39-040",
+      "name": "OTHER-RISER BREAKOUT BOX :1402",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "RISER BASE",
+        "status_source": "ACTIVE",
+        "start_date": "2000-07-26",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1238-041",
+      "code": "ANODE ASSEMB-PL1238-041",
+      "name": "GUILLEMOT RISER BASE ANODE SKID 01",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "ANODE ASSEMBLY (PIPELINE)",
+        "status_source": "ACTIVE",
+        "start_date": "2022-05-03",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1238-042",
+      "code": "ANODE ASSEMB-PL1238-042",
+      "name": "GUILLEMOT RISER BASE ANODE SKID 02",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "ANODE ASSEMBLY (PIPELINE)",
+        "status_source": "ACTIVE",
+        "start_date": "2022-05-03",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1235-043",
+      "code": "ANODE ASSEMB-PL1235-043",
+      "name": "TEAL RISER BASE NORTHERN ANODE SKID",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "ANODE ASSEMBLY (PIPELINE)",
+        "status_source": "ACTIVE",
+        "start_date": "2023-08-16",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL1235-044",
+      "code": "ANODE ASSEMB-PL1235-044",
+      "name": "TEAL RISER BASE SOUTHERN ANODE SKID",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "ANODE ASSEMBLY (PIPELINE)",
+        "status_source": "ACTIVE",
+        "start_date": "2023-08-16",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    },
+    {
+      "id": "APM-PL3144-045",
+      "code": "ANODE ASSEMB-PL3144-045",
+      "name": "ANODE SKID - GUILLEMOT P5",
+      "sector": "midstream",
+      "category": "equipment",
+      "criticality": "C",
+      "status": "running",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": {
+        "nsta_inf_type": "ANODE ASSEMBLY (PIPELINE)",
+        "status_source": "ACTIVE",
+        "start_date": "2014-06-06",
+        "rbi": "DERIVED criticality heuristic, not an operator RBI result"
+      }
+    }
+  ],
+  "provenance": {
+    "real": "NSTA asset records + HSE 2024 aggregates",
+    "derived": "corrosion series, material/coating assumptions, RBI inputs, process chemistry",
+    "operators": "anonymised in app data; raw names only in nsta-*.json"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "year": 2024,
+  "source": "https://www.hse.gov.uk/offshore/assets/docs/hsr2024.pdf",
+  "source_title": "Offshore Statistics and Regulatory Activity Report 2024",
+  "licence": "Open Government Licence v3.0",
+  "figures": {
+    "inspections": 125,
+    "installations_inspected": 102,
+    "investigations_commenced": 20,
+    "safety_cases_assessed": 78,
+    "non_compliance_issues": 616,
+    "improvement_notices": 21,
+    "prohibition_notices": 2,
+    "dangerous_occurrences": 180,
+    "hydrocarbon_releases": 92,
+    "hcr_share_of_do_pct": 32,
+    "hcr_non_process": 41,
+    "non_fatal_injuries": 107,
+    "specified_injuries": 12,
+    "over_7_day_injuries": 95,
+    "injury_rate_per_100k_fte": 462,
+    "fatal_injuries": 0
+  },
+  "notes": [
+    "HCR = hydrocarbon release, classified Minor / Significant / Major.",
+    "35 of the 92 HCRs were reported solely under EU Offshore Directive arrangements.",
+    "Full per-incident HCR tables 1992-2016 live in HSE spreadsheets (blocked by the archive replay at fetch time)."
+  ],
+  "fetched_at": "2026-10-30T22:21:42.193392+00:00"
+}
