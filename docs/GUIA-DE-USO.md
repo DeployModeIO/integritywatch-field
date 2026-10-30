@@ -113,6 +113,23 @@ saber programar. La aplicación funciona **100 % sin internet** y todos tus dato
 | Almacenamiento | Uso de espacio y conteo de registros |
 | Sincronización | Endpoint opcional y estado de la cola offline |
 
+### 3.11 Validación con datos reales de campo
+
+La aplicación se probó de punta a punta con **activos reales** de la plataforma
+continental del Reino Unido (NSTA Open Data) y cifras oficiales de HSE 2024:
+4 puntos de monitoreo, un sistema de ducto de 404,97 km, un activo APM, 32 lecturas
+importadas (32/32 sin errores), 24 recomendaciones y tres informes.
+
+- Acta de pruebas con las 20 capturas: `docs/PRUEBAS-CAMPO-2026-10-30.md`
+- Procedencia de los datos: `docs/FIELD-DATA-SOURCES.md`
+- Reproducir: `python tools\qa\run_field_tests.py` (servidor en el puerto 8419)
+
+![Dashboard con datos reales](field-tests-2026-10-30/18-tablet-dashboard-1280.png)
+
+![Ingesta validada](field-tests-2026-10-30/06-ingest-validation.png)
+
+---
+
 ## 4. Recetas rápidas
 
 **Cargar la campaña mensual de cupones**: Ingesta → CSV → archivo → validar → importar → Corrosión →

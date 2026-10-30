@@ -138,7 +138,46 @@
 
 ---
 
-## 13. Important notes
+## 13. Field validation walkthrough (real field data)
+
+A full UI validation was run on 30 October 2026 against a clean install, driven by
+`tools/qa/run_field_tests.py`. It used **real asset records**, not dummy rows: 55
+UKCS pipelines from NSTA open data, with diameter, wall thickness, MAWP, fluid and
+length as published. Full capture sheet: `docs/PRUEBAS-CAMPO-2026-10-30.md`.
+
+**What the run proves**
+
+| Step | Evidence |
+|---|---|
+| Create a point from real line data | 4 points (gas, crude, condensate, multiphase) |
+| Import a field CSV offline | 32 rows total, 32 imported, 0 skipped, 0 errors |
+| Register a pipeline system | CATS: 36 in, 28.4 mm, 17.93 MPa, 404.97 km |
+| Register an asset | Real NSTA valve record, PBI band B |
+| Run rules R1-R17 | 24 recommendations raised |
+| Generate reports | Point dossier, quarterly report, PSV datasheet |
+| Export the case file | 107,485 bytes, reopened from disk |
+| Tablet layout (1280x800) | Dashboard and ingest usable without a server |
+
+**Create a point from real data**
+
+![New point form](../field-tests-2026-10-30/03-new-point-cats-form.png)
+
+**Import a CSV and see every row validated**
+
+![Validation result](../field-tests-2026-10-30/06-ingest-validation.png)
+
+**Generate the dossier on the device**
+
+![Point dossier](../field-tests-2026-10-30/14-report-dossier-cats.png)
+
+> Asset attributes are real. Inspection and corrosion series are derived from those
+> attributes and labelled as derived in every row — never presented as field measurements.
+
+To repeat the run: `python tools\qa\run_field_tests.py` (server on port 8419).
+
+---
+
+## 14. Important notes
 
 - IntegrityWatch Field is a **support tool**. It does not replace the judgment of a qualified engineer.
 - Verify all calculations against the current edition of the applicable standard (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) and manufacturer data before any operational decision.

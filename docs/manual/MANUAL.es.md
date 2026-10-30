@@ -138,7 +138,48 @@
 
 ---
 
-## 13. Notas importantes
+## 13. Validación en campo (datos reales)
+
+El 30 de octubre de 2026 se ejecutó una validación completa de la interfaz sobre una
+instalación limpia, automatizada con `tools/qa/run_field_tests.py`. Se usaron
+**activos reales**, no filas de relleno: 55 ductos de la plataforma continental del
+Reino Unido (NSTA), con diámetro, espesor, presión máxima, fluido y longitud tal como
+se publican. Acta completa: `docs/PRUEBAS-CAMPO-2026-10-30.md`.
+
+**Qué demuestra la prueba**
+
+| Paso | Evidencia |
+|---|---|
+| Crear un punto con datos reales de línea | 4 puntos (gas, crudo, condensado, multifásico) |
+| Importar un CSV de campo sin conexión | 32 filas totales, 32 importadas, 0 omitidas, 0 errores |
+| Registrar un sistema de ducto | CATS: 36 in, 28,4 mm, 17,93 MPa, 404,97 km |
+| Registrar un activo | Registro real de válvula NSTA, banda RBI B |
+| Ejecutar reglas R1-R17 | 24 recomendaciones generadas |
+| Generar informes | Dossier del punto, informe trimestral, datasheet de PSV |
+| Exportar el expediente | 107.485 bytes, reabierto desde disco |
+| Diseño tablet (1280x800) | Dashboard e ingesta usables sin servidor |
+
+**Alta de un punto con datos reales**
+
+![Formulario de nuevo punto](../field-tests-2026-10-30/03-new-point-cats-form.png)
+
+**Ingesta validada fila a fila**
+
+![Resultado de la validación](../field-tests-2026-10-30/06-ingest-validation.png)
+
+**Dossier generado en el dispositivo**
+
+![Dossier del punto](../field-tests-2026-10-30/14-report-dossier-cats.png)
+
+> Los atributos del activo son reales. Las series de inspección y corrosión se derivan
+> de esos atributos y van etiquetadas como derivadas en cada fila; nunca se presentan
+> como mediciones de campo.
+
+Para repetir la prueba: `python tools\qa\run_field_tests.py` (servidor en el puerto 8419).
+
+---
+
+## 14. Notas importantes
 
 - IntegrityWatch Field es una **herramienta de apoyo**. No reemplaza la juicio de un ingeniero cualificado.
 - Verifica todos los cálculos contra la edición actual de los estándares aplicables (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) y los datos del fabricante antes de cualquier decisión operativa.
