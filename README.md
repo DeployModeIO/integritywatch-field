@@ -203,11 +203,15 @@ Visual evidence gallery organized by module. All captures live in `docs/evidence
 
 ## Video walkthrough
 
-**Video:** [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1.5 MB).
+**Overview / promo** — [`docs/evidence/video/integritywatch-field-promo.mp4`](docs/evidence/video/integritywatch-field-promo.mp4) (1:21, ~26 MB, English narration).
+
+A narrated overview of what IntegrityWatch Field is and what it solves: offline-first integrity and compliance for **wells, pipelines, and offshore assets** — corrosion modeling (De Waard–Milliams, ASTM), PSV sizing (API 520/526), pipelines with a kilometer-based schematic map and ILD/UT inspections, risk-based inspection (API 580/581), the **R1–R17** recommendation engine, and reports — plus 7 languages, light/dark themes, CSV/WITSML import, and portable case files.
+
+**Full walkthrough** — [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1.5 MB).
 
 End-to-end recorded walkthrough of the application: startup and dashboard, navigation through Corrosion, PSV (API 520/526 sizing), Pipelines and map, APM, Ingestion, Recommendations, Reports, and Glossary — in the supported languages and themes.
 
-> **Note:** GitHub does not play an MP4 hosted in the repository inline within the README; open the link to play or download it. The animated GIF teaser is pending (requires `ffmpeg`, not available in this environment).
+> **Note:** GitHub does not play MP4 files stored in the repository inline within the README; open a link to play or download it. For an inline player, upload the file through the GitHub web editor so it is served from `user-attachments`.
 
 ---
 
