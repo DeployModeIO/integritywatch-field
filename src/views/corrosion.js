@@ -317,7 +317,7 @@
     rec.stationKm = numOrUndef(vals.stationKm);
     rec.location = vals.location ? String(vals.location).trim() : undefined;
     rec.notes = vals.notes ? String(vals.notes).trim() : undefined;
-    if (!existing) { rec.id = 'MP-' + Date.now().toString(36).toUpperCase(); }
+    if (!existing) { rec.id = rec.code; }
     return rec;
   }
 
@@ -1541,6 +1541,7 @@
     id: 'corrosion',
     titleKey: 'nav.corrosion',
     icon: 'corrosion',
+    assembleMp: assembleMp,
     render: function (container, ctx) {
       if (typeof document === 'undefined' || !container) { return Promise.resolve(); }
       var ui = root.IW.ui;
