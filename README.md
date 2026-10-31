@@ -814,3 +814,5 @@ integritywatch-field/
 *Sections: 18 (all complete)*
 *Images verified: 26 (module gallery) + 1 video walkthrough*
 *Captures referenced: all existing in docs/evidence/*
+
+https://github.com/user-attachments/assets/2d49d8f9-8262-4406-b6b8-a6b839aea9ce
