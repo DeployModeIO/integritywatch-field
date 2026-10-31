@@ -1,0 +1,102 @@
+/* IFS-24 symbols — state encoding and sizing.
+   Shape + colour + badge: never colour alone. */
+
+.sym {
+  display: inline-block;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+/* states */
+.sym-ok      { color: inherit; }
+.sym-warn    { color: var(--alert-warning, #9a6700); }
+.sym-crit    { color: var(--alert-critical, #b42318); }
+.sym-nodata  { color: var(--muted, #49535d); opacity: .72; }
+.sym-off     { color: var(--muted, #49535d); opacity: .85; }
+
+/* no data: dashed outline (shape cue, not colour) */
+.sym-nodata path,
+.sym-nodata circle,
+.sym-nodata rect,
+.sym-nodata ellipse,
+.sym-nodata line,
+.sym-nodata polyline,
+.sym-nodata polygon { stroke-dasharray: 2 1.6; }
+
+/* out of service: diagonal hatch over the glyph */
+.sym-off { position: relative; }
+.sym-off::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 3px,
+    currentColor 3px 4.6px
+  );
+  opacity: .35;
+  pointer-events: none;
+}
+
+/* badges are filled, never stroked */
+.sym-badge { stroke: none; }
+.sym-badge-warn { fill: var(--alert-warning, #9a6700); }
+.sym-badge-crit { fill: var(--alert-critical, #b42318); }
+.sym-badge-off  { fill: var(--muted, #49535d); }
+
+/* container used in tables, cards and the line ribbon */
+.sym-box {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border, #9aa3ac);
+  border-radius: 8px;
+  background: var(--surface, #eceef0);
+}
+.sym-box .sym { width: 22px; height: 22px; }
+
+/* legend row */
+.sym-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  font-size: .82rem;
+  color: var(--muted, #49535d);
+  margin: 8px 0 0;
+}
+.sym-legend span { display: inline-flex; gap: 6px; align-items: center; }
+
+/* print: symbols must stay crisp and dark on paper */
+@media print {
+  .sym { color: #000 !important; }
+  .sym-warn, .sym-crit { color: #000 !important; }
+  .sym-badge-warn, .sym-badge-crit { fill: #000 !important; }
+  .sym-off::after { display: none; }
+}
+
+/* ---------- line ribbon (pipeline as a kilometres bar) ---------- */
+.line-ribbon { display: block; width: 100%; height: auto; overflow: visible; }
+.lr-pipe { stroke: var(--border, #9aa3ac); stroke-width: 7; stroke-linecap: round; }
+.lr-seg { stroke-width: 7; }
+.lr-seg-low { stroke: var(--sev-low, #1e7a34); }
+.lr-seg-moderate { stroke: var(--sev-moderate, #7a5200); }
+.lr-seg-high { stroke: var(--sev-high, #8f4208); }
+.lr-seg-severe { stroke: var(--sev-severe, #b42318); }
+.lr-flow { fill: none; stroke: var(--muted, #49535d); stroke-width: 1; }
+.lr-tick { stroke: var(--border, #9aa3ac); stroke-width: 1; }
+.lr-label, .lr-tag { fill: var(--muted, #49535d); font-size: 9px; font-family: var(--font-ui); }
+.lr-tag { fill: var(--text, #14181c); font-size: 8px; }
+.lr-asset { cursor: pointer; }
+.lr-asset:hover { opacity: .75; }
+.lr-empty { fill: var(--muted, #49535d); font-size: 12px; }
+.line-ribbon--mini .lr-label, .line-ribbon--mini .lr-tag { display: none; }
+
+
+/* symbols sitting on coloured surfaces must stay readable */
+.heat-cell .sym { color: var(--text, #14181c); opacity: .9; }
+.map-node-group .sym { color: var(--text, #14181c); pointer-events: none; }

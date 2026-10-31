@@ -803,7 +803,14 @@
         emptyKey: 'common.empty',
         columns: [
           { key: 'tag', labelKey: 'psv.tag', render: function (v, row) {
-              return h.ui.el('a', { class: 'row-link', attrs: { href: '#/psv/' + encodeURIComponent(row.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/psv/' + encodeURIComponent(row.id)); } }, text: v });
+              var S = root.IW && root.IW.symbols;
+              var state = row.status === 'overdue' || row.status === 'expired' ? 'crit'
+                        : row.status === 'dueSoon' ? 'warn' : 'ok';
+              var sym = (S && typeof S.node === 'function')
+                ? S.node('psv', { size: 18, state: state, title: v })
+                : null;
+              var link = h.ui.el('a', { class: 'row-link', attrs: { href: '#/psv/' + encodeURIComponent(row.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/psv/' + encodeURIComponent(row.id)); } }, text: v });
+              return h.ui.el('span', { class: 'sym-cell' }, sym || document.createTextNode(''), link);
             } },
           { key: 'valveType', labelKey: 'psv.valveType', render: function (v) { return v ? h.t('psv.types.' + v) : ''; } },
           { key: 'fluid', labelKey: 'psv.fluid' },

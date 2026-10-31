@@ -335,6 +335,40 @@ python tools\qa\run_operator_tests.py
 
 ---
 
+## Visual upgrade — IFS-24 symbol system (31-10-2026)
+
+The application now speaks the language of a control room: equipment is drawn with a
+purpose-built pictogram set instead of generic UI glyphs.
+
+| Item | Detail |
+|---|---|
+| Set | **34 symbols** (tanks, vessels, columns, furnaces, exchangers, pumps, compressors, valves, PSV, line items, degradation modes) |
+| Drafting | 24-unit canvas, constant **1.75 px** stroke, `currentColor`, inline SVG |
+| Weight | **7.3 KB** for the whole set, zero dependencies, no icon font |
+| States | `ok` · `warn` · `crit` · `nodata` (dashed outline) · `off` (hatched) — **shape + colour + badge**, never colour alone |
+| Generator | [`tools/build-symbols.py`](tools/build-symbols.py) → [`src/components/symbols.js`](src/components/symbols.js) |
+| Mapping | [`src/components/symbol-map.js`](src/components/symbol-map.js): ISO 14224 category / sensor type / line-asset type → symbol |
+| Tests | [`tests/symbols.test.js`](tests/symbols.test.js): every symbol has geometry, no scripts, no hard-coded colours; every app category resolves |
+
+### Where it is applied
+
+| Layer | Change |
+|---|---|
+| Dashboard | Corrosion heatmap cells show the point's equipment symbol, coloured by severity, with a severity badge |
+| Asset performance | Category cell shows the ISO 14224 pictogram (column, exchanger, pump, compressor, valve…) |
+| Corrosion | Point list shows the sensor/equipment pictogram with state derived from the measured rate |
+| Relief valves | Registry shows the PSV symbol; overdue valves are marked critical |
+| App shell | `symbols.css` loaded in the shell and precached; cache bumped to `iw-v19` |
+
+### What was deliberately not changed
+
+The pipeline **map view** already draws a kilometres bar with severity shapes, tags and a
+legend. Nesting pictograms inside its coordinate system fought its scaling, so the map keeps
+its shape-and-colour encoding and the symbols are used everywhere else. This is noted here
+so the decision is not mistaken for an omission.
+
+---
+
 ## Modules (table)
 
 | Module | What it does | Applicable standards |

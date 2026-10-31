@@ -203,6 +203,15 @@
     window.requestAnimationFrame(step);
   }
 
+  // IFS pictogram for a monitoring point, coloured by severity.
+  function pointSymbol(root, mp, sev, size) {
+    var S = root.IW && root.IW.symbols;
+    var M = root.IW && root.IW.symbolMap;
+    if (!S || !M || typeof S.node !== 'function') { return null; }
+    var state = sev === 'severe' || sev === 'high' ? 'crit' : sev === 'moderate' ? 'warn' : 'ok';
+    return S.node(M.forPoint(mp), { size: size || 18, state: state, title: mp.name || mp.code });
+  }
+
   function buildHeatmap(h, heat) {
     var card = h.ui.el('section', { class: 'card' });
     card.appendChild(h.ui.el('h2', { class: 'section-title', text: h.t('dashboard.heatmapTitle') }));
@@ -229,7 +238,8 @@
           }
         }
       },
-        h.ui.el('span', { class: 'heat-cell__shape shape shape-' + p.sev, attrs: { 'aria-hidden': 'true' } }),
+        (pointSymbol(root, p.mp, p.sev, 18) ||
+          h.ui.el('span', { class: 'heat-cell__shape shape shape-' + p.sev, attrs: { 'aria-hidden': 'true' } })),
         h.ui.el('span', { class: 'heat-cell__code', text: p.mp.code }),
         h.ui.el('span', { class: 'heat-cell__value num', text: valueText })
       );

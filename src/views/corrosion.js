@@ -1489,7 +1489,15 @@
         emptyKey: 'common.empty',
         columns: [
           { key: 'code', labelKey: 'corrosion.pointCode', render: function (v, row) {
-              return h.ui.el('a', { class: 'row-link', attrs: { href: '#/corrosion/mp/' + encodeURIComponent(row.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/corrosion/mp/' + encodeURIComponent(row.id)); } }, text: v });
+              var S = root.IW && root.IW.symbols;
+              var M = root.IW && root.IW.symbolMap;
+              var sev = row.lastMpy == null ? null : classifyMpy(row.lastMpy);
+              var state = sev == null ? 'nodata' : (sev === 'severe' || sev === 'high') ? 'crit' : sev === 'moderate' ? 'warn' : 'ok';
+              var sym = (S && M && typeof S.node === 'function')
+                ? S.node(M.forPoint(row._mp), { size: 18, state: state, title: row.name || v })
+                : null;
+              var link = h.ui.el('a', { class: 'row-link', attrs: { href: '#/corrosion/mp/' + encodeURIComponent(row.id) }, on: { click: function (ev) { ev.preventDefault(); h.navigate('#/corrosion/mp/' + encodeURIComponent(row.id)); } }, text: v });
+              return h.ui.el('span', { class: 'sym-cell' }, sym || document.createTextNode(''), link);
             } },
           { key: 'name', labelKey: 'corrosion.pointName' },
           { key: 'sector', labelKey: 'common.sector', render: function (v) { return v ? h.t('common.' + v) : ''; } },

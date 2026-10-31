@@ -390,17 +390,30 @@
 
     // Category cell: icon + localized label. Fire categories (firePump/fireSystem)
     // render inside the severe severity badge (safety red) reusing `.badge-severe`.
+    // IFS symbol for a category, with the legacy glyph as fallback.
+    function categorySymbol(cat, size, state) {
+      var S = root.IW && root.IW.symbols;
+      var M = root.IW && root.IW.symbolMap;
+      if (!S || !M || typeof S.node !== 'function') { return null; }
+      return S.node(M.forCategory(cat), {
+        size: size || 18,
+        state: state || 'ok',
+        title: t('apm.categories.' + (cat || 'pump'))
+      });
+    }
+
     function categoryNode(cat) {
       var c = cat || 'pump';
       var label = t('apm.categories.' + c);
       var ic = categoryIcon(c);
+      var sym = categorySymbol(c, 18) || icon(ic, 16);
       if (isFireCategory(c)) {
         return el('span', { class: 'badge badge-severe' },
-          icon(ic, 16),
+          sym,
           el('span', { text: label }));
       }
-      if (ic) {
-        return el('span', { class: 'category-cell' }, icon(ic, 16), el('span', { text: label }));
+      if (ic || sym) {
+        return el('span', { class: 'category-cell' }, sym, el('span', { text: label }));
       }
       return document.createTextNode(label);
     }
