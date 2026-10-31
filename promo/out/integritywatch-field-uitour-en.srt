@@ -1,0 +1,40 @@
+1
+00:00:00,000 --> 00:00:06,816
+Every integrity function your operators need, on one tablet, with no server and no connection.
+
+2
+00:00:08,216 --> 00:00:17,696
+Start on the dashboard. Key indicators, a heatmap of every monitoring point, and symbols that tell you what the equipment is at a glance.
+
+3
+00:00:19,096 --> 00:00:27,664
+Open a point. The pictogram says what it is, the state says how bad it is, and the trend shows where it is going.
+
+4
+00:00:29,064 --> 00:00:39,168
+Register assets against ISO 14224. The category carries its symbol, and the risk band drives the inspection interval.
+
+5
+00:00:40,568 --> 00:00:48,176
+Relief valves keep their own registry, with sizing and overdue tests flagged in red before anyone has to ask.
+
+6
+00:00:49,576 --> 00:01:00,016
+A pipeline is not an icon. It is a kilometres bar: severity per segment, every asset placed by station, findings where they happened.
+
+7
+00:01:01,516 --> 00:01:11,644
+Inject the field round as a CSV. Columns are mapped automatically, every row is validated, and the bad one is rejected with a reason.
+
+8
+00:01:13,144 --> 00:01:17,944
+Run the rules and the app turns readings into ranked recommendations.
+
+9
+00:01:19,244 --> 00:01:25,076
+Then generate the dossier on the device, ready to print, sign and hand over.
+
+10
+00:01:26,476 --> 00:01:32,788
+Field data. Field decisions. No signal required.
+

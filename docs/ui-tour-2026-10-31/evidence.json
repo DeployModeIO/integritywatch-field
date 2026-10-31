@@ -1,0 +1,159 @@
+{
+  "run_at": "2026-10-31T10:10:08",
+  "steps": [
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Dashboard with IFS symbols in the corrosion heatmap",
+      "screenshots": [
+        "01-dashboard.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Point list: equipment pictogram + state per row",
+      "screenshots": [
+        "02-corrosion-list.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Point dossier view: trend, ASTM, screening",
+      "screenshots": [
+        "03-corrosion-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Data injection: new monitoring point, real field values",
+      "screenshots": [
+        "04-new-point-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Asset registry: ISO 14224 category pictograms",
+      "screenshots": [
+        "05-apm-list.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Asset detail: risk band, interval, events",
+      "screenshots": [
+        "06-apm-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Relief valve registry with PSV symbol and overdue state",
+      "screenshots": [
+        "07-psv-registry.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "PSV sizing (API 520/526) and test dates",
+      "screenshots": [
+        "08-psv-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipeline kilometres bar: severity segments and assets",
+      "screenshots": [
+        "09-pipeline-map.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Data ingestion: CSV loaded and columns auto-mapped",
+      "screenshots": [
+        "10-ingest-mapping.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Validation: 16 valid rows, 1 rejected (unknown point)",
+      "screenshots": [
+        "11-ingest-validation.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Import committed; store {'readings': 136, 'points': 9}",
+      "screenshots": [
+        "12-ingest-imported.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "R1-R17 sweep: 21 recommendations",
+      "screenshots": [
+        "13-recommendations.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Point dossier generated on the device",
+      "screenshots": [
+        "14-report-dossier.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Quarterly integrity report",
+      "screenshots": [
+        "15-report-quarterly.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "PSV datasheet",
+      "screenshots": [
+        "16-report-datasheet.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin: storage, languages, case-file export",
+      "screenshots": [
+        "17-admin.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Android tablet 1280x800 with the new symbols",
+      "screenshots": [
+        "18-tablet-dashboard.png"
+      ]
+    }
+  ],
+  "issues": [],
+  "counts": {
+    "readings": 136,
+    "points": 9
+  },
+  "recommendations": 21,
+  "summary": {
+    "captures": 18,
+    "issues": 0
+  }
+}

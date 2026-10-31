@@ -1,0 +1,18 @@
+punto,fecha,tasa,wi,wf,área,días,residual,temperatura,bsw,categoría,nota
+MP-CORR-001,2026-10-28,12.74,,,,26,22,55,1,lectura,Field round
+MP-CORR-001,2026-10-21,12.43,,,,26,22,55,3,lectura,
+MP-CORR-001,2026-10-14,12.24,,,,26,26,52,2,lectura,
+MP-CORR-001,2026-10-07,12.1,,,,26,26,52,2,lectura,
+MP-CORR-002,2026-10-28,6.99,,,,26,24,52,2,lectura,Field round
+MP-CORR-002,2026-10-21,6.52,,,,26,22,58,1,lectura,
+MP-CORR-002,2026-10-14,6.58,,,,26,24,55,1,lectura,
+MP-CORR-002,2026-10-07,6.22,,,,26,26,52,2,lectura,
+MP-CORR-003,2026-10-28,3.96,,,,26,22,52,3,lectura,Field round
+MP-CORR-003,2026-10-21,4.16,,,,26,26,58,3,lectura,
+MP-CORR-003,2026-10-14,3.55,,,,26,26,52,2,lectura,
+MP-CORR-003,2026-10-07,3.66,,,,26,24,55,3,lectura,
+MP-CORR-004,2026-10-28,2.91,,,,26,24,58,3,lectura,Field round
+MP-CORR-004,2026-10-21,2.46,,,,26,24,55,2,lectura,
+MP-CORR-004,2026-10-14,2.59,,,,26,26,55,2,lectura,
+MP-CORR-004,2026-10-07,2.32,,,,26,26,58,1,lectura,
+MP-GHOST-99,2026-10-26,5.5,,,,26,24,55,2,lectura,Point not registered

@@ -213,7 +213,39 @@ R1-R17 y export de expediente de 121 KB, todo sin servidor ni conexión.
 
 ---
 
-## 15. Notas importantes
+## 15. Recorrido de la interfaz (diseño IFS-24, 31-10-2026)
+
+Se capturó la interfaz completa para el vídeo de recorrido en inglés. Todas las pantallas
+usan el set IFS-24: el equipo se reconoce por la forma y el estado se codifica con
+forma + color + badge.
+
+| Pantalla | Qué muestra |
+|---|---|
+| Dashboard | KPIs y heatmap de todos los puntos, cada uno con su símbolo de equipo |
+| Corrosión | Lista con pictograma y estado, y detalle del punto con tendencia |
+| Asset performance | Pictogramas por categoría ISO 14224, banda de riesgo e intervalo |
+| Ductos | Barra de kilómetros con severidad por tramo y activos por estación |
+| Ingesta | CSV mapeado, validado e importado sin conexión (16/17 filas, 1 rechazada) |
+| Informes | Dossier generado en el dispositivo |
+
+![Dashboard](../ui-tour-2026-10-31/01-dashboard.png)
+
+![Lista de corrosión](../ui-tour-2026-10-31/02-corrosion-list.png)
+
+![Registro de activos](../ui-tour-2026-10-31/05-apm-list.png)
+
+![Mapa de ducto](../ui-tour-2026-10-31/09-pipeline-map.png)
+
+![Validación del CSV](../ui-tour-2026-10-31/11-ingest-validation.png)
+
+![Dossier del punto](../ui-tour-2026-10-31/14-report-dossier.png)
+
+**Vídeo de este recorrido** (1:35, narración en inglés):
+[`docs/evidence/video/integritywatch-field-uitour-en.mp4`](../evidence/video/integritywatch-field-uitour-en.mp4).
+
+---
+
+## 16. Notas importantes
 
 - IntegrityWatch Field es una **herramienta de apoyo**. No reemplaza la juicio de un ingeniero cualificado.
 - Verifica todos los cálculos contra la edición actual de los estándares aplicables (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) y los datos del fabricante antes de cualquier decisión operativa.

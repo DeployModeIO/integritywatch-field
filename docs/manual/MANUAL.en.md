@@ -211,7 +211,39 @@ real UKCS pipeline records. Full record: `docs/PRUEBAS-CAMPO-OPERADORES-2026-10-
 
 ---
 
-## 15. Important notes
+## 15. UI tour (IFS-24 design, 31-10-2026)
+
+A full walkthrough of the current interface was captured for the English tour video.
+Every screen below uses the IFS-24 pictogram set: equipment is recognised by shape,
+state is encoded by shape + colour + badge.
+
+| Screen | What it shows |
+|---|---|
+| Dashboard | KPIs and a heatmap of every point, each with its equipment symbol |
+| Corrosion | Point list with pictogram and state, plus the point detail with trend |
+| Asset performance | ISO 14224 category pictograms, risk band and interval |
+| Pipelines | Kilometres bar with severity per segment and assets by station |
+| Data ingest | CSV mapped, validated and committed offline (16/17 rows, 1 rejected) |
+| Reports | Dossier generated on the device |
+
+![Dashboard](../ui-tour-2026-10-31/01-dashboard.png)
+
+![Corrosion list](../ui-tour-2026-10-31/02-corrosion-list.png)
+
+![Asset registry](../ui-tour-2026-10-31/05-apm-list.png)
+
+![Pipeline map](../ui-tour-2026-10-31/09-pipeline-map.png)
+
+![CSV validation](../ui-tour-2026-10-31/11-ingest-validation.png)
+
+![Point dossier](../ui-tour-2026-10-31/14-report-dossier.png)
+
+**Video of this tour** (1:35, English narration):
+[`docs/evidence/video/integritywatch-field-uitour-en.mp4`](../evidence/video/integritywatch-field-uitour-en.mp4).
+
+---
+
+## 16. Important notes
 
 - IntegrityWatch Field is a **support tool**. It does not replace the judgment of a qualified engineer.
 - Verify all calculations against the current edition of the applicable standard (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) and manufacturer data before any operational decision.
