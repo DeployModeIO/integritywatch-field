@@ -207,10 +207,9 @@ Visual evidence gallery organized by module. All captures live in `docs/evidence
 
 A narrated overview of what IntegrityWatch Field is and what it solves: offline-first integrity and compliance for **wells, pipelines, and offshore assets** — corrosion modeling (De Waard–Milliams, ASTM), PSV sizing (API 520/526), pipelines with a kilometer-based schematic map and ILD/UT inspections, risk-based inspection (API 580/581), the **R1–R17** recommendation engine, and reports — plus 7 languages, light/dark themes, CSV/WITSML import, and portable case files.
 
-**UI tour — every function, new IFS-24 design** — [`docs/evidence/video/integritywatch-field-uitour-en.mp4`](docs/evidence/video/integritywatch-field-uitour-en.mp4) (1:35, English narration). Dashboard, corrosion point, ISO 14224 assets, relief valves, the 
+**UI tour — every function, new IFS-24 design** — [`docs/evidence/video/integritywatch-field-uitour-en.mp4`](docs/evidence/video/integritywatch-field-uitour-en.mp4) (1:35, English narration). Dashboard, corrosion point, ISO 14224 assets, relief valves, the pipeline kilometres bar, offline CSV ingestion (16/17 rows), ranked rules and the on-device dossier.
 
 https://github.com/user-attachments/assets/bda20933-ca64-4ec2-b829-34e0a7f3eb6c
-pipeline kilometres bar, offline CSV ingestion (16/17 rows), ranked rules and the on-device dossier.
 
 **Operator cut (plant · pipeline · refinery)** — [`docs/evidence/video/integritywatch-field-operators-en.mp4`](docs/evidence/video/integritywatch-field-operators-en.mp4) (1:19, English narration). Recorded from the operator campaign: offline CSV ingest (48/48 rows), ISO 14224 asset registration and an on-device dossier. Test record: [`docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`](docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md).
 
