@@ -120,14 +120,63 @@
     return meta.get('lock.enabled').then(function (v) { return v === true; });
   }
 
-  function makeSession(role, nowMs) {
+  function makeSession(role, nowMs, username) {
     var nowISO = new Date(nowMs).toISOString();
-    return {
+    var session = {
       role: role,
       startISO: nowISO,
       lastActivityISO: nowISO,
       expiresISO: new Date(nowMs + SESSION_MINUTES * 60000).toISOString()
     };
+    if (typeof username === 'string' && username.length > 0) {
+      session.username = username;
+    }
+    return session;
+  }
+
+  function usernameForLegacyVerifier(meta) {
+    return meta.get('users').then(function (users) {
+      if (!Array.isArray(users) || users.length === 0) { return null; }
+      return meta.get('lock.verifier').then(function (verifier) {
+        if (!verifier || !verifier.saltB64 || !verifier.hashB64) { return null; }
+        for (var i = 0; i < users.length; i++) {
+          var u = users[i];
+          if (u && u.saltB64 === verifier.saltB64 && u.hashB64 === verifier.hashB64 && typeof u.username === 'string') {
+            return u.username;
+          }
+        }
+        return null;
+      });
+    });
+  }
+
+  function usersModule() {
+    if (root && root.IW && root.IW.security && root.IW.security.users &&
+        typeof root.IW.security.users.init === 'function') {
+      return root.IW.security.users;
+    }
+    return null;
+  }
+
+  function resolveEnableUsername(meta, verifier) {
+    return meta.get('users').then(function (users) {
+      if (!Array.isArray(users) || users.length === 0) { return null; }
+      var matching = null;
+      var admin = null;
+      for (var i = 0; i < users.length; i++) {
+        var u = users[i];
+        if (!u || typeof u.username !== 'string') { continue; }
+        var sameVerifier = u.saltB64 === verifier.saltB64 && u.hashB64 === verifier.hashB64;
+        if (sameVerifier) {
+          if (u.role === 'admin') { return u.username; }
+          if (!matching) { matching = u.username; }
+        }
+        if (!admin && u.role === 'admin' && u.active === true) { admin = u.username; }
+      }
+      if (matching) { return matching; }
+      if (admin) { return admin; }
+      return null;
+    });
   }
 
   function enable(opts, meta) {
@@ -150,7 +199,18 @@
         .then(function () { return meta.set('lock.fails', 0); })
         .then(function () { return meta.set('lock.lockedUntilISO', null); })
         .then(function () { return meta.set('lock.enabled', true); })
-        .then(function () { return meta.set('lock.session', makeSession(role, Date.now())); })
+        .then(function () {
+          var users = usersModule();
+          if (!users) {
+            return usernameForLegacyVerifier(meta);
+          }
+          return users.init(meta).then(function () {
+            return resolveEnableUsername(meta, verifier);
+          });
+        })
+        .then(function (username) {
+          return meta.set('lock.session', makeSession(role, Date.now(), username));
+        })
         .then(function () { return { ok: true, role: role }; });
     });
   }
@@ -192,8 +252,10 @@
                 _currentRole = role || null;
                 return meta.set('lock.fails', 0).then(function () {
                   return meta.set('lock.lockedUntilISO', null).then(function () {
-                    return meta.set('lock.session', makeSession(role, Date.now())).then(function () {
-                      return { ok: true, role: role };
+                    return usernameForLegacyVerifier(meta).then(function (username) {
+                      return meta.set('lock.session', makeSession(role, Date.now(), username)).then(function () {
+                        return { ok: true, role: role };
+                      });
                     });
                   });
                 });
@@ -244,7 +306,13 @@
       if (!s || typeof s !== 'object' || !s.expiresISO) { return null; }
       var exp = Date.parse(s.expiresISO);
       if (isNaN(exp) || exp <= Date.now()) { return null; }
-      return { role: s.role, startISO: s.startISO, lastActivityISO: s.lastActivityISO, expiresISO: s.expiresISO };
+      return {
+        role: s.role,
+        username: s.username || null,
+        startISO: s.startISO,
+        lastActivityISO: s.lastActivityISO,
+        expiresISO: s.expiresISO
+      };
     });
   }
 
@@ -254,12 +322,12 @@
       var exp = Date.parse(s.expiresISO);
       if (isNaN(exp) || exp <= Date.now()) { return { ok: false }; }
       var nowMs = Date.now();
-      var session = {
-        role: s.role,
-        startISO: s.startISO,
-        lastActivityISO: new Date(nowMs).toISOString(),
-        expiresISO: new Date(nowMs + SESSION_MINUTES * 60000).toISOString()
-      };
+      var session = {};
+      for (var k in s) {
+        if (Object.prototype.hasOwnProperty.call(s, k)) { session[k] = s[k]; }
+      }
+      session.lastActivityISO = new Date(nowMs).toISOString();
+      session.expiresISO = new Date(nowMs + SESSION_MINUTES * 60000).toISOString();
       return meta.set('lock.session', session).then(function () {
         return { ok: true, expiresISO: session.expiresISO };
       });
@@ -268,7 +336,21 @@
 
   function role(meta) {
     return currentSession(meta).then(function (s) {
-      return s ? s.role : null;
+      if (!s) { return null; }
+      return meta.get('users').then(function (users) {
+        if (!Array.isArray(users) || users.length === 0) {
+          return s.role || null;
+        }
+        if (!s.username) { return null; }
+        var lower = s.username.toLowerCase();
+        for (var i = 0; i < users.length; i++) {
+          var u = users[i];
+          if (u && typeof u.username === 'string' && u.username.toLowerCase() === lower) {
+            return (u.active === true) ? (s.role || null) : null;
+          }
+        }
+        return null;
+      });
     });
   }
 

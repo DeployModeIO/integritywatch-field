@@ -161,3 +161,17 @@
 ![检验发现](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
 
 ![CSV 校验汇总](../data-entry-2026-10-31/12-ingest-csv-validation.png)
+
+---
+
+## 多用户凭证（2026-10-31）
+
+访问系统现支持**具名用户**。管理员为每人创建一套凭证并分配角色（操作员、工程师或管理员）。各人用自己的用户名和口令登录；切换用户不会删除数据。口令从不存储，仅保存 PBKDF2-SHA256 （600,000 次迭代）加随机盐的哈希。
+
+内置规则：系统始终至少保留一名启用的管理员；任何人不能停用自己；被停用用户的会话立即失效。升级时现有 PIN 会自动迁移为首个 `admin` 用户，数据不丢失。
+
+![用户与访问面板](../security-users-2026-10-31/03-users-panel.png)
+
+![登录界面](../security-users-2026-10-31/04-login-gate.png)
+
+![操作员写入被拒绝](../security-users-2026-10-31/06-operator-forbidden.png)

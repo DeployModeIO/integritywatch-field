@@ -894,6 +894,45 @@ table.data tbody tr:hover {
   animation: dialog-scale-in var(--dur-2) var(--ease-out);
 }
 
+/* --- Login gate ------------------------------------------------------------ */
+
+.login-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  background: var(--bg);
+}
+
+.login-gate__card {
+  inline-size: 100%;
+  max-inline-size: 22rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  padding: var(--sp-5);
+  box-shadow: var(--shadow-3);
+}
+
+.login-gate__head h1 {
+  margin-block: 0 var(--sp-2);
+  font-size: 1.25rem;
+}
+
+.login-gate__hint {
+  margin-block: 0 var(--sp-4);
+  color: var(--muted);
+}
+
+.login-gate__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
 /* --- Reduced motion overrides ----------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {

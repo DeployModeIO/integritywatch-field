@@ -887,11 +887,41 @@
         admin: 'Admin',
         operator: 'Operador',
         engineer: 'Engenheiro'
+      },
+      users: {
+        title: 'Utilizadores e acesso',
+        create: 'Criar utilizador',
+        username: 'Utilizador',
+        passphrase: 'Frase de acesso',
+        role: 'Função',
+        active: 'Ativo',
+        inactive: 'Inativo',
+        activate: 'Ativar',
+        deactivate: 'Desativar',
+        setPass: 'Definir frase',
+        changeRole: 'Mudar função',
+        hint: 'Ao ativar o bloqueio é criada a primeira conta de administrador.',
+        errors: {
+          E_USER_EXISTS: 'Já existe um utilizador com este nome',
+          E_BAD_USERNAME: 'Nome de utilizador inválido (3–32 letras, números, ponto, hífen ou sublinhado)',
+          E_WEAK_PASSPHRASE: 'A frase de acesso deve ter pelo menos 6 caracteres',
+          E_BAD_ROLE: 'Função inválida',
+          E_NO_USER: 'Utilizador não encontrado',
+          E_LAST_ADMIN: 'Não é possível desativar ou rebaixar o último administrador ativo',
+          E_WRONG_PASSPHRASE: 'A frase de acesso atual está incorreta',
+          E_SELF: 'Não pode desativar a sua própria conta'
+        }
       }
     },
 
     security: {
-      forbidden: 'Você não tem permissão para esta ação'
+      forbidden: 'Você não tem permissão para esta ação',
+      login: 'Entrar',
+      username: 'Utilizador',
+      passphrase: 'Frase de acesso',
+      badCredentials: 'Utilizador ou frase de acesso incorretos',
+      lockNow: 'Bloquear agora',
+      sessionExpired: 'Sessão expirada — entre novamente'
     },
 
     a11y: {

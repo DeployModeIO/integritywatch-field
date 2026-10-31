@@ -44,6 +44,13 @@
   var _sysBannerText = null;
   var _sysClock = null;
   var _clockTimer = null;
+  var _lockBtnEl = null;
+  var _lockBtnLabel = null;
+  var _gateEl = null;
+  var _gateUserInput = null;
+  var _gatePassInput = null;
+  var _gateErrorEl = null;
+  var _gateSubmitBtn = null;
 
   var SECTORS = ['upstream', 'midstream', 'downstream'];
 
@@ -62,6 +69,8 @@
   function t(key, params) { return (_i18n && typeof _i18n.t === 'function') ? _i18n.t(key, params) : key; }
   function ui() { return root.IW.ui; }
   function themeApi() { return root.IW.app.theme; }
+  function usersApi() { return root.IW.security && root.IW.security.users; }
+  function lockApi() { return root.IW.security && root.IW.security.lock; }
 
   // Keep the accessible name coherent with the visible counter (axe label-content-name-mismatch).
   function syncBadgeLabel() {
@@ -281,6 +290,12 @@
     controls.appendChild(el('button', { class: 'btn btn-primary', attrs: { id: 'run-rules' }, on: { click: function () { runRules(false); } } },
       icon('play', 18), _runRulesLabel));
 
+    _lockBtnLabel = el('span', { text: t('security.lockNow') });
+    _lockBtnEl = el('button', { class: 'btn btn-ghost touch', attrs: { id: 'lock-now', 'aria-label': t('security.lockNow') }, on: { click: onLockNow } },
+      icon('lock', 18), _lockBtnLabel);
+    _lockBtnEl.hidden = true;
+    controls.appendChild(_lockBtnEl);
+
     /* Plant clock — far right */
     _sysClock = el('span', { attrs: { id: 'sys-clock', 'aria-hidden': 'true' } });
     controls.appendChild(_sysClock);
@@ -354,6 +369,160 @@
     } catch (e) { /* ignore */ }
   }
 
+  function reRenderRoute() {
+    var router = root.IW.app.router;
+    if (router && typeof router.render === 'function') { return router.render(); }
+    return Promise.resolve();
+  }
+
+  function focusGate() {
+    if (_gateUserInput) {
+      try { _gateUserInput.focus(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function clearLoginGate() {
+    if (_gateEl) {
+      if (_gateEl.parentNode) { _gateEl.parentNode.removeChild(_gateEl); }
+      _gateEl = null;
+    }
+    _gateUserInput = null;
+    _gatePassInput = null;
+    _gateErrorEl = null;
+    _gateSubmitBtn = null;
+  }
+
+  function showGateError(msg) {
+    if (_gateErrorEl) { _gateErrorEl.textContent = msg; _gateErrorEl.hidden = false; }
+    if (_gatePassInput) {
+      _gatePassInput.value = '';
+      try { _gatePassInput.focus(); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function setGateBusy(busy) {
+    if (_gateSubmitBtn) { _gateSubmitBtn.disabled = !!busy; }
+  }
+
+  function onLoginSubmit() {
+    var users = usersApi();
+    if (!users || typeof users.verifyUser !== 'function' || !_repos || !_repos.meta || !_gateUserInput || !_gatePassInput) { return; }
+    var username = _gateUserInput.value;
+    var passphrase = _gatePassInput.value;
+    if (!username || !passphrase) { showGateError(t('security.badCredentials')); return; }
+    setGateBusy(true);
+    users.verifyUser(_repos.meta, username, passphrase).then(function (res) {
+      setGateBusy(false);
+      if (res && res.ok) {
+        clearLoginGate();
+        return reRenderRoute();
+      }
+      showGateError(t('security.badCredentials'));
+    }).catch(function () {
+      setGateBusy(false);
+      showGateError(t('security.badCredentials'));
+    });
+  }
+
+  function buildLoginGate() {
+    var gate = el('div', {
+      class: 'login-gate',
+      attrs: { role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'login-gate-title' }
+    });
+
+    var card = el('div', { class: 'login-gate__card' });
+    var head = el('div', { class: 'login-gate__head' },
+      el('h1', { attrs: { id: 'login-gate-title' }, text: t('security.login') }),
+      el('p', { class: 'login-gate__hint', text: t('common.appName') }));
+
+    var form = el('form', { class: 'login-gate__form', attrs: { novalidate: '' } });
+
+    _gateUserInput = el('input', {
+      class: 'input',
+      attrs: { id: 'login-gate-user', name: 'username', type: 'text', autocomplete: 'username', required: 'required' }
+    });
+    _gatePassInput = el('input', {
+      class: 'input',
+      attrs: { id: 'login-gate-pass', name: 'passphrase', type: 'password', autocomplete: 'current-password', required: 'required' }
+    });
+
+    form.appendChild(el('div', { class: 'field' },
+      el('label', { class: 'field-label', attrs: { for: 'login-gate-user' }, text: t('security.username') }), _gateUserInput));
+    form.appendChild(el('div', { class: 'field' },
+      el('label', { class: 'field-label', attrs: { for: 'login-gate-pass' }, text: t('security.passphrase') }), _gatePassInput));
+
+    _gateErrorEl = el('p', { class: 'field-error', attrs: { id: 'login-gate-error', role: 'alert' } });
+    _gateErrorEl.hidden = true;
+    form.appendChild(_gateErrorEl);
+
+    _gateSubmitBtn = el('button', { class: 'btn btn-primary', attrs: { type: 'submit' } },
+      icon('lock', 18), el('span', { text: t('security.login') }));
+    form.appendChild(_gateSubmitBtn);
+
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      onLoginSubmit();
+    });
+
+    card.appendChild(head);
+    card.appendChild(form);
+    gate.appendChild(card);
+    return gate;
+  }
+
+  function showLoginGate() {
+    var main = (typeof document !== 'undefined') ? document.getElementById('main') : null;
+    if (!main) { return; }
+    if (_gateEl && _gateEl.parentNode === main) {
+      focusGate();
+      return;
+    }
+    main.textContent = '';
+    _gateEl = buildLoginGate();
+    main.appendChild(_gateEl);
+    focusGate();
+  }
+
+  function updateLockButton(visible) {
+    if (_lockBtnEl) { _lockBtnEl.hidden = !visible; }
+  }
+
+  // Login gate: with a non-empty users list and the lock enabled, a missing or
+  // invalid session blocks the app until the operator signs in.
+  function checkLoginGate() {
+    var users = usersApi();
+    var lk = lockApi();
+    if (!users || typeof users.hasUsers !== 'function' || !lk || typeof lk.isEnabled !== 'function' || !_repos || !_repos.meta) {
+      updateLockButton(false);
+      return Promise.resolve();
+    }
+    return users.hasUsers(_repos.meta).then(function (hasUsers) {
+      return lk.isEnabled(_repos.meta).then(function (enabled) {
+        var locked = enabled && hasUsers;
+        updateLockButton(locked);
+        if (!locked) {
+          clearLoginGate();
+          return;
+        }
+        return users.activeRole(_repos.meta).then(function (role) {
+          if (role) { clearLoginGate(); }
+          else { showLoginGate(); }
+        });
+      });
+    }).catch(function (err) {
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] login gate check failed', err); }
+    });
+  }
+
+  function onLockNow() {
+    if (!_repos || !_repos.meta) { return; }
+    _repos.meta.set('lock.session', null).then(function () {
+      return reRenderRoute();
+    }).catch(function (err) {
+      if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] lock now failed', err); }
+    });
+  }
+
   function onSectorChange() {
     _sector = _sectorSelect.value;
     if (_repos && _repos.meta) {
@@ -414,6 +583,8 @@
     }
     syncBadgeLabel();
     if (_runRulesLabel) { _runRulesLabel.textContent = t('dashboard.runRules'); }
+    if (_lockBtnLabel) { _lockBtnLabel.textContent = t('security.lockNow'); }
+    if (_lockBtnEl) { _lockBtnEl.setAttribute('aria-label', t('security.lockNow')); }
     if (_disclaimerEl) { _disclaimerEl.textContent = t('common.disclaimer'); }
     if (_alarmBannerActionLabel) { _alarmBannerActionLabel.textContent = t('dashboard.viewAll'); }
     updateSysBanner();
@@ -523,6 +694,7 @@
         });
         setNavOpen(false);
         touchLockSession();
+        checkLoginGate();
       });
       _bus.on('theme:changed', function () { updateThemeIcon(); });
       _bus.on('locale:changed', function () { refreshChrome(); });
@@ -558,6 +730,7 @@
     updateThemeIcon();
     startClock();
     loadSettings();
+    checkLoginGate();
     return { refreshRecs: refreshRecs, runRules: runRules, getSector: function () { return _sector; } };
   }
 

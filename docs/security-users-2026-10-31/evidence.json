@@ -1,0 +1,137 @@
+{
+  "run_at": "2026-10-31",
+  "steps": [
+    {
+      "step": "bootstrap",
+      "status": "ok",
+      "detail": "lock enabled; admin migrated from legacy PIN",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin creates the engineer credential",
+      "screenshots": [
+        "01-create-engineer.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin creates the operator credential",
+      "screenshots": [
+        "02-create-operator.png"
+      ]
+    },
+    {
+      "step": "users_created",
+      "status": "ok",
+      "detail": "[{\"u\": \"admin\", \"r\": \"admin\", \"a\": true}, {\"u\": \"inge.moros\", \"r\": \"engineer\", \"a\": true}, {\"u\": \"ope.torres\", \"r\": \"operator\", \"a\": true}]",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Users & access panel: three named credentials",
+      "screenshots": [
+        "03-users-panel.png"
+      ]
+    },
+    {
+      "step": "gate",
+      "status": "ok",
+      "detail": "{\"user\": true, \"pass\": true}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Sign-in gate blocks the app while locked",
+      "screenshots": [
+        "04-login-gate.png"
+      ]
+    },
+    {
+      "step": "login_engineer",
+      "status": "ok",
+      "detail": "{\"role\": \"engineer\", \"s\": {\"role\": \"engineer\", \"username\": \"inge.moros\", \"startISO\": \"2026-10-31T21:02:19.909Z\", \"lastActivityISO\": \"2026-10-31T21:02:19.915Z\", \"expiresISO\": \"2026-10-31T21:17:19.915Z\"}}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Engineer signed in",
+      "screenshots": [
+        "05-engineer-session.png"
+      ]
+    },
+    {
+      "step": "form_open_attempt",
+      "status": "warn",
+      "detail": "form opened for operator=True",
+      "screenshots": []
+    },
+    {
+      "step": "operator_blocked",
+      "status": "ok",
+      "detail": "created=False toast=",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Operator cannot create assets (guard blocks the save)",
+      "screenshots": [
+        "06-operator-forbidden.png"
+      ]
+    },
+    {
+      "step": "admin_switch_back",
+      "status": "ok",
+      "detail": "{\"points\": 8, \"assets\": 18}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Data intact after switching users",
+      "screenshots": [
+        "07-admin-after-switch.png"
+      ]
+    }
+  ],
+  "issues": [],
+  "users": [
+    {
+      "u": "admin",
+      "r": "admin",
+      "a": true
+    },
+    {
+      "u": "inge.moros",
+      "r": "engineer",
+      "a": true
+    },
+    {
+      "u": "ope.torres",
+      "r": "operator",
+      "a": true
+    }
+  ],
+  "engineer_session": {
+    "role": "engineer",
+    "s": {
+      "role": "engineer",
+      "username": "inge.moros",
+      "startISO": "2026-10-31T21:02:19.909Z",
+      "lastActivityISO": "2026-10-31T21:02:19.915Z",
+      "expiresISO": "2026-10-31T21:17:19.915Z"
+    }
+  },
+  "operator_blocked": true,
+  "counts_after_switch": {
+    "points": 8,
+    "assets": 18
+  },
+  "page_errors": []
+}

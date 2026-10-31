@@ -886,11 +886,41 @@
       forceUpdate: "Forcer la mise à jour",
       forceUpdateHint: "Efface le cache hors ligne et recharge l'application. À utiliser lorsqu'une mise à jour n'apparaît pas.",
       syncInsecure: "Point de synchronisation non sécurisé rejeté (utilisez HTTPS, ou HTTP uniquement sur localhost)",
-      syncToken: "Jeton de synchronisation (Bearer)"
+      syncToken: "Jeton de synchronisation (Bearer)",
+      users: {
+        title: "Utilisateurs et accès",
+        create: "Créer un utilisateur",
+        username: "Nom d'utilisateur",
+        passphrase: "Phrase de passe",
+        role: "Rôle",
+        active: "Actif",
+        inactive: "Inactif",
+        activate: "Activer",
+        deactivate: "Désactiver",
+        setPass: "Définir la phrase",
+        changeRole: "Changer le rôle",
+        hint: "L'activation du verrou crée le premier compte administrateur.",
+        errors: {
+          E_USER_EXISTS: "Un utilisateur avec ce nom existe déjà",
+          E_BAD_USERNAME: "Nom d'utilisateur invalide (3–32 lettres, chiffres, point, tiret ou souligné)",
+          E_WEAK_PASSPHRASE: "La phrase de passe doit contenir au moins 6 caractères",
+          E_BAD_ROLE: "Rôle invalide",
+          E_NO_USER: "Utilisateur introuvable",
+          E_LAST_ADMIN: "Impossible de désactiver ou rétrograder le dernier administrateur actif",
+          E_WRONG_PASSPHRASE: "La phrase de passe actuelle est incorrecte",
+          E_SELF: "Vous ne pouvez pas désactiver votre propre compte"
+        }
+      }
     },
 
     security: {
-      forbidden: "Vous n'avez pas la permission d'effectuer cette action"
+      forbidden: "Vous n'avez pas la permission d'effectuer cette action",
+      login: "Se connecter",
+      username: "Nom d'utilisateur",
+      passphrase: "Phrase de passe",
+      badCredentials: "Nom d'utilisateur ou phrase de passe incorrect",
+      lockNow: "Verrouiller",
+      sessionExpired: "Session expirée — reconnectez-vous"
     },
 
     a11y: {

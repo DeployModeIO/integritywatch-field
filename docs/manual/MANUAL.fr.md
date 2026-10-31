@@ -161,3 +161,17 @@ Dossier complet : `docs/data-entry-2026-10-31/`
 ![Résultat d’inspection](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
 
 ![Résumé de validation CSV](../data-entry-2026-10-31/12-ingest-csv-validation.png)
+
+---
+
+## Identifiants multi-utilisateurs (31-10-2026)
+
+Le système d'accès prend désormais en charge des **utilisateurs nommés**. L'administrateur crée un identifiant par personne et attribue un rôle (opérateur, ingénieur ou administrateur). Chacun se connecte avec son nom et sa phrase secrète ; changer d'utilisateur ne supprime aucune donnée. Les phrases ne sont jamais stockées : seul un hachage PBKDF2-SHA256 (600 000 itérations) avec sel.
+
+Règles intégrées : au moins un administrateur actif demeure, personne ne peut se désactiver lui-même, et la session d'un utilisateur désactivé expire immédiatement. Le PIN existant est migré automatiquement vers le premier utilisateur `admin`.
+
+![Panneau utilisateurs et accès](../security-users-2026-10-31/03-users-panel.png)
+
+![Écran de connexion](../security-users-2026-10-31/04-login-gate.png)
+
+![Écriture bloquée pour l’opérateur](../security-users-2026-10-31/06-operator-forbidden.png)

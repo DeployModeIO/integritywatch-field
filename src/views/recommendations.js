@@ -100,12 +100,19 @@
       var listWrap = el('div', { class: 'recs-list' });
       view.appendChild(listWrap);
 
+      var sessionUsername = null;
       var sessionRole = null;
-      var rolePromise = (lock() && typeof lock().role === 'function') ? lock().role(repos.meta) : Promise.resolve(null);
-      rolePromise.then(function (r) { if (r) { sessionRole = r; } });
+      var sessionPromise = Promise.resolve(null);
+      var lk = lock();
+      if (lk && typeof lk.currentSession === 'function') {
+        sessionPromise = lk.currentSession(repos.meta).then(function (s) {
+          if (s && s.username) { sessionUsername = s.username; }
+          if (s && s.role) { sessionRole = s.role; }
+        });
+      }
 
       function actor() {
-        return sessionRole || 'local';
+        return sessionUsername || sessionRole || 'local';
       }
 
       function filtered() {
@@ -319,7 +326,7 @@
       }
 
       container.appendChild(view);
-      return rolePromise.then(function () { return loadData(); });
+      return sessionPromise.then(function () { return loadData(); });
     }
   };
 });

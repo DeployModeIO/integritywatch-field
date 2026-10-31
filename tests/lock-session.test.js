@@ -92,3 +92,13 @@ test('verify rehydrates the persisted fails counter across a fresh module instan
   assert.ok(res.lockoutSec > 0);
   assert.ok(await s.meta.get('lock.lockedUntilISO'));
 });
+
+test('enable() without the users module writes a session without a username (legacy build)', async () => {
+  const s = freshStore();
+  const res = await lock.enable({ pin: '654321', role: 'admin' }, s.meta);
+  assert.equal(res.ok, true);
+
+  const session = await s.meta.get('lock.session');
+  assert.equal(session.username, undefined);
+  assert.equal(await lock.role(s.meta), 'admin');
+});

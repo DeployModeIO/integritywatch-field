@@ -886,11 +886,41 @@
       forceUpdate: "强制更新",
       forceUpdateHint: "清除离线缓存并重新加载应用。更新未出现时使用。",
       syncInsecure: "已拒绝不安全的同步端点（请使用 HTTPS，或仅在 localhost 使用 HTTP）",
-      syncToken: "同步令牌（Bearer）"
+      syncToken: "同步令牌（Bearer）",
+      users: {
+        title: "用户与访问",
+        create: "创建用户",
+        username: "用户名",
+        passphrase: "密码短语",
+        role: "角色",
+        active: "启用",
+        inactive: "停用",
+        activate: "启用",
+        deactivate: "停用",
+        setPass: "设置密码短语",
+        changeRole: "更改角色",
+        hint: "启用锁定将创建第一个管理员账户。",
+        errors: {
+          E_USER_EXISTS: "该用户名已存在",
+          E_BAD_USERNAME: "用户名无效（3–32 位字母、数字、点、连字符或下划线）",
+          E_WEAK_PASSPHRASE: "密码短语至少需要 6 个字符",
+          E_BAD_ROLE: "角色无效",
+          E_NO_USER: "未找到用户",
+          E_LAST_ADMIN: "无法停用或降级最后一个启用的管理员",
+          E_WRONG_PASSPHRASE: "当前密码短语不正确",
+          E_SELF: "不能停用自己的账户"
+        }
+      }
     },
 
     security: {
-      forbidden: "您没有执行此操作的权限"
+      forbidden: "您没有执行此操作的权限",
+      login: "登录",
+      username: "用户名",
+      passphrase: "密码短语",
+      badCredentials: "用户名或密码短语不正确",
+      lockNow: "立即锁定",
+      sessionExpired: "会话已过期 — 请重新登录"
     },
 
     a11y: {

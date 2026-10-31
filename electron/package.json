@@ -1,7 +1,7 @@
 {
   "name": "integritywatch-field-desktop",
   "productName": "IntegrityWatch Field",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Electron desktop wrapper for IntegrityWatch Field (offline-first PWA). Serves the project root over a local HTTP server.",
   "main": "main.js",

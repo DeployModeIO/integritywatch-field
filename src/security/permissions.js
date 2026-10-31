@@ -130,10 +130,18 @@
   // original createdBy/createdAt. Mutates and returns `rec`.
   async function stamp(meta, rec, existing) {
     var actor = 'local';
-    var g = guard(meta);
-    if (g && typeof g.role === 'function') {
-      var r = await g.role();
-      if (r) { actor = r; }
+    var lock = lockApi();
+    if (lock && typeof lock.currentSession === 'function') {
+      var s = await lock.currentSession(meta);
+      if (s && s.username) { actor = s.username; }
+      else if (s && s.role) { actor = s.role; }
+    }
+    if (actor === 'local') {
+      var g = guard(meta);
+      if (g && typeof g.role === 'function') {
+        var r = await g.role();
+        if (r) { actor = r; }
+      }
     }
     var now = new Date().toISOString();
     if (existing) {

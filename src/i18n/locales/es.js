@@ -960,11 +960,41 @@ R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({
         admin: 'Admin',
         operator: 'Operador',
         engineer: 'Ingeniero'
+      },
+      users: {
+        title: 'Usuarios y acceso',
+        create: 'Crear usuario',
+        username: 'Usuario',
+        passphrase: 'Frase de acceso',
+        role: 'Rol',
+        active: 'Activo',
+        inactive: 'Inactivo',
+        activate: 'Activar',
+        deactivate: 'Desactivar',
+        setPass: 'Establecer frase',
+        changeRole: 'Cambiar rol',
+        hint: 'Al activar el bloqueo se crea la primera cuenta de administrador.',
+        errors: {
+          E_USER_EXISTS: 'Ya existe un usuario con este nombre',
+          E_BAD_USERNAME: 'Nombre de usuario no válido (3–32 letras, números, punto, guion o subrayado)',
+          E_WEAK_PASSPHRASE: 'La frase de acceso debe tener al menos 6 caracteres',
+          E_BAD_ROLE: 'Rol no válido',
+          E_NO_USER: 'Usuario no encontrado',
+          E_LAST_ADMIN: 'No se puede desactivar ni degradar al último administrador activo',
+          E_WRONG_PASSPHRASE: 'La frase de acceso actual es incorrecta',
+          E_SELF: 'No puedes desactivar tu propia cuenta'
+        }
       }
     },
 
     security: {
-      forbidden: 'No tienes permiso para esta acción'
+      forbidden: 'No tienes permiso para esta acción',
+      login: 'Iniciar sesión',
+      username: 'Usuario',
+      passphrase: 'Frase de acceso',
+      badCredentials: 'Usuario o frase de acceso incorrectos',
+      lockNow: 'Bloquear ahora',
+      sessionExpired: 'Sesión expirada: inicia sesión de nuevo'
     },
 
     a11y: {

@@ -483,11 +483,41 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       forceUpdate: 'Force update', forceUpdateHint: 'Clears the offline cache and reloads the app. Use when an update does not appear.',
       syncInsecure: 'Insecure sync endpoint rejected (use HTTPS, or HTTP on localhost only)',
       syncToken: 'Sync token (Bearer)',
-      roles: { admin: 'Admin', operator: 'Operator', engineer: 'Engineer' }
+      roles: { admin: 'Admin', operator: 'Operator', engineer: 'Engineer' },
+      users: {
+        title: 'Users & access',
+        create: 'Create user',
+        username: 'Username',
+        passphrase: 'Passphrase',
+        role: 'Role',
+        active: 'Active',
+        inactive: 'Inactive',
+        activate: 'Activate',
+        deactivate: 'Deactivate',
+        setPass: 'Set passphrase',
+        changeRole: 'Change role',
+        hint: 'Enabling the lock creates the first administrator account.',
+        errors: {
+          E_USER_EXISTS: 'A user with this username already exists',
+          E_BAD_USERNAME: 'Invalid username (3–32 letters, numbers, dot, dash or underscore)',
+          E_WEAK_PASSPHRASE: 'Passphrase must be at least 6 characters',
+          E_BAD_ROLE: 'Invalid role',
+          E_NO_USER: 'User not found',
+          E_LAST_ADMIN: 'Cannot deactivate or demote the last active administrator',
+          E_WRONG_PASSPHRASE: 'Current passphrase is incorrect',
+          E_SELF: 'You cannot deactivate your own account'
+        }
+      }
     },
 
     security: {
-      forbidden: 'You do not have permission for this action'
+      forbidden: 'You do not have permission for this action',
+      login: 'Sign in',
+      username: 'Username',
+      passphrase: 'Passphrase',
+      badCredentials: 'Incorrect username or passphrase',
+      lockNow: 'Lock now',
+      sessionExpired: 'Session expired — sign in again'
     },
 
     a11y: {

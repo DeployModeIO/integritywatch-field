@@ -15,6 +15,7 @@
   function ui() { return root.IW.ui; }
   function lock() { return root.IW.security ? root.IW.security.lock : null; }
   function permissions() { return root.IW.security ? root.IW.security.permissions : null; }
+  function users() { return root.IW.security ? root.IW.security.users : null; }
   function exportImport() { return root.IW.core ? root.IW.core.exportImport : null; }
   function caseFile() { return root.IW.core ? root.IW.core.caseFile : null; }
   function syncQueue() { return root.IW.core ? root.IW.core.syncQueue : null; }
@@ -172,6 +173,35 @@
       securityCard.appendChild(el('div', { class: 'row' }, enableBtn, disableBtn, changePinBtn));
       grid.appendChild(securityCard);
 
+      // --- Users & access ---------------------------------------------------------
+      var usersCard = sectionCard(t('admin.users.title'), []);
+      var usersListEl = el('div', { class: 'stack' });
+      var usersHintEl = el('p', { class: 'field-hint', text: t('admin.users.hint') });
+      var createForm = el('div', { class: 'stack' });
+
+      var createUsername = el('input', { class: 'input', attrs: { id: 'admin-user-username', autocomplete: 'off' } });
+      var createPass = el('input', { class: 'input', attrs: { id: 'admin-user-pass', type: 'password', autocomplete: 'new-password' } });
+      var createRole = el('select', { class: 'select', attrs: { id: 'admin-user-role' } });
+      ['operator', 'engineer', 'admin'].forEach(function (r) {
+        createRole.appendChild(el('option', { attrs: { value: r }, text: t('admin.roles.' + r) }));
+      });
+      var createBtn = el('button', { class: 'btn btn-primary', on: { click: onCreateUser } }, icon('plus', 18), el('span', { text: t('admin.users.create') }));
+
+      createForm.appendChild(el('h3', { text: t('admin.users.create') }));
+      createForm.appendChild(el('div', { class: 'field' },
+        el('label', { class: 'field-label', attrs: { for: 'admin-user-username' }, text: t('admin.users.username') }), createUsername));
+      createForm.appendChild(el('div', { class: 'field' },
+        el('label', { class: 'field-label', attrs: { for: 'admin-user-pass' }, text: t('admin.users.passphrase') }), createPass));
+      createForm.appendChild(el('div', { class: 'field' },
+        el('label', { class: 'field-label', attrs: { for: 'admin-user-role' }, text: t('admin.users.role') }), createRole));
+      createForm.appendChild(createBtn);
+
+      usersCard.appendChild(usersHintEl);
+      usersCard.appendChild(usersListEl);
+      usersCard.appendChild(createForm);
+      usersCard.hidden = true;
+      grid.appendChild(usersCard);
+
       // --- Storage -------------------------------------------------------------------
       var storageCard = sectionCard(t('admin.storageUsage'), []);
       var storageEl = el('p', { text: t('common.loading') });
@@ -218,6 +248,199 @@
 
       // --- Behaviour helpers ---------------------------------------------------------------
       function toast(key, severity) { ui().toast(key, { severity: severity || 'info' }); }
+
+      function toastUserError(code) {
+        if (!code) { toast('common.error', 'critical'); return; }
+        toast('admin.users.errors.' + code, 'warning');
+      }
+
+      function effectiveRole() {
+        var lk = lock();
+        return lk.isEnabled(repos.meta).then(function (enabled) {
+          if (!enabled) { return 'admin'; }
+          return lk.role(repos.meta);
+        });
+      }
+
+      function sessionUsername() {
+        var lk = lock();
+        if (lk && typeof lk.currentSession === 'function') {
+          return lk.currentSession(repos.meta).then(function (s) {
+            return (s && s.username) ? s.username : null;
+          });
+        }
+        return Promise.resolve(null);
+      }
+
+      function buildUserRow(u) {
+        var actionsTd = el('td', { class: 'row' });
+        actionsTd.appendChild(el('button', { class: 'btn', on: { click: function () { onSetPass(u); } } },
+          icon('keyboard', 18), el('span', { text: t('admin.users.setPass') })));
+        actionsTd.appendChild(el('button', { class: 'btn', on: { click: function () { onChangeRole(u); } } },
+          icon('edit', 18), el('span', { text: t('admin.users.changeRole') })));
+        actionsTd.appendChild(el('button', { class: 'btn', on: { click: function () { onToggleActive(u); } } },
+          icon(u.active === false ? 'check' : 'x', 18),
+          el('span', { text: t(u.active === false ? 'admin.users.activate' : 'admin.users.deactivate') })));
+        return el('tr', null,
+          el('td', { text: u.username }),
+          el('td', { text: t('admin.roles.' + (u.role || 'operator')) }),
+          el('td', { text: u.active === false ? t('admin.users.inactive') : t('admin.users.active') }),
+          actionsTd);
+      }
+
+      function refreshUserList() {
+        var u = users();
+        return u.listUsers(repos.meta).then(function (list) {
+          usersListEl.textContent = '';
+          var tbl = el('table', { class: 'data' });
+          tbl.appendChild(el('caption', { text: t('admin.users.title') }));
+          var thead = el('thead', null, el('tr', null,
+            el('th', { attrs: { scope: 'col' }, text: t('admin.users.username') }),
+            el('th', { attrs: { scope: 'col' }, text: t('admin.users.role') }),
+            el('th', { attrs: { scope: 'col' }, text: t('common.status') }),
+            el('th', { attrs: { scope: 'col' }, text: t('common.actions') })));
+          var tbody = el('tbody');
+          list.forEach(function (u) { tbody.appendChild(buildUserRow(u)); });
+          tbl.appendChild(thead);
+          tbl.appendChild(tbody);
+          usersListEl.appendChild(el('div', { class: 'table-wrap' }, tbl));
+        });
+      }
+
+      function renderUsers() {
+        var u = users();
+        if (!u || typeof u.hasUsers !== 'function') {
+          usersCard.hidden = true;
+          return Promise.resolve();
+        }
+        return u.hasUsers(repos.meta).then(function (hasUsers) {
+          return effectiveRole().then(function (role) {
+            if (role !== 'admin') {
+              usersCard.hidden = true;
+              return;
+            }
+            usersCard.hidden = false;
+            if (!hasUsers) {
+              usersHintEl.hidden = false;
+              usersListEl.hidden = true;
+              createForm.hidden = true;
+              usersListEl.textContent = '';
+              return;
+            }
+            usersHintEl.hidden = true;
+            usersListEl.hidden = false;
+            createForm.hidden = false;
+            return refreshUserList();
+          });
+        });
+      }
+
+      function onCreateUser() {
+        return requirePerm('admin').then(function () {
+          return sessionUsername().then(function (name) {
+            return users().createUser(repos.meta, {
+              username: createUsername.value.trim(),
+              passphrase: createPass.value,
+              role: createRole.value
+            }, name || 'admin');
+          });
+        }).then(function (res) {
+          if (res.ok) {
+            createUsername.value = '';
+            createPass.value = '';
+            toast('common.saved', 'info');
+            return refreshUserList();
+          }
+          toastUserError(res.error);
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+        });
+      }
+
+      function onSetPass(u) {
+        var passInput = el('input', { class: 'input', attrs: { type: 'password', autocomplete: 'new-password' } });
+        ui().dialog({
+          titleKey: 'admin.users.setPass',
+          bodyNode: el('div', { class: 'stack' },
+            el('div', { class: 'field' },
+              el('label', { class: 'field-label', text: t('admin.users.passphrase') }), passInput)),
+          actions: [
+            { labelKey: 'common.cancel', kind: 'ghost', onClick: function () {} },
+            {
+              labelKey: 'common.save', kind: 'primary', onClick: function () {
+                var newPass = passInput.value;
+                if (!newPass || newPass.length < 6) { toastUserError('E_WEAK_PASSPHRASE'); return false; }
+                return requirePerm('admin').then(function () {
+                  return sessionUsername().then(function (name) {
+                    return users().changePassphrase(repos.meta, name, u.username, undefined, newPass);
+                  });
+                }).then(function (res) {
+                  if (res.ok) { toast('common.saved', 'info'); }
+                  else { toastUserError(res.error); }
+                }).catch(function (err) {
+                  if (isForbidden(err)) { forbiddenToast(err); }
+                });
+              }
+            }
+          ]
+        });
+      }
+
+      function onChangeRole(u) {
+        var roleSel = el('select', { class: 'select' });
+        ['operator', 'engineer', 'admin'].forEach(function (r) {
+          roleSel.appendChild(el('option', { attrs: { value: r }, text: t('admin.roles.' + r) }));
+        });
+        roleSel.value = u.role;
+        ui().dialog({
+          titleKey: 'admin.users.changeRole',
+          bodyNode: el('div', { class: 'stack' },
+            el('div', { class: 'field' },
+              el('label', { class: 'field-label', text: t('admin.users.role') }), roleSel)),
+          actions: [
+            { labelKey: 'common.cancel', kind: 'ghost', onClick: function () {} },
+            {
+              labelKey: 'common.save', kind: 'primary', onClick: function () {
+                return requirePerm('admin').then(function () {
+                  return sessionUsername().then(function (name) {
+                    return users().setRole(repos.meta, u.username, roleSel.value, name || 'admin');
+                  });
+                }).then(function (res) {
+                  if (res.ok) { refreshUserList(); }
+                  else { toastUserError(res.error); }
+                }).catch(function (err) {
+                  if (isForbidden(err)) { forbiddenToast(err); }
+                });
+              }
+            }
+          ]
+        });
+      }
+
+      function doToggleActive(u) {
+        var activate = u.active === false;
+        return requirePerm('admin').then(function () {
+          return sessionUsername().then(function (name) {
+            return users().setActive(repos.meta, u.username, activate, name || 'admin');
+          });
+        }).then(function (res) {
+          if (res.ok) { refreshUserList(); }
+          else { toastUserError(res.error); }
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+        });
+      }
+
+      function onToggleActive(u) {
+        if (u.active === false) { return doToggleActive(u); }
+        return sessionUsername().then(function (me) {
+          if (me && me.toLowerCase() === u.username.toLowerCase()) {
+            toastUserError('E_SELF');
+            return;
+          }
+          return doToggleActive(u);
+        });
+      }
 
       function isLockedOut() {
         return lock().isEnabled(repos.meta).then(function (enabled) {
@@ -617,7 +840,7 @@
 
       container.appendChild(view);
 
-      var jobs = [loadRuleInputs(), renderLockStatus(), renderStorage(), refreshSync(), gateDestructive()];
+      var jobs = [loadRuleInputs(), renderLockStatus(), renderStorage(), refreshSync(), gateDestructive(), renderUsers()];
       renderSw();
       renderStandards();
       loadTheme();

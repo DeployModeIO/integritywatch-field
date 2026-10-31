@@ -268,3 +268,17 @@ Acta completa: `docs/data-entry-2026-10-31/`
 ![Hallazgo de inspección](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
 
 ![Resumen de validación del CSV](../data-entry-2026-10-31/12-ingest-csv-validation.png)
+
+---
+
+## Credenciales multiusuario (31-10-2026)
+
+El sistema de acceso admite ahora **usuarios nominales**. El administrador crea una credencial por persona y le asigna un rol (operador, ingeniero o administrador). Cada uno entra con su usuario y su contraseña; cambiar de usuario nunca borra datos. Las contraseñas no se almacenan: solo un hash PBKDF2-SHA256 (600.000 iteraciones) con sal aleatoria.
+
+Reglas incluidas: siempre queda al menos un administrador activo, nadie puede desactivarse a sí mismo y la sesión de un usuario desactivado muere al instante. El PIN actual se migra automáticamente al primer usuario `admin`, así que no se pierde nada.
+
+![Panel de usuarios y acceso](../security-users-2026-10-31/03-users-panel.png)
+
+![Pantalla de acceso](../security-users-2026-10-31/04-login-gate.png)
+
+![Escritura bloqueada al operador](../security-users-2026-10-31/06-operator-forbidden.png)

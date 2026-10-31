@@ -266,3 +266,17 @@ Full record: `docs/data-entry-2026-10-31/`
 ![Inspection finding](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
 
 ![CSV validation summary](../data-entry-2026-10-31/12-ingest-csv-validation.png)
+
+---
+
+## Multi-user credentials (31-10-2026)
+
+The access system now supports **named users**. The administrator creates one credential per user and assigns a role (operator, engineer or administrator). Each person signs in with their own username and passphrase; switching user never deletes data. Passphrases are never stored: only a PBKDF2-SHA256 hash (600,000 iterations) with a random salt.
+
+Rules built in: the system always keeps at least one active administrator, nobody can deactivate themselves, and a deactivated user's session dies immediately. The existing PIN is migrated automatically to the first `admin` user on upgrade, so nothing is lost.
+
+![Users & access panel](../security-users-2026-10-31/03-users-panel.png)
+
+![Sign-in gate](../security-users-2026-10-31/04-login-gate.png)
+
+![Operator write blocked](../security-users-2026-10-31/06-operator-forbidden.png)
