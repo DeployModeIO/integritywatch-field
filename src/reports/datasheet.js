@@ -1,4 +1,4 @@
-/* IntegrityWatch Field — datasheet report
+﻿/* IntegrityWatch Field — datasheet report
    PSV datasheet (print-first A4, API 520/API 526 style) plus clipboard text export. */
 (function (root, factory) {
   'use strict';
@@ -150,60 +150,10 @@
   }
 
   function build(opts) {
-    opts = opts || {};
-    if (typeof document === 'undefined') { return Promise.resolve(null); }
-    var store = opts.repos || opts.store || {};
-    var psvId = opts.psvId;
-    var t = opts.t || function (k) { return k; };
-
-    var getPsv = (store.psvs && typeof store.psvs.get === 'function') ? store.psvs.get(psvId) : Promise.resolve(null);
-    return getPsv.then(function (p) {
-      var doc = el('div', { class: 'print-root report report-datasheet' });
-      doc.appendChild(el('header', { class: 'report-cover' },
-        el('h1', { text: t('reports.datasheetTitle') }),
-        el('p', { class: 'report-cover-subtitle', text: p ? (p.tag || p.id) : (psvId || '') }),
-        el('p', { class: 'report-cover-generated', text: t('reports.generatedAt') + ': ' + fmtDate(new Date().toISOString()) })));
-
-      if (!p) {
-        doc.appendChild(el('p', { class: 'empty-state', text: t('reports.noData') }));
-        return doc;
-      }
-
-      var fluid = p.fluid || {};
-      doc.appendChild(section(t, 'reports.datasheetFields', [kvTable(t, [
-        ['psv.tag', p.tag || p.id || '—'],
-        ['psv.location', p.location || '—'],
-        ['psv.valveType', t('psv.types.' + (p.valveType || 'conventional'))],
-        ['psv.fluid', fluidName(p, t)],
-        ['psv.phase', fluid.phase ? t('psv.' + (fluid.phase === 'gas' ? 'gasVapor' : 'liquid')) : '—'],
-        ['psv.setPressure', fmtNum(p.setPressurePsig, 1) + ' ' + t('units.psig')],
-        ['psv.backPressure', fmtNum(p.backPressurePsig, 1) + ' ' + t('units.psig')],
-        ['psv.temperature', fmtNum(p.operatingTempF, 1) + ' ' + t('units.degF')],
-        ['psv.certified', (typeof p.certifiedCapacity === 'number' ? fmtNum(p.certifiedCapacity, 3) : '—')]
-      ])]));
-
-      doc.appendChild(section(t, 'psv.sizingTitle', [kvTable(t, sizingRows(p, t))]));
-      doc.appendChild(section(t, 'reports.testDates', [kvTable(t, [
-        ['psv.lastTest', fmtDate(p.lastTestDate)],
-        ['psv.nextTest', fmtDate(p.nextTestDate)],
-        ['common.status', statusLabel(t, p.status)]
-      ])]));
-
-      var standards = (root.IW && root.IW.data && root.IW.data.standards && root.IW.data.standards.standards) || [];
-      var used = standards.filter(function (s) { return !s.usedIn || s.usedIn.indexOf('psv') !== -1; });
-      var standardsBody;
-      if (used.length === 0) {
-        standardsBody = el('p', { class: 'empty-state', text: t('reports.noData') });
-      } else {
-        standardsBody = kvTable(t, used.map(function (s) { return [s.code || s.id, s.edition || '—']; }));
-      }
-      doc.appendChild(section(t, 'reports.standardsApplied', [standardsBody]));
-
-      doc.appendChild(el('div', { class: 'report-disclaimer', attrs: { role: 'note' } },
-        el('strong', { text: t('reports.disclaimer') })));
-      doc.appendChild(el('footer', { class: 'report-footer', text: t('reports.pageFooter') + ' · ' + t('reports.generatedAt') + ' ' + fmtDate(new Date().toISOString()) }));
-      return doc;
-    });
+    var m = root.IW && root.IW.reports ? root.IW.reports.modelDatasheet : null;
+    var r = root.IW && root.IW.reports ? root.IW.reports.renderer : null;
+    if (!m || !r) { return Promise.reject(new Error('report engine not loaded')); }
+    return m.buildDatasheetModel(opts).then(function (model) { return r.render(model, opts.t); });
   }
 
   // Plain tab-separated text for the clipboard (no DOM required).
