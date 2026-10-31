@@ -547,7 +547,7 @@ Electron shell that serves it locally.
 
 | File | Size | SHA-256 |
 |------|------|---------|
-| [`IntegrityWatch Field 1.1.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.1.0-portable/IntegrityWatch%20Field%201.1.0.exe) | 71.1 MB | `fe1768219fe7c24bb7af43c4b3816ad1fa65064a57e8cbeeab6f5ac2b1990563` |
+| [`IntegrityWatch.Field.1.1.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.1.0-portable/IntegrityWatch.Field.1.1.0.exe) | 71.1 MB | `fe1768219fe7c24bb7af43c4b3816ad1fa65064a57e8cbeeab6f5ac2b1990563` |
 
 > The previous split RAR volumes (`v1.0.0-portable`) were **removed** when this release was
 > published, so there is a single current download.
@@ -559,13 +559,13 @@ Electron shell that serves it locally.
 - Data-entry validation across every module: 9 forms, 22 captures, 0 errors.
 
 **How to install (1 minute):**
-1. Download `IntegrityWatch Field 1.1.0.exe`.
+1. Download `IntegrityWatch.Field.1.1.0.exe`.
 2. Run it. Windows SmartScreen may warn about an unsigned build: choose **More info → Run anyway**.
 3. The app opens on its own local server; no browser setup and no network required.
 
 **Verify the download (optional):**
 ```bash
-certutil -hashfile "IntegrityWatch Field 1.1.0.exe" SHA256
+certutil -hashfile IntegrityWatch.Field.1.1.0.exe SHA256
 ```
 The hash must match the table above.
 
@@ -579,7 +579,7 @@ The hash must match the table above.
 
 **Verification:**
 ```bash
-certutil -hashfile "IntegrityWatch Field 1.1.0.exe" SHA256
+certutil -hashfile IntegrityWatch.Field.1.1.0.exe SHA256
 # must match: fe1768219fe7c24bb7af43c4b3816ad1fa65064a57e8cbeeab6f5ac2b1990563
 ```
 
