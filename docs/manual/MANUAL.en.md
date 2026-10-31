@@ -248,3 +248,21 @@ state is encoded by shape + colour + badge.
 - IntegrityWatch Field is a **support tool**. It does not replace the judgment of a qualified engineer.
 - Verify all calculations against the current edition of the applicable standard (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) and manufacturer data before any operational decision.
 - MIT licensed. Free to use, copy and modify. GitHub link: see this project's repository.
+
+---
+
+## Data entry validation (31-10-2026)
+
+Every module that accepts data was exercised through its own form: monitoring point, manual reading, coupon, asset, asset event, relief valve, pipeline system, line asset, inspection, CSV ingest and the three reports. **9 forms saved, 22 captures, 0 errors.** The store grew to 9 points, 137 readings, 5 coupons, 19 assets, 25 events, 6 PSVs, 2 systems, 13 line assets and 6 inspections.
+
+Full record: `docs/data-entry-2026-10-31/`
+
+![New monitoring point](../data-entry-2026-10-31/02-corrosion-new-point.png)
+
+![Coupon with ASTM calculation](../data-entry-2026-10-31/04-corrosion-new-coupon.png)
+
+![Asset failure event](../data-entry-2026-10-31/06-apm-new-event.png)
+
+![Inspection finding](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
+
+![CSV validation summary](../data-entry-2026-10-31/12-ingest-csv-validation.png)

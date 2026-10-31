@@ -1,0 +1,216 @@
+{
+  "run_at": "2026-10-31T12:15:25",
+  "steps": [
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Baseline before the data-entry run",
+      "screenshots": [
+        "01-dashboard-before.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Corrosion · new monitoring point form",
+      "screenshots": [
+        "02-corrosion-new-point.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Corrosion · manual reading entry",
+      "screenshots": [
+        "03-corrosion-new-reading.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Corrosion · coupon with weight loss and ASTM calculation",
+      "screenshots": [
+        "04-corrosion-new-coupon.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Assets · new asset with category, RBI band and interval",
+      "screenshots": [
+        "05-apm-new-asset.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Assets · failure event with downtime and work order",
+      "screenshots": [
+        "06-apm-new-event.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Relief valves · new PSV with sizing and test dates",
+      "screenshots": [
+        "07-psv-new.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipelines · new system with real engineering attributes",
+      "screenshots": [
+        "08-pipelines-new-system.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipelines · line asset at a station",
+      "screenshots": [
+        "09-pipelines-new-asset.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipelines · inspection finding with severity",
+      "screenshots": [
+        "10-pipelines-new-inspection.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Ingest · CSV columns mapped",
+      "screenshots": [
+        "11-ingest-csv-mapping.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Ingest · validation summary",
+      "screenshots": [
+        "12-ingest-csv-validation.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Ingest · committed rows and history",
+      "screenshots": [
+        "13-ingest-csv-imported.png"
+      ]
+    },
+    {
+      "step": "store_counts",
+      "status": "ok",
+      "detail": "{\"monitoringPoints\": 9, \"readings\": 137, \"coupons\": 5, \"apmAssets\": 19, \"apmEvents\": 25, \"psvs\": 6, \"pipelineSystems\": 2, \"lineAssets\": 13, \"lineInspections\": 6}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Ingest · WITSML import tab",
+      "screenshots": [
+        "14-ingest-witsml.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Ingest · JSON import tab",
+      "screenshots": [
+        "15-ingest-json.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Rules sweep produced 23 recommendations",
+      "screenshots": [
+        "16-recommendations.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Reports · dossier for the created point",
+      "screenshots": [
+        "17-report-dossier.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Reports · quarterly report",
+      "screenshots": [
+        "18-report-quarterly.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Reports · PSV datasheet",
+      "screenshots": [
+        "19-report-datasheet.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin · settings, storage and export",
+      "screenshots": [
+        "20-admin.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin · dark theme toggle",
+      "screenshots": [
+        "21-admin-theme.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Tablet 1280x800 after the data-entry run",
+      "screenshots": [
+        "22-tablet-dashboard.png"
+      ]
+    }
+  ],
+  "issues": [],
+  "results": {
+    "point": true,
+    "reading": true,
+    "coupon": true,
+    "asset": true,
+    "event": true,
+    "psv": true,
+    "system": true,
+    "lineAsset": true,
+    "inspection": true,
+    "counts": {
+      "monitoringPoints": 9,
+      "readings": 137,
+      "coupons": 5,
+      "apmAssets": 19,
+      "apmEvents": 25,
+      "psvs": 6,
+      "pipelineSystems": 2,
+      "lineAssets": 13,
+      "lineInspections": 6
+    },
+    "recommendations": 23
+  },
+  "summary": {
+    "captures": 22,
+    "forms_saved": 9,
+    "issues": 0
+  }
+}

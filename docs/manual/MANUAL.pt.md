@@ -143,3 +143,21 @@
 - O IntegrityWatch Field é uma **ferramenta de apoio**. Não substitui a avaliação técnica de um engenheiro qualificado.
 - Verifique todos os cálculos contra a edição atual dos padrões aplicáveis (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) e dados do fabricante antes de qualquer decisão operacional.
 - Licença MIT. Livre para uso, cópia e modificação. Link do repositório: veja o repositório deste projeto.
+
+---
+
+## Validação de entrada de dados (31-10-2026)
+
+Cada módulo que aceita dados foi exercitado pelo seu próprio formulário: ponto de monitoramento, leitura manual, cupom, ativo, evento de ativo, válvula de alívio, sistema de duto, ativo de linha, inspeção, ingestão CSV e os três relatórios. **9 formulários salvos, 22 capturas, 0 erros.** O armazenamento ficou com 9 pontos, 137 leituras, 5 cupons, 19 ativos, 25 eventos, 6 PSVs, 2 sistemas, 13 ativos de linha e 6 inspeções.
+
+Registro completo: `docs/data-entry-2026-10-31/`
+
+![Novo ponto de monitoramento](../data-entry-2026-10-31/02-corrosion-new-point.png)
+
+![Cupom com cálculo ASTM](../data-entry-2026-10-31/04-corrosion-new-coupon.png)
+
+![Evento de falha do ativo](../data-entry-2026-10-31/06-apm-new-event.png)
+
+![Achado de inspeção](../data-entry-2026-10-31/10-pipelines-new-inspection.png)
+
+![Resumo da validação CSV](../data-entry-2026-10-31/12-ingest-csv-validation.png)
