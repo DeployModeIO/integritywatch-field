@@ -480,7 +480,7 @@ Serve the project folder with any static server.
 2. `npm start` for development
 3. `npm run dist` for packaging
 
-**Result:** `electron/dist/IntegrityWatch Field 1.1.0.exe` (portable, no installation)
+**Result:** `electron/dist/IntegrityWatch Field 1.2.0.exe` (portable, no installation)
 
 ### **PWA installation**
 
@@ -539,40 +539,41 @@ Printable full manual (Spanish): [DOCX](docs/manual/IntegrityWatch-Field-Manual-
 
 ## Portable package
 
-**IntegrityWatch-Field-Portable v1.1.0** — a single executable, no installation and no internet
+**IntegrityWatch-Field-Portable v1.2.0** — a single executable, no installation and no internet
 required. It bundles the whole application (vanilla JS, service worker, manifest) and the
 Electron shell that serves it locally.
 
-**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.1.0-portable
+**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.2.0-portable
 
 | File | Size | SHA-256 |
 |------|------|---------|
-| [`IntegrityWatch.Field.1.1.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.1.0-portable/IntegrityWatch.Field.1.1.0.exe) | 71.1 MB | `fe1768219fe7c24bb7af43c4b3816ad1fa65064a57e8cbeeab6f5ac2b1990563` |
+| [`IntegrityWatch.Field.1.2.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.2.0-portable/IntegrityWatch.Field.1.2.0.exe) | 71.1 MB | `59f7d55140c3e7853fbdf2c736d84f679e8d9b073eb747f82ef0044e620298a4` |
 
 > The previous split RAR volumes (`v1.0.0-portable`) were **removed** when this release was
 > published, so there is a single current download.
 
-**What is new in 1.1.0**
+**What is new in 1.2.0**
 - IFS-24 pictogram set (34 equipment symbols) across the dashboard, asset registry, corrosion list and relief valves.
 - Declarative report engine with pure models, one renderer and print-safe SVG charts.
 - English UI tour video (1:35) and the operator campaign material.
 - Data-entry validation across every module: 9 forms, 22 captures, 0 errors.
+- **Named multi-user credentials** (1.2.0): administrator, engineer and operator accounts, sign-in gate, Lock now for switching users without data loss, last-admin protection and username recorded on every record. The existing PIN migrates to the first admin automatically.
 - **Security model**: persistent admin/engineer/operator sessions (15-minute inactivity window), permission guard on every write path, authorship stamping on all records, SHA-256 signed case files (V2 envelope) with downgrade-attack rejection, import schema validation, file size limits, and a hardened sync endpoint (https-only outside localhost, optional bearer token). Verified end-to-end: 8 forms saved under an admin session, V2 export with `signedBy: admin`, and session expiry returning a null role.
 
 **How to install (1 minute):**
-1. Download `IntegrityWatch.Field.1.1.0.exe`.
+1. Download `IntegrityWatch.Field.1.2.0.exe`.
 2. Run it. Windows SmartScreen may warn about an unsigned build: choose **More info → Run anyway**.
 3. The app opens on its own local server; no browser setup and no network required.
 
 **Verify the download (optional):**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.1.0.exe SHA256
+certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 ```
 The hash must match the table above.
 
 **Contents:**
 - Complete application (vanilla JS, service worker, manifest)
-- `IntegrityWatch Field 1.1.0.exe` (Electron portable container, no installation)
+- `IntegrityWatch.Field.1.2.0.exe` (Electron portable container, no installation)
 - All `docs/`: user guide, standards, technical manuals, and **user manuals in 7 languages** (`docs/manual/MANUAL.en|es|fr|pt|ru|zh|ar.md`, plus DOCX/HTML printable manual)
 - `datos-prueba/` (CSV and JSON for validation)
 - `THIRD-PARTY-NOTICES.md`
@@ -580,8 +581,8 @@ The hash must match the table above.
 
 **Verification:**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.1.0.exe SHA256
-# must match: fe1768219fe7c24bb7af43c4b3816ad1fa65064a57e8cbeeab6f5ac2b1990563
+certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
+# must match: 59f7d55140c3e7853fbdf2c736d84f679e8d9b073eb747f82ef0044e620298a4
 ```
 
 ---
@@ -692,7 +693,7 @@ certutil -hashfile IntegrityWatch.Field.1.1.0.exe SHA256
 **Desktop wrapper:** `electron/`
 
 **Features:**
-- `IntegrityWatch Field 1.1.0.exe` (portable, no installation, ~71 MB)
+- `IntegrityWatch.Field.1.2.0.exe` (portable, no installation, ~71 MB)
 - Loads the application from local HTTP server
 - No Node.js runtime required (only for development)
 - Same logic as web version (functional parity)
