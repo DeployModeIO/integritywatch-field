@@ -209,6 +209,8 @@ A narrated overview of what IntegrityWatch Field is and what it solves: offline-
 
 **Field validation cut** — [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](docs/evidence/video/integritywatch-field-fieldtest-en.mp4) (1:24, ~10 MB, English narration, burned-in subtitles; [SRT](docs/evidence/video/integritywatch-field-fieldtest-en.srt)).
 
+https://github.com/user-attachments/assets/68e55fe4-8b72-4f6d-8a72-611acc7ee6c6
+
 Recorded from the live application during the field validation run below: the dashboard with real pipeline-derived points, an offline CSV import validated row by row (32/32), asset registration with RBI band, and a point dossier generated on the device. Asset attributes come from NSTA open data; no third-party logos or operator names appear.
 
 **Full walkthrough** — [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1.5 MB).
