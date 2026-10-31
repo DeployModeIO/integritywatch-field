@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:04,742
+What happens to your pipeline integrity when the connection drops?
+
+2
+00:00:04,242 --> 00:00:17,984
+In oil and gas, the real work happens far from the office. Wells, pipelines, offshore platforms. And there, your data used to stop at the last bar of signal.
+
+3
+00:00:17,484 --> 00:00:31,322
+Meet IntegrityWatch Field. An offline-first integrity and compliance operations center that runs entirely on your device. No server, no cloud, no connection required.
+
+4
+00:00:30,822 --> 00:00:54,620
+Model corrosion with De Waard and Milliams. Size relief valves to API 520 and 526. Map pipelines by kilometer, with ILD and UT inspections. Run risk-based inspection with API 580. And let the R1 to R17 engine turn every reading into a decision.
+
+5
+00:00:54,120 --> 00:01:09,062
+Seven languages. Light and dark. Import CSV and WITSML. Export portable case files. Install it once, and it works anywhere, fully offline.
+
+6
+00:01:08,562 --> 00:01:20,888
+IntegrityWatch Field. Built for wells, pipelines, and offshore assets. Interested in a demo or implementation? Message me.

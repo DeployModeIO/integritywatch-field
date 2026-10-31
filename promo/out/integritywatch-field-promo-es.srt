@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:04,958
+¿Qué pasa con la integridad de tus ductos cuando se pierde la conexión?
+
+2
+00:00:04,458 --> 00:00:19,616
+En el sector del petróleo y el gas, el trabajo real ocurre lejos de la oficina. Pozos, oleoductos, plataformas marinas. Y ahí, tus datos solían detenerse en la última barra de señal.
+
+3
+00:00:19,116 --> 00:00:34,802
+Te presento IntegrityWatch Field. Un centro de operaciones de integridad y cumplimiento que funciona primero sin conexión, y corre por completo en tu dispositivo. Sin servidor, sin nube, sin necesidad de conexión.
+
+4
+00:00:34,302 --> 00:00:59,300
+Modela la corrosión con De Waard y Milliams. Dimensiona válvulas de alivio según API 520 y 526. Mapea oleoductos por kilómetro, con inspecciones ILD y UT. Ejecuta inspección basada en riesgo con API 580. Y deja que el motor R1 a R17 convierta cada lectura en una decisión.
+
+5
+00:00:58,800 --> 00:01:15,158
+Siete idiomas. Modo claro y oscuro. Importa CSV y WITSML. Exporta archivos de caso portátiles. Instálalo una vez y funciona en cualquier lugar, totalmente sin conexión.
+
+6
+00:01:14,658 --> 00:01:26,840
+IntegrityWatch Field. Diseñado para pozos, oleoductos y activos marinos. ¿Te interesa una demo o una implementación? Escríbeme.
