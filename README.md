@@ -526,6 +526,7 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | `docs/GUIA-DE-USO.md` | User guide markdown | `docs/` |
 | `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
 | `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
+| `docs/REPORTING-BLUEPRINT.md` | Report types, industry KPI practices (IOGP 456, API RP 754, ISO 14224, API 580, B31.8S) and the offline delivery design | `docs/` |
 | `docs/SCHEMA.md` | IndexedDB schema + contracts | `docs/` |
 | `docs/CONTRACTS.md` | Integration conventions and contracts | `docs/` |
 | `docs/TESTS.md` | Manually verified test anchors | `docs/` |
