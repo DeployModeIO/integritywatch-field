@@ -146,6 +146,8 @@ instalación limpia, automatizada con `tools/qa/run_field_tests.py`. Se usaron
 Reino Unido (NSTA), con diámetro, espesor, presión máxima, fluido y longitud tal como
 se publican. Acta completa: `docs/PRUEBAS-CAMPO-2026-10-30.md`.
 
+**Vídeo de esta prueba** (1:24, narración en inglés): [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](../evidence/video/integritywatch-field-fieldtest-en.mp4) ([subtítulos](../evidence/video/integritywatch-field-fieldtest-en.srt)). Resumen y procedencia de los datos: [README — Field validation run](../../README.md#field-validation-run-real-data-30-10-2026).
+
 **Qué demuestra la prueba**
 
 | Paso | Evidencia |

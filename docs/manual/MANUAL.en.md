@@ -145,6 +145,8 @@ A full UI validation was run on 30 October 2026 against a clean install, driven 
 UKCS pipelines from NSTA open data, with diameter, wall thickness, MAWP, fluid and
 length as published. Full capture sheet: `docs/PRUEBAS-CAMPO-2026-10-30.md`.
 
+**Video of this run** (1:24, English narration): [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](../evidence/video/integritywatch-field-fieldtest-en.mp4) ([subtitles](../evidence/video/integritywatch-field-fieldtest-en.srt)). Summary and dataset provenance: [README — Field validation run](../../README.md#field-validation-run-real-data-30-10-2026).
+
 **What the run proves**
 
 | Step | Evidence |

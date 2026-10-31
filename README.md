@@ -207,11 +207,71 @@ Visual evidence gallery organized by module. All captures live in `docs/evidence
 
 A narrated overview of what IntegrityWatch Field is and what it solves: offline-first integrity and compliance for **wells, pipelines, and offshore assets** — corrosion modeling (De Waard–Milliams, ASTM), PSV sizing (API 520/526), pipelines with a kilometer-based schematic map and ILD/UT inspections, risk-based inspection (API 580/581), the **R1–R17** recommendation engine, and reports — plus 7 languages, light/dark themes, CSV/WITSML import, and portable case files.
 
+**Field validation cut** — [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](docs/evidence/video/integritywatch-field-fieldtest-en.mp4) (1:24, ~10 MB, English narration, burned-in subtitles; [SRT](docs/evidence/video/integritywatch-field-fieldtest-en.srt)).
+
+Recorded from the live application during the field validation run below: the dashboard with real pipeline-derived points, an offline CSV import validated row by row (32/32), asset registration with RBI band, and a point dossier generated on the device. Asset attributes come from NSTA open data; no third-party logos or operator names appear.
+
 **Full walkthrough** — [`docs/evidence/video/demo-walkthrough.mp4`](docs/evidence/video/demo-walkthrough.mp4) (≈22 s, ~1.5 MB).
 
 End-to-end recorded walkthrough of the application: startup and dashboard, navigation through Corrosion, PSV (API 520/526 sizing), Pipelines and map, APM, Ingestion, Recommendations, Reports, and Glossary — in the supported languages and themes.
 
 > **Note:** GitHub does not play MP4 files stored in the repository inline within the README; open a link to play or download it. For an inline player, upload the file through the GitHub web editor so it is served from `user-attachments`.
+
+---
+
+## Field validation run (real data, 30-10-2026)
+
+The application was validated end to end against a clean install using **real public
+asset data**, not dummy rows. This is the reference campaign behind the field
+validation video and the source of the captures used in the manuals.
+
+### Dataset used
+
+| Source | What is real | Volume |
+|---|---|---|
+| NSTA Open Data — UKCS offshore infrastructure | Pipeline name, fluid, diameter, wall thickness, MAWP, length, status, commissioning date | **55 pipelines** with complete engineering attributes (of 2,110 active) |
+| NSTA Open Data — pipeline points | Equipment tags and types: valves, manifolds, tee pieces, pig traps, riser bases, anodes | **45 records** |
+| HSE Offshore Statistics 2024 | Hydrocarbon releases, dangerous occurrences, notices, injuries | **92 HCRs**, 180 DOs, 616 non-compliances |
+
+Inspection and corrosion series are **derived** from those real line parameters and are
+labelled as derived in every row; they are never presented as field measurements.
+Full provenance: [`docs/FIELD-DATA-SOURCES.md`](docs/FIELD-DATA-SOURCES.md).
+
+### What the run proved
+
+| Step | Result |
+|---|---|
+| Create monitoring points from real line data | 4 points (gas, crude, condensate, multiphase) |
+| Import a field CSV offline | 32 rows total, **32 imported, 0 skipped, 0 errors** |
+| Register a pipeline system | CATS: 36 in, 28.4 mm wall, 17.93 MPa, 404.97 km |
+| Register an asset (APM) | Real NSTA valve record with RBI band B |
+| Run rules R1–R17 | **24 recommendations** raised |
+| Generate reports | Point dossier, quarterly report, PSV datasheet |
+| Export the case file | `.iwf`, 107,485 bytes, reopened from disk |
+| Tablet layout (1280×800) | Dashboard and ingest usable without a server |
+
+### Defect found, fixed and regression-tested
+
+Points created in the UI were stored with an opaque id while CSV import links readings
+by point code, so the average-rate KPI and heatmap showed “—” for every point created in
+the app (seed data hid it because `id === code`). Fixed by persisting `id = code`
+(SCHEMA convention), with 3 new tests; the suite went from 512 to **515 tests, 0 failures**.
+After the fix the heatmap reports 9.4 / 6.8 / 4.9 / 4.6 mpy for the four real lines.
+
+### Evidence and artefacts
+
+- Test record with 20 numbered captures: [`docs/PRUEBAS-CAMPO-2026-10-30.md`](docs/PRUEBAS-CAMPO-2026-10-30.md)
+- Captures and machine-readable log: [`docs/field-tests-2026-10-30/`](docs/field-tests-2026-10-30/) (`evidence.json`, `case-file-export.iwf.json`)
+- Dataset and derived series: [`datos-prueba/real/`](datos-prueba/real/)
+- Runners: [`tools/qa/fetch_field_data.py`](tools/qa/fetch_field_data.py), [`tools/qa/run_field_tests.py`](tools/qa/run_field_tests.py)
+
+### Reproduce
+
+```powershell
+python tools\qa\fetch_field_data.py      # refresh the real dataset
+python tools\serve.ps1 -Port 8419         # in another terminal
+python tools\qa\run_field_tests.py       # UI run, captures and evidence.json
+```
 
 ---
 

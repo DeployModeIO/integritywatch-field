@@ -1,0 +1,28 @@
+1
+00:00:00,000 --> 00:00:10,632
+Offshore and onshore, integrity teams still run on paper, on spreadsheets, and on the last bar of signal. The well does not wait for the office.
+
+2
+00:00:11,832 --> 00:00:23,856
+When the connection drops, the measurement survives. The evidence does not. Decisions wait for a report that never gets written, and the next inspection repeats the same trip.
+
+3
+00:00:25,056 --> 00:00:39,384
+IntegrityWatch Field is an offline-first integrity and compliance centre. It runs entirely on the tablet. No server, no cloud, no connection, and nothing to synchronise before you can decide.
+
+4
+00:00:40,684 --> 00:00:53,668
+Import a field CSV. The app detects the delimiter, maps the columns, validates every row and commits the readings on the device. Thirty two rows, zero skipped.
+
+5
+00:00:54,968 --> 00:01:02,288
+Register the asset from real line data, set the risk band, and let the app calculate the inspection interval.
+
+6
+00:01:03,588 --> 00:01:13,692
+Then generate the point dossier on the same device. Real line attributes in. A document you can print, sign and defend.
+
+7
+00:01:14,992 --> 00:01:21,904
+IntegrityWatch Field. Field data, field decisions, no signal required.
+
