@@ -1,0 +1,114 @@
+{
+  "run_at": "2026-10-31T14:16:28",
+  "steps": [
+    {
+      "step": "enable_lock",
+      "status": "ok",
+      "detail": "enabled=True",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Lock enabled as admin (role selector)",
+      "screenshots": [
+        "01-lock-enabled.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Point form as admin (guard allows assetWrite)",
+      "screenshots": [
+        "02-point-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Reading form",
+      "screenshots": [
+        "03-reading-form.png"
+      ]
+    },
+    {
+      "step": "stamp",
+      "status": "ok",
+      "detail": "{\"createdBy\": \"admin\", \"createdAt\": true}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Event form",
+      "screenshots": [
+        "04-event-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipeline system form as admin",
+      "screenshots": [
+        "05-system-form.png"
+      ]
+    },
+    {
+      "step": "export",
+      "status": "ok",
+      "detail": "{\"app\": \"1.1.0\", \"checksumAlgo\": \"SHA-256\", \"signedBy\": \"admin\", \"hasSha: \": true}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Case file exported as V2 with signedBy + SHA-256",
+      "screenshots": [
+        "06-export-v2.png"
+      ]
+    },
+    {
+      "step": "session_expiry",
+      "status": "ok",
+      "detail": "expired-null",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Dashboard after the security-model run",
+      "screenshots": [
+        "07-dashboard-final.png"
+      ]
+    }
+  ],
+  "issues": [],
+  "results": {
+    "role_selected": "admin",
+    "lock_enabled": true,
+    "point": true,
+    "reading": true,
+    "reading_stamp": {
+      "createdBy": "admin",
+      "createdAt": true
+    },
+    "asset": true,
+    "event": true,
+    "event_stamp": "admin",
+    "psv": true,
+    "system": true,
+    "lineAsset": true,
+    "export": {
+      "app": "1.1.0",
+      "checksumAlgo": "SHA-256",
+      "signedBy": "admin",
+      "hasSha: ": true
+    },
+    "session_expiry_check": "expired-null"
+  },
+  "summary": {
+    "captures": 7,
+    "forms_saved": 8,
+    "issues": 0
+  }
+}

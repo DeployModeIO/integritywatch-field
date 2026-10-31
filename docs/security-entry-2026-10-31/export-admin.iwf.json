@@ -1,0 +1,2496 @@
+{
+  "format": "iwf",
+  "version": 1,
+  "sector": "midstream",
+  "exportedAt": "2026-10-31T17:16:54.684Z",
+  "app": "1.1.0",
+  "checksumAlgo": "SHA-256",
+  "checksum": "34657e60",
+  "signedBy": "admin",
+  "data": {
+    "monitoringPoints": [
+      {
+        "id": "MP-CORR-001",
+        "code": "MP-CORR-001",
+        "name": "Wellhead Norte 1",
+        "sector": "upstream",
+        "material": "api5l-x52",
+        "sensorType": "couponGravimetric",
+        "line": "Wellhead Norte 1",
+        "process": {
+          "h2sPpm": 2000,
+          "co2Ppm": 12000,
+          "totalPressureKpa": 6895,
+          "tempC": 60,
+          "bswPct": 5,
+          "velocityMs": 1.2,
+          "inhibitorTargetPpm": 25,
+          "inhibitorResidualPpm": 24
+        },
+        "stationKm": 12,
+        "location": "km 12, wellhead",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-002",
+        "code": "MP-CORR-002",
+        "name": "Flowline A",
+        "sector": "upstream",
+        "material": "api5l-gr-b",
+        "sensorType": "couponGravimetric",
+        "line": "Flowline A",
+        "process": {
+          "co2Ppm": 8000,
+          "totalPressureKpa": 4137,
+          "tempC": 55,
+          "bswPct": 8,
+          "velocityMs": 0.9
+        },
+        "stationKm": 5,
+        "location": "km 5, flowline",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-003",
+        "code": "MP-CORR-003",
+        "name": "Trunk Norte 16",
+        "sector": "midstream",
+        "material": "a106-b",
+        "sensorType": "erProbe",
+        "line": "Trunk Norte 16",
+        "process": {
+          "h2sPpm": 50,
+          "co2Ppm": 3000,
+          "totalPressureKpa": 517,
+          "tempC": 40
+        },
+        "stationKm": 40,
+        "location": "km 40, trunk",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-004",
+        "code": "MP-CORR-004",
+        "name": "Station suction",
+        "sector": "midstream",
+        "material": "api5l-x60",
+        "sensorType": "lprProbe",
+        "line": "Station suction",
+        "process": {
+          "co2Ppm": 2000,
+          "totalPressureKpa": 690,
+          "tempC": 35
+        },
+        "stationKm": 84,
+        "location": "km 84, pump suction",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-005",
+        "code": "MP-CORR-005",
+        "name": "Separator outlet",
+        "sector": "downstream",
+        "material": "ss-316l",
+        "sensorType": "couponGravimetric",
+        "line": "Separator V-101",
+        "process": {
+          "co2Ppm": 500,
+          "totalPressureKpa": 200,
+          "tempC": 70
+        },
+        "location": "Separator V-101 outlet",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-006",
+        "code": "MP-CORR-006",
+        "name": "Gas lift header",
+        "sector": "upstream",
+        "material": "duplex-2205",
+        "sensorType": "h2Probe",
+        "line": "Gas lift header",
+        "process": {
+          "h2sPpm": 500,
+          "totalPressureKpa": 4137,
+          "tempC": 80
+        },
+        "stationKm": 18,
+        "location": "km 18, gas lift header",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-007",
+        "code": "MP-CORR-007",
+        "name": "Column overhead",
+        "sector": "downstream",
+        "material": "a516-70",
+        "sensorType": "utInspection",
+        "line": "Column C-201",
+        "process": {
+          "co2Ppm": 300,
+          "totalPressureKpa": 150,
+          "tempC": 90
+        },
+        "location": "Column C-201 overhead",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "MP-CORR-008",
+        "code": "MP-CORR-008",
+        "name": "ROW crossing",
+        "sector": "midstream",
+        "material": "cs-coated",
+        "sensorType": "visual",
+        "line": "ROW crossing",
+        "process": {},
+        "stationKm": 104,
+        "location": "km 104, river crossing",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "code": "MP-SEC-01",
+        "name": "Security validation point",
+        "sector": "midstream",
+        "systemId": "SYS-SEC",
+        "line": "SYS-SEC",
+        "material": "api5l-x52",
+        "sensorType": "couponGravimetric",
+        "tNom": 10,
+        "tMin": 8,
+        "process": {
+          "h2sPpm": 120,
+          "co2Ppm": 3000,
+          "totalPressureKpa": 3400,
+          "tempC": 45,
+          "bswPct": 1,
+          "velocityMs": 1,
+          "inhibitorTargetPpm": 20,
+          "inhibitorResidualPpm": 18
+        },
+        "cp": {
+          "enabled": false
+        },
+        "cui": {
+          "insulated": false
+        },
+        "id": "MP-SEC-01",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:35.430Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:35.430Z"
+      }
+    ],
+    "readings": [
+      {
+        "id": "R-MVWNY0QC",
+        "mpId": "MP-SEC-01",
+        "date": "2026-10-31T00:00:00.000Z",
+        "crMpy": 5.2,
+        "source": "manual",
+        "note": "Logged under admin session",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:38.596Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:38.596Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-1",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-02T00:00:00.000Z",
+        "crMpy": 3.4022075038403274,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-10",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-29T00:00:00.000Z",
+        "crMpy": 3.1446341102011504,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-11",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-01T00:00:00.000Z",
+        "crMpy": 2.699847468454391,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-12",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-04T00:00:00.000Z",
+        "crMpy": 3.96411766698584,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-13",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-07T00:00:00.000Z",
+        "crMpy": 3.691475129965693,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-14",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-10T00:00:00.000Z",
+        "crMpy": 2.8140030268579723,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-15",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-13T00:00:00.000Z",
+        "crMpy": 2.5945076758973302,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-16",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-16T00:00:00.000Z",
+        "crMpy": 3.2014589754864575,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-17",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-19T00:00:00.000Z",
+        "crMpy": 3.5732240358367564,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-18",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-22T00:00:00.000Z",
+        "crMpy": 3.4212417968548836,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-19",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-25T00:00:00.000Z",
+        "crMpy": 2.207685903925449,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-2",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-05T00:00:00.000Z",
+        "crMpy": 3.0965811179950835,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-20",
+        "mpId": "MP-CORR-001",
+        "date": "2026-09-28T00:00:00.000Z",
+        "crMpy": 3.141563847474754,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-21",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-01T00:00:00.000Z",
+        "crMpy": 3.874674851819873,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-22",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-04T00:00:00.000Z",
+        "crMpy": 2.3024185325950386,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-23",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 3.384647981077433,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-24",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 2.263075911253691,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-25",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 2.733911973703653,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-26",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 2.3235627848654987,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-27",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 2.571378014329821,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-28",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 3.767094586323947,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-29",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 3.260671212617308,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-3",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-08T00:00:00.000Z",
+        "crMpy": 3.90493158698082,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-30",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 2.2542472186498346,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-31",
+        "mpId": "MP-CORR-001",
+        "date": "2026-10-30T18:00:00.000Z",
+        "crMpy": 12.4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-4",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-11T00:00:00.000Z",
+        "crMpy": 3.539468082878739,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-5",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-14T00:00:00.000Z",
+        "crMpy": 2.5496277974918486,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-6",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-17T00:00:00.000Z",
+        "crMpy": 3.2531850843690338,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-7",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-20T00:00:00.000Z",
+        "crMpy": 2.746455988660455,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-8",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-23T00:00:00.000Z",
+        "crMpy": 3.449489307869226,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-001-9",
+        "mpId": "MP-CORR-001",
+        "date": "2026-08-26T00:00:00.000Z",
+        "crMpy": 3.930949296616018,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-32",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-01T00:00:00.000Z",
+        "crMpy": 1.3692020937800407,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-33",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-02T00:00:00.000Z",
+        "crMpy": 1.6370752501301467,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-34",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-03T00:00:00.000Z",
+        "crMpy": 1.4950959669426083,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-35",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-04T00:00:00.000Z",
+        "crMpy": 1.623609193507582,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-36",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-05T00:00:00.000Z",
+        "crMpy": 1.4277846982702613,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-37",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-06T00:00:00.000Z",
+        "crMpy": 1.4799582914449274,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-38",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 1.3149756854400039,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-39",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-08T00:00:00.000Z",
+        "crMpy": 1.3205570938065647,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-40",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-09T00:00:00.000Z",
+        "crMpy": 1.5226399117149412,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-41",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 1.5386918051168323,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-42",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-11T00:00:00.000Z",
+        "crMpy": 1.3980698694474996,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-43",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-12T00:00:00.000Z",
+        "crMpy": 1.5582777618430554,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-44",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 1.3838041954673828,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-45",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-14T00:00:00.000Z",
+        "crMpy": 1.421451853774488,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-46",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-15T00:00:00.000Z",
+        "crMpy": 1.595448549091816,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-47",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 1.643484367709607,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-48",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-17T00:00:00.000Z",
+        "crMpy": 1.50319851571694,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-49",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-18T00:00:00.000Z",
+        "crMpy": 1.3816760391928256,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-50",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 1.4136827930808067,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-51",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-20T00:00:00.000Z",
+        "crMpy": 1.4171966548077761,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-52",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-21T00:00:00.000Z",
+        "crMpy": 1.3298778519034387,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-53",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 1.5639439173974097,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-54",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-23T00:00:00.000Z",
+        "crMpy": 1.5723075728863478,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-55",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-24T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-56",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-57",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-26T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-58",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-27T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-59",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-60",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-29T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-002-61",
+        "mpId": "MP-CORR-002",
+        "date": "2026-10-30T00:00:00.000Z",
+        "crMpy": 6,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-62",
+        "mpId": "MP-CORR-003",
+        "date": "2026-09-25T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-63",
+        "mpId": "MP-CORR-003",
+        "date": "2026-09-28T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-64",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-01T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-65",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-04T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-66",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-67",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-68",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-69",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-70",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-71",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-72",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-003-73",
+        "mpId": "MP-CORR-003",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 4,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-74",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-01T00:00:00.000Z",
+        "crMpy": 2.1930881165899336,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-75",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-04T00:00:00.000Z",
+        "crMpy": 2.427839900366962,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-76",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 1.5879680255893618,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-77",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 2.443735246779397,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-78",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 1.9311374970711768,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-79",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 2.442294550826773,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-80",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 1.6372984077315778,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-81",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 1.6109431656077504,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-82",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 1.515842905268073,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-004-83",
+        "mpId": "MP-CORR-004",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 1.8604456859175116,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-84",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-03T00:00:00.000Z",
+        "crMpy": 1.7853780141100288,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-85",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-06T00:00:00.000Z",
+        "crMpy": 1.8895376153290273,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-86",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-09T00:00:00.000Z",
+        "crMpy": 2.119646378606558,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-87",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-12T00:00:00.000Z",
+        "crMpy": 1.4620659245178103,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-88",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-15T00:00:00.000Z",
+        "crMpy": 1.9756784120574595,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-89",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-18T00:00:00.000Z",
+        "crMpy": 2.1478941855952143,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-90",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-21T00:00:00.000Z",
+        "crMpy": 1.6226011773571372,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-91",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-24T00:00:00.000Z",
+        "crMpy": 1.9652683157473803,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-92",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-27T00:00:00.000Z",
+        "crMpy": 1.543698175251484,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-005-93",
+        "mpId": "MP-CORR-005",
+        "date": "2026-10-30T00:00:00.000Z",
+        "crMpy": 1.8162530831992627,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-100",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 2.5941436289809645,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-101",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 2.304354498628527,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-102",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 2.615486924443394,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-103",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-31T00:00:00.000Z",
+        "crMpy": 2.28754935413599,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-94",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-04T00:00:00.000Z",
+        "crMpy": 2.8862701097503303,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-95",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 2.0447110881097617,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-96",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 3.0947663620114327,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-97",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 2.575360257551074,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-98",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 2.9993441977538167,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-006-99",
+        "mpId": "MP-CORR-006",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 2.420788443740457,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-104",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-05T00:00:00.000Z",
+        "crMpy": 1.3376483945176005,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-105",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-08T00:00:00.000Z",
+        "crMpy": 1.077125207008794,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-106",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-11T00:00:00.000Z",
+        "crMpy": 1.1698576418682933,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-107",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-14T00:00:00.000Z",
+        "crMpy": 1.4058754609432071,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-108",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-17T00:00:00.000Z",
+        "crMpy": 1.3170391232706606,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-109",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-20T00:00:00.000Z",
+        "crMpy": 1.4964068926870822,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-110",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-23T00:00:00.000Z",
+        "crMpy": 1.4341188782360403,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-111",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-26T00:00:00.000Z",
+        "crMpy": 1.1591348819900305,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-007-112",
+        "mpId": "MP-CORR-007",
+        "date": "2026-10-29T00:00:00.000Z",
+        "crMpy": 1.2271278795786202,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-113",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-07T00:00:00.000Z",
+        "crMpy": 0.8775577091611921,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-114",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-10T00:00:00.000Z",
+        "crMpy": 0.7605264637619257,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-115",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-13T00:00:00.000Z",
+        "crMpy": 1.1180329074151814,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-116",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-16T00:00:00.000Z",
+        "crMpy": 0.8879833621438593,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-117",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-19T00:00:00.000Z",
+        "crMpy": 1.171565548889339,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-118",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-22T00:00:00.000Z",
+        "crMpy": 1.2428652947302907,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-119",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-25T00:00:00.000Z",
+        "crMpy": 0.7561848082114011,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "RD-MP-CORR-008-120",
+        "mpId": "MP-CORR-008",
+        "date": "2026-10-28T00:00:00.000Z",
+        "crMpy": 0.9852350791916251,
+        "source": "seed",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      }
+    ],
+    "coupons": [
+      {
+        "id": "CP-P1-BLANK",
+        "mpId": "MP-CORR-001",
+        "pairId": "P1",
+        "role": "blank",
+        "material": "api5l-x52",
+        "densityGcm3": 7.85,
+        "wiMg": 1000,
+        "wfMg": 830.6516853932585,
+        "areaIn2": 2,
+        "days": 30,
+        "startDate": "2026-08-02T00:00:00.000Z",
+        "endDate": "2026-10-01T00:00:00.000Z",
+        "status": "active",
+        "exposedHours": 720,
+        "crMpy": 7.9999999999999964,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "CP-P1-INH",
+        "mpId": "MP-CORR-001",
+        "pairId": "P1",
+        "role": "inhibited",
+        "material": "api5l-x52",
+        "densityGcm3": 7.85,
+        "wiMg": 1000,
+        "wfMg": 986.4521348314606,
+        "areaIn2": 2,
+        "days": 30,
+        "startDate": "2026-08-02T00:00:00.000Z",
+        "endDate": "2026-10-01T00:00:00.000Z",
+        "status": "active",
+        "exposedHours": 720,
+        "crMpy": 0.6400000000000022,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "CP-P2-BLANK",
+        "mpId": "MP-CORR-001",
+        "pairId": "P2",
+        "role": "blank",
+        "material": "api5l-x52",
+        "densityGcm3": 7.85,
+        "wiMg": 1000,
+        "wfMg": 788.314606741573,
+        "areaIn2": 2,
+        "days": 30,
+        "startDate": "2026-08-02T00:00:00.000Z",
+        "endDate": "2026-10-01T00:00:00.000Z",
+        "status": "active",
+        "exposedHours": 720,
+        "crMpy": 10.000000000000002,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "CP-P2-INH",
+        "mpId": "MP-CORR-001",
+        "pairId": "P2",
+        "role": "inhibited",
+        "material": "api5l-x52",
+        "densityGcm3": 7.85,
+        "wiMg": 1000,
+        "wfMg": 925.9101123595506,
+        "areaIn2": 2,
+        "days": 30,
+        "startDate": "2026-08-02T00:00:00.000Z",
+        "endDate": "2026-10-01T00:00:00.000Z",
+        "status": "active",
+        "exposedHours": 720,
+        "crMpy": 3.5,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      }
+    ],
+    "psvs": [
+      {
+        "id": "PSV-520-001",
+        "tag": "PSV-520-001",
+        "assetId": "APM-MD-003",
+        "location": "Compressor K-101 discharge",
+        "valveType": "conventional",
+        "fluidId": "methane",
+        "fluid": {
+          "id": "methane",
+          "name": "Methane",
+          "phase": "gas",
+          "M": 16.04,
+          "k": 1.31,
+          "Z": 0.95
+        },
+        "setPressurePsig": 150,
+        "operatingTempF": 140,
+        "backPressurePsig": 0,
+        "Wlbh": 50000,
+        "Kd": 0.975,
+        "Kc": 1,
+        "orificeLetter": "P",
+        "certifiedCapacity": 6.38,
+        "sizing": {
+          "AreqIn2": 4.888351906401385,
+          "AreqCm2": 31.537691159339175,
+          "critical": true,
+          "C": 347.9129792663607,
+          "Kb": 1,
+          "selectedAreaIn2": 6.38,
+          "WrealLbh": 65257.16767286408,
+          "marginPct": 30.51433534572816,
+          "computedAtISO": "2026-10-31T00:00:00.000Z"
+        },
+        "lastTestDate": "2025-10-31T00:00:00.000Z",
+        "nextTestDate": "2026-10-21T00:00:00.000Z",
+        "inspLast": "2025-09-26T00:00:00.000Z",
+        "inspNext": "2026-09-26T00:00:00.000Z",
+        "inspResult": "pass",
+        "status": "due",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "PSV-520-002",
+        "tag": "PSV-520-002",
+        "assetId": "APM-UP-002",
+        "location": "Platform A gas header",
+        "valveType": "conventional",
+        "fluidId": "natural-gas",
+        "fluid": {
+          "id": "natural-gas",
+          "name": "Natural gas",
+          "phase": "gas",
+          "M": 19,
+          "k": 1.3,
+          "Z": 0.95
+        },
+        "setPressurePsig": 100,
+        "operatingTempF": 120,
+        "backPressurePsig": 0,
+        "Wlbh": 30000,
+        "Kd": 0.975,
+        "Kc": 1,
+        "orificeLetter": "N",
+        "certifiedCapacity": 4.34,
+        "sizing": {
+          "AreqIn2": 3.8284734083799945,
+          "AreqCm2": 24.69977904150437,
+          "critical": true,
+          "C": 346.9764226452482,
+          "Kb": 1,
+          "selectedAreaIn2": 4.34,
+          "WrealLbh": 34008.33337774016,
+          "marginPct": 13.361111259133862,
+          "computedAtISO": "2026-10-31T00:00:00.000Z"
+        },
+        "lastTestDate": "2025-10-31T00:00:00.000Z",
+        "nextTestDate": "2026-10-06T00:00:00.000Z",
+        "status": "due",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "PSV-520-003",
+        "tag": "PSV-520-003",
+        "assetId": "APM-MD-001",
+        "location": "Pump station 16 discharge",
+        "valveType": "conventional",
+        "fluidId": "crude-oil",
+        "fluid": {
+          "id": "crude-oil",
+          "name": "Crude oil",
+          "phase": "liquid",
+          "G": 0.85,
+          "viscCp": 15
+        },
+        "setPressurePsig": 100,
+        "backPressurePsig": 10,
+        "Qgpm": 300,
+        "Kd": 0.65,
+        "Kc": 1,
+        "orificeLetter": "J",
+        "certifiedCapacity": 1.287,
+        "sizing": {
+          "AreqIn2": 1.1282741817288218,
+          "AreqCm2": 7.2791737108416665,
+          "Kv": 0.9924739444898163,
+          "Re": 41999.381492763714,
+          "iterations": 2,
+          "Kw": 1,
+          "selectedAreaIn2": 1.287,
+          "QrealGpm": 342.20405487643984,
+          "marginPct": 14.068018292146611,
+          "computedAtISO": "2026-10-31T00:00:00.000Z"
+        },
+        "lastTestDate": "2025-10-31T00:00:00.000Z",
+        "nextTestDate": "2026-09-01T00:00:00.000Z",
+        "inspLast": "2026-10-01T00:00:00.000Z",
+        "inspNext": "2027-10-01T00:00:00.000Z",
+        "inspResult": "pass",
+        "status": "overdue",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "PSV-520-004",
+        "tag": "PSV-520-004",
+        "assetId": "APM-MD-003",
+        "location": "Gas plant inlet",
+        "valveType": "pilot",
+        "fluidId": "methane",
+        "fluid": {
+          "id": "methane",
+          "name": "Methane",
+          "phase": "gas",
+          "M": 16.04,
+          "k": 1.31,
+          "Z": 0.95
+        },
+        "setPressurePsig": 120,
+        "operatingTempF": 100,
+        "backPressurePsig": 5,
+        "Wlbh": 15000,
+        "Kd": 0.975,
+        "Kc": 1,
+        "orificeLetter": "K",
+        "certifiedCapacity": 1.838,
+        "sizing": {
+          "AreqIn2": 1.7354477126388508,
+          "AreqCm2": 11.19641446286081,
+          "critical": true,
+          "C": 347.9129792663607,
+          "Kb": 1,
+          "selectedAreaIn2": 1.838,
+          "WrealLbh": 15886.390468127784,
+          "marginPct": 5.909269787518556,
+          "computedAtISO": "2026-10-31T00:00:00.000Z"
+        },
+        "lastTestDate": "2025-10-31T00:00:00.000Z",
+        "nextTestDate": "2026-10-16T00:00:00.000Z",
+        "status": "due",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "PSV-520-005",
+        "tag": "PSV-520-005",
+        "assetId": "APM-DN-001",
+        "location": "Heat exchanger E-101 shell",
+        "valveType": "conventional",
+        "fluidId": "methane",
+        "fluid": {
+          "id": "methane",
+          "name": "Methane",
+          "phase": "gas",
+          "M": 16.04,
+          "k": 1.31,
+          "Z": 0.95
+        },
+        "setPressurePsig": 130,
+        "operatingTempF": 140,
+        "backPressurePsig": 0,
+        "Wlbh": 20000,
+        "Kd": 0.975,
+        "Kc": 1,
+        "orificeLetter": "L",
+        "certifiedCapacity": 2.853,
+        "sizing": {
+          "AreqIn2": 2.228121338187264,
+          "AreqCm2": 14.374947625448954,
+          "critical": true,
+          "C": 347.9129792663607,
+          "Kb": 1,
+          "selectedAreaIn2": 2.853,
+          "WrealLbh": 25609.018244231884,
+          "marginPct": 28.045091221159414,
+          "computedAtISO": "2026-10-31T00:00:00.000Z"
+        },
+        "lastTestDate": "2025-10-31T00:00:00.000Z",
+        "nextTestDate": "2026-09-21T00:00:00.000Z",
+        "status": "overdue",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "tag": "PSV-SEC-01",
+        "location": "Security validation",
+        "valveType": "conventional",
+        "fluid": {
+          "name": "",
+          "phase": "gas"
+        },
+        "setPressurePsig": 210,
+        "operatingTempF": 180,
+        "backPressurePsig": 10,
+        "lastTestDate": "2026-03-01",
+        "nextTestDate": "2027-03-01",
+        "certifiedCapacity": 15000,
+        "notes": "Security-model validation",
+        "id": "PSV-SEC-01",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:46.796Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:46.796Z",
+        "status": "ok"
+      }
+    ],
+    "pipelineSystems": [
+      {
+        "id": "SYS-NORTE-16",
+        "name": "Norte 16\" Crude",
+        "operator": "Norte Operator S.A.",
+        "product": "crude",
+        "dnIn": 16,
+        "wallThicknessMm": 9.53,
+        "material": "api5l-x52",
+        "coating": "FBE",
+        "opPressureMpa": 6,
+        "lengthKm": 120,
+        "stationFromKm": 0,
+        "stationToKm": 120,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "sys-mvwny9bl-lcng",
+        "name": "SEC Demo Line",
+        "operator": "Demo",
+        "product": "gas",
+        "dnIn": 12,
+        "wallThicknessMm": 8.7,
+        "material": "api5l-x52",
+        "coating": "FBE",
+        "lengthKm": 25,
+        "stationFromKm": 0,
+        "stationToKm": 25,
+        "opPressureMpa": 6.4,
+        "notes": "Security validation",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:49.727Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:49.728Z"
+      }
+    ],
+    "lineAssets": [
+      {
+        "id": "LA-N16-001",
+        "code": "LA-N16-001",
+        "name": "Section valve SV-01",
+        "systemId": "SYS-NORTE-16",
+        "type": "sectionValve",
+        "stationKm": 0,
+        "side": "left",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-002",
+        "code": "LA-N16-002",
+        "name": "Flange FL-02",
+        "systemId": "SYS-NORTE-16",
+        "type": "flange",
+        "stationKm": 12,
+        "side": "center",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-003",
+        "code": "LA-N16-003",
+        "name": "Block valve BV-03",
+        "systemId": "SYS-NORTE-16",
+        "type": "blockValve",
+        "stationKm": 24,
+        "side": "right",
+        "lastInspectionISO": "2026-07-03T00:00:00.000Z",
+        "certExpiryISO": "2026-10-06T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-004",
+        "code": "LA-N16-004",
+        "name": "Road crossing CR-04",
+        "systemId": "SYS-NORTE-16",
+        "type": "crossing",
+        "stationKm": 30,
+        "side": "center",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-005",
+        "code": "LA-N16-005",
+        "name": "Pump station PS-16",
+        "systemId": "SYS-NORTE-16",
+        "type": "pumpStation",
+        "stationKm": 40,
+        "side": "left",
+        "lastInspectionISO": "2026-04-14T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-006",
+        "code": "LA-N16-006",
+        "name": "Right of way ROW-06",
+        "systemId": "SYS-NORTE-16",
+        "type": "row",
+        "stationKm": 50,
+        "side": "center",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-007",
+        "code": "LA-N16-007",
+        "name": "Section valve SV-07",
+        "systemId": "SYS-NORTE-16",
+        "type": "sectionValve",
+        "stationKm": 60,
+        "side": "right",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-008",
+        "code": "LA-N16-008",
+        "name": "Tank TK-08",
+        "systemId": "SYS-NORTE-16",
+        "type": "tank",
+        "stationKm": 72,
+        "side": "left",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-009",
+        "code": "LA-N16-009",
+        "name": "Block valve BV-09",
+        "systemId": "SYS-NORTE-16",
+        "type": "blockValve",
+        "stationKm": 84,
+        "side": "right",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-010",
+        "code": "LA-N16-010",
+        "name": "Fitting FT-10",
+        "systemId": "SYS-NORTE-16",
+        "type": "fitting",
+        "stationKm": 90,
+        "side": "center",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-011",
+        "code": "LA-N16-011",
+        "name": "River crossing CR-11",
+        "systemId": "SYS-NORTE-16",
+        "type": "crossing",
+        "stationKm": 104,
+        "side": "left",
+        "lastInspectionISO": "2026-09-16T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "LA-N16-012",
+        "code": "LA-N16-012",
+        "name": "Metering station MS-12",
+        "systemId": "SYS-NORTE-16",
+        "type": "meteringStation",
+        "stationKm": 120,
+        "side": "center",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "la-mvwnybir-1kbu",
+        "systemId": "sys-mvwny9bl-lcng",
+        "code": "LA-SEC-01",
+        "name": "Security valve km 5",
+        "type": "sectionValve",
+        "stationKm": 5,
+        "side": "center",
+        "notes": "Security-model validation",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:52.578Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:52.578Z"
+      }
+    ],
+    "lineInspections": [
+      {
+        "id": "INSP-N16-001",
+        "systemId": "SYS-NORTE-16",
+        "type": "ild",
+        "lineAssetId": "LA-N16-011",
+        "date": "2026-08-12T00:00:00.000Z",
+        "severity": "moderate",
+        "fromKm": 100,
+        "toKm": 120,
+        "findings": "Metal loss at river crossing",
+        "reportRef": "ILD-2026-01",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "INSP-N16-002",
+        "systemId": "SYS-NORTE-16",
+        "type": "externalCorrosion",
+        "lineAssetId": "LA-N16-002",
+        "date": "2026-09-01T00:00:00.000Z",
+        "severity": "low",
+        "fromKm": 10,
+        "toKm": 14,
+        "findings": "Minor coating damage",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "INSP-N16-003",
+        "systemId": "SYS-NORTE-16",
+        "type": "visual",
+        "lineAssetId": "LA-N16-005",
+        "date": "2026-09-16T00:00:00.000Z",
+        "severity": "high",
+        "fromKm": 38,
+        "toKm": 42,
+        "findings": "Severe pitting on discharge flange",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "INSP-N16-004",
+        "systemId": "SYS-NORTE-16",
+        "type": "ut",
+        "lineAssetId": "LA-N16-003",
+        "date": "2026-10-01T00:00:00.000Z",
+        "severity": "severe",
+        "fromKm": 22,
+        "toKm": 26,
+        "findings": "Wall thickness below minimum at block valve",
+        "reportRef": "UT-2026-02",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "INSP-N16-005",
+        "systemId": "SYS-NORTE-16",
+        "type": "visual",
+        "lineAssetId": "LA-N16-008",
+        "date": "2026-10-16T00:00:00.000Z",
+        "severity": "low",
+        "fromKm": 70,
+        "toKm": 74,
+        "findings": "Routine visual inspection",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      }
+    ],
+    "iliAnomalies": [
+      {
+        "id": "ILI-N16-001",
+        "assetId": "LA-N16-011",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 106.2,
+        "depthPct": 18,
+        "lengthMm": 45,
+        "widthMm": 15,
+        "type": "metalLoss",
+        "inspectionId": "INSP-N16-001",
+        "date": "2025-08-01T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "ILI-N16-002",
+        "assetId": "LA-N16-003",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 24.5,
+        "depthPct": 42,
+        "lengthMm": 120,
+        "widthMm": 30,
+        "type": "metalLoss",
+        "inspectionId": "INSP-N16-004",
+        "date": "2025-09-15T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "ILI-N16-003",
+        "assetId": "LA-N16-005",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 40.8,
+        "depthPct": 12,
+        "lengthMm": 60,
+        "widthMm": 18,
+        "type": "dent",
+        "inspectionId": "INSP-N16-003",
+        "date": "2025-09-15T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "ILI-N16-004",
+        "assetId": "LA-N16-009",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 85.1,
+        "depthPct": 58,
+        "lengthMm": 200,
+        "widthMm": 50,
+        "type": "metalLoss",
+        "inspectionId": "INSP-N16-004",
+        "date": "2025-09-15T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "ILI-N16-005",
+        "assetId": "LA-N16-002",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 13.7,
+        "depthPct": 25,
+        "lengthMm": 80,
+        "widthMm": 22,
+        "type": "crack",
+        "inspectionId": "INSP-N16-002",
+        "date": "2025-07-20T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "ILI-N16-006",
+        "assetId": "LA-N16-010",
+        "systemId": "SYS-NORTE-16",
+        "stationKm": 92.3,
+        "depthPct": 8,
+        "lengthMm": 30,
+        "widthMm": 10,
+        "type": "metalLoss",
+        "inspectionId": "INSP-N16-001",
+        "date": "2025-08-01T00:00:00.000Z",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      }
+    ],
+    "apmAssets": [
+      {
+        "id": "APM-DN-001",
+        "code": "HEX-01",
+        "name": "Heat exchanger E-101",
+        "sector": "downstream",
+        "category": "heatExchanger",
+        "criticality": "C",
+        "status": "running",
+        "rbi": {
+          "pof": 5,
+          "cof": 4,
+          "inspectionBaseMonths": 24,
+          "nextInspectionISO": "2026-09-16T00:00:00.000Z"
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-DN-002",
+        "code": "PMP-02",
+        "name": "Crude pump P-102",
+        "sector": "downstream",
+        "category": "pump",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 4,
+          "cof": 5,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-DN-003",
+        "code": "PUMP-305",
+        "name": "Centrifugal pump P-305 (API 610)",
+        "sector": "downstream",
+        "category": "centrifugalPump",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-DN-004",
+        "code": "COL-01",
+        "name": "Column C-201",
+        "sector": "downstream",
+        "category": "column",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 2,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-DN-005",
+        "code": "FT-201",
+        "name": "Field instrument FT-201",
+        "sector": "downstream",
+        "category": "sensor",
+        "criticality": "C",
+        "status": "running",
+        "rbi": {
+          "pof": 4,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-001",
+        "code": "PPS-01",
+        "name": "Pump station 16",
+        "sector": "midstream",
+        "category": "pumpStation",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 3,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-002",
+        "code": "PL-16",
+        "name": "Pipeline Norte 16",
+        "sector": "midstream",
+        "category": "pipeline",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 3,
+          "cof": 4,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-003",
+        "code": "GP-01",
+        "name": "Gas plant Norte",
+        "sector": "midstream",
+        "category": "gasPlant",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-004",
+        "code": "TK-101",
+        "name": "Tank farm TK-101",
+        "sector": "midstream",
+        "category": "storageTank",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-005",
+        "code": "C-501",
+        "name": "Compressor C-501",
+        "sector": "midstream",
+        "category": "compressorStation",
+        "criticality": "C",
+        "status": "running",
+        "rbi": {
+          "pof": 3,
+          "cof": 4,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-006",
+        "code": "SEP-7",
+        "name": "Test separator SEP-7",
+        "sector": "midstream",
+        "category": "separator",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 3,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-105",
+        "code": "PUMP-201A",
+        "name": "Centrifugal pump P-201A (API 610)",
+        "sector": "midstream",
+        "category": "centrifugalPump",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 3,
+          "cof": 4,
+          "inspectionBaseMonths": 24,
+          "nextInspectionISO": "2026-10-27T00:00:00.000Z"
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-106",
+        "code": "GEN-101",
+        "name": "Emergency generator G-101 — 2.5 MW (ISO 8528)",
+        "sector": "midstream",
+        "category": "generator",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 5,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-107",
+        "code": "FP-01",
+        "name": "Fire water pump FP-01 (NFPA 20)",
+        "sector": "midstream",
+        "category": "firePump",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 5,
+          "inspectionBaseMonths": 24,
+          "nextInspectionISO": "2026-09-21T00:00:00.000Z"
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-MD-108",
+        "code": "FPS-01",
+        "name": "Foam deluge system — tank farm (NFPA 11 / NBR 13714)",
+        "sector": "midstream",
+        "category": "fireSystem",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 5,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-UP-001",
+        "code": "WELL-01",
+        "name": "Well Norte 1",
+        "sector": "upstream",
+        "category": "well",
+        "criticality": "B",
+        "status": "running",
+        "rbi": {
+          "pof": 2,
+          "cof": 4,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-UP-002",
+        "code": "PLAT-01",
+        "name": "Platform A",
+        "sector": "upstream",
+        "category": "platform",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 3,
+          "cof": 5,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "APM-UP-003",
+        "code": "ESP-01",
+        "name": "ESP Well 1",
+        "sector": "upstream",
+        "category": "esp",
+        "criticality": "C",
+        "status": "running",
+        "rbi": {
+          "pof": 4,
+          "cof": 4,
+          "inspectionBaseMonths": 24
+        },
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "apm-mvwny2pn-3iro",
+        "code": "DE-SEC-101",
+        "name": "Security test separator",
+        "sector": "midstream",
+        "category": "pipeline",
+        "criticality": "A",
+        "status": "running",
+        "rbi": {
+          "pof": 4,
+          "cof": 3,
+          "band": "high",
+          "score": 12,
+          "inspectionBaseMonths": 12,
+          "nextInspectionISO": "2028-10-31T00:00:00.000Z"
+        },
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:41.163Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:41.163Z"
+      }
+    ],
+    "apmEvents": [
+      {
+        "id": "EV-001",
+        "assetId": "APM-UP-001",
+        "type": "maintenance",
+        "start": "2026-07-03T00:00:00.000Z",
+        "downtimeH": 8,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-002",
+        "assetId": "APM-UP-002",
+        "type": "inspection",
+        "start": "2026-04-14T00:00:00.000Z",
+        "downtimeH": 0,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-003",
+        "assetId": "APM-UP-002",
+        "type": "maintenance",
+        "start": "2026-09-11T00:00:00.000Z",
+        "downtimeH": 6,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-004",
+        "assetId": "APM-UP-003",
+        "type": "failure",
+        "start": "2026-06-03T00:00:00.000Z",
+        "downtimeH": 12,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-005",
+        "assetId": "APM-UP-003",
+        "type": "maintenance",
+        "start": "2026-10-01T00:00:00.000Z",
+        "downtimeH": 4,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-006",
+        "assetId": "APM-MD-001",
+        "type": "failure",
+        "start": "2026-10-21T00:00:00.000Z",
+        "downtimeH": 24,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-007",
+        "assetId": "APM-MD-001",
+        "type": "unplannedOutage",
+        "start": "2026-10-01T00:00:00.000Z",
+        "downtimeH": 200,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-008",
+        "assetId": "APM-MD-001",
+        "type": "maintenance",
+        "start": "2026-09-01T00:00:00.000Z",
+        "downtimeH": 100,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-009",
+        "assetId": "APM-MD-002",
+        "type": "inspection",
+        "start": "2026-02-23T00:00:00.000Z",
+        "downtimeH": 0,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-010",
+        "assetId": "APM-MD-003",
+        "type": "maintenance",
+        "start": "2026-08-22T00:00:00.000Z",
+        "downtimeH": 10,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-011",
+        "assetId": "APM-MD-003",
+        "type": "workOrder",
+        "start": "2026-10-11T00:00:00.000Z",
+        "downtimeH": 0,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-012",
+        "assetId": "APM-DN-001",
+        "type": "failure",
+        "start": "2026-07-23T00:00:00.000Z",
+        "downtimeH": 16,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-013",
+        "assetId": "APM-DN-001",
+        "type": "inspection",
+        "start": "2026-10-16T00:00:00.000Z",
+        "downtimeH": 0,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-014",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-10-26T00:00:00.000Z",
+        "downtimeH": 8,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-015",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-10-11T00:00:00.000Z",
+        "downtimeH": 12,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-016",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-09-21T00:00:00.000Z",
+        "downtimeH": 6,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-017",
+        "assetId": "APM-DN-002",
+        "type": "maintenance",
+        "start": "2026-05-24T00:00:00.000Z",
+        "downtimeH": 4,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-018",
+        "assetId": "APM-DN-004",
+        "type": "maintenance",
+        "start": "2026-09-16T00:00:00.000Z",
+        "downtimeH": 6,
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-019",
+        "assetId": "APM-MD-105",
+        "type": "failure",
+        "start": "2026-10-19T00:00:00.000Z",
+        "downtimeH": 8,
+        "description": "Mechanical seal failure on pump P-201A",
+        "workOrderRef": "OT-2026-612",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-020",
+        "assetId": "APM-MD-106",
+        "type": "maintenance",
+        "start": "2026-10-06T00:00:00.000Z",
+        "downtimeH": 6,
+        "description": "Preventive maintenance on emergency generator G-101",
+        "workOrderRef": "OT-2026-618",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-021",
+        "assetId": "APM-MD-108",
+        "type": "inspection",
+        "start": "2026-10-13T00:00:00.000Z",
+        "downtimeH": 0,
+        "description": "Inspection of foam deluge system FPS-01",
+        "workOrderRef": "OT-2026-621",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-022",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-08-22T00:00:00.000Z",
+        "downtimeH": 10,
+        "description": "Bearing failure on P-102",
+        "workOrderRef": "OT-2026-710",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-023",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-07-13T00:00:00.000Z",
+        "downtimeH": 14,
+        "description": "Mechanical seal failure on P-102",
+        "workOrderRef": "OT-2026-705",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "EV-024",
+        "assetId": "APM-DN-002",
+        "type": "failure",
+        "start": "2026-05-24T00:00:00.000Z",
+        "downtimeH": 18,
+        "description": "Impeller wear on P-102",
+        "workOrderRef": "OT-2026-698",
+        "createdAt": "2026-10-31T00:00:00.000Z",
+        "updatedAt": "2026-10-31T00:00:00.000Z"
+      },
+      {
+        "id": "evt-mvwny54o-gq6e",
+        "assetId": "apm-mvwny2pn-3iro",
+        "type": "failure",
+        "start": "2026-10-30T00:00:00.000Z",
+        "downtimeH": 3,
+        "description": "Security-model validation event",
+        "createdBy": "admin",
+        "createdAt": "2026-10-31T17:16:44.295Z",
+        "updatedBy": "admin",
+        "updatedAt": "2026-10-31T17:16:44.295Z"
+      }
+    ],
+    "recommendations": [],
+    "importLog": []
+  },
+  "checksumSha256": "TTAMiiGZCeSzfJWL2en5hElVLhpWAQl6Y69NGaR4hNc="
+}

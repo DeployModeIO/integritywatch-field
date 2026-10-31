@@ -557,6 +557,7 @@ Electron shell that serves it locally.
 - Declarative report engine with pure models, one renderer and print-safe SVG charts.
 - English UI tour video (1:35) and the operator campaign material.
 - Data-entry validation across every module: 9 forms, 22 captures, 0 errors.
+- **Security model**: persistent admin/engineer/operator sessions (15-minute inactivity window), permission guard on every write path, authorship stamping on all records, SHA-256 signed case files (V2 envelope) with downgrade-attack rejection, import schema validation, file size limits, and a hardened sync endpoint (https-only outside localhost, optional bearer token). Verified end-to-end: 8 forms saved under an admin session, V2 export with `signedBy: admin`, and session expiry returning a null role.
 
 **How to install (1 minute):**
 1. Download `IntegrityWatch.Field.1.1.0.exe`.
