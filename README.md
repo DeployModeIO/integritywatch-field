@@ -209,6 +209,8 @@ A narrated overview of what IntegrityWatch Field is and what it solves: offline-
 
 **Operator cut (plant · pipeline · refinery)** — [`docs/evidence/video/integritywatch-field-operators-en.mp4`](docs/evidence/video/integritywatch-field-operators-en.mp4) (1:19, English narration). Recorded from the operator campaign: offline CSV ingest (48/48 rows), ISO 14224 asset registration and an on-device dossier. Test record: [`docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`](docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md).
 
+https://github.com/user-attachments/assets/2d49d8f9-8262-4406-b6b8-a6b839aea9ce
+
 **Field validation cut** — [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](docs/evidence/video/integritywatch-field-fieldtest-en.mp4) (1:24, ~10 MB, English narration, burned-in subtitles; [SRT](docs/evidence/video/integritywatch-field-fieldtest-en.srt)).
 
 https://github.com/user-attachments/assets/68e55fe4-8b72-4f6d-8a72-611acc7ee6c6
@@ -275,6 +277,60 @@ After the fix the heatmap reports 9.4 / 6.8 / 4.9 / 4.6 mpy for the four real li
 python tools\qa\fetch_field_data.py      # refresh the real dataset
 python tools\serve.ps1 -Port 8419         # in another terminal
 python tools\qa\run_field_tests.py       # UI run, captures and evidence.json
+```
+
+---
+
+## Operator campaign (plant · pipeline · refinery, 31-10-2026)
+
+A second field campaign, run for the three operating roles. Same method: clean install,
+real data, screenshots at every step, machine-readable evidence.
+
+### Personas and what was exercised
+
+| Persona | Site (real) | Workflow on the tablet |
+|---|---|---|
+| **Refinery operator** | Galveston Bay, TX — 631,000 b/cd (EIA-820) | CDU overhead point, unit registered with RBI band A, overdue relief valve, point dossier |
+| **Plant operator** | Beaumont, TX — 612,000 b/cd (EIA-820) | CDU point, pump asset, readings reviewed in tablet layout |
+| **Pipeline operator** | UKCS lines (NSTA) | CATS system, line asset at km 12.4, severe ILI finding, station map |
+
+### Results
+
+| Check | Result |
+|---|---|
+| Monitoring points created | 6 (3 downstream + 3 midstream) |
+| CSV ingested offline | **48 of 48 rows, 0 skipped, 0 errors** |
+| Readings in store after import | 168 |
+| Assets registered (ISO 14224) | 3 (CDU, wet-gas compressor, pump station) |
+| Relief valves created | 2, both overdue (R13 fires) |
+| Line assets / inspections | 1 / 1 (38 % wall loss, severe, km 12.4) |
+| Recommendations after R1–R17 | **25** (5 critical) |
+| Case-file export | 121,134 bytes |
+| Screenshots captured | 24 |
+| Runner incidents | 0 |
+
+### Defects found
+
+1. **Stale render when leaving an asset detail.** Navigating to `#/reports` updated the URL
+   while the DOM kept the previous asset view (`hash: '#/reports'`, `h1: 'REF-GB-CDU-01 …'`).
+   A pending async render repaints `#main` after the route change. The runner works around
+   it with a reload; the product should cancel the stale render. Recorded in `evidence.json`.
+2. **Material validation is silent.** `carbon-steel` is not a valid material id; the form
+   refuses to save without an explicit message. Real ids are `a106-b` / `api5l-x52`.
+
+### Evidence
+
+- Test record with the 24 captures: [`docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`](docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md)
+- Data provenance: [`docs/FIELD-DATA-SOURCES-OPERATORS.md`](docs/FIELD-DATA-SOURCES-OPERATORS.md)
+- Captures and log: [`docs/field-tests-operators-2026-10-31/`](docs/field-tests-operators-2026-10-31/)
+- Runners: [`tools/qa/fetch_operator_data.py`](tools/qa/fetch_operator_data.py), [`tools/qa/run_operator_tests.py`](tools/qa/run_operator_tests.py)
+
+### Reproduce
+
+```powershell
+python tools\qa\fetch_operator_data.py
+python tools\serve.ps1 -Port 8419
+python tools\qa\run_operator_tests.py
 ```
 
 ---
