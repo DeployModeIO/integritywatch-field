@@ -1,0 +1,7 @@
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s1.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s2.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s3.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s4.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s5.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s6_p.mp4'
+file 'D:/ArquitectoSupremo/integritywatch-field/promo/out/.opsvideo/s7.mp4'
