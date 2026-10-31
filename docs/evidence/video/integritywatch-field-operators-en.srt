@@ -1,0 +1,28 @@
+1
+00:00:00,000 --> 00:00:10,032
+This is the round that still ends on paper. A clipboard, a shift, and numbers retyped back at the office, hours after the reading was taken.
+
+2
+00:00:11,632 --> 00:00:22,552
+Plant, pipeline, refinery. Alarm floods, relief valves past their test date, and inspection findings that nobody can find at two in the morning.
+
+3
+00:00:24,152 --> 00:00:33,632
+IntegrityWatch Field runs on the tablet. No server, no cloud, and no signal required before an operator can make a decision.
+
+4
+00:00:35,132 --> 00:00:47,516
+Import the round as a CSV. Forty eight readings, mapped, validated and committed on the device. Zero rows skipped, and the evidence stays with the shift.
+
+5
+00:00:49,216 --> 00:01:00,736
+Register the equipment against ISO 14224, set the risk band, and the inspection interval follows. Overdue relief valves surface on their own.
+
+6
+00:01:02,436 --> 00:01:10,380
+Then generate the dossier on the same tablet, ready to print, sign and hand over without waiting for the network to come back.
+
+7
+00:01:12,080 --> 00:01:16,640
+Field data, field decisions, no signal required.
+

@@ -1,0 +1,235 @@
+{
+  "run_at": "2026-10-31T09:06:00",
+  "steps": [
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Cold boot, empty field state",
+      "screenshots": [
+        "01-dashboard-boot.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipeline operator: CATS system with real NSTA attributes",
+      "screenshots": [
+        "02-pipeline-system-form.png"
+      ]
+    },
+    {
+      "step": "create_system",
+      "status": "ok",
+      "detail": "id=sys-mvwcunq0-e7vq",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Refinery operator: CDU overhead point, 95 °C, 240 kPa, 420 ppm H2S",
+      "screenshots": [
+        "03-mp-refinery-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "FCC slurry point: 11-16 mpy band, severe classification",
+      "screenshots": [
+        "04-mp-slurry-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "48-row operator CSV, auto-mapped columns",
+      "screenshots": [
+        "05-ingest-mapping.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Validation: 48 rows across 6 points",
+      "screenshots": [
+        "06-ingest-validation.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Committed; store counts {'monitoringPoints': 14, 'readings': 168, 'pipelineSystems': 2}",
+      "screenshots": [
+        "07-ingest-imported.png"
+      ]
+    },
+    {
+      "step": "ingest",
+      "status": "ok",
+      "detail": "{'monitoringPoints': 14, 'readings': 168, 'pipelineSystems': 2}",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Refinery operator: CDU registered with RBI band A and 12-month interval",
+      "screenshots": [
+        "08-apm-asset-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Asset detail with RBI band and next inspection",
+      "screenshots": [
+        "09-apm-asset-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Registry mixing downstream and midstream assets",
+      "screenshots": [
+        "10-apm-mixed-sectors.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipeline operator: line asset at km 12.4",
+      "screenshots": [
+        "11-line-asset-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Pipeline operator: ILI finding, severe, at km 12.4",
+      "screenshots": [
+        "12-inspection-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "System detail with map, assets and inspections",
+      "screenshots": [
+        "13-pipeline-detail-map.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Refinery operator: PSV overdue by 35 days, 250 psig set pressure",
+      "screenshots": [
+        "14-psv-form.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "PSV registry with overdue valves",
+      "screenshots": [
+        "15-psv-registry-overdue.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "PSV detail: sizing, test dates, status",
+      "screenshots": [
+        "16-psv-detail.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "R1-R17 sweep raised 25 recommendations",
+      "screenshots": [
+        "17-recommendations.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Refinery point dossier generated offline",
+      "screenshots": [
+        "18-dossier-refinery.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Quarterly report across the operator dataset",
+      "screenshots": [
+        "19-quarterly.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "PSV datasheet generated from the registry",
+      "screenshots": [
+        "20-psv-datasheet.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Android tablet 1280x800 with mixed-sector data",
+      "screenshots": [
+        "21-tablet-dashboard.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Tablet: scanning 6 points by sector and rate",
+      "screenshots": [
+        "22-tablet-corrosion.png"
+      ]
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Admin: storage, languages, export",
+      "screenshots": [
+        "23-admin.png"
+      ]
+    },
+    {
+      "step": "export",
+      "status": "ok",
+      "detail": "121137 bytes",
+      "screenshots": []
+    },
+    {
+      "step": "capture",
+      "status": "ok",
+      "detail": "Case file exported after the operator run",
+      "screenshots": [
+        "24-admin-exported.png"
+      ]
+    }
+  ],
+  "issues": [],
+  "counts_after_import": {
+    "monitoringPoints": 14,
+    "readings": 168,
+    "pipelineSystems": 2
+  },
+  "recommendations": 25,
+  "reports_state": {
+    "hash": "#/reports",
+    "h1": "REF-GB-CDU-01 — Crude distillation unit",
+    "dialogs": 0
+  },
+  "reports_state_after_reload": {
+    "hash": "#/reports",
+    "h1": "Reports"
+  },
+  "summary": {
+    "captures": 24,
+    "issues": 0
+  }
+}

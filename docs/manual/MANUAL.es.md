@@ -181,7 +181,39 @@ Para repetir la prueba: `python tools\qa\run_field_tests.py` (servidor en el pue
 
 ---
 
-## 14. Notas importantes
+## 14. Flujos de operador (planta · oleoducto · refinería)
+
+El 31 de octubre de 2026 se ejecutó una prueba dedicada a los tres roles operativos
+(`tools/qa/run_operator_tests.py`), con datos reales de refinería del informe EIA-820 y
+registros reales de ductos UKCS. Acta completa: `docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`.
+
+| Persona | Qué se ejercitó en la tablet |
+|---|---|
+| Operador de refinería | Punto en cabeza de CDU, unidad con banda RBI A, PSV vencida, dossier del punto |
+| Operador de planta | Punto de CDU, activo de bomba, lecturas en vista tablet |
+| Operador de oleoducto | Sistema CATS con atributos reales, activo en km 12,4, hallazgo ILI severo, mapa |
+
+**Verificado en la prueba:** 6 puntos de monitoreo, 48/48 filas importadas (0 omitidas,
+0 errores), 3 activos, 2 válvulas de alivio vencidas, 25 recomendaciones tras el barrido
+R1-R17 y export de expediente de 121 KB, todo sin servidor ni conexión.
+
+![Alta de punto de refinería](../field-tests-operators-2026-10-31/03-mp-refinery-form.png)
+
+![Validación del CSV](../field-tests-operators-2026-10-31/06-ingest-validation.png)
+
+![Válvulas de alivio vencidas](../field-tests-operators-2026-10-31/15-psv-registry-overdue.png)
+
+![Dossier de refinería](../field-tests-operators-2026-10-31/18-dossier-refinery.png)
+
+> Real: sedes y capacidades de refinería (EIA), atributos de ductos (NSTA). Derivado y
+> etiquetado: tags de equipo, química de proceso, fechas de PSV y series de corrosión.
+
+**Vídeo de esta prueba** (1:19, narración en inglés):
+[`docs/evidence/video/integritywatch-field-operators-en.mp4`](../evidence/video/integritywatch-field-operators-en.mp4).
+
+---
+
+## 15. Notas importantes
 
 - IntegrityWatch Field es una **herramienta de apoyo**. No reemplaza la juicio de un ingeniero cualificado.
 - Verifica todos los cálculos contra la edición actual de los estándares aplicables (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) y los datos del fabricante antes de cualquier decisión operativa.

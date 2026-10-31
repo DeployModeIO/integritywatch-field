@@ -179,7 +179,39 @@ To repeat the run: `python tools\qa\run_field_tests.py` (server on port 8419).
 
 ---
 
-## 14. Important notes
+## 14. Operator workflows (plant · pipeline · refinery)
+
+A dedicated field run for the three operating roles was executed on 31 October 2026
+(`tools/qa/run_operator_tests.py`), using real refinery data from the EIA-820 report and
+real UKCS pipeline records. Full record: `docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`.
+
+| Persona | What was exercised on the tablet |
+|---|---|
+| Refinery operator | CDU overhead point, unit registered with RBI band A, overdue PSV, point dossier |
+| Plant operator | CDU point, pump asset, readings viewed in tablet layout |
+| Pipeline operator | CATS system from real attributes, line asset at km 12.4, severe ILI finding, map |
+
+**Verified in the run:** 6 monitoring points, 48/48 CSV rows imported (0 skipped, 0 errors),
+3 assets, 2 overdue relief valves, 25 recommendations after the R1-R17 sweep, and a
+121 KB case-file export — all without a server or connection.
+
+![Refinery point form](../field-tests-operators-2026-10-31/03-mp-refinery-form.png)
+
+![CSV validation](../field-tests-operators-2026-10-31/06-ingest-validation.png)
+
+![Overdue relief valves](../field-tests-operators-2026-10-31/15-psv-registry-overdue.png)
+
+![Refinery dossier](../field-tests-operators-2026-10-31/18-dossier-refinery.png)
+
+> Real: refinery sites and capacities (EIA), pipeline attributes (NSTA). Derived and
+> labelled: equipment tags, process chemistry, PSV dates and corrosion series.
+
+**Video of this run** (1:19, English narration):
+[`docs/evidence/video/integritywatch-field-operators-en.mp4`](../evidence/video/integritywatch-field-operators-en.mp4).
+
+---
+
+## 15. Important notes
 
 - IntegrityWatch Field is a **support tool**. It does not replace the judgment of a qualified engineer.
 - Verify all calculations against the current edition of the applicable standard (API 510/570/653, ASME PCC-2, NACE SP0775/MR0175, ASTM G1/G4) and manufacturer data before any operational decision.

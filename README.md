@@ -207,6 +207,8 @@ Visual evidence gallery organized by module. All captures live in `docs/evidence
 
 A narrated overview of what IntegrityWatch Field is and what it solves: offline-first integrity and compliance for **wells, pipelines, and offshore assets** — corrosion modeling (De Waard–Milliams, ASTM), PSV sizing (API 520/526), pipelines with a kilometer-based schematic map and ILD/UT inspections, risk-based inspection (API 580/581), the **R1–R17** recommendation engine, and reports — plus 7 languages, light/dark themes, CSV/WITSML import, and portable case files.
 
+**Operator cut (plant · pipeline · refinery)** — [`docs/evidence/video/integritywatch-field-operators-en.mp4`](docs/evidence/video/integritywatch-field-operators-en.mp4) (1:19, English narration). Recorded from the operator campaign: offline CSV ingest (48/48 rows), ISO 14224 asset registration and an on-device dossier. Test record: [`docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`](docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md).
+
 **Field validation cut** — [`docs/evidence/video/integritywatch-field-fieldtest-en.mp4`](docs/evidence/video/integritywatch-field-fieldtest-en.mp4) (1:24, ~10 MB, English narration, burned-in subtitles; [SRT](docs/evidence/video/integritywatch-field-fieldtest-en.srt)).
 
 https://github.com/user-attachments/assets/68e55fe4-8b72-4f6d-8a72-611acc7ee6c6
@@ -526,6 +528,7 @@ certutil -hashfile "app\IntegrityWatch Field 1.0.0.exe" SHA256
 | `docs/GUIA-DE-USO.md` | User guide markdown | `docs/` |
 | `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
 | `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
+| `docs/FIELD-DATA-SOURCES-OPERATORS.md` | Operator campaign data (EIA-820 refineries, NSTA pipelines) | `docs/` |
 | `docs/REPORTING-BLUEPRINT.md` | Report types, industry KPI practices (IOGP 456, API RP 754, ISO 14224, API 580, B31.8S) and the offline delivery design | `docs/` |
 | `docs/SCHEMA.md` | IndexedDB schema + contracts | `docs/` |
 | `docs/CONTRACTS.md` | Integration conventions and contracts | `docs/` |

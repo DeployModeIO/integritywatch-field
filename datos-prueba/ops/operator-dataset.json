@@ -1,0 +1,610 @@
+{
+  "generated_at": "2026-10-31T11:57:20.151785+00:00",
+  "personas": [
+    "plantOperator",
+    "pipelineOperator",
+    "refineryOperator"
+  ],
+  "sites": [
+    {
+      "id": "SITE-GB",
+      "name": "Galveston Bay",
+      "state": "Texas",
+      "padd": "3",
+      "cduBcd": 631000.0,
+      "persona": "refineryOperator",
+      "units": [
+        "ALKYLATES",
+        "AROMATICS",
+        "CAT CRACKING: FRESH FEED",
+        "CAT HYDROCRACKING, DISTILLATE",
+        "CAT HYDROCRACKING, RESIDUAL",
+        "CAT REFORMING: LOW PRESSURE",
+        "DESULFURIZATION, DIESEL FUEL",
+        "DESULFURIZATION, GASOLINE",
+        "DESULFURIZATION, HEAVY GAS OIL",
+        "DESULFURIZATION, KEROSENE AND JET"
+      ],
+      "provenance": "EIA-820 2026 (real site and capacity)"
+    },
+    {
+      "id": "SITE-BM",
+      "name": "Beaumont",
+      "state": "Texas",
+      "padd": "3",
+      "cduBcd": 612000.0,
+      "persona": "plantOperator",
+      "units": [
+        "ALKYLATES",
+        "CAT CRACKING: FRESH FEED",
+        "CAT HYDROCRACKING, DISTILLATE",
+        "CAT REFORMING: LOW PRESSURE",
+        "DESULFURIZATION, DIESEL FUEL",
+        "DESULFURIZATION, GASOLINE",
+        "DESULFURIZATION, KEROSENE AND JET",
+        "DESULFURIZATION, NAPHTHA/REFORMER FEED",
+        "DESULFURIZATION, OTHER",
+        "ISOMERIZATION (ISOBUTANE)"
+      ],
+      "provenance": "EIA-820 2026 (real site and capacity)"
+    }
+  ],
+  "apmAssets": [
+    {
+      "id": "APM-REF-GB-CDU-01",
+      "code": "REF-GB-CDU-01",
+      "name": "Crude distillation unit",
+      "sector": "downstream",
+      "category": "distillationUnit",
+      "criticality": "A",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 4,
+        "cof": 4,
+        "inspectionBaseMonths": 12
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-REF-GB-FCC-01",
+      "code": "REF-GB-FCC-01",
+      "name": "Fluid catalytic cracker",
+      "sector": "downstream",
+      "category": "refinery",
+      "criticality": "A",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 4,
+        "cof": 4,
+        "inspectionBaseMonths": 12
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-REF-GB-HDS-01",
+      "code": "REF-GB-HDS-01",
+      "name": "Diesel hydrotreater",
+      "sector": "downstream",
+      "category": "hydrodesulfurization",
+      "criticality": "B",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-REF-GB-E-301",
+      "code": "REF-GB-E-301",
+      "name": "Feed/effluent exchanger",
+      "sector": "downstream",
+      "category": "heatExchanger",
+      "criticality": "B",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 3,
+        "cof": 2,
+        "inspectionBaseMonths": 36
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-REF-GB-P-101A",
+      "code": "REF-GB-P-101A",
+      "name": "Crude charge pump",
+      "sector": "downstream",
+      "category": "pump",
+      "criticality": "B",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-REF-GB-K-401",
+      "code": "REF-GB-K-401",
+      "name": "Wet gas compressor",
+      "sector": "downstream",
+      "category": "compressor",
+      "criticality": "A",
+      "status": "running",
+      "site": "SITE-GB",
+      "rbi": {
+        "pof": 4,
+        "cof": 3,
+        "inspectionBaseMonths": 18
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-PLT-BM-CDU-01",
+      "code": "PLT-BM-CDU-01",
+      "name": "Crude distillation unit",
+      "sector": "downstream",
+      "category": "distillationUnit",
+      "criticality": "A",
+      "status": "running",
+      "site": "SITE-BM",
+      "rbi": {
+        "pof": 4,
+        "cof": 3,
+        "inspectionBaseMonths": 12
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-PLT-BM-COL-201",
+      "code": "PLT-BM-COL-201",
+      "name": "Depropanizer column",
+      "sector": "downstream",
+      "category": "column",
+      "criticality": "B",
+      "status": "running",
+      "site": "SITE-BM",
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-PLT-BM-F-101",
+      "code": "PLT-BM-F-101",
+      "name": "Crude charge furnace",
+      "sector": "downstream",
+      "category": "furnace",
+      "criticality": "A",
+      "status": "running",
+      "site": "SITE-BM",
+      "rbi": {
+        "pof": 4,
+        "cof": 4,
+        "inspectionBaseMonths": 12
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-PLT-BM-P-210",
+      "code": "PLT-BM-P-210",
+      "name": "Reflux pump",
+      "sector": "downstream",
+      "category": "pump",
+      "criticality": "C",
+      "status": "running",
+      "site": "SITE-BM",
+      "rbi": {
+        "pof": 2,
+        "cof": 2,
+        "inspectionBaseMonths": 48
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-PLT-BM-E-220",
+      "code": "PLT-BM-E-220",
+      "name": "Overhead condenser",
+      "sector": "downstream",
+      "category": "heatExchanger",
+      "criticality": "B",
+      "status": "running",
+      "site": "SITE-BM",
+      "rbi": {
+        "pof": 3,
+        "cof": 2,
+        "inspectionBaseMonths": 36
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-MID-CATS-PS-01",
+      "code": "MID-CATS-PS-01",
+      "name": "CATS riser pump station",
+      "sector": "midstream",
+      "category": "pumpStation",
+      "criticality": "A",
+      "status": "running",
+      "site": null,
+      "rbi": {
+        "pof": 4,
+        "cof": 4,
+        "inspectionBaseMonths": 12
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-MID-CATS-CS-02",
+      "code": "MID-CATS-CS-02",
+      "name": "CATS compressor station",
+      "sector": "midstream",
+      "category": "compressorStation",
+      "criticality": "B",
+      "status": "running",
+      "site": null,
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    },
+    {
+      "id": "APM-MID-MAG-PS-03",
+      "code": "MID-MAG-PS-03",
+      "name": "Magnus to Ninian pump station",
+      "sector": "midstream",
+      "category": "pumpStation",
+      "criticality": "B",
+      "status": "running",
+      "site": null,
+      "rbi": {
+        "pof": 3,
+        "cof": 3,
+        "inspectionBaseMonths": 24
+      },
+      "provenance": "DERIVED tag per ISO 14224 taxonomy, anchored to the real unit list"
+    }
+  ],
+  "monitoringPoints": [
+    {
+      "id": "MP-GB-CDU-OVH",
+      "code": "MP-GB-CDU-OVH",
+      "name": "CDU overhead line",
+      "sector": "downstream",
+      "line": "SYS-REF-GB",
+      "material": "a106-b",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0.2,
+      "site": "SITE-GB",
+      "product": "crude",
+      "process": {
+        "h2sPpm": 420,
+        "co2Ppm": 6000,
+        "tempC": 95,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 240.0
+      }
+    },
+    {
+      "id": "MP-GB-FCC-SLUR",
+      "code": "MP-GB-FCC-SLUR",
+      "name": "FCC main column slurry line",
+      "sector": "downstream",
+      "line": "SYS-REF-GB",
+      "material": "a106-b",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0.6,
+      "site": "SITE-GB",
+      "product": "heavy",
+      "process": {
+        "h2sPpm": 420,
+        "co2Ppm": 6000,
+        "tempC": 95,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 240.0
+      }
+    },
+    {
+      "id": "MP-BM-CDU-OVH",
+      "code": "MP-BM-CDU-OVH",
+      "name": "CDU overhead line (Beaumont)",
+      "sector": "downstream",
+      "line": "SYS-PLT-BM",
+      "material": "a106-b",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0.1,
+      "site": "SITE-BM",
+      "product": "crude",
+      "process": {
+        "h2sPpm": 420,
+        "co2Ppm": 6000,
+        "tempC": 95,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 240.0
+      }
+    },
+    {
+      "id": "MP-PL774",
+      "code": "MP-PL774",
+      "name": "CATS PIPELINE upstream coupon",
+      "sector": "midstream",
+      "line": "SYS-PL774",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0,
+      "product": "gas",
+      "process": {
+        "h2sPpm": 0,
+        "co2Ppm": 9000,
+        "tempC": 60,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 1793.0
+      }
+    },
+    {
+      "id": "MP-PL139",
+      "code": "MP-PL139",
+      "name": "MAGNUS TO NINIAN coupon",
+      "sector": "midstream",
+      "line": "SYS-PL139",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0,
+      "product": "crude",
+      "process": {
+        "h2sPpm": 420,
+        "co2Ppm": 9000,
+        "tempC": 60,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 619.0
+      }
+    },
+    {
+      "id": "MP-PL6385",
+      "code": "MP-PL6385",
+      "name": "AFFLECK PIP coupon",
+      "sector": "midstream",
+      "line": "SYS-PL6385",
+      "material": "api5l-x52",
+      "sensorType": "couponGravimetric",
+      "stationKm": 0,
+      "product": "multiphase",
+      "process": {
+        "h2sPpm": 420,
+        "co2Ppm": 9000,
+        "tempC": 60,
+        "bswPct": 2,
+        "velocityMs": 1.4,
+        "inhibitorTargetPpm": 30,
+        "inhibitorResidualPpm": 26,
+        "totalPressureKpa": 3450.0
+      }
+    }
+  ],
+  "psvs": [
+    {
+      "id": "PSV-GB-501",
+      "tag": "PSV-GB-501",
+      "location": "CDU tower, Galveston Bay",
+      "valveType": "conventional",
+      "setPressurePsig": 250,
+      "backPressurePsig": 15,
+      "operatingTempF": 480,
+      "certifiedCapacity": 42000,
+      "phase": "gas",
+      "lastTestDate": "2025-09-26",
+      "nextTestDate": "2026-09-26",
+      "site": "SITE-GB"
+    },
+    {
+      "id": "PSV-GB-502",
+      "tag": "PSV-GB-502",
+      "location": "FCC receiver, Galveston Bay",
+      "valveType": "balanced",
+      "setPressurePsig": 180,
+      "backPressurePsig": 25,
+      "operatingTempF": 350,
+      "certifiedCapacity": 26000,
+      "phase": "gas",
+      "lastTestDate": "2025-12-05",
+      "nextTestDate": "2026-11-20",
+      "site": "SITE-GB"
+    },
+    {
+      "id": "PSV-BM-601",
+      "tag": "PSV-BM-601",
+      "location": "Depropanizer, Beaumont",
+      "valveType": "pilot",
+      "setPressurePsig": 220,
+      "backPressurePsig": 10,
+      "operatingTempF": 210,
+      "certifiedCapacity": 18500,
+      "phase": "gas",
+      "lastTestDate": "2026-07-03",
+      "nextTestDate": "2027-06-28",
+      "site": "SITE-BM"
+    },
+    {
+      "id": "PSV-CATS-701",
+      "tag": "PSV-CATS-701",
+      "location": "CATS slug catcher",
+      "valveType": "conventional",
+      "setPressurePsig": 300,
+      "backPressurePsig": 20,
+      "operatingTempF": 120,
+      "certifiedCapacity": 52000,
+      "phase": "gas",
+      "lastTestDate": "2025-05-29",
+      "nextTestDate": "2026-05-29",
+      "site": null
+    }
+  ],
+  "lineAssets": [
+    {
+      "id": "LA-CATS-RISER-01",
+      "systemId": "SYS-PL774",
+      "assetType": "riser",
+      "stationKm": 0.1,
+      "label": "CATS riser 01",
+      "material": "api5l-x52"
+    },
+    {
+      "id": "LA-CATS-VALVE-02",
+      "systemId": "SYS-PL774",
+      "assetType": "valve",
+      "stationKm": 12.4,
+      "label": "Sectionalising valve km 12.4"
+    },
+    {
+      "id": "LA-AFL-ANOM-01",
+      "systemId": "SYS-PL6385",
+      "assetType": "pipe",
+      "stationKm": 3.1,
+      "label": "Pipe-in-pipe anomaly km 3.1"
+    }
+  ],
+  "lineInspections": [
+    {
+      "id": "INSP-001",
+      "systemId": "SYS-PL774",
+      "assetId": "LA-CATS-VALVE-02",
+      "kind": "ILI",
+      "dateISO": "2026-03-18",
+      "stationKm": 12.4,
+      "severity": "severe",
+      "status": "open",
+      "finding": "External corrosion 38% WT loss"
+    },
+    {
+      "id": "INSP-002",
+      "systemId": "SYS-PL774",
+      "assetId": "LA-CATS-RISER-01",
+      "kind": "UT",
+      "dateISO": "2026-07-02",
+      "stationKm": 0.1,
+      "severity": "moderate",
+      "status": "monitor",
+      "finding": "Wall loss 11% at riser base"
+    },
+    {
+      "id": "INSP-003",
+      "systemId": "SYS-PL774",
+      "assetId": "LA-CATS-RISER-01",
+      "kind": "visual",
+      "dateISO": "2026-09-14",
+      "stationKm": 0.1,
+      "severity": "low",
+      "status": "closed",
+      "finding": "Coating damage repaired"
+    },
+    {
+      "id": "INSP-004",
+      "systemId": "SYS-PL6385",
+      "assetId": "LA-AFL-ANOM-01",
+      "kind": "UT",
+      "dateISO": "2026-05-09",
+      "stationKm": 3.1,
+      "severity": "high",
+      "status": "open",
+      "finding": "Anomaly 22% WT inside pipe-in-pipe"
+    }
+  ],
+  "realPipelines": [
+    {
+      "id": "SYS-PL774",
+      "name": "CATS PIPELINE",
+      "operator": "UKCS Operator 11",
+      "product": "gas",
+      "dnIn": 36.0,
+      "wallThicknessMm": 28.4,
+      "material": "api5l-x52",
+      "coating": "FBE",
+      "opPressureMpa": 17.93,
+      "lengthKm": 404.974,
+      "stationFromKm": 0,
+      "stationToKm": 404.974,
+      "provenance": {
+        "nsta_pipeline_no": "PL774",
+        "fluid_source": "GAS",
+        "commissioned": "1993-01-26",
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    },
+    {
+      "id": "SYS-PL139",
+      "name": "MAGNUS TO NINIAN",
+      "operator": "UKCS Operator 06",
+      "product": "crude",
+      "dnIn": 24.0,
+      "wallThicknessMm": 16.0,
+      "material": "api5l-x52",
+      "coating": "5mm GFE CTE",
+      "opPressureMpa": 6.19,
+      "lengthKm": 91.233,
+      "stationFromKm": 0,
+      "stationToKm": 91.233,
+      "provenance": {
+        "nsta_pipeline_no": "PL139",
+        "fluid_source": "OIL",
+        "commissioned": "2000-04-17",
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    },
+    {
+      "id": "SYS-PL6385",
+      "name": "AFFLECK PRODUCTION PIPE-IN-PIPE FROM AFFLECK MANIFOLD TO TALBOT MANIFOLD",
+      "operator": "UKCS Operator 09",
+      "product": "multiphase",
+      "dnIn": 8.63,
+      "wallThicknessMm": 20.6,
+      "material": "api5l-x52",
+      "coating": "No coating on 8 inch inner pipe. 2.5mm of 3LPP on carrier pipe.",
+      "opPressureMpa": 34.5,
+      "lengthKm": 20.97,
+      "stationFromKm": 0,
+      "stationToKm": 20.97,
+      "provenance": {
+        "nsta_pipeline_no": "PL6385",
+        "fluid_source": "MIXED HYDROCARBONS",
+        "commissioned": null,
+        "material": "ASSUMED typical carbon steel (not published per line)",
+        "coating": "SOURCE insulation field; FBE assumed when blank"
+      }
+    }
+  ],
+  "provenance": {
+    "real": "EIA-820 2026 refinery sites/capacities/units; NSTA pipeline attributes",
+    "derived": "equipment tags, process chemistry, PSV dates, inspection findings, corrosion series"
+  },
+  "eia": {
+    "sites_with_cdu": 105,
+    "source": "https://www.eia.gov/petroleum/refinerycapacity/refcap26.xlsx"
+  }
+}

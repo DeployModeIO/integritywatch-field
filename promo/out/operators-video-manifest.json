@@ -1,0 +1,51 @@
+{
+  "video": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-operators-en.mp4",
+  "duration": 78.666667,
+  "size_bytes": 9322753,
+  "subtitles": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-operators-en.srt",
+  "voice": "en-US-ChristopherNeural",
+  "scenes": [
+    {
+      "id": "s1",
+      "start": 0.0,
+      "duration": 11.632,
+      "text": "This is the round that still ends on paper. A clipboard, a shift, and numbers retyped back at the office, hours after the reading was taken."
+    },
+    {
+      "id": "s2",
+      "start": 11.632,
+      "duration": 12.52,
+      "text": "Plant, pipeline, refinery. Alarm floods, relief valves past their test date, and inspection findings that nobody can find at two in the morning."
+    },
+    {
+      "id": "s3",
+      "start": 24.152,
+      "duration": 10.98,
+      "text": "IntegrityWatch Field runs on the tablet. No server, no cloud, and no signal required before an operator can make a decision."
+    },
+    {
+      "id": "s4",
+      "start": 35.132,
+      "duration": 14.084,
+      "text": "Import the round as a CSV. Forty eight readings, mapped, validated and committed on the device. Zero rows skipped, and the evidence stays with the shift."
+    },
+    {
+      "id": "s5",
+      "start": 49.216,
+      "duration": 13.22,
+      "text": "Register the equipment against ISO 14224, set the risk band, and the inspection interval follows. Overdue relief valves surface on their own."
+    },
+    {
+      "id": "s6",
+      "start": 62.436,
+      "duration": 9.644,
+      "text": "Then generate the dossier on the same tablet, ready to print, sign and hand over without waiting for the network to come back."
+    },
+    {
+      "id": "s7",
+      "start": 72.08,
+      "duration": 6.56,
+      "text": "Field data, field decisions, no signal required."
+    }
+  ]
+}

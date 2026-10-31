@@ -130,6 +130,20 @@ importadas (32/32 sin errores), 24 recomendaciones y tres informes.
 
 ---
 
+### 3.12 Flujos de operador (planta, oleoducto, refinería)
+
+Prueba dedicada a los tres roles operativos con datos reales de refinería (EIA-820) y
+ductos UKCS (NSTA): 6 puntos, **48/48 filas importadas**, 3 activos ISO 14224, 2 PSV
+vencidas, 25 recomendaciones y export de expediente de 121 KB, todo sin conexión.
+
+- Acta con 24 capturas: `docs/PRUEBAS-CAMPO-OPERADORES-2026-10-31.md`
+- Procedencia: `docs/FIELD-DATA-SOURCES-OPERATORS.md`
+- Vídeo (1:19, inglés): `docs/evidence/video/integritywatch-field-operators-en.mp4`
+
+![Registro de PSV vencidas](field-tests-operators-2026-10-31/15-psv-registry-overdue.png)
+
+---
+
 ## 4. Recetas rápidas
 
 **Cargar la campaña mensual de cupones**: Ingesta → CSV → archivo → validar → importar → Corrosión →
