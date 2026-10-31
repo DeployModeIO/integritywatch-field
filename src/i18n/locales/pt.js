@@ -666,6 +666,8 @@
       importDone: 'Importação concluída',
       jsonResult: 'Criados {{created}}, atualizados {{updated}}, excluídos {{deleted}}',
       deadCount: 'Operações mortas',
+      tooLarge: 'Arquivo muito grande (limite {{limit}} MB)',
+      tooManyRows: 'Linhas demais (limite {{limit}})',
       canonical: {
         mpCode: 'Ponto de monitoramento',
         date: 'Data',
@@ -879,11 +881,19 @@
       typeDelete: 'Digite DELETE para confirmar',
       forceUpdate: 'Forçar atualização',
       forceUpdateHint: 'Limpa o cache offline e recarrega o aplicativo. Use quando uma atualização não aparecer.',
+      syncInsecure: 'Endpoint de sincronização inseguro rejeitado (use HTTPS, ou HTTP somente em localhost)',
+      syncToken: 'Token de sincronização (Bearer)',
       roles: {
         admin: 'Admin',
-        operator: 'Operador'
+        operator: 'Operador',
+        engineer: 'Engenheiro'
       }
     },
+
+    security: {
+      forbidden: 'Você não tem permissão para esta ação'
+    },
+
     a11y: {
       skipLink: 'Pular para o conteúdo',
       openNav: 'Abrir navegação',

@@ -234,22 +234,22 @@ test('T7: lock PBKDF2 enable/verify/lockout/changePin/verifier no pin', async ()
   const store = createStore(adapter);
   await adapter.open();
   const l = lock;
-  const enabled = await l.enable({ pin: '1234', role: 'admin' }, store.meta);
+  const enabled = await l.enable({ pin: '123456', role: 'admin' }, store.meta);
   assert.ok(enabled.ok);
-  const v1 = await l.verify('1234', store.meta);
+  const v1 = await l.verify('123456', store.meta);
   assert.ok(v1.ok);
-  const changed = await l.changePin('1234', '5678', store.meta);
+  const changed = await l.changePin('123456', '567890', store.meta);
   assert.ok(changed.ok);
-  const v2 = await l.verify('5678', store.meta);
+  const v2 = await l.verify('567890', store.meta);
   assert.ok(v2.ok);
   for (let i = 0; i < 5; i++) {
     await l.verify('malo', store.meta);
   }
-  const locked = await l.verify('5678', store.meta);
+  const locked = await l.verify('567890', store.meta);
   assert.ok(!locked.ok && locked.lockoutSec > 0);
   await store.meta.set('lock.fails', 0);
   await store.meta.set('lock.lockedUntilISO', null);
-  await l.disable('5678', store.meta);
+  await l.disable('567890', store.meta);
   const dis = await l.isEnabled(store.meta);
   assert.ok(!dis);
   const verifier = await store.meta.get('lock.verifier');
@@ -257,7 +257,7 @@ test('T7: lock PBKDF2 enable/verify/lockout/changePin/verifier no pin', async ()
   const pepper = await store.meta.get('lock.pepperB64');
   assert.ok(typeof pepper === 'string');
   const metaRaw = await store.meta.list();
-  const hasPlain = JSON.stringify(metaRaw).includes('1234');
+  const hasPlain = JSON.stringify(metaRaw).includes('123456');
   assert.ok(!hasPlain);
 });
 
@@ -318,9 +318,9 @@ test('DEVIATION-DATA-4: lock verifier never contains pin in cleartext (PBKDF2)',
   const adapter = dbMemory.create();
   const store = createStore(adapter);
   await adapter.open();
-  await lock.enable({ pin: '1234', role: 'admin' }, store.meta);
+  await lock.enable({ pin: '123456', role: 'admin' }, store.meta);
   const verifier = await store.meta.get('lock.verifier');
   const str = JSON.stringify(verifier);
-  assert.ok(!str.includes('1234'));
+  assert.ok(!str.includes('123456'));
   assert.ok(verifier.saltB64 && verifier.hashB64);
 });

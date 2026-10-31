@@ -739,6 +739,8 @@ consequences: {
       importDone: 'Importación completa',
       jsonResult: 'Creados {{created}}, actualizados {{updated}}, eliminados {{deleted}}',
       deadCount: 'Operaciones muertas',
+      tooLarge: 'Archivo demasiado grande (límite {{limit}} MB)',
+      tooManyRows: 'Demasiadas filas (límite {{limit}})',
       canonical: {
         mpCode: 'Punto de monitoreo',
         date: 'Fecha',
@@ -952,11 +954,19 @@ R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({
       typeDelete: 'Escriba DELETE para confirmar',
       forceUpdate: 'Forzar actualización',
       forceUpdateHint: 'Limpia la caché sin conexión y recarga la aplicación. Úsalo cuando no aparezca una actualización.',
+      syncInsecure: 'Endpoint de sincronización inseguro rechazado (usa HTTPS, o HTTP solo en localhost)',
+      syncToken: 'Token de sincronización (Bearer)',
       roles: {
         admin: 'Admin',
-        operator: 'Operador'
+        operator: 'Operador',
+        engineer: 'Ingeniero'
       }
     },
+
+    security: {
+      forbidden: 'No tienes permiso para esta acción'
+    },
+
     a11y: {
       skipLink: 'Saltar al contenido',
       openNav: 'Abrir navegación',

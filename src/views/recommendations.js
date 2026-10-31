@@ -12,6 +12,7 @@
 
   function ui() { return root.IW.ui; }
   function lock() { return root.IW.security ? root.IW.security.lock : null; }
+  function permissions() { return root.IW.security ? root.IW.security.permissions : null; }
   function engine() { return root.IW.rules ? root.IW.rules.engine : null; }
 
   function labelOf(entityStore, entityId, map) {
@@ -57,6 +58,17 @@
       var navigate = ctx.navigate || function () {};
       var i18n = root.IW.i18n;
 
+      var guard = (permissions() && typeof permissions().guard === 'function') ? permissions().guard(repos.meta) : null;
+      function requirePerm(action) {
+        return guard ? guard.require(action) : Promise.resolve(true);
+      }
+      function isForbidden(err) {
+        return !!(err && err.code === 'E_FORBIDDEN');
+      }
+      function forbiddenToast(err) {
+        ui().toast(isForbidden(err) ? 'security.forbidden' : 'common.error', { severity: isForbidden(err) ? 'warning' : 'critical' });
+      }
+
       function fmtDate(iso) { return (i18n && i18n.formatDate) ? i18n.formatDate(iso, { dateStyle: 'short', timeStyle: 'short' }) : iso; }
       function fmtNum(v, dec) { return (i18n && i18n.formatNumber) ? i18n.formatNumber(v, { maximumFractionDigits: dec === undefined ? 1 : dec }) : String(v); }
 
@@ -88,9 +100,12 @@
       var listWrap = el('div', { class: 'recs-list' });
       view.appendChild(listWrap);
 
+      var sessionRole = null;
+      var rolePromise = (lock() && typeof lock().role === 'function') ? lock().role(repos.meta) : Promise.resolve(null);
+      rolePromise.then(function (r) { if (r) { sessionRole = r; } });
+
       function actor() {
-        var l = lock();
-        return (l && l.currentRole && l.currentRole()) ? l.currentRole() : 'local';
+        return sessionRole || 'local';
       }
 
       function filtered() {
@@ -108,14 +123,18 @@
       }
 
       function onAcknowledge(rec) {
-        var now = new Date().toISOString();
-        var copy = {};
-        for (var k in rec) { copy[k] = rec[k]; }
-        copy.status = 'acked';
-        copy.ackedAt = now;
-        copy.ackedBy = actor();
-        pushHistory(copy, { action: 'acked', at: now, by: copy.ackedBy });
-        return repos.recommendations.save(copy, now).then(function () { loadData(); });
+        return requirePerm('recAcknowledge').then(function () {
+          var now = new Date().toISOString();
+          var copy = {};
+          for (var k in rec) { copy[k] = rec[k]; }
+          copy.status = 'acked';
+          copy.ackedAt = now;
+          copy.ackedBy = actor();
+          pushHistory(copy, { action: 'acked', at: now, by: copy.ackedBy });
+          return repos.recommendations.save(copy, now).then(function () { loadData(); });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+        });
       }
 
       function onResolve(rec) {
@@ -128,15 +147,19 @@
             { labelKey: 'common.cancel', kind: 'ghost', onClick: function () {} },
             {
               labelKey: 'common.confirm', kind: 'primary', onClick: function () {
-                var now = new Date().toISOString();
-                var copy = {};
-                for (var k2 in rec) { copy[k2] = rec[k2]; }
-                copy.status = 'resolved';
-                copy.resolvedAt = now;
-                copy.resolvedBy = actor();
-                copy.resolveNote = textarea.value || undefined;
-                pushHistory(copy, { action: 'resolved', at: now, by: copy.resolvedBy, note: copy.resolveNote });
-                return repos.recommendations.save(copy, now).then(function () { loadData(); });
+                return requirePerm('recResolve').then(function () {
+                  var now = new Date().toISOString();
+                  var copy = {};
+                  for (var k2 in rec) { copy[k2] = rec[k2]; }
+                  copy.status = 'resolved';
+                  copy.resolvedAt = now;
+                  copy.resolvedBy = actor();
+                  copy.resolveNote = textarea.value || undefined;
+                  pushHistory(copy, { action: 'resolved', at: now, by: copy.resolvedBy, note: copy.resolveNote });
+                  return repos.recommendations.save(copy, now).then(function () { loadData(); });
+                }).catch(function (err) {
+                  if (isForbidden(err)) { forbiddenToast(err); }
+                });
               }
             }
           ]
@@ -296,7 +319,7 @@
       }
 
       container.appendChild(view);
-      return loadData();
+      return rolePromise.then(function () { return loadData(); });
     }
   };
 });

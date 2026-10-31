@@ -15,6 +15,22 @@
   function unitsApi() { return root.IW.calc && root.IW.calc.units; }
   function fluids() { return root.IW.data && root.IW.data.fluids; }
   function lock() { return root.IW.security && root.IW.security.lock; }
+  function permissions() { return root.IW.security && root.IW.security.permissions; }
+  function guardFor(meta) {
+    var perm = permissions();
+    return (perm && typeof perm.guard === 'function') ? perm.guard(meta) : null;
+  }
+  function requirePerm(meta, action) {
+    var g = guardFor(meta);
+    return g ? g.require(action) : Promise.resolve(true);
+  }
+  function stampRec(meta, rec, existing) {
+    var perm = permissions();
+    return (perm && typeof perm.stamp === 'function') ? perm.stamp(meta, rec, existing) : Promise.resolve(rec);
+  }
+  function isForbidden(err) {
+    return !!(err && err.code === 'E_FORBIDDEN');
+  }
 
   function fmtNum(v, digits) {
     var d = (digits === undefined || digits === null) ? 2 : digits;
@@ -343,14 +359,20 @@
             if (!form.validate()) { return false; }
             var vals = form.getValues();
             var rec = assemblePsv(existing, vals);
-            var saveP = (existing && existing.id && existing.id !== rec.tag)
-              ? h.repos.psvs.remove(existing.id).then(function () { rec.id = rec.tag; return h.repos.psvs.save(rec); })
-              : h.repos.psvs.save(rec);
-            saveP.then(function () {
+            requirePerm(h.repos.meta, 'assetWrite').then(function () {
+              return stampRec(h.repos.meta, rec, existing);
+            }).then(function (stamped) {
+              rec = stamped;
+              return (existing && existing.id && existing.id !== rec.tag)
+                ? h.repos.psvs.remove(existing.id).then(function () { rec.id = rec.tag; return h.repos.psvs.save(rec); })
+                : h.repos.psvs.save(rec);
+            }).then(function () {
               dlg.close();
               if (onDone) { onDone(rec); }
-            }).catch(function () {
-              if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
+            }).catch(function (err) {
+              if (h.ui && typeof h.ui.toast === 'function') {
+                h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+              }
             });
             return false;
           } }
@@ -378,20 +400,21 @@
   function deletePsv(h, psv, onDeleted) {
     h.ui.confirmDialog({ titleKey: 'common.delete', bodyKey: 'psv.deletePsvConfirm', danger: true }).then(function (ok) {
       if (!ok) { return; }
-      var lk = lock();
-      var check = Promise.resolve(false);
-      if (lk && typeof lk.isEnabled === 'function') { check = lk.isEnabled(h.repos.meta); }
-      check.then(function (enabled) {
-        if (enabled && lk && lk.currentRole && lk.currentRole() === 'operator') {
-          if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('psv.deleteDisabled'), { severity: 'warning' }); }
-          return;
+      requirePerm(h.repos.meta, 'delete').then(function () {
+        return doRemove();
+      }).catch(function (err) {
+        if (h.ui && typeof h.ui.toast === 'function') {
+          h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
         }
-        h.repos.psvs.remove(psv.id).then(function () {
+      });
+
+      function doRemove() {
+        return h.repos.psvs.remove(psv.id).then(function () {
           if (onDeleted) { onDeleted(); }
         }).catch(function () {
           if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
         });
-      });
+      }
     });
   }
 
@@ -614,10 +637,16 @@
       var updated = copy(psv);
       updated.sizing = sizing;
       if (lastResult.orifice && !lastResult.orifice.error) { updated.orificeLetter = lastResult.orifice.letter; }
-      h.repos.psvs.save(updated).then(function () {
+      requirePerm(h.repos.meta, 'assetWrite').then(function () {
+        return stampRec(h.repos.meta, updated, psv);
+      }).then(function (stamped) {
+        return h.repos.psvs.save(stamped);
+      }).then(function () {
         if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.ok'), { severity: 'info' }); }
-      }).catch(function () {
-        if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
+      }).catch(function (err) {
+        if (h.ui && typeof h.ui.toast === 'function') {
+          h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+        }
       });
     }
 

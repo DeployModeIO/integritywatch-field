@@ -342,6 +342,18 @@
     else if (typeof location !== 'undefined') { location.hash = hash; }
   }
 
+  // Sliding window: refresh the PIN session on every route change so the
+  // 15-minute window is a true inactivity window, not a fixed login timeout.
+  function touchLockSession() {
+    try {
+      var lk = root.IW.security && root.IW.security.lock;
+      if (!lk || typeof lk.touch !== 'function' || typeof lk.isEnabled !== 'function' || !_repos || !_repos.meta) { return; }
+      lk.isEnabled(_repos.meta).then(function (enabled) {
+        if (enabled) { lk.touch(_repos.meta).catch(function () {}); }
+      }).catch(function () {});
+    } catch (e) { /* ignore */ }
+  }
+
   function onSectorChange() {
     _sector = _sectorSelect.value;
     if (_repos && _repos.meta) {
@@ -510,6 +522,7 @@
           else { _navLinks[k].removeAttribute('aria-current'); }
         });
         setNavOpen(false);
+        touchLockSession();
       });
       _bus.on('theme:changed', function () { updateThemeIcon(); });
       _bus.on('locale:changed', function () { refreshChrome(); });

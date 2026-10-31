@@ -14,6 +14,32 @@
   var VERSION = 1;
   var DEBUG_ONLY = 'mutationQueue';
 
+  // Minimal per-store required-field schema (TASK 3). Field names match the
+  // records actually produced by src/data/seed.js and the view save paths.
+  var REQUIRED_FIELDS = {
+    monitoringPoints: ['code'],
+    readings: ['mpId', 'crMpy'],
+    coupons: ['mpId'],
+    psvs: ['tag'],
+    pipelineSystems: ['name'],
+    lineAssets: ['systemId'],
+    lineInspections: ['systemId'],
+    apmAssets: ['code'],
+    apmEvents: ['assetId', 'start'],
+    recommendations: ['ruleId']
+  };
+
+  function missingRequiredFields(name, rec) {
+    var fields = REQUIRED_FIELDS[name];
+    if (!fields || !fields.length) { return null; }
+    var missing = [];
+    fields.forEach(function (f) {
+      var v = rec[f];
+      if (v === undefined || v === null || v === '') { missing.push(f); }
+    });
+    return missing.length ? missing : null;
+  }
+
   function exportStoreNames(store, debug) {
     return Object.keys(store).filter(function (k) {
       if (k === 'meta') { return false; }
@@ -52,6 +78,16 @@
           store: name,
           index: i,
           message: 'record must be an object with a non-empty id'
+        });
+        return;
+      }
+      var missing = missingRequiredFields(name, rec);
+      if (missing) {
+        summary.errors.push({
+          code: 'E_SCHEMA',
+          store: name,
+          index: i,
+          message: 'missing required field(s): ' + missing.join(', ')
         });
         return;
       }
@@ -109,7 +145,13 @@
     var names = Object.keys(payload.data);
     var chain = Promise.resolve();
     names.forEach(function (name) {
-      var repo = store[name];
+      // Resolve a store only via its own property, never the prototype chain:
+      // guards `__proto__` / `constructor` and any inherited key from resolving
+      // to a non-repository and crashing.
+      var repo = null;
+      if (Object.prototype.hasOwnProperty.call(store, name) && store[name] && typeof store[name].list === 'function') {
+        repo = store[name];
+      }
       if (!repo) {
         summary.errors.push({ code: 'E_UNKNOWN_STORE', store: name, index: -1, message: 'unknown store: ' + name });
         return;

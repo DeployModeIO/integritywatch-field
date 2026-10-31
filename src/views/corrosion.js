@@ -16,6 +16,22 @@
   function spc() { return root.IW.calc && root.IW.calc.spc; }
   function materials() { return root.IW.data && root.IW.data.materials; }
   function lock() { return root.IW.security && root.IW.security.lock; }
+  function permissions() { return root.IW.security && root.IW.security.permissions; }
+  function guardFor(meta) {
+    var perm = permissions();
+    return (perm && typeof perm.guard === 'function') ? perm.guard(meta) : null;
+  }
+  function requirePerm(meta, action) {
+    var g = guardFor(meta);
+    return g ? g.require(action) : Promise.resolve(true);
+  }
+  function stampRec(meta, rec, existing) {
+    var perm = permissions();
+    return (perm && typeof perm.stamp === 'function') ? perm.stamp(meta, rec, existing) : Promise.resolve(rec);
+  }
+  function isForbidden(err) {
+    return !!(err && err.code === 'E_FORBIDDEN');
+  }
 
   function fmtNum(v, digits) {
     var d = (digits === undefined || digits === null) ? 2 : digits;
@@ -332,11 +348,17 @@
         { labelKey: 'common.save', kind: 'primary', onClick: function () {
             if (!form.validate()) { return false; }
             var rec = assembleMp(existing, form.getValues());
-            h.repos.monitoringPoints.save(rec).then(function () {
+            requirePerm(h.repos.meta, 'assetWrite').then(function () {
+              return stampRec(h.repos.meta, rec, existing);
+            }).then(function (stamped) {
+              return h.repos.monitoringPoints.save(stamped);
+            }).then(function () {
               dlg.close();
               if (onDone) { onDone(rec); }
             }).catch(function (err) {
-              if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
+              if (h.ui && typeof h.ui.toast === 'function') {
+                h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+              }
             });
             return false;
           } }
@@ -347,22 +369,21 @@
   function deleteMp(h, mp, onDeleted) {
     h.ui.confirmDialog({ titleKey: 'common.delete', bodyKey: 'corrosion.deletePointConfirm', danger: true }).then(function (ok) {
       if (!ok) { return; }
-      var lk = lock();
-      var check = Promise.resolve(false);
-      if (lk && typeof lk.isEnabled === 'function') {
-        check = lk.isEnabled(h.repos.meta);
-      }
-      check.then(function (enabled) {
-        if (enabled && lk && lk.currentRole && lk.currentRole() === 'operator') {
-          if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('corrosion.deleteDisabled'), { severity: 'warning' }); }
-          return;
+      requirePerm(h.repos.meta, 'delete').then(function () {
+        return doRemove();
+      }).catch(function (err) {
+        if (h.ui && typeof h.ui.toast === 'function') {
+          h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
         }
-        h.repos.monitoringPoints.remove(mp.id).then(function () {
+      });
+
+      function doRemove() {
+        return h.repos.monitoringPoints.remove(mp.id).then(function () {
           if (onDeleted) { onDeleted(); }
         }).catch(function (err) {
           if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
         });
-      });
+      }
     });
   }
 
@@ -392,11 +413,17 @@
               source: 'manual',
               note: v.note || undefined
             };
-            h.repos.readings.save(rec).then(function () {
+            requirePerm(h.repos.meta, 'fieldEntry').then(function () {
+              return stampRec(h.repos.meta, rec, null);
+            }).then(function (stamped) {
+              return h.repos.readings.save(stamped);
+            }).then(function () {
               dlg.close();
               if (onDone) { onDone(); }
-            }).catch(function () {
-              if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
+            }).catch(function (err) {
+              if (h.ui && typeof h.ui.toast === 'function') {
+                h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+              }
             });
             return false;
           } }
@@ -536,11 +563,17 @@
                 status: 'active'
               };
             }
-            h.repos.coupons.save(rec).then(function () {
+            requirePerm(h.repos.meta, 'fieldEntry').then(function () {
+              return stampRec(h.repos.meta, rec, existing);
+            }).then(function (stamped) {
+              return h.repos.coupons.save(stamped);
+            }).then(function () {
               dlg.close();
               if (onDone) { onDone(); }
-            }).catch(function () {
-              if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('common.error'), { severity: 'critical' }); }
+            }).catch(function (err) {
+              if (h.ui && typeof h.ui.toast === 'function') {
+                h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+              }
             });
             return false;
           } }
@@ -857,9 +890,17 @@
             renderNorsokResult(input);
           } catch (e) {}
         }
-        h.repos.monitoringPoints.save(mp).then(function (saved) {
+        requirePerm(h.repos.meta, 'assetWrite').then(function () {
+          return stampRec(h.repos.meta, mp, mp);
+        }).then(function (stamped) {
+          return h.repos.monitoringPoints.save(stamped);
+        }).then(function (saved) {
           h.ui.toast(h.t('common.saved'));
-        }).catch(function () {});
+        }).catch(function (err) {
+          if (h.ui && typeof h.ui.toast === 'function') {
+            h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+          }
+        });
       } }
     });
     norsokPanel.appendChild(h.ui.el('div', { class: 'actions' }, nCalcBtn, nSaveBtn));
@@ -973,9 +1014,17 @@
             renderCuiResult(vals);
           } catch (e) {}
         }
-        h.repos.monitoringPoints.save(mp).then(function () {
+        requirePerm(h.repos.meta, 'assetWrite').then(function () {
+          return stampRec(h.repos.meta, mp, mp);
+        }).then(function (stamped) {
+          return h.repos.monitoringPoints.save(stamped);
+        }).then(function () {
           h.ui.toast(h.t('common.saved'));
-        }).catch(function () {});
+        }).catch(function (err) {
+          if (h.ui && typeof h.ui.toast === 'function') {
+            h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+          }
+        });
       } }
     });
     cuiPanel.appendChild(h.ui.el('div', { class: 'actions' }, cuiCalcBtn, cuiSaveBtn));
@@ -1082,9 +1131,17 @@
             renderMicResult(vals);
           } catch (e) {}
         }
-        h.repos.monitoringPoints.save(mp).then(function () {
+        requirePerm(h.repos.meta, 'assetWrite').then(function () {
+          return stampRec(h.repos.meta, mp, mp);
+        }).then(function (stamped) {
+          return h.repos.monitoringPoints.save(stamped);
+        }).then(function () {
           h.ui.toast(h.t('common.saved'));
-        }).catch(function () {});
+        }).catch(function (err) {
+          if (h.ui && typeof h.ui.toast === 'function') {
+            h.ui.toast(h.t(isForbidden(err) ? 'security.forbidden' : 'common.error'), { severity: isForbidden(err) ? 'warning' : 'critical' });
+          }
+        });
       } }
     });
     micPanel.appendChild(h.ui.el('div', { class: 'actions' }, micCalcBtn, micSaveBtn));

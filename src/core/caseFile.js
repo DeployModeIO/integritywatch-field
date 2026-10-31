@@ -13,6 +13,7 @@
 
   var FNV_OFFSET = 0x811c9dc5;
   var FNV_PRIME = 0x01000193;
+  var APP_VERSION = '1.1.0';
 
   // Recursive canonical JSON stringifier: keys sorted lexicographically.
   function canonicalStringify(obj) {
@@ -46,6 +47,52 @@
     return hex;
   }
 
+  function cryptoApi() {
+    if (typeof globalThis !== 'undefined' && globalThis.crypto && globalThis.crypto.subtle) { return globalThis.crypto; }
+    if (typeof crypto !== 'undefined' && crypto.subtle) { return crypto; }
+    return null;
+  }
+
+  function utf8(str) {
+    if (typeof TextEncoder !== 'undefined') { return new TextEncoder().encode(str); }
+    var out = [];
+    for (var i = 0; i < str.length; i++) {
+      var c = str.charCodeAt(i);
+      if (c < 0x80) { out.push(c); }
+      else if (c < 0x800) { out.push(0xc0 | (c >> 6), 0x80 | (c & 0x3f)); }
+      else if (c >= 0xd800 && c <= 0xdbff && i + 1 < str.length) {
+        var c2 = str.charCodeAt(i + 1);
+        if (c2 >= 0xdc00 && c2 <= 0xdfff) {
+          var cp = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+          out.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 0x3f), 0x80 | ((cp >> 6) & 0x3f), 0x80 | (cp & 0x3f));
+          i++;
+          continue;
+        }
+        out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 0x3f), 0x80 | (c & 0x3f));
+      } else {
+        out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 0x3f), 0x80 | (c & 0x3f));
+      }
+    }
+    return new Uint8Array(out);
+  }
+
+  function bytesToB64(bytes) {
+    var arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    if (typeof Buffer !== 'undefined') { return Buffer.from(arr).toString('base64'); }
+    var bin = '';
+    for (var i = 0; i < arr.length; i++) { bin += String.fromCharCode(arr[i]); }
+    return btoa(bin);
+  }
+
+  function sha256B64(str) {
+    var c = cryptoApi();
+    if (!c || !c.subtle) { return Promise.reject(new Error('WebCrypto unavailable')); }
+    var bytes = utf8(str);
+    return c.subtle.digest('SHA-256', bytes).then(function (hash) {
+      return bytesToB64(new Uint8Array(hash));
+    });
+  }
+
   function buildCaseFile(dataMap, meta) {
     meta = meta || {};
     var exportedAt = new Date().toISOString();
@@ -67,7 +114,55 @@
     return envelope;
   }
 
-  function parseCaseFile(text) {
+  // V2 envelope: strong SHA-256 checksum (checksumSha256, flagged by
+  // checksumAlgo) while retaining the legacy FNV-1a `checksum` field verbatim so
+  // legacy readers keep working. `signedBy` records the acting role.
+  //
+  // Unkeyed checksums are anti-corruption only: they detect accidental edits in
+  // transit/storage, not malicious tampering — an attacker who can modify the
+  // file can recompute the hash. Authenticity requires a keyed MAC or signature.
+  //
+  // The strong checksum covers the whole envelope EXCEPT the checksum fields
+  // themselves (checksumAlgo / checksum / checksumSha256), so tampering with the
+  // metadata (sector, app, signedBy, exportedAt, version) is caught too.
+  var CHECKSUM_COVERAGE_FIELDS = ['version', 'sector', 'exportedAt', 'app', 'signedBy', 'data'];
+
+  function coverageObject(obj) {
+    var out = {};
+    for (var i = 0; i < CHECKSUM_COVERAGE_FIELDS.length; i++) {
+      var k = CHECKSUM_COVERAGE_FIELDS[i];
+      if (obj[k] !== undefined) { out[k] = obj[k]; }
+    }
+    return out;
+  }
+
+  function buildCaseFileV2(dataMap, meta, actorRole) {
+    meta = meta || {};
+    var exportedAt = new Date().toISOString();
+    var fnv = fnv1a(canonicalStringify(dataMap));
+    var envelope = {
+      format: 'iwf',
+      version: 1,
+      sector: meta.sector || undefined,
+      exportedAt: exportedAt,
+      app: APP_VERSION,
+      checksumAlgo: 'SHA-256',
+      checksum: fnv,
+      signedBy: (actorRole !== undefined && actorRole !== null) ? actorRole : meta.actorRole,
+      data: dataMap
+    };
+    return sha256B64(canonicalStringify(coverageObject(envelope))).then(function (sha) {
+      envelope.checksumSha256 = sha;
+      var keys = Object.keys(envelope);
+      for (var k = 0; k < keys.length; k++) {
+        if (envelope[keys[k]] === undefined) { delete envelope[keys[k]]; }
+      }
+      return envelope;
+    });
+  }
+
+  // Shared structural decode (JSON.parse + format/version checks).
+  function decodeEnvelope(text) {
     if (typeof text !== 'string' || !text.trim()) {
       return { ok: false, error: 'E_BAD_JSON' };
     }
@@ -91,18 +186,58 @@
       return { ok: false, error: (typeof obj.version === 'number' && obj.version > 1) ? 'E_VERSION' : 'E_BAD_FORMAT' };
     }
 
-    var expectedChecksum = fnv1a(canonicalStringify(obj.data));
-    if (obj.checksum !== expectedChecksum) {
+    return { ok: true, obj: obj };
+  }
+
+  // Legacy synchronous parser: FNV-1a only. Works for both legacy envelopes and
+  // V2 envelopes (which retain the FNV `checksum` field), so old callers that
+  // expect a synchronous result keep working unchanged.
+  function parseCaseFile(text) {
+    var d = decodeEnvelope(text);
+    if (!d.ok) { return d; }
+    var obj = d.obj;
+    if (obj.checksum !== fnv1a(canonicalStringify(obj.data))) {
       return { ok: false, error: 'E_CHECKSUM' };
     }
-
     return { ok: true, payload: obj };
+  }
+
+  // Async parser: verifies the strong SHA-256 checksum whenever the envelope
+  // carries `checksumSha256` (regardless of `checksumAlgo`), or when it declares
+  // checksumAlgo 'SHA-256' but the checksum field is missing (a downgrade
+  // attempt). Otherwise falls back to the legacy data-only FNV-1a check.
+  // Always returns a Promise.
+  function parseCaseFileAsync(text) {
+    return Promise.resolve().then(function () {
+      var d = decodeEnvelope(text);
+      if (!d.ok) { return d; }
+      var obj = d.obj;
+      if (typeof obj.checksumSha256 === 'string') {
+        return sha256B64(canonicalStringify(coverageObject(obj))).then(function (expected) {
+          if (obj.checksumSha256 !== expected) {
+            return { ok: false, error: 'E_CHECKSUM_SHA' };
+          }
+          return { ok: true, payload: obj };
+        });
+      }
+      if (obj.checksumAlgo === 'SHA-256') {
+        // Declared strong checksum but the field was stripped: downgrade attack.
+        return { ok: false, error: 'E_CHECKSUM_SHA' };
+      }
+      if (obj.checksum !== fnv1a(canonicalStringify(obj.data))) {
+        return { ok: false, error: 'E_CHECKSUM' };
+      }
+      return { ok: true, payload: obj };
+    });
   }
 
   return {
     canonicalStringify: canonicalStringify,
     fnv1a: fnv1a,
+    APP_VERSION: APP_VERSION,
     buildCaseFile: buildCaseFile,
-    parseCaseFile: parseCaseFile
+    buildCaseFileV2: buildCaseFileV2,
+    parseCaseFile: parseCaseFile,
+    parseCaseFileAsync: parseCaseFileAsync
   };
 });

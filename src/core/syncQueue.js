@@ -17,6 +17,7 @@
   var _bus = null;
   var _adapter = null;
   var _getEndpoint = null;
+  var _getToken = null;
   var _fetch = null;
   var _online = null;
   var _pendingCount = 0;
@@ -87,17 +88,61 @@
       (typeof res.status === 'number' && res.status >= 200 && res.status < 300));
   }
 
+  // https is allowed anywhere; http is allowed only to loopback hosts.
+  function validateEndpoint(endpoint) {
+    if (typeof endpoint !== 'string' || endpoint.length === 0) { return false; }
+    var base = null;
+    if (typeof self !== 'undefined' && self.location && self.location.href) { base = self.location.href; }
+    else if (typeof window !== 'undefined' && window.location && window.location.href) { base = window.location.href; }
+    else if (typeof globalThis !== 'undefined' && globalThis.location && globalThis.location.href) { base = globalThis.location.href; }
+    var url;
+    try { url = base ? new URL(endpoint, base) : new URL(endpoint); }
+    catch (e) { return false; }
+    if (url.protocol === 'https:') { return true; }
+    if (url.protocol === 'http:') {
+      var host = String(url.hostname || '').toLowerCase().replace(/^\[/, '').replace(/\]$/, '');
+      return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+    }
+    return false;
+  }
+
+  // Log only protocol + host, never userinfo (which may embed credentials).
+  function redactEndpoint(endpoint) {
+    try {
+      var url = new URL(endpoint);
+      return url.protocol + '//' + url.host;
+    } catch (e) {
+      return '[invalid endpoint]';
+    }
+  }
+
   function postOne(row) {
     var endpoint = _getEndpoint ? _getEndpoint() : null;
     if (!endpoint) { return Promise.resolve(false); }
+    if (!validateEndpoint(endpoint)) {
+      if (typeof console !== 'undefined' && typeof console.error === 'function') {
+        console.error('[syncQueue] rejecting insecure endpoint:', redactEndpoint(endpoint));
+      }
+      row.lastError = 'E_INSECURE_ENDPOINT';
+      row.attempts = (row.attempts || 0) + 1;
+      row.lastAttemptISO = new Date().toISOString();
+      row.dead = true;
+      return _adapter.put(STORE, row).then(function () { return false; });
+    }
     var fetchFn = resolveFetch();
     if (!fetchFn) { return Promise.resolve(false); }
+
+    var headers = { 'Content-Type': 'application/json' };
+    var token = _getToken ? _getToken() : null;
+    if (token && typeof token === 'string' && token.length > 0) {
+      headers['Authorization'] = 'Bearer ' + token;
+    }
 
     var p;
     try {
       p = fetchFn(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify(row.op),
         keepalive: false
       });
@@ -122,6 +167,7 @@
     _bus = opts.bus || null;
     _adapter = opts.adapter || null;
     _getEndpoint = opts.getEndpoint || function () { return null; };
+    _getToken = opts.getToken || null;
     if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
       window.addEventListener('online', function () { flush(); });
     }
@@ -190,8 +236,10 @@
     enqueue: enqueue,
     flush: flush,
     pending: pending,
+    validateEndpoint: validateEndpoint,
     __setFetch: function (fn) { _fetch = fn; },
     __setScheduler: function (fn) { _scheduler = fn || defaultScheduler; },
-    __setOnline: function (fn) { _online = fn; }
+    __setOnline: function (fn) { _online = fn; },
+    __setGetToken: function (fn) { _getToken = fn || null; }
   };
 });

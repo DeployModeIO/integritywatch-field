@@ -10,11 +10,13 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
-  var ITERATIONS = 210000;
+  var ITERATIONS = 600000;
+  var MIN_PIN_LENGTH = 6;
   var SALT_BYTES = 16;
   var PEPPER_BYTES = 32;
   var MAX_FAILS = 5;
   var LOCKOUT_MS = 30000;
+  var SESSION_MINUTES = 15;
 
   var _crypto = null;
   var _currentRole = null;
@@ -85,6 +87,16 @@
     return out;
   }
 
+  function constantTimeEqual(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') { return false; }
+    if (a.length !== b.length) { return false; }
+    var diff = 0;
+    for (var i = 0; i < a.length; i++) {
+      diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return diff === 0;
+  }
+
   function deriveBits(pin, saltBytes, pepperBytes, iterations) {
     var c = cryptoApi();
     if (!c || !c.subtle) { return Promise.reject(new Error('WebCrypto unavailable')); }
@@ -108,11 +120,21 @@
     return meta.get('lock.enabled').then(function (v) { return v === true; });
   }
 
+  function makeSession(role, nowMs) {
+    var nowISO = new Date(nowMs).toISOString();
+    return {
+      role: role,
+      startISO: nowISO,
+      lastActivityISO: nowISO,
+      expiresISO: new Date(nowMs + SESSION_MINUTES * 60000).toISOString()
+    };
+  }
+
   function enable(opts, meta) {
     opts = opts || {};
     var pin = opts.pin;
     var role = opts.role || 'operator';
-    if (!pin || typeof pin !== 'string') {
+    if (!pin || typeof pin !== 'string' || pin.length < MIN_PIN_LENGTH) {
       return Promise.resolve({ ok: false, error: 'E_INVALID_PIN' });
     }
     var saltBytes = randomBytes(SALT_BYTES);
@@ -128,6 +150,7 @@
         .then(function () { return meta.set('lock.fails', 0); })
         .then(function () { return meta.set('lock.lockedUntilISO', null); })
         .then(function () { return meta.set('lock.enabled', true); })
+        .then(function () { return meta.set('lock.session', makeSession(role, Date.now())); })
         .then(function () { return { ok: true, role: role }; });
     });
   }
@@ -136,13 +159,18 @@
     return verify(pin, meta).then(function (res) {
       if (!res.ok) { return { ok: false, error: 'E_WRONG_PIN' }; }
       _currentRole = null;
-      return meta.set('lock.enabled', false).then(function () { return { ok: true }; });
+      return meta.set('lock.enabled', false)
+        .then(function () { return meta.set('lock.session', null); })
+        .then(function () { return { ok: true }; });
     });
   }
 
   function verify(pin, meta) {
     var now = Date.now();
-    return meta.get('lock.lockedUntilISO').then(function (lockedUntil) {
+    return meta.get('lock.fails').then(function (persisted) {
+      _fails = (typeof persisted === 'number' && isFinite(persisted)) ? persisted : 0;
+      return meta.get('lock.lockedUntilISO');
+    }).then(function (lockedUntil) {
       if (lockedUntil) {
         var until = Date.parse(lockedUntil);
         if (!isNaN(until) && until > now) {
@@ -158,13 +186,15 @@
           if (!pepperB64) { return { ok: false }; }
           var iterations = verifier.iterations || ITERATIONS;
           return deriveHashB64(pin, b64ToBytes(verifier.saltB64), b64ToBytes(pepperB64), iterations).then(function (hashB64) {
-            if (hashB64 === verifier.hashB64) {
+            if (constantTimeEqual(hashB64, verifier.hashB64)) {
               _fails = 0;
               return meta.get('lock.role').then(function (role) {
                 _currentRole = role || null;
                 return meta.set('lock.fails', 0).then(function () {
                   return meta.set('lock.lockedUntilISO', null).then(function () {
-                    return { ok: true, role: role };
+                    return meta.set('lock.session', makeSession(role, Date.now())).then(function () {
+                      return { ok: true, role: role };
+                    });
                   });
                 });
               });
@@ -189,7 +219,7 @@
   }
 
   function changePin(oldPin, newPin, meta) {
-    if (!newPin || typeof newPin !== 'string') {
+    if (!newPin || typeof newPin !== 'string' || newPin.length < MIN_PIN_LENGTH) {
       return Promise.resolve({ ok: false, error: 'E_INVALID_PIN' });
     }
     return verify(oldPin, meta).then(function (res) {
@@ -209,17 +239,55 @@
     });
   }
 
+  function currentSession(meta) {
+    return meta.get('lock.session').then(function (s) {
+      if (!s || typeof s !== 'object' || !s.expiresISO) { return null; }
+      var exp = Date.parse(s.expiresISO);
+      if (isNaN(exp) || exp <= Date.now()) { return null; }
+      return { role: s.role, startISO: s.startISO, lastActivityISO: s.lastActivityISO, expiresISO: s.expiresISO };
+    });
+  }
+
+  function touch(meta) {
+    return meta.get('lock.session').then(function (s) {
+      if (!s || typeof s !== 'object' || !s.expiresISO) { return { ok: false }; }
+      var exp = Date.parse(s.expiresISO);
+      if (isNaN(exp) || exp <= Date.now()) { return { ok: false }; }
+      var nowMs = Date.now();
+      var session = {
+        role: s.role,
+        startISO: s.startISO,
+        lastActivityISO: new Date(nowMs).toISOString(),
+        expiresISO: new Date(nowMs + SESSION_MINUTES * 60000).toISOString()
+      };
+      return meta.set('lock.session', session).then(function () {
+        return { ok: true, expiresISO: session.expiresISO };
+      });
+    });
+  }
+
+  function role(meta) {
+    return currentSession(meta).then(function (s) {
+      return s ? s.role : null;
+    });
+  }
+
+  // Deprecated: in-memory only; resets on reload. Use role(meta) instead.
   function currentRole() {
     return _currentRole;
   }
 
   return {
+    MIN_PIN_LENGTH: MIN_PIN_LENGTH,
     isEnabled: isEnabled,
     enable: enable,
     disable: disable,
     verify: verify,
     changePin: changePin,
     currentRole: currentRole,
+    currentSession: currentSession,
+    touch: touch,
+    role: role,
     __setCrypto: function (cryptoWeb) { _crypto = cryptoWeb; }
   };
 });

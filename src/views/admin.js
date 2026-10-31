@@ -14,6 +14,7 @@
 
   function ui() { return root.IW.ui; }
   function lock() { return root.IW.security ? root.IW.security.lock : null; }
+  function permissions() { return root.IW.security ? root.IW.security.permissions : null; }
   function exportImport() { return root.IW.core ? root.IW.core.exportImport : null; }
   function caseFile() { return root.IW.core ? root.IW.core.caseFile : null; }
   function syncQueue() { return root.IW.core ? root.IW.core.syncQueue : null; }
@@ -56,6 +57,17 @@
       var t = ctx.i18n || function (k) { return k; };
       var repos = ctx.repos || {};
       var bus = ctx.bus;
+
+      var guard = (permissions() && typeof permissions().guard === 'function') ? permissions().guard(repos.meta) : null;
+      function requirePerm(action) {
+        return guard ? guard.require(action) : Promise.resolve(true);
+      }
+      function isForbidden(err) {
+        return !!(err && err.code === 'E_FORBIDDEN');
+      }
+      function forbiddenToast(err) {
+        toast(isForbidden(err) ? 'security.forbidden' : 'common.error', isForbidden(err) ? 'warning' : 'critical');
+      }
 
       var view = el('div', { class: 'view view-admin' });
       view.appendChild(el('div', { class: 'page-header' }, el('h1', { text: t('admin.title') })));
@@ -149,6 +161,7 @@
       var pinRepeatInput = el('input', { class: 'input', attrs: { type: 'password', inputmode: 'numeric' } });
       var roleSelect = el('select', { class: 'select' });
       roleSelect.appendChild(el('option', { attrs: { value: 'operator' }, text: t('admin.roles.operator') }));
+      roleSelect.appendChild(el('option', { attrs: { value: 'engineer' }, text: t('admin.roles.engineer') }));
       roleSelect.appendChild(el('option', { attrs: { value: 'admin' }, text: t('admin.roles.admin') }));
       securityCard.appendChild(el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('admin.pin') }), pinInput));
       securityCard.appendChild(el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('admin.pinRepeat') }), pinRepeatInput));
@@ -170,11 +183,15 @@
       // --- Sync -----------------------------------------------------------------------
       var syncCard = sectionCard(t('ingest.queueTitle'), []);
       var syncEndpointInput = el('input', { class: 'input', attrs: { type: 'url', id: 'admin-sync-endpoint', 'aria-label': t('ingest.syncEndpoint') } });
+      var syncTokenInput = el('input', { class: 'input', attrs: { type: 'password', id: 'admin-sync-token', 'aria-label': t('admin.syncToken'), autocomplete: 'off' } });
+      var syncTokenCache = null;
       var syncStatusEl = el('p', { attrs: { role: 'status', 'aria-live': 'polite' } });
       var flushBtn = el('button', { class: 'btn', on: { click: onFlush } }, icon('refresh', 18), el('span', { text: t('ingest.flush') }));
       var deadListEl = el('div', { class: 'stack' });
       syncCard.appendChild(el('div', { class: 'field' },
         el('label', { class: 'field-label', text: t('ingest.syncEndpoint') }), syncEndpointInput));
+      syncCard.appendChild(el('div', { class: 'field' },
+        el('label', { class: 'field-label', text: t('admin.syncToken') }), syncTokenInput));
       syncCard.appendChild(syncStatusEl);
       syncCard.appendChild(el('div', { class: 'row' }, flushBtn));
       syncCard.appendChild(deadListEl);
@@ -205,8 +222,9 @@
       function isLockedOut() {
         return lock().isEnabled(repos.meta).then(function (enabled) {
           if (!enabled) { return false; }
-          var role = lock().currentRole && lock().currentRole();
-          return role !== 'admin';
+          return lock().role(repos.meta).then(function (role) {
+            return role !== 'admin';
+          });
         });
       }
 
@@ -237,20 +255,24 @@
       function onExport() {
         var ei = exportImport();
         if (!ei) { return; }
-        return ei.exportAll(repos).then(function (payload) {
-          var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          var d = new Date();
-          var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-          a.href = url;
-          a.download = 'integritywatch-backup-' + stamp + '.json';
-          a.style.position = 'fixed';
-          a.style.insetInlineStart = '-9999px';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
+        return requirePerm('export').then(function () {
+          return ei.exportAll(repos).then(function (payload) {
+            var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            var d = new Date();
+            var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            a.href = url;
+            a.download = 'integritywatch-backup-' + stamp + '.json';
+            a.style.position = 'fixed';
+            a.style.insetInlineStart = '-9999px';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
         });
       }
 
@@ -275,22 +297,30 @@
         var ei = exportImport();
         var cf = caseFile();
         if (!ei || !cf) { return; }
-        return ei.exportAll(repos).then(function (payload) {
-          var envelope = cf.buildCaseFile(payload.data, { sector: 'midstream' });
-          var blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          var d = new Date();
-          var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-          a.href = url;
-          a.download = 'integritywatch-case-file-' + stamp + '.iwf';
-          a.style.position = 'fixed';
-          a.style.insetInlineStart = '-9999px';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast('caseFile.exported', 'info');
+        return requirePerm('export').then(function () {
+          var actorRoleP = (guard && typeof guard.role === 'function') ? guard.role() : Promise.resolve(null);
+          return actorRoleP.then(function (actorRole) {
+            return ei.exportAll(repos).then(function (payload) {
+              return cf.buildCaseFileV2(payload.data, { sector: 'midstream' }, actorRole).then(function (envelope) {
+                var blob = new Blob([JSON.stringify(envelope, null, 2)], { type: 'application/json' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                var d = new Date();
+                var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+                a.href = url;
+                a.download = 'integritywatch-case-file-' + stamp + '.iwf';
+                a.style.position = 'fixed';
+                a.style.insetInlineStart = '-9999px';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                toast('caseFile.exported', 'info');
+              });
+            });
+          });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
         });
       }
 
@@ -302,17 +332,21 @@
             var cf = caseFile();
             var ei = exportImport();
             if (!cf || !ei) { return; }
-            var result = cf.parseCaseFile(String(reader.result || ''));
-            if (!result.ok) {
-              if (result.error === 'E_BAD_JSON') { toast('caseFile.badJson', 'critical'); }
-              else if (result.error === 'E_BAD_FORMAT') { toast('caseFile.badFormat', 'critical'); }
-              else if (result.error === 'E_VERSION') { toast('caseFile.badVersion', 'critical'); }
-              else if (result.error === 'E_CHECKSUM') { toast('caseFile.badChecksum', 'critical'); }
-              else { toast('common.error', 'critical'); }
-              return;
-            }
-            ei.importAll(repos, { data: result.payload.data }, { mode: 'merge' }).then(function () {
-              toast('caseFile.imported', 'info');
+            var parseP = (typeof cf.parseCaseFileAsync === 'function')
+              ? cf.parseCaseFileAsync(String(reader.result || ''))
+              : Promise.resolve(cf.parseCaseFile(String(reader.result || '')));
+            parseP.then(function (result) {
+              if (!result.ok) {
+                if (result.error === 'E_BAD_JSON') { toast('caseFile.badJson', 'critical'); }
+                else if (result.error === 'E_BAD_FORMAT') { toast('caseFile.badFormat', 'critical'); }
+                else if (result.error === 'E_VERSION') { toast('caseFile.badVersion', 'critical'); }
+                else if (result.error === 'E_CHECKSUM' || result.error === 'E_CHECKSUM_SHA') { toast('caseFile.badChecksum', 'critical'); }
+                else { toast('common.error', 'critical'); }
+                return;
+              }
+              return ei.importAll(repos, { data: result.payload.data }, { mode: 'merge' }).then(function () {
+                toast('caseFile.imported', 'info');
+              });
             });
           };
           reader.onerror = function () { toast('common.error', 'critical'); };
@@ -321,8 +355,7 @@
       }
 
       function onResetDemo() {
-        return isLockedOut().then(function (lockedOut) {
-          if (lockedOut) { toast('admin.roles.admin', 'warning'); return; }
+        return requirePerm('admin').then(function () {
           return ui().confirmDialog({ titleKey: 'admin.resetDemo', bodyKey: 'admin.resetDemoConfirm', danger: true }).then(function (ok) {
             if (!ok) { return; }
             var seed = root.IW.data && root.IW.data.seed;
@@ -331,12 +364,13 @@
               return repos.meta.set('demoLoaded', true);
             }).then(function () { toast('admin.demoLoaded', 'info'); });
           });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
         });
       }
 
       function onClearAll() {
-        return isLockedOut().then(function (lockedOut) {
-          if (lockedOut) { toast('admin.roles.admin', 'warning'); return; }
+        return requirePerm('admin').then(function () {
           var input = el('input', { class: 'input', attrs: { type: 'text' } });
           var note = el('p', { class: 'field-hint', text: t('admin.typeDelete') });
           var body = el('div', { class: 'stack' }, note, input);
@@ -356,13 +390,17 @@
               }
             ]
           });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
         });
       }
 
       function onEnableLock() {
         var pin = pinInput.value;
         var repeat = pinRepeatInput.value;
-        if (pin.length < 4) { toast('admin.wrongPin', 'warning'); return; }
+        var lk = lock();
+        var minPinLen = (lk && typeof lk.MIN_PIN_LENGTH === 'number') ? lk.MIN_PIN_LENGTH : 6;
+        if (pin.length < minPinLen) { toast('admin.wrongPin', 'warning'); return; }
         if (pin !== repeat) { toast('admin.pinMismatch', 'warning'); return; }
         return lock().enable({ pin: pin, role: roleSelect.value }, repos.meta).then(function (res) {
           if (res.ok) { toast('admin.enableLock', 'info'); renderLockStatus(); gateDestructive(); }
@@ -385,9 +423,13 @@
 
       function onDisableLock() {
         askPin('admin.disableLock', 'admin.disableLock', function (pin) {
-          return lock().disable(pin, repos.meta).then(function (res) {
+          return requirePerm('admin').then(function () {
+            return lock().disable(pin, repos.meta);
+          }).then(function (res) {
             if (res.ok) { toast('admin.disableLock', 'info'); renderLockStatus(); gateDestructive(); }
             else { toast('admin.wrongPin', 'critical'); }
+          }).catch(function (err) {
+            if (isForbidden(err)) { forbiddenToast(err); }
           });
         });
       }
@@ -395,9 +437,13 @@
       function onChangePin() {
         askPin('admin.changePin', 'admin.changePin', function (oldPin) {
           askPin('admin.changePin', 'common.save', function (newPin) {
-            return lock().changePin(oldPin, newPin, repos.meta).then(function (res) {
+            return requirePerm('admin').then(function () {
+              return lock().changePin(oldPin, newPin, repos.meta);
+            }).then(function (res) {
               if (res.ok) { toast('admin.changePin', 'info'); }
               else { toast('admin.wrongPin', 'critical'); }
+            }).catch(function (err) {
+              if (isForbidden(err)) { forbiddenToast(err); }
             });
           });
         });
@@ -448,11 +494,17 @@
 
       function refreshSync() {
         var endpointPromise = repos.meta.get('syncEndpoint').catch(function () { return undefined; });
+        var tokenPromise = repos.meta.get('syncToken').catch(function () { return undefined; });
         var listPromise = (repos.mutationQueue && typeof repos.mutationQueue.list === 'function') ? repos.mutationQueue.list() : Promise.resolve([]);
-        return Promise.all([endpointPromise, listPromise]).then(function (vals) {
+        return Promise.all([endpointPromise, tokenPromise, listPromise]).then(function (vals) {
           var endpoint = vals[0];
-          var rows = vals[1] || [];
+          var token = vals[1];
+          var rows = vals[2] || [];
           if (endpoint !== undefined && endpoint !== null) { syncEndpointInput.value = endpoint; }
+          if (token !== undefined && token !== null) { syncTokenInput.value = token; }
+          syncTokenCache = (token !== undefined && token !== null && String(token).length > 0) ? String(token) : null;
+          var sq = syncQueue();
+          if (sq && typeof sq.__setGetToken === 'function') { sq.__setGetToken(function () { return syncTokenCache; }); }
           var pending = 0, dead = 0;
           var deadRows = [];
           rows.forEach(function (r) {
@@ -491,8 +543,27 @@
         });
       }
 
+      function endpointIsSecure(endpoint) {
+        var sq = syncQueue();
+        if (sq && typeof sq.validateEndpoint === 'function') { return sq.validateEndpoint(endpoint); }
+        return true;
+      }
+
       syncEndpointInput.addEventListener('change', function () {
-        repos.meta.set('syncEndpoint', syncEndpointInput.value).catch(function () {});
+        var value = syncEndpointInput.value;
+        if (value && !endpointIsSecure(value)) {
+          toast('admin.syncInsecure', 'warning');
+          return;
+        }
+        repos.meta.set('syncEndpoint', value).catch(function () {});
+      });
+
+      syncTokenInput.addEventListener('change', function () {
+        var value = syncTokenInput.value || '';
+        syncTokenCache = value.length > 0 ? value : null;
+        var sq = syncQueue();
+        if (sq && typeof sq.__setGetToken === 'function') { sq.__setGetToken(function () { return syncTokenCache; }); }
+        repos.meta.set('syncToken', value).catch(function () {});
       });
 
       function renderSw() {

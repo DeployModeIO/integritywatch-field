@@ -44,6 +44,11 @@
   function ui() { return root.IW.ui; }
   function icons() { return root.IW.ui && root.IW.ui.icons; }
   function lockApi() { return root.IW.security && root.IW.security.lock; }
+  function guardApi() { return root.IW.security && root.IW.security.permissions; }
+  function stampRec(meta, rec, existing) {
+    var perm = guardApi();
+    return (perm && typeof perm.stamp === 'function') ? perm.stamp(meta, rec, existing) : Promise.resolve(rec);
+  }
 
   function el(tag, attrs) {
     var u = ui();
@@ -60,9 +65,10 @@
     return document.createTextNode('');
   }
 
-  function isOperatorLocked() {
-    var lock = lockApi();
-    return !!(lock && typeof lock.currentRole === 'function' && lock.currentRole() === 'operator');
+  function isDeleteLocked(meta) {
+    var perm = guardApi();
+    if (!perm || typeof perm.guard !== 'function') { return Promise.resolve(false); }
+    return perm.guard(meta).can('delete').then(function (allowed) { return !allowed; });
   }
 
   function fmtDate(iso) {
@@ -189,6 +195,17 @@
     var navigate = ctx.navigate || function () {};
     var systemId = ctx.params && ctx.params.id;
 
+    var guard = (guardApi() && typeof guardApi().guard === 'function') ? guardApi().guard(repos.meta) : null;
+    function requirePerm(action) {
+      return guard ? guard.require(action) : Promise.resolve(true);
+    }
+    function isForbidden(err) {
+      return !!(err && err.code === 'E_FORBIDDEN');
+    }
+    function forbiddenToast(err) {
+      u.toast(isForbidden(err) ? 'security.forbidden' : 'common.error', { severity: isForbidden(err) ? 'warning' : 'critical' });
+    }
+
     function reload() {
       if (!_session || !_session.active) { return; }
       var id = _session.params && _session.params.id;
@@ -210,9 +227,10 @@
     function drawList() {
       container.textContent = '';
       container.appendChild(loading());
-      Promise.all([repos.pipelineSystems.list()]).then(function (res) {
+      Promise.all([repos.pipelineSystems.list(), isDeleteLocked(repos.meta)]).then(function (res) {
         if (!_session || !_session.active) { return; }
         var systems = res[0] || [];
+        var locked = res[1];
         container.textContent = '';
         var header = el('div', { class: 'page-header' },
           el('h1', { text: t('pipelines.title') }),
@@ -225,16 +243,16 @@
         search.value = _session.search || '';
         search.addEventListener('input', function () {
           _session.search = search.value;
-          renderSystemsTable(systems);
+          renderSystemsTable(systems, locked);
         });
         var searchWrap = el('div', { class: 'field' }, search);
         container.appendChild(searchWrap);
 
         var tableHost = el('div');
         container.appendChild(tableHost);
-        renderSystemsTable(systems);
+        renderSystemsTable(systems, locked);
 
-        function renderSystemsTable(all) {
+        function renderSystemsTable(all, locked) {
           var q = (_session.search || '').trim().toLowerCase();
           var rows = all.filter(function (s) {
             if (!q) { return true; }
@@ -248,7 +266,7 @@
             { key: 'product', labelKey: 'pipelines.product', render: function (v) { return document.createTextNode(t('pipelines.products.' + (v || 'crude'))); } },
             { key: 'dnIn', labelKey: 'pipelines.diameter', align: 'num', render: function (v) { return document.createTextNode(v == null ? '' : fmtNum(v, 2) + ' in'); } },
             { key: 'lengthKm', labelKey: 'pipelines.length', align: 'num', render: function (v) { return document.createTextNode(v == null ? '' : fmtNum(v, 2) + ' ' + t('units.km')); } },
-            { key: 'actions', labelKey: 'common.actions', render: function (v, row) { return systemActions(row); } }
+            { key: 'actions', labelKey: 'common.actions', render: function (v, row) { return systemActions(row, locked); } }
           ];
           tableHost.appendChild(u.table({ columns: columns, rows: rows, captionKey: 'pipelines.systems', emptyKey: 'pipelines.noSystems' }));
         }
@@ -257,8 +275,7 @@
       });
     }
 
-    function systemActions(system) {
-      var locked = isOperatorLocked();
+    function systemActions(system, locked) {
       var editBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openSystemForm(system); } } }, icon('edit', 18));
       var delBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteSystem(system); } } }, icon('trash', 18));
       delBtn.disabled = locked;
@@ -268,16 +285,19 @@
     function deleteSystem(system) {
       u.confirmDialog({ titleKey: 'common.confirm', bodyKey: 'pipelines.deleteSystemConfirm', danger: true }).then(function (ok) {
         if (!ok) { return; }
-        var jobs = [];
-        repos.lineAssets.list().then(function (assets) {
-          (assets || []).forEach(function (a) { if (a.systemId === system.id) { jobs.push(repos.lineAssets.remove(a.id)); } });
-        }).then(function () {
-          return repos.lineInspections.list().then(function (insps) {
-            (insps || []).forEach(function (i) { if (i.systemId === system.id) { jobs.push(repos.lineInspections.remove(i.id)); } });
+        requirePerm('delete').then(function () {
+          var jobs = [];
+          return repos.lineAssets.list().then(function (assets) {
+            (assets || []).forEach(function (a) { if (a.systemId === system.id) { jobs.push(repos.lineAssets.remove(a.id)); } });
+          }).then(function () {
+            return repos.lineInspections.list().then(function (insps) {
+              (insps || []).forEach(function (i) { if (i.systemId === system.id) { jobs.push(repos.lineInspections.remove(i.id)); } });
+            });
+          }).then(function () {
+            return Promise.all(jobs).then(function () { return repos.pipelineSystems.remove(system.id); });
           });
-        }).then(function () {
-          return Promise.all(jobs).then(function () { return repos.pipelineSystems.remove(system.id); });
         }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
           if (typeof console !== 'undefined' && typeof console.error === 'function') { console.error(err); }
         });
       });
@@ -293,13 +313,15 @@
         repos.pipelineSystems.get(systemId),
         repos.lineAssets.list(),
         repos.lineInspections.list(),
-        repos.iliAnomalies.list()
+        repos.iliAnomalies.list(),
+        isDeleteLocked(repos.meta)
       ]).then(function (res) {
         if (!_session || !_session.active) { return; }
         var system = res[0];
         var allAssets = res[1] || [];
         var allInspections = res[2] || [];
         var allAnomalies = res[3] || [];
+        var locked = res[4];
         if (!system) {
           container.textContent = '';
           container.appendChild(el('p', { class: 'empty-state', text: t('pipelines.noSystems') }));
@@ -313,15 +335,14 @@
         });
         var anomalies = allAnomalies.filter(function (a) { return a.systemId === system.id; });
         container.textContent = '';
-        renderDetail(system, assets, inspections, anomalies);
+        renderDetail(system, assets, inspections, anomalies, locked);
       }).catch(function (err) {
         if (_session && _session.active) { container.textContent = ''; container.appendChild(banner(err)); }
       });
     }
 
-    function renderDetail(system, assets, inspections, anomalies) {
+    function renderDetail(system, assets, inspections, anomalies, locked) {
       var nowMs = Date.now();
-      var locked = isOperatorLocked();
 
       var backBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { navigate('#/pipelines'); } } }, icon('chevron-right', 18), el('span', { text: t('common.back') }));
       var editSysBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { openSystemForm(system); } } }, icon('edit', 18), el('span', { text: t('common.edit') }));
@@ -381,7 +402,7 @@
           el('h2', { class: 'section-title', text: t('pipelines.lineAssets') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(system, null, assets); } } }, icon('plus', 18), el('span', { text: t('pipelines.newLineAsset') }))),
         assetsHost));
-      renderAssetsTable(system, assets, inspections, assetsHost);
+      renderAssetsTable(system, assets, inspections, assetsHost, locked);
 
       // Certificates expiring soon
       var expiring = assets.filter(function (a) {
@@ -402,7 +423,7 @@
           el('h2', { class: 'section-title', text: t('pipelines.inspections') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openInspectionForm(system, assets, null); } } }, icon('plus', 18), el('span', { text: t('pipelines.newInspection') }))),
         inspHost));
-      renderInspections(system, assets, inspections, inspHost);
+      renderInspections(system, assets, inspections, inspHost, locked);
 
       // Campaigns
       var campaigns = groupCampaigns(inspections);
@@ -649,12 +670,15 @@
 
           var ok = 0;
           var jobs = imported.map(function (rec) { ok++; return repos.iliAnomalies.save(rec); });
-          Promise.all(jobs).then(function () {
+          requirePerm('assetWrite').then(function () {
+            return Promise.all(jobs);
+          }).then(function () {
             if (u && typeof u.toast === 'function') {
               var msg = t('pipelines.imported').replace('{{n}}', String(imported.length)).replace('{{ok}}', String(ok));
               u.toast(msg, { severity: 'info' });
             }
-          }).catch(function () {
+          }).catch(function (err) {
+            if (isForbidden(err)) { forbiddenToast(err); return; }
             if (u && typeof u.toast === 'function') { u.toast(t('common.error'), { severity: 'critical' }); }
           });
         };
@@ -698,7 +722,7 @@
         el('span', { class: 'pill', text: t('common.filter') }), typeSel, sevSel);
     }
 
-    function renderAssetsTable(system, assets, inspections, host) {
+    function renderAssetsTable(system, assets, inspections, host, locked) {
       var sorted = assets.slice().sort(function (a, b) {
         var ka = (typeof a.stationKm === 'number') ? a.stationKm : Number(a.stationKm) || 0;
         var kb = (typeof b.stationKm === 'number') ? b.stationKm : Number(b.stationKm) || 0;
@@ -710,7 +734,7 @@
       tbl.appendChild(el('caption', { text: t('pipelines.lineAssets') }));
       var thead = el('thead');
       var htr = el('tr');
-      var thKm = el('th', { attrs: { scope: 'col' } }, el('button', { class: 'sortable-th', text: t('pipelines.stationKm') + (_session.sortDir === 'asc' ? ' ↑' : ' ↓'), on: { click: function () { _session.sortDir = _session.sortDir === 'asc' ? 'desc' : 'asc'; renderAssetsTable(system, assets, inspections, host); } } }));
+      var thKm = el('th', { attrs: { scope: 'col' } }, el('button', { class: 'sortable-th', text: t('pipelines.stationKm') + (_session.sortDir === 'asc' ? ' ↑' : ' ↓'), on: { click: function () { _session.sortDir = _session.sortDir === 'asc' ? 'desc' : 'asc'; renderAssetsTable(system, assets, inspections, host, locked); } } }));
       htr.appendChild(thKm);
       htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetCode') }));
       htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetName') }));
@@ -744,7 +768,7 @@
           tr.appendChild(el('td', null, certBadge(a.certExpiryISO, t, Date.now())));
           var actTd = el('td', null, el('div', { class: 'row' },
             el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(system, a, assets); } } }, icon('edit', 18)),
-            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(a); } } }, icon('trash', 18)); b.disabled = isOperatorLocked(); return b; })()));
+            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(a); } } }, icon('trash', 18)); b.disabled = locked; return b; })()));
           tr.appendChild(actTd);
           tbody.appendChild(tr);
         });
@@ -754,7 +778,7 @@
       host.appendChild(wrap);
     }
 
-    function renderInspections(system, assets, inspections, host) {
+    function renderInspections(system, assets, inspections, host, locked) {
       var sorted = inspections.slice().sort(function (a, b) { return (a.date < b.date) ? 1 : -1; });
       host.textContent = '';
       var wrap = el('div', { class: 'table-wrap' });
@@ -784,7 +808,7 @@
           tr.appendChild(el('td', { text: i.findings || '' }));
           tr.appendChild(el('td', null, el('div', { class: 'row' },
             el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openInspectionForm(system, assets, i); } } }, icon('edit', 18)),
-            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteInspection(i); } } }, icon('trash', 18)); b.disabled = isOperatorLocked(); return b; })())));
+            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteInspection(i); } } }, icon('trash', 18)); b.disabled = locked; return b; })())));
           tbody.appendChild(tr);
         });
       }
@@ -795,13 +819,25 @@
 
     function deleteAsset(asset) {
       u.confirmDialog({ titleKey: 'common.confirm', bodyKey: 'pipelines.deleteLineAssetConfirm', danger: true }).then(function (ok) {
-        if (ok) { repos.lineAssets.remove(asset.id).catch(function (err) { consoleError(err); }); }
+        if (!ok) { return; }
+        requirePerm('delete').then(function () {
+          return repos.lineAssets.remove(asset.id);
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
       });
     }
 
     function deleteInspection(insp) {
       u.confirmDialog({ titleKey: 'common.confirm', bodyKey: 'pipelines.deleteInspectionConfirm', danger: true }).then(function (ok) {
-        if (ok) { repos.lineInspections.remove(insp.id).catch(function (err) { consoleError(err); }); }
+        if (!ok) { return; }
+        requirePerm('delete').then(function () {
+          return repos.lineInspections.remove(insp.id);
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
       });
     }
 
@@ -857,7 +893,14 @@
                 opPressureMpa: v.opPressureMpa != null && v.opPressureMpa !== '' ? Number(v.opPressureMpa) : undefined,
                 notes: v.notes || undefined
               };
-              repos.pipelineSystems.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
+              requirePerm('assetWrite').then(function () {
+                return stampRec(repos.meta, rec, system);
+              }).then(function (stamped) {
+                return repos.pipelineSystems.save(stamped);
+              }).then(function () { dlg.close(); }).catch(function (err) {
+                if (isForbidden(err)) { forbiddenToast(err); return; }
+                consoleError(err); u.toast('common.error', { severity: 'critical' });
+              });
               return false;
             }
           }
@@ -904,7 +947,14 @@
                 certExpiryISO: v.certExpiryISO ? fromDateInput(v.certExpiryISO) : undefined,
                 notes: v.notes || undefined
               };
-              repos.lineAssets.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
+              requirePerm('assetWrite').then(function () {
+                return stampRec(repos.meta, rec, asset);
+              }).then(function (stamped) {
+                return repos.lineAssets.save(stamped);
+              }).then(function () { dlg.close(); }).catch(function (err) {
+                if (isForbidden(err)) { forbiddenToast(err); return; }
+                consoleError(err); u.toast('common.error', { severity: 'critical' });
+              });
               return false;
             }
           }
@@ -1087,7 +1137,14 @@
               if (sigPad && sigPad.isEmpty() && isEdit && !inspection.signature) { rec.signature = undefined; }
               if (sketchPad && sketchPad.isEmpty() && isEdit && !inspection.sketch) { rec.sketch = undefined; }
 
-              repos.lineInspections.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
+              requirePerm('assetWrite').then(function () {
+                return stampRec(repos.meta, rec, inspection);
+              }).then(function (stamped) {
+                return repos.lineInspections.save(stamped);
+              }).then(function () { dlg.close(); }).catch(function (err) {
+                if (isForbidden(err)) { forbiddenToast(err); return; }
+                consoleError(err); u.toast('common.error', { severity: 'critical' });
+              });
               return false;
             }
           }

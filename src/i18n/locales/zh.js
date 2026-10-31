@@ -688,7 +688,9 @@
       flush: "清空队列",
       importDone: "导入完成",
       jsonResult: "已创建 {{created}}，已更新 {{updated}}，已删除 {{deleted}}",
-      deadCount: "失效操作"
+      deadCount: "失效操作",
+      tooLarge: "文件过大（上限 {{limit}} MB）",
+      tooManyRows: "行数过多（上限 {{limit}}）"
     },
     rules: {
       title: "规则",
@@ -869,7 +871,8 @@
       role: "角色",
       roles: {
         admin: "管理员",
-        operator: "操作员"
+        operator: "操作员",
+        engineer: "工程师"
       },
       unlock: "解锁",
       wrongPin: "PIN 码错误",
@@ -881,8 +884,15 @@
       demoLoaded: "演示数据已加载",
       typeDelete: "输入 DELETE 以确认",
       forceUpdate: "强制更新",
-      forceUpdateHint: "清除离线缓存并重新加载应用。更新未出现时使用。"
+      forceUpdateHint: "清除离线缓存并重新加载应用。更新未出现时使用。",
+      syncInsecure: "已拒绝不安全的同步端点（请使用 HTTPS，或仅在 localhost 使用 HTTP）",
+      syncToken: "同步令牌（Bearer）"
     },
+
+    security: {
+      forbidden: "您没有执行此操作的权限"
+    },
+
     a11y: {
       skipLink: "跳到内容",
       openNav: "打开导航",

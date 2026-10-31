@@ -67,6 +67,11 @@
 
   function ui() { return root.IW.ui; }
   function lockApi() { return root.IW.security && root.IW.security.lock; }
+  function guardApi() { return root.IW.security && root.IW.security.permissions; }
+  function stampRec(meta, rec, existing) {
+    var perm = guardApi();
+    return (perm && typeof perm.stamp === 'function') ? perm.stamp(meta, rec, existing) : Promise.resolve(rec);
+  }
   function calcApm() { return root.IW.calc && root.IW.calc.apm; }
   function calcReliability() { return root.IW.calc && root.IW.calc.reliability; }
 
@@ -83,11 +88,6 @@
       return (n && n.nodeType) ? n : document.createTextNode('');
     }
     return document.createTextNode('');
-  }
-
-  function isOperatorLocked() {
-    var lock = lockApi();
-    return !!(lock && typeof lock.currentRole === 'function' && lock.currentRole() === 'operator');
   }
 
   function fmtDate(iso) {
@@ -332,6 +332,21 @@
     var repos = ctx.repos;
     var bus = ctx.bus;
     var navigate = ctx.navigate || function () {};
+
+    var guard = (guardApi() && typeof guardApi().guard === 'function') ? guardApi().guard(repos.meta) : null;
+    function requirePerm(action) {
+      return guard ? guard.require(action) : Promise.resolve(true);
+    }
+    function isForbidden(err) {
+      return !!(err && err.code === 'E_FORBIDDEN');
+    }
+    function forbiddenToast(err) {
+      u.toast(isForbidden(err) ? 'security.forbidden' : 'common.error', { severity: isForbidden(err) ? 'warning' : 'critical' });
+    }
+
+    function isDeleteLocked() {
+      return guard.can('delete').then(function (allowed) { return !allowed; });
+    }
     var assetId = ctx.params && ctx.params.id;
 
     function consoleError(err) {
@@ -357,11 +372,12 @@
     function drawList() {
       container.textContent = '';
       container.appendChild(loading());
-      Promise.all([repos.apmAssets.list(), repos.apmEvents.list(), repos.meta.get('availabilityThresholdPct')]).then(function (res) {
+      Promise.all([repos.apmAssets.list(), repos.apmEvents.list(), repos.meta.get('availabilityThresholdPct'), isDeleteLocked()]).then(function (res) {
         if (!_session || !_session.active) { return; }
         var assets = res[0] || [];
         var events = res[1] || [];
         var threshold = (typeof res[2] === 'number') ? res[2] : 90;
+        var locked = res[3];
         container.textContent = '';
         container.appendChild(el('div', { class: 'page-header' },
           el('h1', { text: t('apm.title') }),
@@ -373,7 +389,7 @@
 
         function panelFor(sector) {
           var list = sector === 'all' ? assets : assets.filter(function (a) { return a.sector === sector; });
-          return buildAssetTable(list, byAsset, threshold);
+          return buildAssetTable(list, byAsset, threshold, locked);
         }
 
         var tabs = [
@@ -418,7 +434,7 @@
       return document.createTextNode(label);
     }
 
-    function buildAssetTable(list, byAsset, threshold) {
+    function buildAssetTable(list, byAsset, threshold, locked) {
       var nowISO = new Date().toISOString();
       var columns = [
         { key: 'code', labelKey: 'apm.assetCode', render: function (v, row) { return el('button', { class: 'link', text: v, on: { click: function () { navigate('#/apm/' + row.id); } } }); } },
@@ -434,13 +450,12 @@
             icon(healthIcon(lvl), 18),
             el('span', { text: t('apm.health.' + lvl) }));
         } },
-        { key: 'actions', labelKey: 'common.actions', render: function (v, row) { return assetActions(row); } }
+        { key: 'actions', labelKey: 'common.actions', render: function (v, row) { return assetActions(row, locked); } }
       ];
       return u.table({ columns: columns, rows: list, captionKey: 'apm.assetsBySector', emptyKey: 'apm.noAssets' });
     }
 
-    function assetActions(asset) {
-      var locked = isOperatorLocked();
+    function assetActions(asset, locked) {
       var editBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(asset); } } }, icon('edit', 18));
       var delBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(asset); } } }, icon('trash', 18));
       delBtn.disabled = locked;
@@ -450,10 +465,15 @@
     function deleteAsset(asset) {
       u.confirmDialog({ titleKey: 'common.confirm', bodyKey: 'apm.deleteAssetConfirm', danger: true }).then(function (ok) {
         if (!ok) { return; }
-        repos.apmEvents.list().then(function (events) {
-          var jobs = (events || []).filter(function (e) { return e.assetId === asset.id; }).map(function (e) { return repos.apmEvents.remove(e.id); });
-          return Promise.all(jobs).then(function () { return repos.apmAssets.remove(asset.id); });
-        }).catch(consoleError);
+        requirePerm('delete').then(function () {
+          return repos.apmEvents.list().then(function (events) {
+            var jobs = (events || []).filter(function (e) { return e.assetId === asset.id; }).map(function (e) { return repos.apmEvents.remove(e.id); });
+            return Promise.all(jobs).then(function () { return repos.apmAssets.remove(asset.id); });
+          });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
       });
     }
 
@@ -462,12 +482,13 @@
     function drawDetail(assetId) {
       container.textContent = '';
       container.appendChild(loading());
-      Promise.all([repos.apmAssets.get(assetId), repos.apmEvents.list(), repos.recommendations.list(), repos.meta.get('availabilityThresholdPct')]).then(function (res) {
+      Promise.all([repos.apmAssets.get(assetId), repos.apmEvents.list(), repos.recommendations.list(), repos.meta.get('availabilityThresholdPct'), isDeleteLocked()]).then(function (res) {
         if (!_session || !_session.active) { return; }
         var asset = res[0];
         var allEvents = res[1] || [];
         var allRecs = res[2] || [];
         var threshold = (typeof res[3] === 'number') ? res[3] : 90;
+        var locked = res[4];
         if (!asset) {
           container.textContent = '';
           container.appendChild(el('p', { class: 'empty-state', text: t('apm.noAssets') }));
@@ -476,14 +497,13 @@
         var events = allEvents.filter(function (e) { return e.assetId === asset.id; });
         var recs = allRecs.filter(function (r) { return r.entityStore === 'apmAssets' && r.entityId === asset.id && r.status !== 'resolved'; });
         container.textContent = '';
-        renderDetail(asset, events, recs, threshold);
+        renderDetail(asset, events, recs, threshold, locked);
       }).catch(function (err) {
         if (_session && _session.active) { container.textContent = ''; container.appendChild(banner(err)); }
       });
     }
 
-    function renderDetail(asset, events, recs, threshold) {
-      var locked = isOperatorLocked();
+    function renderDetail(asset, events, recs, threshold, locked) {
       var backBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { navigate('#/apm'); } } }, icon('chevron-right', 18), el('span', { text: t('common.back') }));
       var editBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { openAssetForm(asset); } } }, icon('edit', 18), el('span', { text: t('common.edit') }));
       var delBtn = el('button', { class: 'btn btn-ghost', on: { click: function () { deleteAsset(asset); } } }, icon('trash', 18), el('span', { text: t('common.delete') }));
@@ -543,7 +563,7 @@
           el('h2', { class: 'section-title', text: t('apm.events') }),
           el('button', { class: 'btn btn-primary', on: { click: function () { openEventForm(asset); } } }, icon('plus', 18), el('span', { text: t('apm.newEvent') }))),
         eventsHost));
-      renderEvents(events, eventsHost);
+      renderEvents(events, eventsHost, locked);
 
       // Open recommendations
       container.appendChild(el('section', { class: 'card' },
@@ -705,7 +725,14 @@
         var rec = copyRec(asset);
         rec.rbi = rec.rbi || {};
         rec.rbi.nextInspectionISO = newNext;
-        repos.apmAssets.save(rec).then(function () { u.toast('apm.reprogrammed', { severity: 'info' }); }).catch(consoleError);
+        requirePerm('assetWrite').then(function () {
+          return stampRec(repos.meta, rec, asset);
+        }).then(function (stamped) {
+          return repos.apmAssets.save(stamped);
+        }).then(function () { u.toast('apm.reprogrammed', { severity: 'info' }); }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
       } } });
       box.appendChild(reprogram);
       return el('section', { class: 'card' },
@@ -721,7 +748,7 @@
       return out;
     }
 
-    function renderEvents(events, host) {
+    function renderEvents(events, host, locked) {
       var sorted = events.slice().sort(function (a, b) { return (a.start < b.start) ? 1 : -1; });
       host.textContent = '';
       var columns = [
@@ -732,7 +759,7 @@
         { key: 'workOrderRef', labelKey: 'apm.workOrderRef', render: function (v) { return document.createTextNode(v || ''); } },
         { key: 'actions', labelKey: 'common.actions', render: function (v, row) {
           var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteEvent(row); } } }, icon('trash', 18));
-          b.disabled = isOperatorLocked();
+          b.disabled = locked;
           return b;
         } }
       ];
@@ -741,7 +768,13 @@
 
     function deleteEvent(ev) {
       u.confirmDialog({ titleKey: 'common.confirm', bodyKey: 'apm.deleteEventConfirm', danger: true }).then(function (ok) {
-        if (ok) { repos.apmEvents.remove(ev.id).catch(consoleError); }
+        if (!ok) { return; }
+        requirePerm('delete').then(function () {
+          return repos.apmEvents.remove(ev.id);
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
       });
     }
 
@@ -866,7 +899,14 @@
                 rec.rbi.band = r.band;
                 rec.rbi.score = r.score;
               }
-              repos.apmAssets.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
+              requirePerm('assetWrite').then(function () {
+                return stampRec(repos.meta, rec, asset);
+              }).then(function (stamped) {
+                return repos.apmAssets.save(stamped);
+              }).then(function () { dlg.close(); }).catch(function (err) {
+                if (isForbidden(err)) { forbiddenToast(err); return; }
+                consoleError(err); u.toast('common.error', { severity: 'critical' });
+              });
               return false;
             }
           }
@@ -915,7 +955,14 @@
                 description: v.description || undefined,
                 workOrderRef: v.workOrderRef || undefined
               };
-              repos.apmEvents.save(rec).then(function () { dlg.close(); }).catch(function (err) { consoleError(err); u.toast('common.error', { severity: 'critical' }); });
+              requirePerm('assetWrite').then(function () {
+                return stampRec(repos.meta, rec, null);
+              }).then(function (stamped) {
+                return repos.apmEvents.save(stamped);
+              }).then(function () { dlg.close(); }).catch(function (err) {
+                if (isForbidden(err)) { forbiddenToast(err); return; }
+                consoleError(err); u.toast('common.error', { severity: 'critical' });
+              });
               return false;
             }
           }

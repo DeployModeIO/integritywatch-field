@@ -688,7 +688,9 @@
       flush: "تفريغ قائمة الانتظار",
       importDone: "اكتمل الاستيراد",
       jsonResult: "أُنشئ {{created}}، حُدّث {{updated}}، حُذف {{deleted}}",
-      deadCount: "عمليات ميتة"
+      deadCount: "عمليات ميتة",
+      tooLarge: "الملف كبير جدًا (الحد {{limit}} ميجابايت)",
+      tooManyRows: "عدد الصفوف كبير جدًا (الحد {{limit}})"
     },
     rules: {
       title: "القواعد",
@@ -869,7 +871,8 @@
       role: "الدور",
       roles: {
         admin: "مدير",
-        operator: "مشغّل"
+        operator: "مشغّل",
+        engineer: "مهندس"
       },
       unlock: "فتح القفل",
       wrongPin: "رمز غير صحيح",
@@ -881,8 +884,15 @@
       demoLoaded: "تم تحميل البيانات التجريبية",
       typeDelete: "اكتب DELETE للتأكيد",
       forceUpdate: "فرض التحديث",
-      forceUpdateHint: "يمسح ذاكرة التخزين المؤقت ويُعيد تحميل التطبيق. استخدمه عند عدم ظهور تحديث."
+      forceUpdateHint: "يمسح ذاكرة التخزين المؤقت ويُعيد تحميل التطبيق. استخدمه عند عدم ظهور تحديث.",
+      syncInsecure: "نقطة مزامنة غير آمنة مرفوضة (استخدم HTTPS أو HTTP على localhost فقط)",
+      syncToken: "رمز المزامنة (Bearer)"
     },
+
+    security: {
+      forbidden: "ليست لديك صلاحية لتنفيذ هذا الإجراء"
+    },
+
     a11y: {
       skipLink: "الانتقال إلى المحتوى",
       openNav: "فتح التنقل",

@@ -24,3 +24,5 @@ promo/out/.fieldtest/
 promo/out/frame_*.jpg
 promo/out/*-nosubs.mp4
 promo/out/.uivideo/
+promo/out/.opsvideo/
+promo/out/ops_*.jpg

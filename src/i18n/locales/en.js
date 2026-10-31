@@ -372,6 +372,8 @@ imported: "Imported {{n}} anomalies ({{ok}} assessed)",
       fileName: 'File', flush: 'Flush queue', importDone: 'Import complete',
       jsonResult: 'Created {{created}}, updated {{updated}}, deleted {{deleted}}',
       deadCount: 'Dead operations',
+      tooLarge: 'File too large (limit {{limit}} MB)',
+      tooManyRows: 'Too many rows (limit {{limit}})',
       canonical: {
         mpCode: 'Monitoring point', date: 'Date', crMpy: 'Corrosion rate (mpy)',
         wiMg: 'Initial weight (mg)', wfMg: 'Final weight (mg)', areaIn2: 'Area (in²)', days: 'Days',
@@ -479,7 +481,13 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       swStatus: 'Service worker', offlineReady: 'Ready for offline use', standardsRef: 'Referenced standards',
       demoLoaded: 'Demo data loaded', typeDelete: 'Type DELETE to confirm',
       forceUpdate: 'Force update', forceUpdateHint: 'Clears the offline cache and reloads the app. Use when an update does not appear.',
-      roles: { admin: 'Admin', operator: 'Operator' }
+      syncInsecure: 'Insecure sync endpoint rejected (use HTTPS, or HTTP on localhost only)',
+      syncToken: 'Sync token (Bearer)',
+      roles: { admin: 'Admin', operator: 'Operator', engineer: 'Engineer' }
+    },
+
+    security: {
+      forbidden: 'You do not have permission for this action'
     },
 
     a11y: {

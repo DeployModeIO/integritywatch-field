@@ -10,6 +10,11 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
+  var MAX_CSV_BYTES = 2000000;
+  var MAX_JSON_BYTES = 5000000;
+  var MAX_WITSML_BYTES = 5000000;
+  var MAX_CSV_ROWS = 20000;
+
   var CANONICAL_FIELDS = ['mpCode', 'date', 'crMpy', 'wiMg', 'wfMg', 'areaIn2', 'days', 'inhibitorResidualPpm', 'tempC', 'bswPct', 'category', 'note'];
 
   function ui() { return root.IW.ui; }
@@ -17,6 +22,8 @@
   function witsml() { return root.IW.ingest ? root.IW.ingest.witsmlLite : null; }
   function exportImport() { return root.IW.core ? root.IW.core.exportImport : null; }
   function syncQueue() { return root.IW.core ? root.IW.core.syncQueue : null; }
+  function caseFile() { return root.IW.core ? root.IW.core.caseFile : null; }
+  function permissions() { return root.IW.security ? root.IW.security.permissions : null; }
 
   function el(tag, attrs) {
     var u = ui();
@@ -67,6 +74,17 @@
       var repos = ctx.repos || {};
       var bus = ctx.bus;
       var i18n = root.IW.i18n;
+
+      var guard = (permissions() && typeof permissions().guard === 'function') ? permissions().guard(repos.meta) : null;
+      function requirePerm(action) {
+        return guard ? guard.require(action) : Promise.resolve(true);
+      }
+      function isForbidden(err) {
+        return !!(err && err.code === 'E_FORBIDDEN');
+      }
+      function forbiddenToast(err) {
+        ui().toast(isForbidden(err) ? 'security.forbidden' : 'common.error', { severity: isForbidden(err) ? 'warning' : 'critical' });
+      }
 
       function fmtDate(iso) { return (i18n && i18n.formatDate) ? i18n.formatDate(iso, { dateStyle: 'short', timeStyle: 'short' }) : iso; }
       function fmtNum(v, dec) { return (i18n && i18n.formatNumber) ? i18n.formatNumber(v, { maximumFractionDigits: dec === undefined ? 2 : dec }) : String(v); }
@@ -145,12 +163,20 @@
       }
 
       function handleCsvFile(file) {
+        if (file && typeof file.size === 'number' && file.size > MAX_CSV_BYTES) {
+          ui().toast(t('ingest.tooLarge', { limit: String(MAX_CSV_BYTES / 1000000) }), { severity: 'critical' });
+          return;
+        }
         readFileAsText(file).then(function (text) {
           var c = csv();
           if (!c) { return; }
           csvState.text = text;
           csvState.delimiter = c.detectDelimiter(text);
           var parsed = c.parse(text, { delimiter: csvState.delimiter });
+          if (parsed && parsed.rows && parsed.rows.length > MAX_CSV_ROWS) {
+            ui().toast(t('ingest.tooManyRows', { limit: String(MAX_CSV_ROWS) }), { severity: 'critical' });
+            return;
+          }
           csvState.headers = parsed.headers;
           csvState.rows = parsed.rows;
           var mapped = c.mapColumns(parsed.headers);
@@ -348,7 +374,9 @@
         };
         writes.push(repos.importLog.save(log));
 
-        return Promise.all(writes).then(function () {
+        return requirePerm('assetWrite').then(function () {
+          return Promise.all(writes);
+        }).then(function () {
           var region = view.querySelector('.csv-result');
           if (region) {
             region.appendChild(el('p', { class: 'import-done', attrs: { role: 'status' }, text: t('ingest.importDone') }));
@@ -357,6 +385,7 @@
           refreshQueueStatus();
           refreshHistory();
         }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
           ui().toast(t('common.error') + ': ' + (err && err.message ? err.message : err), { severity: 'critical' });
         });
       }
@@ -379,6 +408,10 @@
       }
 
       function handleWitsmlFile(file) {
+        if (file && typeof file.size === 'number' && file.size > MAX_WITSML_BYTES) {
+          ui().toast(t('ingest.tooLarge', { limit: String(MAX_WITSML_BYTES / 1000000) }), { severity: 'critical' });
+          return;
+        }
         readFileAsText(file).then(function (text) {
           var w = witsml();
           if (!w) { return; }
@@ -475,10 +508,13 @@
         if (readings.length) { writes.push(repos.readings.saveAll(readings)); }
         writes.push(repos.importLog.save(log));
 
-        return Promise.all(writes).then(function () {
+        return requirePerm('assetWrite').then(function () {
+          return Promise.all(writes);
+        }).then(function () {
           ui().toast('ingest.importDone', { severity: 'info' });
           refreshHistory();
         }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
           ui().toast(t('common.error') + ': ' + (err && err.message ? err.message : err), { severity: 'critical' });
         });
       }
@@ -508,32 +544,58 @@
       function onExport() {
         var ei = exportImport();
         if (!ei) { return; }
-        return ei.exportAll(repos).then(function (payload) {
-          var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          var d = new Date();
-          var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-          a.href = url;
-          a.download = 'integritywatch-backup-' + stamp + '.json';
-          a.style.position = 'fixed';
-          a.style.insetInlineStart = '-9999px';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
+        return requirePerm('export').then(function () {
+          return ei.exportAll(repos).then(function (payload) {
+            var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            var d = new Date();
+            var stamp = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+            a.href = url;
+            a.download = 'integritywatch-backup-' + stamp + '.json';
+            a.style.position = 'fixed';
+            a.style.insetInlineStart = '-9999px';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
         });
       }
 
       function onJsonImport(file, mode) {
+        if (file && typeof file.size === 'number' && file.size > MAX_JSON_BYTES) {
+          ui().toast(t('ingest.tooLarge', { limit: String(MAX_JSON_BYTES / 1000000) }), { severity: 'critical' });
+          return Promise.resolve(null);
+        }
+        var permit = function () {
+          return requirePerm('assetWrite').then(function () {
+            if (mode === 'replace') { return requirePerm('delete'); }
+            return true;
+          });
+        };
         var proceed = function () {
-          return readFileAsText(file).then(function (text) {
+          return permit().then(function () {
+            return readFileAsText(file).then(function (text) {
             var payload;
             try { payload = JSON.parse(text); } catch (e) {
               return Promise.resolve({ errors: [{ code: 'E_PARSE', message: 'invalid json' }] });
             }
             var ei = exportImport();
             if (!ei) { return Promise.resolve({ errors: [] }); }
+            if (payload && typeof payload === 'object' && payload.format === 'iwf') {
+              var cf = caseFile();
+              if (!cf) { return Promise.resolve({ errors: [{ code: 'E_CHECKSUM', message: 'case file module unavailable' }] }); }
+              var parseP = (typeof cf.parseCaseFileAsync === 'function')
+                ? cf.parseCaseFileAsync(text)
+                : Promise.resolve(cf.parseCaseFile(text));
+              return parseP.then(function (res) {
+                if (!res.ok) { return { errors: [{ code: res.error, message: res.error }] }; }
+                return ei.importAll(repos, { data: res.payload.data }, { mode: mode });
+              });
+            }
             return ei.importAll(repos, payload, { mode: mode });
           }).then(function (summary) {
             var region = view.querySelector('.json-result');
@@ -543,6 +605,11 @@
             }
             refreshHistory();
             return summary;
+          });
+          }).catch(function (err) {
+            if (isForbidden(err)) { forbiddenToast(err); return null; }
+            ui().toast(t('common.error') + ': ' + (err && err.message ? err.message : err), { severity: 'critical' });
+            return null;
           });
         };
 

@@ -688,7 +688,9 @@
       flush: "Vider la file",
       importDone: "Import terminé",
       jsonResult: "Créés {{created}}, mis à jour {{updated}}, supprimés {{deleted}}",
-      deadCount: "Opérations mortes"
+      deadCount: "Opérations mortes",
+      tooLarge: "Fichier trop volumineux (limite {{limit}} Mo)",
+      tooManyRows: "Trop de lignes (limite {{limit}})",
     },
     rules: {
       title: "Règles",
@@ -869,7 +871,8 @@
       role: "Rôle",
       roles: {
         admin: "Administrateur",
-        operator: "Opérateur"
+        operator: "Opérateur",
+        engineer: "Ingénieur"
       },
       unlock: "Déverrouiller",
       wrongPin: "Code incorrect",
@@ -881,8 +884,15 @@
       demoLoaded: "Données de démonstration chargées",
       typeDelete: "Tapez DELETE pour confirmer",
       forceUpdate: "Forcer la mise à jour",
-      forceUpdateHint: "Efface le cache hors ligne et recharge l'application. À utiliser lorsqu'une mise à jour n'apparaît pas."
+      forceUpdateHint: "Efface le cache hors ligne et recharge l'application. À utiliser lorsqu'une mise à jour n'apparaît pas.",
+      syncInsecure: "Point de synchronisation non sécurisé rejeté (utilisez HTTPS, ou HTTP uniquement sur localhost)",
+      syncToken: "Jeton de synchronisation (Bearer)"
     },
+
+    security: {
+      forbidden: "Vous n'avez pas la permission d'effectuer cette action"
+    },
+
     a11y: {
       skipLink: "Aller au contenu",
       openNav: "Ouvrir la navigation",
