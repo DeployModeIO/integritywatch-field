@@ -1,0 +1,63 @@
+{
+  "title": "Lista de chequeo diaria — operador de oleoducto",
+  "turno": "06:00",
+  "items": [
+    {
+      "id": "CL-01",
+      "tarea": "Presión de succión estación 1",
+      "referencia": "≥ 1,8 bar",
+      "unidad": "bar"
+    },
+    {
+      "id": "CL-02",
+      "tarea": "Presión de descarga estación 1",
+      "referencia": "58 – 64 bar",
+      "unidad": "bar"
+    },
+    {
+      "id": "CL-03",
+      "tarea": "Presión de línea km 40",
+      "referencia": "40 – 44 bar",
+      "unidad": "bar"
+    },
+    {
+      "id": "CL-04",
+      "tarea": "Presión línea LPG (terminal)",
+      "referencia": "15 – 17 bar",
+      "unidad": "bar"
+    },
+    {
+      "id": "CL-05",
+      "tarea": "Vibración bombas multietapa P-101/P-201",
+      "referencia": "≤ 4,5 mm/s RMS",
+      "unidad": "mm/s"
+    },
+    {
+      "id": "CL-06",
+      "tarea": "Temperatura de sello mecánico",
+      "referencia": "≤ 80 °C",
+      "unidad": "°C"
+    },
+    {
+      "id": "CL-07",
+      "tarea": "Inspección visual de fugas en múltiples y bridas",
+      "referencia": "Sin fugas"
+    },
+    {
+      "id": "CL-08",
+      "tarea": "Nivel y estado de esfera LPG",
+      "referencia": "Nivel 40–70 %"
+    },
+    {
+      "id": "CL-09",
+      "tarea": "Corrosión: cupones / probes de línea",
+      "referencia": "< 5 mpy aceptable"
+    },
+    {
+      "id": "CL-10",
+      "tarea": "Estado de generador de respaldo",
+      "referencia": "Listo en automático"
+    }
+  ],
+  "provenance": "DERIVED checklist aligned to the pipeline-operator scenario (ISO 14224 categories)"
+}

@@ -207,6 +207,8 @@ Visual evidence gallery organized by module. All captures live in `docs/evidence
 
 A narrated overview of what IntegrityWatch Field is and what it solves: offline-first integrity and compliance for **wells, pipelines, and offshore assets** — corrosion modeling (De Waard–Milliams, ASTM), PSV sizing (API 520/526), pipelines with a kilometer-based schematic map and ILD/UT inspections, risk-based inspection (API 580/581), the **R1–R17** recommendation engine, and reports — plus 7 languages, light/dark themes, CSV/WITSML import, and portable case files.
 
+**Recorrido de oleoducto (español latino, modo tablet)** — [`docs/evidence/video/integritywatch-field-oleoducto-es.mp4`](docs/evidence/video/integritywatch-field-oleoducto-es.mp4) (2:11, voz es-MX, **sin subtítulos**, con notas de equipo y tarea). Login admin, alta de perfiles, reset de contraseña, bombas multietapa y LPG, PSV, mapa de kilómetros, ronda diaria y dossier.
+
 **UI tour — every function, new IFS-24 design** — [`docs/evidence/video/integritywatch-field-uitour-en.mp4`](docs/evidence/video/integritywatch-field-uitour-en.mp4) (1:35, English narration). Dashboard, corrosion point, ISO 14224 assets, relief valves, the pipeline kilometres bar, offline CSV ingestion (16/17 rows), ranked rules and the on-device dossier.
 
 https://github.com/user-attachments/assets/bda20933-ca64-4ec2-b829-34e0a7f3eb6c
@@ -626,6 +628,7 @@ certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 | `docs/PLAN-DE-PRUEBAS.md` | Test and quality plan | `docs/` |
 | `docs/STANDARDS.md` | Reference of implemented formulas | `docs/` |
 | `docs/FIELD-DATA-SOURCES-OPERATORS.md` | Operator campaign data (EIA-820 refineries, NSTA pipelines) | `docs/` |
+| `docs/manual/MANUAL.es-419.md` | **Manual extendido en español latino** para operadores e ingenieros de oleoducto (23 capturas, checklist diario) | `docs/` |
 | `docs/REPORTING-BLUEPRINT.md` | Report types, industry KPI practices (IOGP 456, API RP 754, ISO 14224, API 580, B31.8S) and the offline delivery design | `docs/` |
 | `docs/SCHEMA.md` | IndexedDB schema + contracts | `docs/` |
 | `docs/CONTRACTS.md` | Integration conventions and contracts | `docs/` |

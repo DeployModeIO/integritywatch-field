@@ -1,0 +1,87 @@
+{
+  "video": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-oleoducto-es.mp4",
+  "duration": 131.2,
+  "size_bytes": 14207424,
+  "subtitles": "D:\\ArquitectoSupremo\\integritywatch-field\\promo\\out\\integritywatch-field-oleoducto-es.srt",
+  "voice": "es-MX-DaliaNeural",
+  "scenes": [
+    {
+      "id": "s1",
+      "start": 0.0,
+      "duration": 10.304,
+      "text": "Este es el recorrido completo de IntegrityWatch Field en modo tablet: desde el acceso del administrador hasta el informe firmado en el dispositivo."
+    },
+    {
+      "id": "s2",
+      "start": 10.304,
+      "duration": 10.444,
+      "text": "Todo empieza en la puerta de acceso. El administrador entra con su usuario y su clave; la sesion dura quince minutos de inactividad."
+    },
+    {
+      "id": "s3",
+      "start": 20.748,
+      "duration": 10.4,
+      "text": "El administrador crea los perfiles: aqui damos de alta a un operador de oleoducto y a una ingeniera de integridad, cada uno con su rol."
+    },
+    {
+      "id": "s4",
+      "start": 31.148,
+      "duration": 9.24,
+      "text": "Si alguien olvida su clave, el administrador la restablece desde el mismo panel, sin borrar datos y sin tocar el equipo."
+    },
+    {
+      "id": "s5",
+      "start": 40.388,
+      "duration": 10.852,
+      "text": "El panel del operador resume el dia: alarmas, puntos de corrosion y recomendaciones. Cada punto lleva el pictograma de su equipo."
+    },
+    {
+      "id": "s6",
+      "start": 51.24,
+      "duration": 13.02,
+      "text": "Damos de alta la bomba centrifuga multietapa de crudo: succion a dos coma uno bar y descarga a sesenta y uno coma ocho. La categoria define el intervalo de inspeccion."
+    },
+    {
+      "id": "s7",
+      "start": 64.26,
+      "duration": 9.004,
+      "text": "En el terminal registramos la bomba de LPG: servicio severo, criticidad A e intervalo de seis meses."
+    },
+    {
+      "id": "s8",
+      "start": 73.264,
+      "duration": 11.384,
+      "text": "Las valvulas de alivio viven en su propio registro: tarado, capacidad certificada y fechas de prueba. Las vencidas se marcan solas."
+    },
+    {
+      "id": "s9",
+      "start": 84.648,
+      "duration": 11.052,
+      "text": "El oleoducto se dibuja como una barra de kilometros: cada segmento toma el color de la peor severidad inspeccionada, y los equipos cuelgan de su estacion."
+    },
+    {
+      "id": "s10",
+      "start": 95.7,
+      "duration": 9.32,
+      "text": "La ronda diaria entra como CSV: cuarenta y dos lecturas mapeadas y validadas en el dispositivo, sin conexion."
+    },
+    {
+      "id": "s11",
+      "start": 105.02,
+      "duration": 10.06,
+      "text": "Un barrido de reglas convierte las lecturas en recomendaciones jerarquizadas: corrosion, inhibidor, PSV y confiabilidad."
+    },
+    {
+      "id": "s12",
+      "start": 115.08,
+      "duration": 6.896,
+      "text": "Y el dossier del punto se genera en la misma tablet, listo para imprimir y firmar."
+    },
+    {
+      "id": "s13",
+      "start": 121.976,
+      "duration": 9.224,
+      "text": "IntegrityWatch Field. Datos de campo, decisiones de campo. Sin senal."
+    }
+  ]
+}

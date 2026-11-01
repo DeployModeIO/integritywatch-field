@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:08,904
+Este es el recorrido completo de IntegrityWatch Field en modo tablet: desde el acceso del administrador hasta el informe firmado en el dispositivo.
+
+2
+00:00:10,304 --> 00:00:19,448
+Todo empieza en la puerta de acceso. El administrador entra con su usuario y su clave; la sesion dura quince minutos de inactividad.
+
+3
+00:00:20,748 --> 00:00:29,748
+El administrador crea los perfiles: aqui damos de alta a un operador de oleoducto y a una ingeniera de integridad, cada uno con su rol.
+
+4
+00:00:31,148 --> 00:00:39,188
+Si alguien olvida su clave, el administrador la restablece desde el mismo panel, sin borrar datos y sin tocar el equipo.
+
+5
+00:00:40,388 --> 00:00:49,940
+El panel del operador resume el dia: alarmas, puntos de corrosion y recomendaciones. Cada punto lleva el pictograma de su equipo.
+
+6
+00:00:51,240 --> 00:01:02,760
+Damos de alta la bomba centrifuga multietapa de crudo: succion a dos coma uno bar y descarga a sesenta y uno coma ocho. La categoria define el intervalo de inspeccion.
+
+7
+00:01:04,260 --> 00:01:11,964
+En el terminal registramos la bomba de LPG: servicio severo, criticidad A e intervalo de seis meses.
+
+8
+00:01:13,264 --> 00:01:23,248
+Las valvulas de alivio viven en su propio registro: tarado, capacidad certificada y fechas de prueba. Las vencidas se marcan solas.
+
+9
+00:01:24,648 --> 00:01:34,200
+El oleoducto se dibuja como una barra de kilometros: cada segmento toma el color de la peor severidad inspeccionada, y los equipos cuelgan de su estacion.
+
+10
+00:01:35,700 --> 00:01:43,620
+La ronda diaria entra como CSV: cuarenta y dos lecturas mapeadas y validadas en el dispositivo, sin conexion.
+
+11
+00:01:45,020 --> 00:01:53,780
+Un barrido de reglas convierte las lecturas en recomendaciones jerarquizadas: corrosion, inhibidor, PSV y confiabilidad.
+
+12
+00:01:55,080 --> 00:02:00,576
+Y el dossier del punto se genera en la misma tablet, listo para imprimir y firmar.
+
+13
+00:02:01,976 --> 00:02:09,200
+IntegrityWatch Field. Datos de campo, decisiones de campo. Sin senal.
+
