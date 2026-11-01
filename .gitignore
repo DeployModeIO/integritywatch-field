@@ -26,3 +26,6 @@ promo/out/*-nosubs.mp4
 promo/out/.uivideo/
 promo/out/.opsvideo/
 promo/out/ops_*.jpg
+promo/out/.oleovideo/
+promo/out/oleo_*.jpg
+*.py.todo
