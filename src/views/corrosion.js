@@ -1341,7 +1341,7 @@
 
     // Readings.
     var readingsCard = card(h, 'corrosion.readings');
-    readingsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { readingForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newReading') })));
+    readingsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { readingForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newReading') })));
     if (readings.length) {
       readingsCard.appendChild(trendChartNode(h, readings));
 
@@ -1382,7 +1382,7 @@
 
     // Coupons.
     var couponsCard = card(h, 'corrosion.coupons');
-    couponsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { openCouponForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newCoupon') })));
+    couponsCard.appendChild(h.ui.el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openCouponForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newCoupon') })));
     var couponRows = coupons.map(function (cp) {
       var sev = classifyMpy(cp.crMpy);
       var m = materialById(cp.material);
@@ -1462,7 +1462,7 @@
     var header = h.ui.el('div', { class: 'page-header' });
     header.appendChild(h.ui.el('h1', { text: h.t('corrosion.title') }));
     var actions = h.ui.el('div', { class: 'actions' });
-    actions.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { openMpForm(h, null, existingCodes, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newPoint') })));
+    actions.appendChild(h.ui.el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openMpForm(h, null, existingCodes, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('corrosion.newPoint') })));
     header.appendChild(actions);
     frag.appendChild(header);
 

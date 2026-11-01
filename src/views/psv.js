@@ -745,7 +745,7 @@
     var header = h.ui.el('div', { class: 'page-header' });
     header.appendChild(h.ui.el('h1', { text: h.t('psv.title') }));
     var actions = h.ui.el('div', { class: 'actions' });
-    actions.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: function () { openPsvForm(h, null, existingTags, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('psv.newPsv') })));
+    actions.appendChild(h.ui.el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openPsvForm(h, null, existingTags, null); } } }, h.ui.icon('plus', 18), h.ui.el('span', { text: h.t('psv.newPsv') })));
     header.appendChild(actions);
     frag.appendChild(header);
 

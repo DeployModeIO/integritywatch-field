@@ -235,7 +235,7 @@
         var header = el('div', { class: 'page-header' },
           el('h1', { text: t('pipelines.title') }),
           el('div', { class: 'actions' },
-            el('button', { class: 'btn btn-primary', on: { click: function () { openSystemForm(null); } } },
+            el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openSystemForm(null); } } },
               icon('plus', 18), el('span', { text: t('pipelines.newSystem') }))));
         container.appendChild(header);
 
@@ -400,7 +400,7 @@
       container.appendChild(el('section', { class: 'card' },
         el('div', { class: 'row' },
           el('h2', { class: 'section-title', text: t('pipelines.lineAssets') }),
-          el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(system, null, assets); } } }, icon('plus', 18), el('span', { text: t('pipelines.newLineAsset') }))),
+          el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openAssetForm(system, null, assets); } } }, icon('plus', 18), el('span', { text: t('pipelines.newLineAsset') }))),
         assetsHost));
       renderAssetsTable(system, assets, inspections, assetsHost, locked);
 
@@ -421,7 +421,7 @@
       container.appendChild(el('section', { class: 'card' },
         el('div', { class: 'row' },
           el('h2', { class: 'section-title', text: t('pipelines.inspections') }),
-          el('button', { class: 'btn btn-primary', on: { click: function () { openInspectionForm(system, assets, null); } } }, icon('plus', 18), el('span', { text: t('pipelines.newInspection') }))),
+          el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openInspectionForm(system, assets, null); } } }, icon('plus', 18), el('span', { text: t('pipelines.newInspection') }))),
         inspHost));
       renderInspections(system, assets, inspections, inspHost, locked);
 

@@ -95,7 +95,7 @@
       });
     }
 
-    return {
+  return {
       can: function (action) {
         if (!hasLock()) {
           // Fail closed: with no lock module only read is allowed.
@@ -156,12 +156,30 @@
     return rec;
   }
 
+  /* Hide UI entry points the current role cannot use. Purely cosmetic:
+   every write path re-checks the permission server-side of the click. */
+  async function applyUiPermissions(rootEl, meta) {
+  var doc = rootEl || (typeof document !== 'undefined' ? document : null);
+  if (!doc || !doc.querySelectorAll) { return; }
+  var els = Array.prototype.slice.call(doc.querySelectorAll('[data-perm]'));
+  for (var i = 0; i < els.length; i++) {
+    var action = els[i].getAttribute('data-perm');
+    var allowed = await can(await guard(meta).role(), action);
+    if (!allowed) {
+      els[i].hidden = true;
+      els[i].setAttribute('aria-hidden', 'true');
+      els[i].setAttribute('disabled', 'disabled');
+    }
+  }
+  }
+
   return {
     ROLES: ROLES,
     ACTIONS: ACTIONS,
     MATRIX: MATRIX,
     can: can,
     guard: guard,
-    stamp: stamp
+    stamp: stamp,
+    applyUiPermissions: applyUiPermissions
   };
 });

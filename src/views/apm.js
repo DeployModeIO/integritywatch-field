@@ -382,7 +382,7 @@
         container.appendChild(el('div', { class: 'page-header' },
           el('h1', { text: t('apm.title') }),
           el('div', { class: 'actions' },
-            el('button', { class: 'btn btn-primary', on: { click: function () { openAssetForm(null); } } }, icon('plus', 18), el('span', { text: t('apm.newAsset') })))));
+            el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openAssetForm(null); } } }, icon('plus', 18), el('span', { text: t('apm.newAsset') })))));
 
         var byAsset = {};
         events.forEach(function (e) { (byAsset[e.assetId] = byAsset[e.assetId] || []).push(e); });

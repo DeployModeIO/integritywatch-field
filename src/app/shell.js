@@ -359,12 +359,33 @@
 
   // Sliding window: refresh the PIN session on every route change so the
   // 15-minute window is a true inactivity window, not a fixed login timeout.
+  var _permTimer = null;
+
+  function applyPermsSoon() {
+    var perms = root.IW && root.IW.security ? root.IW.security.permissions : null;
+    if (!perms || typeof perms.applyUiPermissions !== 'function' || !_repos || !_repos.meta) { return; }
+    if (_permTimer) { clearTimeout(_permTimer); }
+    _permTimer = setTimeout(function () {
+      perms.applyUiPermissions(document.getElementById('main'), _repos.meta).catch(function () {});
+    }, 220);
+  }
+
+  function observeMainForPerms() {
+    var main = document.getElementById('main');
+    if (!main || typeof MutationObserver === 'undefined') { return; }
+    var obs = new MutationObserver(function () { applyPermsSoon(); });
+    obs.observe(main, { childList: true, subtree: true });
+  }
+
   function touchLockSession() {
     try {
       var lk = root.IW.security && root.IW.security.lock;
       if (!lk || typeof lk.touch !== 'function' || typeof lk.isEnabled !== 'function' || !_repos || !_repos.meta) { return; }
       lk.isEnabled(_repos.meta).then(function (enabled) {
-        if (enabled) { lk.touch(_repos.meta).catch(function () {}); }
+        if (enabled) {
+        lk.touch(_repos.meta).catch(function () {});
+        applyPermsSoon();
+      }
       }).catch(function () {});
     } catch (e) { /* ignore */ }
   }
@@ -721,6 +742,7 @@
   function mount(opts) {
     _root = opts.root;
     _repos = opts.repos;
+    observeMainForPerms();
     _store = opts.store;
     _bus = opts.bus;
     _i18n = opts.i18n;

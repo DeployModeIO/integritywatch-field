@@ -66,7 +66,8 @@ test('buildCaseFileV2 produces a SHA-256 envelope that parseCaseFileAsync verifi
   const data = { apmAssets: [{ id: 'a1', code: 'P-102' }] };
   const env = await caseFile.buildCaseFileV2(data, { sector: 'midstream' }, 'engineer');
   assert.equal(env.format, 'iwf');
-  assert.equal(env.app, '1.1.0');
+  const pkg = require(require('node:path').join(__dirname, '..', 'package.json'));
+  assert.equal(env.app, pkg.version, 'case file app version must track package.json');
   assert.equal(env.checksumAlgo, 'SHA-256');
   assert.equal(env.signedBy, 'engineer');
   assert.equal(env.sector, 'midstream');
