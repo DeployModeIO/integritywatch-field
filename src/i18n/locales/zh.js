@@ -880,6 +880,9 @@
     },
     reports: {
       title: "报告",
+      exportReport: "导出报告",
+      evidencePackage: "证据包",
+      handover: "交班并移交",
       quarterly: "季度报告",
       dossier: "档案",
       datasheet: "数据表",
@@ -1343,6 +1346,28 @@
       copiedMsg: "字段已复制；请调整并保存",
       catalogBtn: "制造商目录（API 610）",
       catalogPick: "选择制造商…"
+    },
+    export: {
+      title: "导出",
+      format: "格式",
+      scope: "范围",
+      scopeFiltered: "当前筛选视图",
+      scopeAll: "全部历史",
+      generate: "生成文件",
+      generating: "正在生成文件…",
+      done: "文件已生成",
+      failed: "无法生成文件",
+      target: "列模板",
+      targetNative: "IntegrityWatch 原生",
+      targetSap: "SAP PM",
+      targetMaximo: "IBM Maximo",
+      targetIso14224: "ISO 14224（事件）",
+      targetPhmsa: "PHMSA / ASME B31.8S",
+      packaging: "正在打包证据…",
+      packDone: "已生成签名包",
+      verify: "验证包",
+      verifyOk: "包完整：SHA-256 匹配",
+      verifyFail: "包未通过 SHA-256 验证"
     }
   };
 });

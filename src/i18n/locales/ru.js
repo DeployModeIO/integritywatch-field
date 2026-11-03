@@ -775,6 +775,9 @@
     },
     reports: {
       title: "Отчёты",
+      exportReport: "Экспорт отчёта",
+      evidencePackage: "Пакет доказательств",
+      handover: "Закрыть смену и передать",
       quarterly: "Квартальный",
       dossier: "Досье",
       datasheet: "Паспорт",
@@ -1267,6 +1270,28 @@
       copiedMsg: "Поля скопированы; скорректируйте и сохраните",
       catalogBtn: "Каталог производителей (API 610)",
       catalogPick: "Выбрать производителя…"
+    },
+    export: {
+      title: "Экспорт",
+      format: "Формат",
+      scope: "Область",
+      scopeFiltered: "Текущий отфильтрованный вид",
+      scopeAll: "Вся история",
+      generate: "Создать файл",
+      generating: "Создание файла…",
+      done: "Файл создан",
+      failed: "Не удалось создать файл",
+      target: "Шаблон колонок",
+      targetNative: "IntegrityWatch (нативный)",
+      targetSap: "SAP PM",
+      targetMaximo: "IBM Maximo",
+      targetIso14224: "ISO 14224 (события)",
+      targetPhmsa: "PHMSA / ASME B31.8S",
+      packaging: "Упаковка доказательств…",
+      packDone: "Подписанный пакет создан",
+      verify: "Проверить пакет",
+      verifyOk: "Пакет целостен: SHA-256 совпадает",
+      verifyFail: "Пакет не прошёл проверку SHA-256"
     }
   };
 });

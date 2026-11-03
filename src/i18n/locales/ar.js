@@ -814,7 +814,10 @@
       deltaW: "فقدان الوزن (ΔW)",
       dossierTitle: "ملف النقطة",
       eiPct: "كفاءة المثبط (%)",
+      evidencePackage: "حزمة الأدلة",
+      exportReport: "تصدير التقرير",
       f2: "F2",
+      handover: "إغلاق الوردية والتسليم",
       kpiAvailability: "متوسط الإتاحية",
       kpiAvgCr: "متوسط معدل التآكل",
       methodologySources: "المصادر: ASTM G4، NACE/AMPP SP0775، API 520 الجزء الأول، API 526، NACE MR0175/ISO 15156.",
@@ -1267,6 +1270,28 @@
       copiedMsg: "تم نسخ الحقول؛ عدّل ثم احفظ",
       catalogBtn: "كتالوج الشركات المصنعة (API 610)",
       catalogPick: "اختر شركة مصنعة…"
+    },
+    export: {
+      title: "تصدير",
+      format: "التنسيق",
+      scope: "النطاق",
+      scopeFiltered: "العرض المُرشَّح الحالي",
+      scopeAll: "السجل الكامل",
+      generate: "إنشاء ملف",
+      generating: "جارٍ إنشاء الملف…",
+      done: "تم إنشاء الملف",
+      failed: "تعذر إنشاء الملف",
+      target: "قالب الأعمدة",
+      targetNative: "IntegrityWatch الأصلي",
+      targetSap: "SAP PM",
+      targetMaximo: "IBM Maximo",
+      targetIso14224: "ISO 14224 (الأحداث)",
+      targetPhmsa: "PHMSA / ASME B31.8S",
+      packaging: "جارٍ تجميع الأدلة…",
+      packDone: "تم إنشاء الحزمة الموقعة",
+      verify: "التحقق من الحزمة",
+      verifyOk: "الحزمة سليمة: SHA-256 مطابق",
+      verifyFail: "لم تجتز الحزمة فحص SHA-256"
     }
   };
 });

@@ -1004,7 +1004,32 @@
       t12SessionsNote: 'O diário de ingestão não guarda o nome original do arquivo: a coluna «Arquivo» exibe o identificador da sessão. «Linhas importadas» soma inserts mais updates de todas as sessões do período, inclusive as revertidas; as revertidas viajam com rolledBack=yes na tabela para que o receptor as desconte.',
       t12SessionsTitle: 'Sessões de importação',
       t12Subtitle: 'Fechamento de turno e entrega offline (handover). Cobertura = inspeções de linha com data dentro da janela em relação aos ativos de linha registrados: o esquema não marca quais são elegíveis, então assume-se que todos são; o sinal «—» significa dado não computável.',
-      t12Title: 'Pacote de fechamento e handover offline'
+      t12Title: 'Pacote de fechamento e handover offline',
+      exportReport: 'Exportar relatório',
+      evidencePackage: 'Pacote de evidências',
+      handover: 'Encerrar turno e entregar'
+    },
+    export: {
+      title: 'Exportar',
+      format: 'Formato',
+      scope: 'Escopo',
+      scopeFiltered: 'Exibição filtrada atual',
+      scopeAll: 'Histórico completo',
+      generate: 'Gerar arquivo',
+      generating: 'Gerando arquivo…',
+      done: 'Arquivo gerado',
+      failed: 'Não foi possível gerar o arquivo',
+      target: 'Modelo de colunas',
+      targetNative: 'IntegrityWatch nativo',
+      targetSap: 'SAP PM',
+      targetMaximo: 'IBM Maximo',
+      targetIso14224: 'ISO 14224 (eventos)',
+      targetPhmsa: 'PHMSA / ASME B31.8S',
+      packaging: 'Empacotando evidências…',
+      packDone: 'Pacote assinado gerado',
+      verify: 'Verificar pacote',
+      verifyOk: 'Pacote íntegro: SHA-256 conforme',
+      verifyFail: 'O pacote falha na verificação SHA-256'
     },
     glossary: {
       title: 'Glossário',

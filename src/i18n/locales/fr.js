@@ -1003,7 +1003,32 @@
       t12SessionsTitle: "Sessions d'importation",
       t12Subtitle: "Fin de quart et remise hors ligne (handover). Couverture = inspections de ligne datées dans la fenêtre face aux actifs de ligne enregistrés : le schéma ne marque pas lesquels sont éligibles, donc on les suppose tous éligibles ; le signe « — » signifie donnée non calculable.",
       t12Title: "Paquet de clôture et handover hors ligne",
-      week: "Semaine"
+      week: "Semaine",
+      exportReport: "Exporter le rapport",
+      evidencePackage: "Paquet de preuves",
+      handover: "Clôturer le poste et transférer"
+    },
+    export: {
+      title: "Exporter",
+      format: "Format",
+      scope: "Portée",
+      scopeFiltered: "Vue filtrée actuelle",
+      scopeAll: "Historique complet",
+      generate: "Générer le fichier",
+      generating: "Génération du fichier…",
+      done: "Fichier généré",
+      failed: "Échec de la génération du fichier",
+      target: "Modèle de colonnes",
+      targetNative: "IntegrityWatch natif",
+      targetSap: "SAP PM",
+      targetMaximo: "IBM Maximo",
+      targetIso14224: "ISO 14224 (événements)",
+      targetPhmsa: "PHMSA / ASME B31.8S",
+      packaging: "Empaquetage des preuves…",
+      packDone: "Paquet signé généré",
+      verify: "Vérifier le paquet",
+      verifyOk: "Paquet intègre : SHA-256 conforme",
+      verifyFail: "Le paquet échoue à la vérification SHA-256"
     },
     glossary: {
       title: "Glossaire",

@@ -450,7 +450,12 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       astmCalc: 'ASTM G4 weight-loss calculation', avgCr: 'Average corrosion rate', band: 'Band',
       coefficientC: 'Coefficient C', cr: 'Corrosion rate', datasheetFields: 'Datasheet fields',
       datasheetTitle: 'PSV datasheet', deltaW: 'Weight loss (ΔW)', dossierTitle: 'Point dossier',
-      eiPct: 'Inhibitor efficiency (%)', f2: 'F2', kpiAvailability: 'Avg availability',
+      eiPct: 'Inhibitor efficiency (%)',
+      evidencePackage: 'Evidence package',
+      exportReport: 'Export report',
+      f2: 'F2',
+      handover: 'Close shift and hand over',
+      kpiAvailability: 'Avg availability',
       kpiAvgCr: 'Avg corrosion rate', methodologySources: 'Sources: ASTM G4, NACE/AMPP SP0775, API 520 Part I, API 526, NACE MR0175/ISO 15156.',
       pointInfo: 'Point information', reynolds: 'Re', screening: 'Screening',
       selectPoint: 'Select point', selectPsv: 'Select PSV', source: 'Source',
@@ -634,6 +639,29 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       t12Title: 'Closing package and offline handover',
       testDates: 'Test dates',
       week: 'Week'
+    },
+
+    export: {
+      done: 'File generated',
+      failed: 'Could not generate the file',
+      format: 'Format',
+      generate: 'Generate file',
+      generating: 'Generating file…',
+      packaging: 'Packaging evidence…',
+      packDone: 'Signed package generated',
+      scope: 'Scope',
+      scopeAll: 'Full history',
+      scopeFiltered: 'Current filtered view',
+      target: 'Column template',
+      targetIso14224: 'ISO 14224 (events)',
+      targetMaximo: 'IBM Maximo',
+      targetNative: 'IntegrityWatch native',
+      targetPhmsa: 'PHMSA / ASME B31.8S',
+      targetSap: 'SAP PM',
+      title: 'Export',
+      verify: 'Verify package',
+      verifyFail: 'Package fails SHA-256 verification',
+      verifyOk: 'Package intact: SHA-256 matches'
     },
 
     glossary: {
