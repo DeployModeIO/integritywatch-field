@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fixture: formato XML genérico de lista de registros (hilo de inspecciones de línea) -->
+<registros entidad="lineInspections">
+  <item>
+    <sistema>Oleoducto Transversal Norte</sistema>
+    <fecha>2026-02-10</fecha>
+    <tipo>caminata</tipo>
+    <resultado>Normal</resultado>
+    <observaciones>Sin novedades en derechos de vía</observaciones>
+  </item>
+  <item>
+    <sistema>Oleoducto Transversal Norte</sistema>
+    <fecha>10/03/2026</fecha>
+    <tipo>inspección</tipo>
+    <resultado>Anomalía</resultado>
+    <observaciones>Cruce con zanja de 1,2 m al km 84,5</observaciones>
+  </item>
+  <item>
+    <sistema>Oleoducto Transversal Norte</sistema>
+    <fecha>45778</fecha>
+    <tipo>caminata</tipo>
+    <resultado>Normal</resultado>
+    <observaciones/>
+  </item>
+</registros>
