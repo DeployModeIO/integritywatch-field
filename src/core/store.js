@@ -35,34 +35,122 @@
     return c;
   }
 
+  /* ── Enganche de auditoría (P4-C) ──────────────────────────────────────────
+     Decisiones:
+     - Guard anti-recursión: el store 'auditLog' NUNCA se auto-audita
+       (security.auditlog.record escribe vía este mismo repo).
+     - auditIsOn = módulo IW.security.auditlog presente con record(). Si el
+       módulo no está cargado (tests sin security), los hooks son no-op exactos:
+       ni lectura previa ni promesa extra de escritura.
+     - Best-effort estricto: el write de negocio se COMMITEA primero (put/
+       bulkPut/remove/clear del adapter) y luego se enlaza record() con .catch
+       swallow: un fallo de auditoría jamás rompe ni revierte el write. La
+       serialización FIFO vive en security/auditlog.js (_chain protege head/
+       seq), así que aquí solo se espera lo mínimo (la promesa del propio
+       record) para que save()/remove() resuelvan con la bitácora escrita.
+     - create|update se decide ANTES del put con adapter.get(storeName, id):
+       registro previo → 'update' (before/after), sin previo → 'create'
+       (before: null). remove solo audita si existía algo que borrar.
+     - before/after = registros COMPLETOS redactados (no diffs mínimos): los
+       dataURL largos (photos[i].dataUrl, signature, etc.) se reemplazan por
+       '[dataURL N bytes]' para no inflar la cadena de hash con binarios.
+       La redacción es recursiva sobre objetos/arrays y deja el resto igual.
+     - saveAll/clear emiten UNA entrada agregada ('bulk-write' con count,
+       'bulk-clear' con count 0) SIN before/after: el diff por registro vive
+       en el diario de commit de syncQueue; duplicarlo aquí rompería la
+       granularidad documentada de auditlog (imports masivos = 1 entrada). ─ */
+  var DATAURL_RE = /^data:[^;,]*;base64,/i;
+
+  function auditApi() {
+    var sec = root.IW.security;
+    return (sec && sec.auditlog && typeof sec.auditlog.record === 'function') ? sec.auditlog : null;
+  }
+
+  function redactAudit(value) {
+    if (typeof value === 'string') {
+      return DATAURL_RE.test(value) ? '[dataURL ' + value.length + ' bytes]' : value;
+    }
+    if (Array.isArray(value)) {
+      var arr = [];
+      for (var i = 0; i < value.length; i++) { arr.push(redactAudit(value[i])); }
+      return arr;
+    }
+    if (value && typeof value === 'object') {
+      var out = {};
+      for (var k in value) {
+        if (Object.prototype.hasOwnProperty.call(value, k)) { out[k] = redactAudit(value[k]); }
+      }
+      return out;
+    }
+    return value;
+  }
+
   function makeRepo(adapter, storeName, enqueue) {
+    var auditable = storeName !== 'auditLog';
+
+    function auditRecord(entry) {
+      var al = auditApi();
+      if (!al) { return Promise.resolve(undefined); }
+      return Promise.resolve(al.record(entry)).catch(function () { return undefined; });
+    }
+
+    function prevOf(id) {
+      return Promise.resolve(adapter.get(storeName, id)).catch(function () { return null; });
+    }
+
     return {
       list: function () { return adapter.getAll(storeName); },
       get: function (id) { return adapter.get(storeName, id); },
       save: function (rec, nowISO) {
         var c = stamp(rec, nowISO);
-        return adapter.put(storeName, c).then(function () {
-          emitChanged(storeName, 'put');
-          if (enqueue) { enqueue({ type: 'put', store: storeName, rec: c }); }
-          return c;
-        });
+        var wantAudit = auditable && !!auditApi();
+        var pre = wantAudit ? prevOf(c.id) : Promise.resolve(null);
+        return pre.then(function (prev) {
+          return adapter.put(storeName, c).then(function () {
+            emitChanged(storeName, 'put');
+            if (enqueue) { enqueue({ type: 'put', store: storeName, rec: c }); }
+            if (!wantAudit) { return undefined; }
+            return auditRecord({
+              action: prev ? 'update' : 'create',
+              store: storeName,
+              entityId: c.id,
+              before: prev ? redactAudit(prev) : null,
+              after: redactAudit(c)
+            });
+          });
+        }).then(function () { return c; });
       },
       saveAll: function (recs) {
         var now = new Date().toISOString();
         var out = (recs || []).map(function (rec) { return stamp(rec, now); });
+        var wantAudit = auditable && !!auditApi();
         return adapter.bulkPut(storeName, out).then(function () {
           emitChanged(storeName, 'bulk');
-          return out;
-        });
+          if (wantAudit) {
+            return auditRecord({ action: 'bulk-write', store: storeName, count: out.length });
+          }
+          return undefined;
+        }).then(function () { return out; });
       },
       remove: function (id) {
-        return adapter.remove(storeName, id).then(function () {
-          emitChanged(storeName, 'remove');
-          if (enqueue) { enqueue({ type: 'delete', store: storeName, id: id }); }
+        var wantAudit = auditable && !!auditApi();
+        var pre = wantAudit ? prevOf(id) : Promise.resolve(null);
+        return pre.then(function (prev) {
+          return adapter.remove(storeName, id).then(function () {
+            emitChanged(storeName, 'remove');
+            if (enqueue) { enqueue({ type: 'delete', store: storeName, id: id }); }
+            if (!wantAudit || !prev) { return undefined; }
+            return auditRecord({ action: 'delete', store: storeName, entityId: id, before: redactAudit(prev) });
+          });
         });
       },
       clear: function () {
-        return adapter.clear(storeName).then(function () { emitChanged(storeName, 'clear'); });
+        var wantAudit = auditable && !!auditApi();
+        return adapter.clear(storeName).then(function () {
+          emitChanged(storeName, 'clear');
+          if (wantAudit) { return auditRecord({ action: 'bulk-clear', store: storeName, count: 0 }); }
+          return undefined;
+        });
       }
     };
   }
@@ -184,7 +272,7 @@
       } catch (e) { /* never break save/remove */ }
     }
 
-    return {
+    var repos = {
       meta: meta,
       monitoringPoints: makeRepo(adapter, 'monitoringPoints', enqueue),
       readings: makeRepo(adapter, 'readings', enqueue),
@@ -198,8 +286,28 @@
       apmEvents: makeRepo(adapter, 'apmEvents', enqueue),
       recommendations: makeRepo(adapter, 'recommendations', enqueue),
       importLog: makeRepo(adapter, 'importLog', enqueue),
+      // Bitácora local-inmutable: NO encola sync (sin enqueue) y su repo está
+      // excluido del hook de auditoría por el guard 'auditLog' de makeRepo.
+      auditLog: makeRepo(adapter, 'auditLog'),
       mutationQueue: makeRepo(adapter, 'mutationQueue', enqueue)
     };
+
+    // initAudit NO es un repositorio: se define NO ENUMERABLE para que los
+    // consumidores que enumeran Object.keys(repos) (exportImport.exportAll,
+    // syncQueue, etc.) sigan viendo exactamente los stores de datos.
+    Object.defineProperty(repos, 'initAudit', {
+      enumerable: false,
+      value: function (opts) {
+        var al = auditApi();
+        if (!al || typeof al.init !== 'function') {
+          return Promise.reject(new Error('initAudit: IW.security.auditlog no está cargado'));
+        }
+        opts = opts || {};
+        return al.init({ auditRepo: repos.auditLog, metaRepo: repos.meta, actorFn: opts.actorFn });
+      }
+    });
+
+    return repos;
   }
 
   return { create: create };

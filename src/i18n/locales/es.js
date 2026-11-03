@@ -1331,6 +1331,16 @@ diesel: 'Diésel'
       copiedMsg: 'Campos copiados; ajuste y guarde',
       catalogBtn: 'Catálogo de fabricantes (API 610)',
       catalogPick: 'Elegir fabricante…'
+    },
+
+    audit: {
+      title: 'Bitácora de auditoría',
+      verify: 'Verificar cadena SHA-256',
+      verifyOk: 'Cadena íntegra: {{count}} entradas verificadas',
+      verifyFail: 'CADENA ROTA: {{issues}} anomalías',
+      empty: 'Sin entradas de bitácora',
+      entries: 'entradas',
+      exportRange: 'Exportar bitácora'
     }
   };
 });

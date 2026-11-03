@@ -173,6 +173,62 @@
       securityCard.appendChild(el('div', { class: 'row' }, enableBtn, disableBtn, changePinBtn));
       grid.appendChild(securityCard);
 
+      // --- Audit log (security.auditlog) ---------------------------------------
+      // Sin IW.security.auditlog cargado la tarjeta no se pinta: el resto de la
+      // vista queda intacto (guard best-effort, ítems 1–3 del módulo audit.title).
+      var AUDIT_PAGE_MAX = 200;
+      var auditlog = (root.IW.security && root.IW.security.auditlog) ? root.IW.security.auditlog : null;
+      var auditCard = null;
+      var auditBreaksEl = null;
+      var auditTableWrap = null;
+      var auditEmptyEl = null;
+      var auditNoteEl = null;
+      var auditFromInput = null;
+      var auditToInput = null;
+      var auditFmtSel = null;
+      var auditLogsCache = [];
+      if (auditlog) {
+        auditCard = sectionCard(t('audit.title'), []);
+        auditCard.hidden = true;
+        var verifyAuditBtn = el('button', { class: 'btn', attrs: { 'data-perm': 'admin' }, on: { click: onAuditVerify } },
+          icon('check', 18), el('span', { text: t('audit.verify') }));
+        auditBreaksEl = el('div', { class: 'stack' });
+        auditBreaksEl.hidden = true;
+        auditCard.appendChild(el('div', { class: 'row' }, verifyAuditBtn));
+        auditCard.appendChild(auditBreaksEl);
+
+        auditFromInput = el('input', { class: 'input', attrs: { type: 'date', 'aria-label': 'desde' } });
+        auditToInput = el('input', { class: 'input', attrs: { type: 'date', 'aria-label': 'hasta' } });
+        auditFromInput.value = auditIsoDay(-30);
+        auditToInput.value = auditIsoDay(0);
+        var auditRangeBtn = el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'admin' }, on: { click: onAuditRange } },
+          icon('search', 18), el('span', { text: t('export.generate') }));
+        auditCard.appendChild(el('div', { class: 'row' },
+          el('div', { class: 'field' }, el('label', { class: 'field-label', text: 'desde' }), auditFromInput),
+          el('div', { class: 'field' }, el('label', { class: 'field-label', text: 'hasta' }), auditToInput),
+          auditRangeBtn));
+
+        auditEmptyEl = el('p', { class: 'empty-state', text: t('audit.empty') });
+        auditEmptyEl.hidden = true;
+        auditTableWrap = el('div', { class: 'table-wrap' });
+        auditNoteEl = el('p', { class: 'field-hint' });
+        auditCard.appendChild(auditEmptyEl);
+        auditCard.appendChild(auditTableWrap);
+        auditCard.appendChild(auditNoteEl);
+
+        auditFmtSel = el('select', { class: 'select', attrs: { 'aria-label': t('export.format') } });
+        ['csv', 'xlsx', 'json', 'docx', 'xml'].forEach(function (f) {
+          auditFmtSel.appendChild(el('option', { attrs: { value: f }, text: f }));
+        });
+        auditFmtSel.value = 'csv';
+        var exportAuditBtn = el('button', { class: 'btn', attrs: { 'data-perm': 'admin' }, on: { click: onAuditExport } },
+          icon('download', 18), el('span', { text: t('audit.exportRange') }));
+        auditCard.appendChild(el('div', { class: 'row' },
+          el('div', { class: 'field' }, el('label', { class: 'field-label', text: t('export.format') }), auditFmtSel),
+          exportAuditBtn));
+        grid.appendChild(auditCard);
+      }
+
       // --- Users & access ---------------------------------------------------------
       var usersCard = sectionCard(t('admin.users.title'), []);
       var usersListEl = el('div', { class: 'stack' });
@@ -333,6 +389,188 @@
             return refreshUserList();
           });
         });
+      }
+
+      function auditCell(v) {
+        return (v === undefined || v === null) ? '' : String(v);
+      }
+
+      function auditIsoDay(offsetDays) {
+        var d = new Date(Date.now() + offsetDays * 86400000);
+        var m = String(d.getUTCMonth() + 1);
+        var day = String(d.getUTCDate());
+        if (m.length < 2) { m = '0' + m; }
+        if (day.length < 2) { day = '0' + day; }
+        return d.getUTCFullYear() + '-' + m + '-' + day;
+      }
+
+      function auditRangeOpts() {
+        return {
+          fromISO: auditFromInput.value ? auditFromInput.value + 'T00:00:00.000Z' : undefined,
+          toISO: auditToInput.value ? auditToInput.value + 'T23:59:59.999Z' : undefined
+        };
+      }
+
+      // Ítem 1: verifyChain → toast ok/fallo + tabla de breaks [{id,kind}].
+      function onAuditVerify() {
+        return requirePerm('admin').then(function () {
+          return auditlog.verifyChain();
+        }).then(function (res) {
+          auditBreaksEl.textContent = '';
+          if (res.ok) {
+            auditBreaksEl.hidden = true;
+            ui().toast(t('audit.verifyOk', { count: res.checked }), { severity: 'info' });
+            return;
+          }
+          ui().toast(t('audit.verifyFail', { issues: res.breaks.length }), { severity: 'critical' });
+          var tbl = el('table', { class: 'data' });
+          tbl.appendChild(el('caption', { text: t('audit.verify') }));
+          tbl.appendChild(el('thead', null, el('tr', null,
+            el('th', { attrs: { scope: 'col' }, text: 'id' }),
+            el('th', { attrs: { scope: 'col' }, text: 'kind' }))));
+          var tbody = el('tbody');
+          (res.breaks || []).forEach(function (b) {
+            b = b || {};
+            tbody.appendChild(el('tr', null,
+              el('td', { text: auditCell(b.id) }),
+              el('td', { text: auditCell(b.kind) })));
+          });
+          tbl.appendChild(tbody);
+          auditBreaksEl.appendChild(el('div', { class: 'table-wrap' }, tbl));
+          auditBreaksEl.hidden = false;
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+        });
+      }
+
+      // Ítem 2: tabla UI paginada simple (primeros AUDIT_PAGE_MAX con nota).
+      function renderAuditTable(logs) {
+        auditTableWrap.textContent = '';
+        if (!logs.length) {
+          auditEmptyEl.hidden = false;
+          auditNoteEl.textContent = '';
+          return;
+        }
+        auditEmptyEl.hidden = true;
+        var shown = logs.slice(0, AUDIT_PAGE_MAX);
+        var heads = ['seq', 'at', 'user', 'role', 'action', 'store', 'entityId', 'count'];
+        var tbl = el('table', { class: 'data' });
+        tbl.appendChild(el('caption', { text: t('audit.title') }));
+        tbl.appendChild(el('thead', null, el('tr', null, heads.map(function (h) {
+          return el('th', { attrs: { scope: 'col' }, text: h });
+        }))));
+        var tbody = el('tbody');
+        shown.forEach(function (d) {
+          d = d || {};
+          tbody.appendChild(el('tr', null,
+            el('td', { text: auditCell(d.seq) }),
+            el('td', { text: auditCell(d.at) }),
+            el('td', { text: auditCell(d.user) }),
+            el('td', { text: auditCell(d.role) }),
+            el('td', { text: auditCell(d.action) }),
+            el('td', { text: auditCell(d.store) }),
+            el('td', { text: auditCell(d.entityId) }),
+            el('td', { text: auditCell(d.count) })));
+        });
+        tbl.appendChild(tbody);
+        auditTableWrap.appendChild(tbl);
+        var note = t('audit.entries') + ': ' + shown.length;
+        if (logs.length > shown.length) { note += ' / ' + logs.length; }
+        auditNoteEl.textContent = note;
+      }
+
+      function onAuditRange() {
+        return requirePerm('admin').then(function () {
+          return auditlog.range(auditRangeOpts());
+        }).then(function (logs) {
+          auditLogsCache = logs || [];
+          renderAuditTable(auditLogsCache);
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+        });
+      }
+
+      function auditExportApis() {
+        var exp = root.IW.export;
+        var fmts = exp && exp.reportFormats;
+        var csv = exp && exp.csvWriter;
+        if (!fmts || typeof fmts.produce !== 'function' || !csv ||
+            typeof csv.downloadText !== 'function' || typeof csv.downloadBytes !== 'function') {
+          return null;
+        }
+        return { fmts: fmts, csv: csv };
+      }
+
+      // exportTabular → mini-modelo {sections:[table]}: cabeceras viajan como
+      // labelKey crudo (tr() las devuelve literales) y celdas por clave k<i>.
+      function auditExportModel(logs) {
+        var out = auditlog.exportTabular(logs);
+        var cols = (out.headers || []).map(function (hd, i) {
+          return { key: 'k' + i, labelKey: String(hd) };
+        });
+        var rows = (out.rows || []).map(function (r) {
+          var o = {};
+          for (var i = 0; i < cols.length; i++) { o[cols[i].key] = r ? r[i] : ''; }
+          return o;
+        });
+        return { sections: [{ type: 'table', title: out.sheetName, columns: cols, rows: rows }] };
+      }
+
+      function markAuditExported() {
+        var headKey = auditlog.HEAD_KEY || 'audit.head';
+        return repos.meta.get(headKey).catch(function () { return null; }).then(function (head) {
+          if (head && head.hash && typeof auditlog.markExported === 'function') {
+            return auditlog.markExported(head.hash).catch(function () { return null; });
+          }
+          return null;
+        }).catch(function () { return null; });
+      }
+
+      // Ítem 3: csv/xlsx/json/docx/xml (pdf NO se ofrece) → produce → download.
+      function onAuditExport() {
+        var apis = auditExportApis();
+        if (!apis) {
+          ui().toast(t('export.failed'), { severity: 'critical' });
+          return Promise.resolve(false);
+        }
+        var format = auditFmtSel.value || 'csv';
+        return requirePerm('admin').then(function () {
+          if (auditLogsCache.length) { return auditLogsCache; }
+          return auditlog.range(auditRangeOpts());
+        }).then(function (logs) {
+          auditLogsCache = logs || [];
+          if (!auditLogsCache.length) {
+            ui().toast(t('audit.empty'), { severity: 'info' });
+            return false;
+          }
+          ui().toast(t('export.generating'), { severity: 'info' });
+          var locale = (i18n() && typeof i18n().getLocale === 'function') ? i18n().getLocale() : 'es';
+          var fecha = new Date().toISOString().slice(0, 10);
+          return apis.fmts.produce(auditExportModel(auditLogsCache), format, { t: t, locale: locale, filename: 'bitacora_' + fecha })
+            .then(function (res) {
+              if (!res) { return false; }
+              var ok = typeof res.data === 'string'
+                ? apis.csv.downloadText(res.filename, res.data, res.mime)
+                : apis.csv.downloadBytes(res.filename, res.data, res.mime);
+              if (!ok) { return false; }
+              return markAuditExported().then(function () { return true; });
+            });
+        }).then(function (ok) {
+          ui().toast(ok ? t('export.done') : t('export.failed'), { severity: ok ? 'info' : 'critical' });
+          return ok;
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); }
+          else { ui().toast(t('export.failed'), { severity: 'critical' }); }
+          return false;
+        });
+      }
+
+      // Gate de visibilidad igual que 'Usuarios': solo rol admin efectivo.
+      function renderAuditCard() {
+        if (!auditCard) { return Promise.resolve(); }
+        return effectiveRole().then(function (role) {
+          auditCard.hidden = role !== 'admin';
+        }, function () { auditCard.hidden = true; });
       }
 
       function onCreateUser() {
@@ -840,7 +1078,7 @@
 
       container.appendChild(view);
 
-      var jobs = [loadRuleInputs(), renderLockStatus(), renderStorage(), refreshSync(), gateDestructive(), renderUsers()];
+      var jobs = [loadRuleInputs(), renderLockStatus(), renderStorage(), refreshSync(), gateDestructive(), renderUsers(), renderAuditCard()];
       renderSw();
       renderStandards();
       loadTheme();

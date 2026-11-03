@@ -1369,6 +1369,16 @@
       verify: "验证包",
       verifyOk: "包完整：SHA-256 匹配",
       verifyFail: "包未通过 SHA-256 验证"
+    },
+
+    audit: {
+      title: '审计日志',
+      verify: '验证 SHA-256 链',
+      verifyOk: '链完整：已验证 {{count}} 条',
+      verifyFail: '链已破坏：{{issues}} 处异常',
+      empty: '无审计记录',
+      entries: '条',
+      exportRange: '导出审计日志'
     }
   };
 });

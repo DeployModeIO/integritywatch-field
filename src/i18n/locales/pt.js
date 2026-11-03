@@ -1294,6 +1294,16 @@
       copiedMsg: 'Campos copiados; ajuste e salve',
       catalogBtn: 'Catálogo de fabricantes (API 610)',
       catalogPick: 'Escolher fabricante…'
+    },
+
+    audit: {
+      title: 'Registro de auditoria',
+      verify: 'Verificar cadeia SHA-256',
+      verifyOk: 'Cadeia íntegra: {{count}} entradas verificadas',
+      verifyFail: 'CADEIA QUEBRADA: {{issues}} anomalias',
+      empty: 'Sem entradas de auditoria',
+      entries: 'entradas',
+      exportRange: 'Exportar registro de auditoria'
     }
   };
 });

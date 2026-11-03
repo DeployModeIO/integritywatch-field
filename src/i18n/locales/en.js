@@ -827,6 +827,16 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       copiedMsg: 'Fields copied; adjust and save',
       catalogBtn: 'Manufacturer catalog (API 610)',
       catalogPick: 'Choose manufacturer…'
+    },
+
+    audit: {
+      title: 'Audit log',
+      verify: 'Verify SHA-256 chain',
+      verifyOk: 'Chain intact: {{count}} entries verified',
+      verifyFail: 'CHAIN BROKEN: {{issues}} anomalies',
+      empty: 'No audit entries',
+      entries: 'entries',
+      exportRange: 'Export audit log'
     }
   };
 });

@@ -1293,6 +1293,16 @@
       copiedMsg: "Champs copiés ; ajustez puis enregistrez",
       catalogBtn: "Catalogue des fabricants (API 610)",
       catalogPick: "Choisir un fabricant…"
+    },
+
+    audit: {
+      title: "Journal d'audit",
+      verify: 'Vérifier la chaîne SHA-256',
+      verifyOk: 'Chaîne intègre : {{count}} entrées vérifiées',
+      verifyFail: 'CHAÎNE ROMPUE : {{issues}} anomalies',
+      empty: "Aucun journal d'audit",
+      entries: 'entrées',
+      exportRange: "Exporter le journal d'audit"
     }
   };
 });

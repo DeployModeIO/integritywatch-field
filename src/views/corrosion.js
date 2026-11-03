@@ -1386,7 +1386,11 @@
 
       var readingRows = readings.slice().reverse().map(function (r, revIdx) {
         var origIdx = readings.length - 1 - revIdx;
-        return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note, _outlier: !!outlierSet[origIdx] };
+        // Pista 4.3: marca de calidad si existe (medido/derivado/estimado de
+        // import o manual); si no, la fuente de origen (manual/import/seed);
+        // si tampoco hay ninguna, em-dash.
+        var qmark = (r.quality && r.quality.mark) ? r.quality.mark : (r.source || '—');
+        return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note, qualityMark: qmark, _outlier: !!outlierSet[origIdx] };
       });
       var readingsPage = paginatedTableHost(h, function () { return readingRows; }, {
         captionKey: 'corrosion.readings',
@@ -1402,7 +1406,13 @@
               return h.ui.el('span', { class: 'row' }, els);
             } },
           { key: 'source', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } },
-          { key: 'note', labelKey: 'common.note' }
+          { key: 'note', labelKey: 'common.note' },
+          // Columna nueva (Pista 4.3): marca de calidad / fuente de origen. La
+          // cabecera usa el literal 'Fuente' porque no existe ninguna clave
+          // existente aplicable en corrosion.* de es.js (no hay corrosion.source
+          // ni corrosion.quality; el reports.source de otro namespace no aplica)
+          // y la tarea prohíbe crear clave nueva. Texto plano, sin estilos nuevos.
+          { key: 'qualityMark', labelKey: 'Fuente' }
         ]
       });
       readingsPage.draw();
@@ -1431,7 +1441,11 @@
         { key: 'crMpy', labelKey: 'corrosion.crMpy', align: 'num', render: function (v, row) {
             return h.ui.el('span', { class: 'row' }, h.ui.el('span', { class: 'num', text: v == null ? '—' : fmtNum(v, 3) }), sevBadge(h, row.sev));
           } },
-        { key: 'status', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } },
+        { key: 'status', labelKey: 'common.status', render: function (v, row) {
+            // Pista 4.3: si el cupón trae marca de calidad, se añade al texto.
+            var q = row.coupon && row.coupon.quality && row.coupon.quality.mark ? ' · ' + row.coupon.quality.mark : '';
+            return h.ui.el('span', { class: 'pill', text: (v || '') + q });
+          } },
         { key: 'actions', labelKey: 'common.actions', render: function (v, row) {
             return h.ui.el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': h.t('common.edit') }, on: { click: function () {
               openCouponForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }, row.coupon);

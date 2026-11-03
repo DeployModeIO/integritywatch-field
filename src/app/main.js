@@ -74,6 +74,29 @@
       });
     }
 
+    // Enganche de la bitácora (P4-C): una sola llamada a initAudit conecta los
+    // repos del store con security.auditlog. actorFn envuelve
+    // lock.currentSession(meta) — QUE ES ASÍNCRONA (devuelve
+    // Promise<{role, username, ...}|null>; el lock expone 'username', no
+    // 'user'). auditlog resuelve la promesa al momento de escribir y mapea
+    // null/errores a user='?', role='?'. Sin módulo de seguridad cargado
+    // (tests, variantes sin lock) todo queda no-op.
+    function wireAudit() {
+      var sec = root.IW.security;
+      if (!sec || !sec.auditlog || typeof repos.initAudit !== 'function') { return; }
+      repos.initAudit({
+        actorFn: function () {
+          var lock = sec.lock;
+          if (!lock || typeof lock.currentSession !== 'function') { return Promise.resolve(null); }
+          return Promise.resolve(lock.currentSession(repos.meta)).then(function (s) {
+            return s ? { user: s.username || s.role || '?', role: s.role || '?' } : null;
+          });
+        }
+      }).catch(function (err) {
+        if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('audit wiring unavailable:', err); }
+      });
+    }
+
     if (bus && typeof bus.on === 'function') {
       bus.on('data:changed:meta', function () { loadSyncEndpoint(); });
     }
@@ -94,6 +117,7 @@
       })
       .then(function () {
         repos = storeApi.create(adapter);
+        wireAudit();
         return i18n.init({ locales: root.IW_LOCALES, bus: bus, storage: storage() });
       })
       .then(function () {

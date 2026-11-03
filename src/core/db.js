@@ -11,7 +11,7 @@
   'use strict';
 
   var DB_NAME = 'integritywatch';
-  var DB_VERSION = 2;
+  var DB_VERSION = 3;
 
   var SCHEMA = [
     { name: 'meta', keyPath: 'key', indexes: [] },
@@ -27,7 +27,8 @@
     { name: 'apmEvents', keyPath: 'id', indexes: ['assetId', 'start'] },
     { name: 'recommendations', keyPath: 'id', indexes: ['status', 'severity', 'fingerprint', 'entityStore'] },
     { name: 'importLog', keyPath: 'id', indexes: ['at'] },
-    { name: 'mutationQueue', keyPath: 'id', indexes: ['createdAt'] }
+    { name: 'mutationQueue', keyPath: 'id', indexes: ['createdAt'] },
+    { name: 'auditLog', keyPath: 'id', indexes: ['at', 'user', 'entityStore'] }
   ];
 
   var _db = null;
