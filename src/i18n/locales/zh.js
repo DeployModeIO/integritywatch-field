@@ -141,7 +141,11 @@
       cm2: "平方厘米",
       km: "公里",
       mg: "毫克",
-      cm2Area: "面积（平方厘米）"
+      cm2Area: "面积（平方厘米）",
+      mm: "mm",
+      MPa: "MPa",
+      h: "h",
+      perH: "1/h"
     },
     dashboard: {
       title: "仪表盘",
@@ -201,6 +205,8 @@
       area: "面积",
       exposureDays: "暴露天数",
       exposureHours: "暴露小时",
+      deltaWBlank: "ΔW 空白样 (mg)",
+      deltaWInhibited: "ΔW 抑制样 (mg)",
       density: "密度",
       crResult: "腐蚀速率结果",
       classification: "分级",
@@ -280,7 +286,6 @@
       },
       advancedTitle: "高级腐蚀分析"
     },
-
     norsok: {
       error: {
         E_MISSING_INPUT: "缺少计算所需的必填输入。",
@@ -288,21 +293,100 @@
         E_PH_RANGE: "pH 超出模型范围（3.5–6.5）。",
         E_SHEAR_INPUT: "剪应力或流速输入无效。"
       },
-      title: "NORSOK M-506 — CO₂ 腐蚀", cr: "腐蚀速率", results: "结果",
-      inputs: { temp: "温度 (°C)", pressure: "总压力 (bar)", co2: "CO₂ 摩尔 %", ph: "pH", shear: "壁面剪应力 (Pa)", velocity: "流速 (m/s)", diameter: "管内径 (mm)", density: "液体密度 (kg/m³)", viscosity: "粘度 (mPa·s)", glycol: "乙二醇 wt %", inhibitor: "缓蚀剂效率 %", calculate: "计算", save: "保存输入" },
-      breakdown: { kt: "Kt", fph: "f(pH)", fco2: "fCO₂", shear: "剪应力 (S)", exponent: "指数", reduction: "折减系数" },
-      warn: { W_ORGANIC_ACIDS: "模型不覆盖 >100 ppm 有机酸", W_NO_H2S_O2: "不适用于酸性/含氧工况", W_PCO2_LOW: "pCO₂ <0.5 bar 可能低估", W_OUT_OF_ENVELOPE: "fCO₂ 超出 0.1–10 bar 包络", W_SHEAR_RANGE: "剪应力超出 1–150 Pa 范围" }
+      title: "NORSOK M-506 — CO₂ 腐蚀",
+      cr: "腐蚀速率",
+      results: "结果",
+      inputs: {
+        temp: "温度 (°C)",
+        pressure: "总压力 (bar)",
+        co2: "CO₂ 摩尔 %",
+        ph: "pH",
+        shear: "壁面剪应力 (Pa)",
+        velocity: "流速 (m/s)",
+        diameter: "管内径 (mm)",
+        density: "液体密度 (kg/m³)",
+        viscosity: "粘度 (mPa·s)",
+        glycol: "乙二醇 wt %",
+        inhibitor: "缓蚀剂效率 %",
+        calculate: "计算",
+        save: "保存输入"
+      },
+      breakdown: {
+        kt: "Kt",
+        fph: "f(pH)",
+        fco2: "fCO₂",
+        shear: "剪应力 (S)",
+        exponent: "指数",
+        reduction: "折减系数"
+      },
+      warn: {
+        W_ORGANIC_ACIDS: "模型不覆盖 >100 ppm 有机酸",
+        W_NO_H2S_O2: "不适用于酸性/含氧工况",
+        W_PCO2_LOW: "pCO₂ <0.5 bar 可能低估",
+        W_OUT_OF_ENVELOPE: "fCO₂ 超出 0.1–10 bar 包络",
+        W_SHEAR_RANGE: "剪应力超出 1–150 Pa 范围"
+      }
     },
     cui: {
-      title: "CUI 筛查 (API RP 583/571)", inputs: { material: "材料类别", temp: "操作温度 (°C)", insulation: "保温类型", coating: "涂层状况", environment: "环境", penetrating: "贯穿件", cyclic: "循环工况", steam: "蒸汽伴热" },
-      risk: { low: "低", moderate: "中", high: "高", critical: "严重" },
-      method: { visual: "目视检查", thermo: "热成像", pec: "脉冲涡流 (PEC)", rt: "射线检测 (RT)", gw: "导波超声", utSpot: "定点超声", utProgram: "计划超声" },
-      note: { pt: "不锈钢建议渗透检测 (ECSCC)" }
+      title: "CUI 筛查 (API RP 583/571)",
+      inputs: {
+        material: "材料类别",
+        temp: "操作温度 (°C)",
+        insulation: "保温类型",
+        coating: "涂层状况",
+        environment: "环境",
+        penetrating: "贯穿件",
+        cyclic: "循环工况",
+        steam: "蒸汽伴热"
+      },
+      risk: {
+        low: "低",
+        moderate: "中",
+        high: "高",
+        critical: "严重"
+      },
+      method: {
+        visual: "目视检查",
+        thermo: "热成像",
+        pec: "脉冲涡流 (PEC)",
+        rt: "射线检测 (RT)",
+        gw: "导波超声",
+        utSpot: "定点超声",
+        utProgram: "计划超声"
+      },
+      note: {
+        pt: "不锈钢建议渗透检测 (ECSCC)"
+      }
     },
     mic: {
-      title: "MIC 筛查 (NACE TM0194 / API 571)", factor: { freeWater: "游离水存在", stagnant: "滞流水", temperature: "温度 20–50 °C", sulfate: "硫酸盐存在", deposits: "沉积物", nearNeutralPh: "近中性 pH", sulfideSigns: "硫化物迹象", historyMic: "MIC 历史", highCounts: "高细菌计数" },
-      driver: { stagnant: "滞流条件", temperature: "嗜温范围 (20–50 °C)", sulfate: "硫酸盐还原菌", deposits: "垢下", nearNeutralPh: "中性 pH", sulfideSigns: "硫化物指标", historyMic: "既往 MIC 事件", highCounts: "计数升高" },
-      score: "评分", risk: { low: "低", moderate: "中", high: "高" }
+      title: "MIC 筛查 (NACE TM0194 / API 571)",
+      factor: {
+        freeWater: "游离水存在",
+        stagnant: "滞流水",
+        temperature: "温度 20–50 °C",
+        sulfate: "硫酸盐存在",
+        deposits: "沉积物",
+        nearNeutralPh: "近中性 pH",
+        sulfideSigns: "硫化物迹象",
+        historyMic: "MIC 历史",
+        highCounts: "高细菌计数"
+      },
+      driver: {
+        stagnant: "滞流条件",
+        temperature: "嗜温范围 (20–50 °C)",
+        sulfate: "硫酸盐还原菌",
+        deposits: "垢下",
+        nearNeutralPh: "中性 pH",
+        sulfideSigns: "硫化物指标",
+        historyMic: "既往 MIC 事件",
+        highCounts: "计数升高"
+      },
+      score: "评分",
+      risk: {
+        low: "低",
+        moderate: "中",
+        high: "高"
+      }
     },
     psv: {
       title: "泄压阀",
@@ -311,11 +395,6 @@
       tag: "位号",
       location: "位置",
       valveType: "阀门类型",
-      types: {
-        conventional: "常规式",
-        balanced: "平衡式",
-        pilot: "先导式"
-      },
       fluid: "介质",
       phase: "相态",
       gasVapor: "气体/蒸汽",
@@ -368,6 +447,11 @@
       iterations: "迭代次数",
       tagDuplicate: "已存在相同位号的泄压阀",
       deleteDisabled: "无法删除：该泄压阀存在关联资产或检查记录",
+      types: {
+        conventional: "常规式",
+        balanced: "平衡式",
+        pilot: "先导式"
+      },
       err: {
         empty: "必填字段",
         set: "整定压力必须大于 0",
@@ -397,12 +481,6 @@
       systemName: "系统名称",
       operator: "运营方",
       product: "介质",
-      products: {
-        crude: "原油",
-        gas: "天然气",
-        products: "成品油",
-        water: "水"
-      },
       diameter: "公称直径",
       wallThickness: "壁厚",
       coating: "涂层",
@@ -411,37 +489,11 @@
       lineAssets: "线路设施",
       newLineAsset: "新建设施",
       assetType: "设施类型",
-      types: {
-        sectionValve: "截断阀",
-        blockValve: "隔断阀",
-        flange: "法兰",
-        fitting: "管件",
-        pumpStation: "泵站",
-        compressorStation: "压气站",
-        tank: "储罐",
-        sump: "集液池",
-        valveChamber: "阀室",
-        crossing: "穿越",
-        row: "管廊带（ROW）",
-        meteringStation: "计量站"
-      },
       stationKm: "桩号（km）",
       side: "侧",
-      sides: {
-        left: "左",
-        right: "右",
-        center: "中"
-      },
       inspections: "检查",
       newInspection: "新建检查",
-      inspTypes: {
-        ild: "管道内检测",
-        externalCorrosion: "外腐蚀",
-        visual: "目视",
-        ut: "超声测厚",
-        repair: "修复",
-        replacement: "更换"
-      },
+      editInspection: "编辑检验",
       fromKm: "起始里程",
       toKm: "结束里程",
       findings: "发现",
@@ -474,6 +526,39 @@
       deleteInspectionConfirm: "删除该检查？",
       openAsset: "打开设施",
       reportRef: "报告编号",
+      products: {
+        crude: "原油",
+        gas: "天然气",
+        products: "成品油",
+        water: "水"
+      },
+      types: {
+        sectionValve: "截断阀",
+        blockValve: "隔断阀",
+        flange: "法兰",
+        fitting: "管件",
+        pumpStation: "泵站",
+        compressorStation: "压气站",
+        tank: "储罐",
+        sump: "集液池",
+        valveChamber: "阀室",
+        crossing: "穿越",
+        row: "管廊带（ROW）",
+        meteringStation: "计量站"
+      },
+      sides: {
+        left: "左",
+        right: "右",
+        center: "中"
+      },
+      inspTypes: {
+        ild: "管道内检测",
+        externalCorrosion: "外腐蚀",
+        visual: "目视",
+        ut: "超声测厚",
+        repair: "修复",
+        replacement: "更换"
+      },
       iliImport: "导入内检测异常",
       iliAnomalies: "内检测异常",
       depthPct: "深度（%）",
@@ -491,8 +576,7 @@
       exceeds: "超过安全压力",
       imported: "已导入 {{n}} 条异常（{{ok}} 条已评定）",
       noIli: "未加载内检测异常",
-      opPressure: "操作压力",
-      editInspection: "编辑检验"
+      opPressure: "操作压力"
     },
     apm: {
       title: "资产绩效",
@@ -501,18 +585,7 @@
       assetCode: "资产编号",
       category: "类别",
       criticality: "关键度",
-      crit: {
-        A: "A",
-        B: "B",
-        C: "C"
-      },
       assetStatus: "资产状态",
-      statuses: {
-        running: "运行",
-        standby: "备用",
-        down: "停机",
-        maintenance: "检修"
-      },
       metrics: "指标",
       availability: "可用度",
       mtbf: "MTBF",
@@ -524,17 +597,57 @@
       cof: "COF",
       riskScore: "风险得分",
       riskBand: "风险等级",
+      inspectionBase: "基准间隔",
+      nextInspection: "下次检查",
+      suggestedInterval: "建议间隔",
+      events: "事件",
+      newEvent: "新建事件",
+      start: "开始",
+      end: "结束",
+      downtime: "停机时间",
+      workOrderRef: "工单号",
+      healthBySector: "按板块健康度",
+      noAssets: "无资产",
+      deleteAssetConfirm: "删除该资产？",
+      name: "名称",
+      eventType: "事件类型",
+      reprogram: "重新排定检查",
+      reprogrammed: "检查已重新排定",
+      noEvents: "无事件",
+      openRecommendations: "未处理建议",
+      deleteEventConfirm: "删除该事件？",
+      editAsset: "编辑资产",
+      availabilityOverride: "可用度覆盖值（%）",
+      window90d: "最近 90 天",
+      windowTotal: "总计",
+      oeePerformance: "性能（%）",
+      oeeQuality: "质量（%）",
+      endBeforeStart: "结束时间必须晚于开始时间",
+      riskMatrix: "风险矩阵",
+      riskMatrixDesc: "失效后果（COF）与失效概率（POF）",
+      healthTitle: "健康",
+      health: {
+        good: "健康",
+        warn: "退化",
+        bad: "风险"
+      },
+      crit: {
+        A: "A",
+        B: "B",
+        C: "C"
+      },
+      statuses: {
+        running: "运行",
+        standby: "备用",
+        down: "停机",
+        maintenance: "检修"
+      },
       bands: {
         low: "低",
         medium: "中",
         high: "高",
         veryHigh: "极高"
       },
-      inspectionBase: "基准间隔",
-      nextInspection: "下次检查",
-      suggestedInterval: "建议间隔",
-      events: "事件",
-      newEvent: "新建事件",
       eventTypes: {
         failure: "故障",
         maintenance: "检修",
@@ -542,12 +655,6 @@
         workOrder: "工单",
         inspection: "检查"
       },
-      start: "开始",
-      end: "结束",
-      downtime: "停机时间",
-      workOrderRef: "工单号",
-      healthBySector: "按板块健康度",
-      noAssets: "无资产",
       categories: {
         well: "油井",
         platform: "平台",
@@ -583,29 +690,6 @@
         firePump: "消防泵（NFPA 20）",
         fireSystem: "消防灭火系统"
       },
-      deleteAssetConfirm: "删除该资产？",
-      name: "名称",
-      eventType: "事件类型",
-      reprogram: "重新排定检查",
-      reprogrammed: "检查已重新排定",
-      noEvents: "无事件",
-      openRecommendations: "未处理建议",
-      deleteEventConfirm: "删除该事件？",
-      editAsset: "编辑资产",
-      availabilityOverride: "可用度覆盖值（%）",
-      window90d: "最近 90 天",
-      windowTotal: "总计",
-      oeePerformance: "性能（%）",
-      oeeQuality: "质量（%）",
-      endBeforeStart: "结束时间必须晚于开始时间",
-      riskMatrix: "风险矩阵",
-      riskMatrixDesc: "失效后果（COF）与失效概率（POF）",
-      healthTitle: "健康",
-      health: {
-        good: "健康",
-        warn: "退化",
-        bad: "风险"
-      },
       iso14224: {
         failureMode: "故障模式 (ISO 14224)",
         failureConsequence: "后果 (ISO 14224)",
@@ -626,6 +710,33 @@
         }
       }
     },
+    reliability: {
+      title: "可靠性 (ISO 14224)",
+      beta: "β",
+      eta: "η",
+      b10: "B10",
+      pattern: "模式",
+      patterns: {
+        earlyLife: "早期故障",
+        random: "随机",
+        wearOut: "磨损",
+        insufficient: "数据不足"
+      },
+      mtbfCi: "MTBF（置信度 90%）",
+      probFail: "P(故障)",
+      needEvents: "可靠性分析需要至少 2 次故障事件及故障间隔时间数据"
+    },
+    caseFile: {
+      title: "案卷 (.iwf)",
+      exportBtn: "导出案卷 (.iwf)",
+      importBtn: "导入案卷 (.iwf)",
+      exported: "案卷已导出",
+      imported: "案卷已导入",
+      badJson: "文件格式无效（非 JSON）",
+      badFormat: "不是有效的 .iwf 案卷文件",
+      badVersion: "不支持的 .iwf 版本",
+      badChecksum: "文件已被篡改（校验和不匹配）"
+    },
     ingest: {
       title: "数据导入",
       csvImport: "CSV 导入",
@@ -634,20 +745,6 @@
       delimiterDetected: "检测到的分隔符",
       columnMapping: "列映射",
       mapTo: "映射到",
-      canonical: {
-        mpCode: "测点编号",
-        date: "日期",
-        crMpy: "腐蚀速率（mpy）",
-        wiMg: "初始重量（毫克）",
-        wfMg: "最终重量（毫克）",
-        areaIn2: "面积（平方英寸）",
-        days: "天数",
-        inhibitorResidualPpm: "缓蚀剂残留（ppm）",
-        tempC: "温度（°C）",
-        bswPct: "BSW（%）",
-        category: "类别",
-        note: "备注"
-      },
       runValidation: "校验",
       importBtn: "导入",
       resultSummary: "结果汇总",
@@ -657,16 +754,6 @@
       rowsError: "错误行",
       createMissing: "创建缺失的测点",
       duplicatesSkipped: "已跳过重复项",
-      errorCodes: {
-        E_ID: "标识无效",
-        E_DATE_FORMAT: "日期格式无效",
-        E_DATE_FUTURE: "未来日期",
-        E_WF: "最终重量大于初始重量",
-        E_MP_UNKNOWN: "未知测点",
-        E_RANGE: "超出范围",
-        E_EMPTY: "缺少值",
-        E_WITSML_POINT: "无效的 WITSML 数据点"
-      },
       witsmlImport: "WITSML 导入",
       witsmlNote: "WITSML-lite 子集（井、井眼轨迹、通道）",
       importHistory: "导入历史",
@@ -690,7 +777,31 @@
       jsonResult: "已创建 {{created}}，已更新 {{updated}}，已删除 {{deleted}}",
       deadCount: "失效操作",
       tooLarge: "文件过大（上限 {{limit}} MB）",
-      tooManyRows: "行数过多（上限 {{limit}}）"
+      tooManyRows: "行数过多（上限 {{limit}}）",
+      canonical: {
+        mpCode: "测点编号",
+        date: "日期",
+        crMpy: "腐蚀速率（mpy）",
+        wiMg: "初始重量（毫克）",
+        wfMg: "最终重量（毫克）",
+        areaIn2: "面积（平方英寸）",
+        days: "天数",
+        inhibitorResidualPpm: "缓蚀剂残留（ppm）",
+        tempC: "温度（°C）",
+        bswPct: "BSW（%）",
+        category: "类别",
+        note: "备注"
+      },
+      errorCodes: {
+        E_ID: "标识无效",
+        E_DATE_FORMAT: "日期格式无效",
+        E_DATE_FUTURE: "未来日期",
+        E_WF: "最终重量大于初始重量",
+        E_MP_UNKNOWN: "未知测点",
+        E_RANGE: "超出范围",
+        E_EMPTY: "缺少值",
+        E_WITSML_POINT: "无效的 WITSML 数据点"
+      }
     },
     rules: {
       title: "规则",
@@ -712,6 +823,11 @@
       newCriticalToast: "新的严重建议",
       alarmBannerCritical: "{{n}} 个严重报警处于活动状态 · {{total}} 条未处理建议",
       alarmBannerWarning: "{{n}} 个警告处于活动状态 · {{total}} 条未处理建议",
+      resolveNotePlaceholder: "解决备注…",
+      actor: "操作者",
+      history: "历史记录",
+      lastTriggered: "上次触发",
+      triggerCount: "触发次数",
       msg: {
         R1: "测点 {{code}} 的腐蚀速率 {{cr}} mpy 超过 10 mpy 的严重阈值。",
         R2: "测点 {{code}} 的 7 天均值（{{avg7}} mpy）是 30 天均值（{{avg30}} mpy）的 {{ratio}} 倍 — 呈上升趋势。",
@@ -754,11 +870,6 @@
         R18: "CUI 高风险",
         R19: "MIC 高风险"
       },
-      resolveNotePlaceholder: "解决备注…",
-      actor: "操作者",
-      history: "历史记录",
-      lastTriggered: "上次触发",
-      triggerCount: "触发次数",
       histActions: {
         created: "已创建",
         triggered: "已触发",
@@ -818,6 +929,184 @@
       selectPoint: "选择测点",
       selectPsv: "选择泄压阀",
       source: "来源",
+      t01Action: "阈值超限：请检验该点，并在计算所得剩余寿命之前评估修复或更换。",
+      t01ActionWatch: "监视：无活动触发条件；请保持读取频率。",
+      t01BreachDate: "预计超限日期",
+      t01Delta30: "Δ 7d 与 30d 之差 (mpy)",
+      t01Threshold: "SP0775 阈值 (mpy)",
+      t01Title: "腐蚀点完整性预警",
+      t02RecLowEi: "检查投加量：存在抑制剂效率 < 70 % 的配对",
+      t02RecOk: "保持投加量：效率 ≥ 70 % 且余量处于 80–150 % 区间内",
+      t02RecOverBalance: "减少投加量：余量高于目标值的 150 %",
+      t02RecUnderBalance: "增加投加量：余量低于目标值的 80 %",
+      t02Title: "化学处理与抑制剂效率",
+      t03Actions: "不适用点的处置措施",
+      t03ActionEnvironment: "环境控制：降低 pH₂S（脱水、脱除 H₂S）并投加抑制剂，同时监测严酷度",
+      t03ActionUpgrade: "按 MR0175/ISO 15156-2 将材料升级为 CRA 族，或由集成商证明可接受条件（硬度 ≤22 HRC 并具抗 HIC 性能）",
+      t03Apt: "适用",
+      t03KpiInsufficient: "材料信息不足",
+      t03KpiScreened: "筛查点数量",
+      t03KpiSevere: "处于严酷区域的点数",
+      t03Title: "酸性环境筛查",
+      t04ActionOverdue: "优先检验 CUI 检验已超期或未记录上次检验日期的点",
+      t04DaysSince: "距上次检验的天数",
+      t04KpiHighRisk: "高 CUI 风险点",
+      t04KpiInsulated: "带保温层的点数",
+      t04KpiOverdue: "超期 CUI 检验数",
+      t04Plan: "按风险排序的检验计划",
+      t04Risk: "CUI 风险",
+      t04Scope: "范围：基于 API RP 583 的定性改编评估；不取代专有定量模型，也不取代拆除保温层以进行直接验证。未记录上次 CUI 检验日期的点视为超期；参考间隔为 730 天。推荐方法按所检测到的最高风险等级遵循 API RP 583/571 的方法阶梯。",
+      t04Title: "保温层下腐蚀（CUI）",
+      t05BioMonitor: "对中等风险点加强监测（挂片和探头）；若趋势恶化则评估投加杀菌剂",
+      t05BioRetest: "处理后重新进行 MIC 筛查，以确认风险降低",
+      t05BioShock: "对高风险点实施冲击式杀菌剂处理并重新评估筛查",
+      t05DataGaps: "模型中缺失的数据",
+      t05DataGapsBody: "当前数据模型不包含微生物计数（SRB/APB）、pH 或氧化还原电位的字段：MIC 筛查记录的是二值因素和温度。因此本报告仅显示定性筛查，不含细菌数值。",
+      t05Drivers: "活动因素",
+      t05KpiEvaluated: "已进行 MIC 筛查的点数",
+      t05KpiHigh: "高 MIC 风险",
+      t05Note: "活动因素以其标签键（mic.driver.*）列出以便追溯，由视觉层负责翻译。风险等级使用原始标识符（low/moderate/high）。",
+      t05Risk: "风险等级",
+      t05RunScreening: "在腐蚀视图中逐点完成 MIC 筛查，为本报告提供数据",
+      t05SampleBiofilm: "对有风险点采集生物膜与沉积物样本（刮取）",
+      t05SampleCounts: "对中等或高风险点，安排以平板计数法进行 SRB 与 APB 细菌计数",
+      t05Sampling: "建议的微生物采样",
+      t05Title: "微生物腐蚀（MIC）",
+      t05Treatment: "处理与建议",
+      t06Acceptance: "验收（API 579-1 一级）",
+      t06Assessed: "已评估",
+      t06B31g: "B31G",
+      t06B31gFail: "至少一处 B31G 异常超过允许的运行压力",
+      t06B31gPass: "无 B31G 异常超过允许的运行压力",
+      t06DecisionMonitor: "监测：一级筛查认可当前工况下的服役；保持管线检验计划",
+      t06DecisionNote: "该决策依据 calc 暴露的布尔值推导：厚度通过（API 579-1 L1）、点蚀通过（screenPit）与 B31G 超限。其范围仅为筛查，并非正式的适用性评价",
+      t06DecisionReplace: "更换：公称厚度低于所需厚度；请更换该管段，或经工程师批准降低最大允许压力",
+      t06DecisionRepair: "修复：至少一项一级校核或 B31G 评估超限；请安排修复，并在恢复运行压力之前重新验证适用性",
+      t06DecisionReview: "需工程师评估：系统数据不足以依据 calc 筛查（FFS/B31G）推导决策",
+      t06DecisionTitle: "适用性决策",
+      t06Design: "设计",
+      t06DesignVsMeasured: "设计数据与评估数据对照",
+      t06EngineerReview: "需工程师评估：API 579-1 的二级与三级（LTA 相互作用、RSF、参考应力）尚未在计算引擎中实现",
+      t06Param: "参数",
+      t06PitFail: "某处局部减薄超过一级点蚀筛查的允许剩余量",
+      t06PitPass: "所有局部减薄均通过一级点蚀的保守筛查",
+      t06Profile: "各位置的壁厚分布",
+      t06RulNote: "剩余寿命（RUL）需要管道的腐蚀速率序列；在线检验中不含该数据，故本值留空显示",
+      t06ScreenL1: "一级筛查",
+      t06TLocal: "局部厚度 (mm)",
+      t06TMeasuredMin: "最小实测厚度",
+      t06Title: "适用性评价（FFS）",
+      t06WallFail: "公称厚度低于所需厚度：普遍减薄未通过一级筛查",
+      t06WallLossPct: "最大壁厚损失",
+      t06WallPass: "公称厚度等于或高于所需厚度：普遍减薄通过一级筛查",
+      t07ActionSchedule: "在下一次检修之前，安排检验已超期的 PSV 的拆卸、测试与重新校验（API 576）",
+      t07CapReal: "实际能力",
+      t07CapReq: "所需能力",
+      t07ColDays: "距下次测试的天数",
+      t07ColFluid: "工况 / 介质",
+      t07ColMargin: "裕度 (%)",
+      t07ColOrifInstalled: "已装喷嘴",
+      t07ColOrifRequired: "所需喷嘴",
+      t07Fleet: "按紧迫程度排序的 PSV 台群",
+      t07KpiFleet: "在役 PSV 数量",
+      t07KpiNegMargin: "裕度为负的 PSV",
+      t07KpiOverdue: "检验已超期的 PSV",
+      t07KpiSoon90: "临近重新校验的 PSV（90 天）",
+      t07Note: "气体/蒸汽的能力以 lb/h 计，液体以 gpm 计。裕度与实际能力基于已装喷嘴经 calc/psv 重新计算；状态由下次测试日期相对生成日期推导（而非所存字段），并以原始 id ok/due/overdue 传递。计划中的日期保留原始 ISO 格式，不作本地化。",
+      t07Plan: "按下次测试日期排序的重新校验计划",
+      t07Title: "PSV：选型、裕度与重新校验",
+      t08ActionHigh: "对处于高档位的资产，按建议间隔安排检验（检验基础的 1/2）",
+      t08ActionNoDate: "为尚无计划日期的资产，采用建议间隔确定并记录下次检验日期",
+      t08ActionOverdue: "优先检验下次检验日期已超期的资产",
+      t08ActionReview: "按 API 580，至少每年或在一次重大变更后重新评估每项资产的 RBI",
+      t08ActionVeryHigh: "对处于很高档位的资产采取措施：间隔取基础的 1/4 并评估风险降低",
+      t08DaysLate: "逾期天数",
+      t08KpiConfidence: "平均数据置信度 (%)",
+      t08KpiEvaluated: "已进行 RBI 的资产数",
+      t08KpiHighBand: "处于高或很高档位的资产数",
+      t08KpiOverdue: "超期检验数",
+      t08MatrixTitle: "5×5 风险矩阵：按失效概率与后果划分资产",
+      t08NoDateNote: "未记录下次检验日期的资产，其逾期天数显示为空值；日期不臆造，须在计划中确定",
+      t08Plan: "按风险排序的检验计划",
+      t08Title: "基于风险的检验（RBI）",
+      t09ActionReview: "对所列资产：按 ISO 14224 进行根因分析，审查维护计划，并在 APM 卡片中登记各资产的 ISO 14224 失效模式",
+      t09Actions: "按 MTBF 最差资产的处置措施",
+      t09Assets: "资产：事件、MTBF、MTTR 与可用性",
+      t09AssetsNote: "默认窗口：自生成日期起最近 90 天（可用时段限定）。MTBF 为空值（—）表示该资产在窗口内未记录失效；可用性采用该时段的全部停机时间。类别为资产的 ISO 14224 id（标签 apm.categories.*）。",
+      t09Count: "计数",
+      t09KpiFailureRate: "窗口内失效率",
+      t09MtbfTrend: "月度 MTBF",
+      t09Month: "月",
+      t09Pareto: "失效原因帕累托",
+      t09ParetoNote: "按失效事件统计原因：若已登记则取资产的 ISO 14224 失效模式（apmAssets.iso14224.failureMode）；否则取事件类型（事件不含 isoFailureMode 字段）。数值以原始 id（apm.iso14224.failureModes.* / apm.eventTypes.*）传递。",
+      t09Share: "占比 (%)",
+      t09Title: "资产可靠性与可用性",
+      t09TrendNote: "不足三个月有已记录失效事件：月度 MTBF 序列尚不具意义。请在资产性能视图中登记失效及其起始日期，再重新生成报告。",
+      t10ActionCover: "对时段内无检验记录覆盖的里程段安排检验（ILI 或 UT）",
+      t10ActionCrackAssess: "以专门方法评估裂纹（CLP/CCF 或断裂韧性评估）：原始 B31G 不模拟裂纹类缺陷",
+      t10ActionDentAssess: "按运营方完整性规程（ASME B31.8S）现场核查凹陷并估算褶皱应变",
+      t10ActionReassess: "每次登记缓解措施后重新评估本报告，并以变更管理可追溯性闭合完整性循环",
+      t10ActionRepair: "优先：干预存在 B31G 允许压力低于运行压力的异常的管段（修复或更换，并在恢复压力前重新验证）",
+      t10Anomalies: "已记录异常",
+      t10B31g: "B31G",
+      t10Category: "类别",
+      t10DataGaps: "数据缺失：威胁登记",
+      t10DataGapsBody: "数据模型不含威胁识别登记：pipelineSystems 不带威胁字段，本报告的类别仅由已记录的异常与检验推导。某类别为零意味着数据缺失，而非威胁不存在；在对管道完整性下结论之前，请补全 B31.8S 登记。",
+      t10Evidence: "佐证检验",
+      t10Findings: "按里程的发现",
+      t10KpiCoveredKm: "检验覆盖的 km",
+      t10KpiMinPAllow: "最小 B31G 允许压力",
+      t10KpiSevAlta: "高严重度发现",
+      t10KpiSevCrit: "严重发现",
+      t10KpiSevMedia: "中严重度发现",
+      t10MaxDepth: "最大深度 (%)",
+      t10MocBody: "任何因缓解措施而变更运行压力、壁厚、材料或管线构型的操作，都须在实施前以正式变更管理流程办理（ASME B31.8S / API 1160）。本报告据已记录数据生成，不取代 MOC 评估，也不取代运营方的完整性记录。",
+      t10MocQc: "变更管理（MOC）与数据质量（QC）",
+      t10Plan: "按优先级排序的缓解计划",
+      t10QcNote: "数据质量：每处异常的严重度继承自其关联检验（inspectionId）；无关联时留空且不作臆造。发现以 findings 字段中的自由文本传递，不作重新解释；威胁计数仅由已记录类型推导。",
+      t10RulNote: "管段最小剩余寿命需要管道的腐蚀速率序列；管线 stores 不含该数据（ILI 异常为单点快照），故 RUL 指标留空显示：不臆造速率。",
+      t10Severity: "严重度",
+      t10ThreatNote: "由记录的实际类型映射而来：metalLoss 与 crack 计入时间相关类（随时间发展的腐蚀与裂纹）；dent 计入稳定类（发生即定形的机械损伤）。随机类（第三方损伤、地质、气候、人为流程）在数据模型中无任何类型可代表，故计为零。作为时间相关佐证计入 externalCorrosion、ild 与 ut 检验；visual 类型是一种方法而非威胁识别。B31G 不模拟裂纹或凹陷：其在发现表中的数值沿用应用流程，对这两类仅作方向性参考。",
+      t10Threats: "按类别的 ASME B31.8S 威胁",
+      t10Title: "按威胁的管道完整性（ASME B31.8S）",
+      t11ActionReview: "向管理层呈报 Tier 1–4 计数，并在季度结束前关闭未结的 Tier 3 屏障挑战",
+      t11Count: "计数",
+      t11KpiOnTime: "按期完成的检验 (%)",
+      t11KpiTier3: "未结屏障挑战（Tier 3，R1–R14）",
+      t11KpiValidData: "有效数据 (%)",
+      t11MethodologyBody: "IOGP Report 456 与 API RP 754 的指标层级经改编以适配 IntegrityWatch 数据：具记录后果的事件（Tier 1–2）取自 APM 记录（停机时间）；屏障挑战（Tier 3）取自时段内 R1–R14 规则的未结建议；执行（Tier 4）取自已记录的在线检验。平均 CR 与可用性的读数及窗口取均值方式与季度运营报告相同，后者与本报告并存：T-11 不取代它。",
+      t11MethodologySources: "来源：IOGP Report 456（第 3 版，2023）、API RP 754（第 4 版，2026）、ISO 14224（事件分类法）。计划检验日期与质量标记字段在数据模型中尚不存在：相应百分比以空值显示，不作估算。",
+      t11Month: "月",
+      t11RecsTitle: "时段内可执行的建议（按严重度）",
+      t11Subtitle: "依据 IOGP Report 456 与 API RP 754 的 Tier 1–4 工艺安全指标",
+      t11Tier: "Tier",
+      t11TierNote: "Tier 1：时段内的非计划停机（apmEvents type=unplannedOutage 且停机时间 > 0）。Tier 2：时段内失效（apmEvents type=failure 且 downtimeH > 0）；事件不含严重度字段，其记录的后果为停机时间。Tier 3：时段内触发的 R1–R14 规则未结建议（完整性屏障挑战）。Tier 4：时段内已记录的在线检验。R15–R19 属蓝图之后的告警，不计入 IOGP；空值（—）表示数据缺失，而非零。",
+      t11TiersTable: "按 Tier 1–4 的计数",
+      t11Title: "季度执行报告（IOGP 层级）",
+      t11TrendNote: "最近 12 个月无 Tier 3 屏障挑战：无序列可显示。请登记读数并执行规则扫描，为本趋势提供数据。",
+      t11TrendTitle: "Tier 3 屏障挑战月度趋势（12 个月）",
+      t12ColEntity: "数据实体",
+      t12ColInserts: "插入行数",
+      t12ColRolledBack: "已回滚",
+      t12ColStatus: "会话状态",
+      t12ColUpdates: "更新行数",
+      t12EndpointMissing: "未配置（队列清空功能已禁用）",
+      t12EndpointSet: "已配置",
+      t12KpiCoverage: "检验覆盖率 (%)",
+      t12KpiIntegrity: "案卷 .iwf（完整性）",
+      t12KpiRecs: "未结建议",
+      t12KpiRows: "时段内导入的行数",
+      t12PackageTitle: "包内容（由“打包”操作生成）",
+      t12PkgCsv: "时段 CSV：读数、检验与建议",
+      t12PkgJson: "案 JSON：含校验和的 .iwf 案卷",
+      t12PkgManifest: "manifest.json，含文件清单及其哈希",
+      t12PkgPdf: "班次 PDF 摘要（渲染的 T-12 报告）",
+      t12PkgPhotos: "含内嵌 EXIF/GPS 的照片",
+      t12PkgSha256: "逐文件 SHA-256 校验：签名由“打包”操作生成，而非本报告",
+      t12SessionsNote: "采入日志不保存原始文件名：“文件”列显示会话标识符。“导入行数”累加时段内所有会话的 insert 与 update，含已回滚者；已回滚者在表中标记 rolledBack=yes，以便接收方相应扣减。",
+      t12SessionsTitle: "导入会话",
+      t12Subtitle: "班次交接与离线交付（handover）。覆盖率 = 窗口内带日期的在线检验数相对已记录管线资产数：数据模型未标注哪些为可选对象，故假定全部；符号“—”表示该数据不可计算。",
+      t12Title: "交接与离线 handover 包",
       testDates: "校验日期",
       week: "周"
     },
@@ -827,6 +1116,9 @@
       definition: "定义",
       category: "类别",
       reference: "参考",
+      searchPlaceholder: "搜索术语…",
+      noResults: "无结果",
+      resultsCount: "个结果",
       categories: {
         corrosion: "腐蚀",
         psv: "泄压阀",
@@ -834,10 +1126,7 @@
         apm: "资产绩效",
         standards: "标准",
         data: "数据"
-      },
-      searchPlaceholder: "搜索术语…",
-      noResults: "无结果",
-      resultsCount: "个结果"
+      }
     },
     admin: {
       title: "管理",
@@ -869,11 +1158,6 @@
       pinRepeat: "重复 PIN 码",
       pinMismatch: "PIN 码不一致",
       role: "角色",
-      roles: {
-        admin: "管理员",
-        operator: "操作员",
-        engineer: "工程师"
-      },
       unlock: "解锁",
       wrongPin: "PIN 码错误",
       lockoutWait: "尝试次数过多。请稍后重试",
@@ -887,6 +1171,11 @@
       forceUpdateHint: "清除离线缓存并重新加载应用。更新未出现时使用。",
       syncInsecure: "已拒绝不安全的同步端点（请使用 HTTPS，或仅在 localhost 使用 HTTP）",
       syncToken: "同步令牌（Bearer）",
+      roles: {
+        admin: "管理员",
+        operator: "操作员",
+        engineer: "工程师"
+      },
       users: {
         title: "用户与访问",
         create: "创建用户",
@@ -912,7 +1201,6 @@
         }
       }
     },
-
     security: {
       forbidden: "您没有执行此操作的权限",
       login: "登录",
@@ -922,7 +1210,6 @@
       lockNow: "立即锁定",
       sessionExpired: "会话已过期 — 请重新登录"
     },
-
     a11y: {
       skipLink: "跳到内容",
       openNav: "打开导航",
@@ -954,46 +1241,6 @@
       "crude-oil": "原油",
       diesel: "柴油"
     },
-    ffs: {
-      title: "适用性评价（API 579 L1）",
-      mawpAllowed: "允许最大工作压力",
-      mawpAssessed: "评定最大工作压力",
-      pass: "评价通过",
-      fail: "评价未通过",
-      tRequired: "所需壁厚",
-      corrosionAllowance: "腐蚀裕量",
-      jointEfficiency: "接头系数",
-      allowableStress: "许用应力",
-      utilization: "利用率",
-      needFields: "请输入D, t, P 和材料以评估"
-    },
-    reliability: {
-      title: "可靠性 (ISO 14224)",
-      beta: "β",
-      eta: "η",
-      b10: "B10",
-      pattern: "模式",
-      patterns: {
-        earlyLife: "早期故障",
-        random: "随机",
-        wearOut: "磨损",
-        insufficient: "数据不足"
-      },
-      mtbfCi: "MTBF（置信度 90%）",
-      probFail: "P(故障)",
-      needEvents: "可靠性分析需要至少 2 次故障事件及故障间隔时间数据"
-    },
-    caseFile: {
-      title: "案卷 (.iwf)",
-      exportBtn: "导出案卷 (.iwf)",
-      importBtn: "导入案卷 (.iwf)",
-      exported: "案卷已导出",
-      imported: "案卷已导入",
-      badJson: "文件格式无效（非 JSON）",
-      badFormat: "不是有效的 .iwf 案卷文件",
-      badVersion: "不支持的 .iwf 版本",
-      badChecksum: "文件已被篡改（校验和不匹配）"
-    },
     evidence: {
       sectionTitle: "现场证据",
       signature: {
@@ -1010,9 +1257,22 @@
       },
       sketch: {
         label: "草图",
-        clear: "清除",
-        hint: "在上方绘制草图"
+        hint: "在上方绘制草图",
+        clear: "清除"
       }
+    },
+    ffs: {
+      title: "适用性评价（API 579 L1）",
+      mawpAllowed: "允许最大工作压力",
+      mawpAssessed: "评定最大工作压力",
+      pass: "评价通过",
+      fail: "评价未通过",
+      tRequired: "所需壁厚",
+      corrosionAllowance: "腐蚀裕量",
+      jointEfficiency: "接头系数",
+      allowableStress: "许用应力",
+      utilization: "利用率",
+      needFields: "请输入D, t, P 和材料以评估"
     },
     ingest2: {
       title: "批量文件导入",
