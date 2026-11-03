@@ -14,7 +14,7 @@ IntegrityWatch Field is an application that runs **completely on your computer o
 
 **Value proposition:** Offline-first integrity and compliance operations center for oil & gas field work
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![515 tests](https://img.shields.io/badge/515%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![982 tests](https://img.shields.io/badge/982%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
 
 **Engineering disclaimer:** Support tool. Always validate against current editions of standards and manufacturer data. Calculation results are indicative and must be reviewed by qualified personnel.
 
@@ -385,11 +385,11 @@ so the decision is not mistaken for an omission.
 | **Pipelines and line assets** | Line systems, assets located by station kilometer, inspections (ILD, UT, visual, repair) with field evidence (handwritten signature, JPEG photos with EXIF/GPS, sketches) and campaigns. | ASME B31.4/B31.8, API 5L, ISO 13709, NFPA 20/25/11 |
 | **Schematic map** | Schematic view of the line system with assets positioned by kilometer; keyboard and accessibility navigable. | ISA-101, API RP 1165 |
 | **Asset Performance Management (APM)** | Reliability and availability (MTBF, MTTR, OEE), RBI risk analysis (API 580/581), suggested inspection intervals. | ISO 55000, ISO 14224, API 580/581, ISO 10218-2 |
-| **Data ingestion** | CSV/WITSML-lite import with validation, column mapping, import history. | API 520/526 (validation), WITSML-lite (standard) |
+| **Data ingestion** | Mass multi-file ingestion (queue + drag & drop): CSV / XLSX / JSON / JSONL / generic XML / WITSML across the 9 case entities, with auto column mapping, preview, natural-key dedup, rollback journal and resumable import. | WITSML-lite (standard), ISO 14224 (mapping) |
 | **Recommendations** | R1–R17 engine to detect risk conditions and generate actions (open, acknowledge, resolve, reopen). | API 580/581, ISO 13849-1, ISO 62061 |
-| **Reports** | Quarterly, per monitoring point, PSV datasheet; PDF export with browser printing. | ISO 55000, API 580/581, NFPA 20/25 |
+| **Reports** | 15 templates (T-01…T-12 typed reports + dossier, quarterly, PSV datasheet) × 6 export formats (PDF/CSV/XLSX/DOCX/JSON/XML) with own zero-dependency writers; evidence pack ZIP with SHA-256 manifest. | ISO 55000, API 580/581, NFPA 20/25, PHMSA Part 195, ISO 14224 |
 | **Glossary** | Technical terms in multiple languages with normative references and search. | ISO 13709, API 610/682/674/616, BS 5306, EEMUA 191 |
-| **Administration** | General settings, language, theme, backup/restore, PIN, offline status. | ISO 13849-1, NFPA 20/25/11, BS EN 12845 |
+| **Administration** | General settings, language, theme, backup/restore, named user sessions (admin/engineer/operator), immutable SHA-256 chained audit log with verification, range query and 5-format export, demo reset. | ISO 13849-1, NFPA 20/25/11, BS EN 12845, ISA/IEC 62443-3-3 |
 
 ---
 
@@ -482,7 +482,7 @@ Serve the project folder with any static server.
 2. `npm start` for development
 3. `npm run dist` for packaging
 
-**Result:** `electron/dist/IntegrityWatch Field 1.2.0.exe` (portable, no installation)
+**Result:** `electron/dist/IntegrityWatch Field 1.3.0.exe` (portable, no installation; this folder is git-ignored by design — the exe ships through GitHub Releases, not the repo)
 
 ### **PWA installation**
 
@@ -541,18 +541,29 @@ Printable full manual (Spanish): [DOCX](docs/manual/IntegrityWatch-Field-Manual-
 
 ## Portable package
 
-**IntegrityWatch-Field-Portable v1.2.0** — a single executable, no installation and no internet
+**IntegrityWatch-Field-Portable v1.3.0** — a single executable, no installation and no internet
 required. It bundles the whole application (vanilla JS, service worker, manifest) and the
 Electron shell that serves it locally.
 
-**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.2.0-portable
+**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.3.0-portable
 
 | File | Size | SHA-256 |
 |------|------|---------|
-| [`IntegrityWatch.Field.1.2.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.2.0-portable/IntegrityWatch.Field.1.2.0.exe) | 71.1 MB | `59f7d55140c3e7853fbdf2c736d84f679e8d9b073eb747f82ef0044e620298a4` |
+| [`IntegrityWatch.Field.1.3.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.3.0-portable/IntegrityWatch.Field.1.3.0.exe) | 71.3 MB (74,760,829 B) | `16A9BBF27C423EB15A5C2D5FFDD2DDAA14875ABE32766C3F136A8ED1D126638B` |
 
-> The previous split RAR volumes (`v1.0.0-portable`) were **removed** when this release was
-> published, so there is a single current download.
+> Releases `v1.2.0-portable` (and the earlier split RAR volumes `v1.0.0-portable`) were
+> **removed** with client approval, so there is a single current download: `v1.3.0-portable`.
+
+**What is new in 1.3.0**
+- **Mass multi-file ingestion** (queue + drag & drop): CSV / XLSX / JSON / JSONL / generic XML / WITSML across the 9 case entities, with preview → confirm → rollback and resumable journals. Measured in a real browser: 200k readings in 45.4 s; re-importing the same file adds 0 duplicates (18.1 s).
+- **Reports: 15 templates × 6 formats.** The 12 typed reports T-01…T-12 (including the campaign handover T-12) plus point dossier, quarterly report and PSV sheet, exported to PDF / CSV / XLSX / DOCX / JSON / XML by own zero-dependency writers (validated with CPython `zipfile`, `openpyxl` and `python-docx` as external judges).
+- **Evidence pack**: ZIP with manifest and SHA-256 per file, in-app verification.
+- **CMMS templates**: SAP PM, IBM Maximo, ISO 14224 (17 columns), PHMSA B31.8S (2 sheets).
+- **QR nameplate reading** in the 3 asset forms (APM, PSV, pipelines) with graceful no-camera fallback; **GPS + EXIF photo** in field inspections.
+- **Immutable audit log** chained with SHA-256, hardened against multi-tab races (`navigator.locks` + CAS + `repairHead`); verify / query by range / export in 5 formats from Admin.
+- **7-language parity** guarded by automated tests (997+ identical sheets) and a 11-route Playwright sweep with 0 raw keys.
+- **Offline-first verified in airplane mode**: cache `iw-v25`, 120 precached routes audited 1:1 against `index.html`.
+- Test suite: **982 green** (up from 583 at the start of this version work).
 
 **What is new in 1.2.0**
 - IFS-24 pictogram set (34 equipment symbols) across the dashboard, asset registry, corrosion list and relief valves.
@@ -564,19 +575,19 @@ Electron shell that serves it locally.
 - **Security model**: persistent admin/engineer/operator sessions (15-minute inactivity window), permission guard on every write path, authorship stamping on all records, SHA-256 signed case files (V2 envelope) with downgrade-attack rejection, import schema validation, file size limits, and a hardened sync endpoint (https-only outside localhost, optional bearer token). Verified end-to-end: 8 forms saved under an admin session, V2 export with `signedBy: admin`, and session expiry returning a null role.
 
 **How to install (1 minute):**
-1. Download `IntegrityWatch.Field.1.2.0.exe`.
+1. Download `IntegrityWatch.Field.1.3.0.exe`.
 2. Run it. Windows SmartScreen may warn about an unsigned build: choose **More info → Run anyway**.
 3. The app opens on its own local server; no browser setup and no network required.
 
 **Verify the download (optional):**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
+certutil -hashfile IntegrityWatch.Field.1.3.0.exe SHA256
 ```
 The hash must match the table above.
 
 **Contents:**
 - Complete application (vanilla JS, service worker, manifest)
-- `IntegrityWatch.Field.1.2.0.exe` (Electron portable container, no installation)
+- `IntegrityWatch.Field.1.3.0.exe` (Electron portable container, no installation)
 - All `docs/`: user guide, standards, technical manuals, and **user manuals in 7 languages** (`docs/manual/MANUAL.en|es|fr|pt|ru|zh|ar.md`, plus DOCX/HTML printable manual)
 - `datos-prueba/` (CSV and JSON for validation)
 - `THIRD-PARTY-NOTICES.md`
@@ -584,8 +595,8 @@ The hash must match the table above.
 
 **Verification:**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
-# must match: 59f7d55140c3e7853fbdf2c736d84f679e8d9b073eb747f82ef0044e620298a4
+certutil -hashfile IntegrityWatch.Field.1.3.0.exe SHA256
+# must match: 16A9BBF27C423EB15A5C2D5FFDD2DDAA14875ABE32766C3F136A8ED1D126638B
 ```
 
 ---
@@ -689,7 +700,7 @@ certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 
 **Workflow:**
 1. PWA installed → offline cache with service worker
-2. IndexedDB local (stores: meta, monitoringPoints, readings, coupons, psvs, apmAssets, recommendations, importLog)
+2. IndexedDB local, 15 stores (meta, monitoringPoints, readings, coupons, psvs, pipelineSystems, lineAssets, lineInspections, iliAnomalies, apmAssets, apmEvents, recommendations, importLog, mutationQueue, auditLog — the last one SHA-256 chained and multi-tab safe)
 3. Optional sync queue (`mutationQueue`) to remote endpoint
 4. Restore: JSON imported → clear + bulkPut (merge or replace mode)
 
@@ -698,7 +709,7 @@ certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 **Desktop wrapper:** `electron/`
 
 **Features:**
-- `IntegrityWatch.Field.1.2.0.exe` (portable, no installation, ~71 MB)
+- `IntegrityWatch.Field.1.3.0.exe` (portable, no installation, ~71.3 MB)
 - Loads the application from local HTTP server
 - No Node.js runtime required (only for development)
 - Same logic as web version (functional parity)
@@ -707,7 +718,7 @@ certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 
 ## Quality and testing
 
-**526 unit tests** (Node >=20, CJS, `node:assert/strict`)
+**982 tests** (Node >=20, CJS, `node:assert/strict`)
 
 **Coverage ≥80%** in engines (`src/calc/**`, `src/rules/**`)
 
@@ -715,7 +726,7 @@ certutil -hashfile IntegrityWatch.Field.1.2.0.exe SHA256
 
 | Type | Coverage | Command | Result |
 |------|----------|---------|--------|
-| **Unit (engines)** | corrosion 100%, PSV 98%, APM 93%, units 90%, rules 96–98% | `node --test` | **300/300 green** |
+| **Unit (engines)** | corrosion 100%, PSV 98%, APM 93%, units 90%, rules 96–98% | `node --test` | **982/982 green** (full suite; engines grew from 300) |
 | **Data/ingestion** | CSV parse + validation + 12 aliases + boundaries; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glossary; i18n parity 7 locales | 119 tests `qa-*.test.js` | ✅ |
 | **Integration (no DOM)** | pipeline CSV→repos→rules→recommendations; cycle ack→resolve→reopen; deduplication; store hooks | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
 | **Browser (manual, MCP chrome-devtools)** | 12 views rendered; RTL Arabic; dark theme; hot-switch i18n; keyboard map; A4 report; 0 console errors | captures `docs/evidence/*.png` (26) | ✅ |

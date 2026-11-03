@@ -1,6 +1,6 @@
 # Manual extendido en español latino — IntegrityWatch Field
 
-**Versión:** 1.2.0 · **Fecha de validación:** 1 de noviembre de 2026
+**Versión:** 1.3.0 · **Fecha de validación:** 3 de noviembre de 2026 (las capturas provienen de la campaña de campo del 1.° de noviembre)
 **Audiencia:** operadores de oleoducto, ingenieros de integridad y administradores del sistema
 **Modo de uso:** tablet Android en horizontal (1280×800) — válido también en escritorio
 **Datos de las capturas:** escenario de oleoducto con atributos reales de NSTA y detalles derivados (ver §2)
@@ -158,7 +158,9 @@ longitud). El nombre del operador puede anonimizarse.
 ### 7.2 Ronda diaria como inspección
 
 Cada ronda se registra como inspección del activo de línea revisitado: tipo, fecha, km
-desde/hasta, severidad y hallazgo.
+desde/hasta, severidad y hallazgo. Desde v1.3.0 la evidencia fotográfica toma **GPS y
+metadatos EXIF** de la propia foto, y en los formularios de APM, PSV y sistemas de línea
+hay **lectura QR de placa** (con alternativa manual cuando no hay cámara).
 
 ![Ronda diaria](../manual-tablet-es-2026-11-01/16-ronda-inspeccion.png)
 
@@ -173,8 +175,13 @@ en su estación.
 
 ## 8. Ingesta de la ronda (lecturas diarias)
 
-**Data ingest → CSV**. La ronda diaria se entrega como archivo (42 lecturas, 6 puntos × 7 días);
-la app mapea las columnas sola, valida cada fila y compromete los datos en el dispositivo.
+**Data ingest → Archivos**. Desde v1.3.0 la ingesta acepta **CSV, XLSX, JSON, JSONL, XML
+genérico y WITSML** en una **cola de varios archivos con arrastrar y soltar**, sobre las 9
+entidades del expediente (puntos, lecturas, cupones, PSV, sistemas, activos de línea,
+inspecciones, activos y eventos APM). La app mapea las columnas sola, previsualiza, valida
+cada fila, deduplica por clave natural y permite **retroceder el lote completo (rollback)**
+o reanudar una importación interrumpida. La ronda diaria se entrega como archivo
+(42 lecturas, 6 puntos × 7 días).
 
 ![Ingesta](../manual-tablet-es-2026-11-01/18-ingesta-ronda.png)
 
@@ -198,8 +205,13 @@ a partir de los datos del oleoducto.
 
 ## 10. Informes en el dispositivo
 
-Tres informes se generan sin conexión: **dossier del punto** (con tendencia, ASTM y
-clasificación), **informe trimestral** y **ficha de PSV**.
+Desde v1.3.0 el catálogo completo son **15 plantillas**: los tres clásicos **dossier del
+punto** (con tendencia, ASTM y clasificación), **informe trimestral** y **ficha de PSV**,
+más los 12 informes tipo T-01…T-12 (matriz de riesgo, tendencia, cupones, PSV vencidas,
+etc., incluido el handover de campaña T-12). Todos se generan sin conexión y se exportan en
+**seis formatos** (PDF, CSV, XLSX, DOCX, JSON, XML); además puede armarse un **paquete de
+evidencia** ZIP con manifiesto SHA-256 verificable en campo. Las plantillas de CMMS (SAP PM,
+IBM Maximo, ISO 14224 y PHMSA B31.8S) salen de la misma pantalla.
 
 ![Dossier](../manual-tablet-es-2026-11-01/23-informe-dossier.png)
 
@@ -211,8 +223,11 @@ clasificación), **informe trimestral** y **ficha de PSV**.
 
 ![Admin final](../manual-tablet-es-2026-11-01/26-admin-final.png)
 
-El expediente completo (JSON + evidencia) se exporta desde Admin. La validación de esta
-campaña quedó registrada en `docs/manual-tablet-es-2026-11-01/evidence.json`.
+El expediente completo (JSON + evidencia) se exporta desde Admin. Desde v1.3.0 Admin también
+muestra la **bitácora inmutable encadenada con SHA-256**: botón *Verificar cadena*, consulta
+por rango de fechas y exportación en cinco formatos; la cadena resiste incluso varias pestañas
+abiertas a la vez. La validación de esta campaña quedó registrada en
+`docs/manual-tablet-es-2026-11-01/evidence.json`.
 
 ---
 
