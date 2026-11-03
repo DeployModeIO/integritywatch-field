@@ -721,3 +721,135 @@ test('rollback avisa GONE (no muere) si un registro del diario ya no existe', as
   assert.equal(back.warnings[0].code, 'GONE');
   assert.equal(await repos.db.count('readings'), 0);
 });
+
+// ---------------------------------------------------------------------------
+// CONCURRENCIA / G2 (P0 navegador): rollback duplicado y rollbacks bulk
+// concurrentes sobre el MISMO store. REMOVE_BULK_THRESHOLD del motor es 500
+// inserts, asi que un journal de 1200 registros activa la via rapida
+// (list+filter+clear+saveAll) de forma natural, sin monkeypatch.
+// ---------------------------------------------------------------------------
+
+// Filas sinteticas unicas (mpId+date = clave natural de readings).
+function mkSynthRows(prefix, count, date) {
+  const rows = [];
+  for (let i = 0; i < count; i++) {
+    rows.push({
+      row: [prefix + '-' + String(i).padStart(6, '0'), date || '2026-06-01', String((i % 997) / 10)],
+      rowNo: i + 2
+    });
+  }
+  return rows;
+}
+
+async function importSynth(repos, prefix, count) {
+  return commit.run({
+    storeName: 'readings',
+    columnPlan: PLAN_DEDUPE,
+    rows: mkSynthRows(prefix, count),
+    sourceFile: prefix + '.synth.csv',
+    repo: repos.readings,
+    metaRepo: repos.meta,
+    importLogRepo: repos.importLog,
+    actor: { user: 'ana', role: 'engineer' },
+    fingerprint: 'conc-' + prefix
+  });
+}
+
+async function saveSeeds(repos, n) {
+  for (let i = 0; i < n; i++) {
+    await repos.readings.save({
+      id: 'SEED-' + String(i).padStart(5, '0'),
+      mpId: 'MP-SEED-' + String(i).padStart(5, '0'),
+      date: '2025-12-31',
+      crMpy: 3.3,
+      source: 'seed'
+    });
+  }
+}
+
+test('G2/a dos rollbacks del MISMO journal en Promise.all: uno trabaja, el otro NO-OP COMMIT_NO_JOURNAL; seeds ajenos intactos', async () => {
+  const repos = newRepos();
+  await saveSeeds(repos, 2);
+  const r = await importSynth(repos, 'MP-A', 10);
+  assert.equal(r.counts.inserts, 10);
+
+  const rb = () => commit.rollback({
+    journalId: r.journalId,
+    importLogRepo: repos.importLog,
+    repo: repos.readings,
+    metaRepo: repos.meta
+  });
+  const settled = await Promise.allSettled([rb(), rb()]);
+  const ok = settled.filter((s) => s.status === 'fulfilled');
+  const bad = settled.filter((s) => s.status === 'rejected');
+  assert.equal(ok.length, 1, 'exactamente un rollback hace el trabajo');
+  assert.equal(ok[0].value.rolled.inserts, 10);
+  assert.equal(bad.length, 1, 'el duplicado queda NO-OP con error tipado');
+  assert.equal(bad[0].reason.code, commit.NO_JOURNAL);
+
+  // registros creados FUERA de la importacion sobreviven intactos.
+  assert.equal(await repos.readings.get('SEED-00000').then((s) => s && s.crMpy), 3.3);
+  assert.equal(await repos.readings.get('SEED-00001').then((s) => s && s.mpId), 'MP-SEED-00001');
+  assert.equal(await repos.db.count('readings'), 2, 'final = seeds + no-importados');
+});
+
+test('G2/b rollback bulk journal A + rollback bulk journal B CONCURRENTES (mismo store): exactamente seeds, cero ajenos perdidos ni resucitados', async () => {
+  const repos = newRepos();
+  const SEEDS = 300;
+  await saveSeeds(repos, SEEDS);
+  const rA = await importSynth(repos, 'MP-A', 1200);
+  const rB = await importSynth(repos, 'MP-B', 1200);
+  assert.ok(rA.counts.inserts > 500 && rB.counts.inserts > 500, 'ambos journals activan la via rapida bulk');
+
+  const idsA = new Set((await journalDocs(repos.importLog, rA.journalId)).flatMap((d) => d.inserts));
+  const idsB = new Set((await journalDocs(repos.importLog, rB.journalId)).flatMap((d) => d.inserts));
+  assert.equal(idsA.size, 1200);
+  assert.equal(idsB.size, 1200);
+
+  const settled = await Promise.allSettled([
+    commit.rollback({ journalId: rA.journalId, importLogRepo: repos.importLog, repo: repos.readings, metaRepo: repos.meta }),
+    commit.rollback({ journalId: rB.journalId, importLogRepo: repos.importLog, repo: repos.readings, metaRepo: repos.meta })
+  ]);
+  assert.deepEqual(settled.map((s) => s.status), ['fulfilled', 'fulfilled'],
+    'ningun rollback debe morir: el mutex los serializa');
+  assert.equal(settled[0].value.rolled.inserts, 1200);
+  assert.equal(settled[1].value.rolled.inserts, 1200);
+
+  const final = await repos.readings.list();
+  assert.equal(final.length, SEEDS, 'sin perdida por interleave NI resurreccion del journal ya revertido');
+  const finalIds = new Set(final.map((rec) => rec.id));
+  idsA.forEach((id) => assert.ok(!finalIds.has(id), 'insert de A ' + id + ' debe estar eliminado'));
+  idsB.forEach((id) => assert.ok(!finalIds.has(id), 'insert de B ' + id + ' debe estar eliminado'));
+  for (let i = 0; i < SEEDS; i++) {
+    assert.ok(finalIds.has('SEED-' + String(i).padStart(5, '0')), 'seed ' + i + ' debe sobrevivir');
+  }
+});
+
+test('G2/c rollback despues de rollback (secuencial) del mismo journal: segunda vez NO-OP COMMIT_NO_JOURNAL y datos intactos', async () => {
+  const repos = newRepos();
+  await saveSeeds(repos, 1);
+  const r = await importSynth(repos, 'MP-C', 10);
+  assert.equal(r.counts.inserts, 10);
+
+  const rbArgs = { journalId: r.journalId, importLogRepo: repos.importLog, repo: repos.readings, metaRepo: repos.meta };
+  const back = await commit.rollback(rbArgs);
+  assert.equal(back.rolled.inserts, 10);
+  assert.equal(await repos.db.count('readings'), 1);
+
+  // la marca rolledBack que escribe rollbackCore se lee bien desde list Y get.
+  const docs = await journalDocs(repos.importLog, r.journalId);
+  assert.ok(docs.length >= 1);
+  assert.ok(docs.every((d) => d.rolledBack === true), 'rollbackCore marca el diario via list()');
+  const viaGet = await repos.importLog.get(docs[0].id);
+  assert.equal(viaGet.rolledBack, true, 'y la marca es visible tambien via get()');
+
+  await assert.rejects(
+    () => commit.rollback(rbArgs),
+    (err) => err.code === commit.NO_JOURNAL,
+    'segundo rollback del mismo journal es NO-OP tipado'
+  );
+  assert.equal(await repos.db.count('readings'), 1, 'el NO-OP no toca nada');
+  const seed = await repos.readings.get('SEED-00000');
+  assert.equal(seed.mpId, 'MP-SEED-00000');
+  assert.equal(seed.source, 'seed');
+});

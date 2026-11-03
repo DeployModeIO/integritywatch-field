@@ -17,10 +17,18 @@
      SE LIMPIA AUTOMATICAMENTE lo hecho en ESE run (rollback del diario propio,
      docs marcados rolledBack, checkpoint borrado) y se rechaza con
      COMMIT_LIMIT_ROWS. Para conservar el parcial use isCanceled en su lugar.
-   - Rendimiento del rollback: repo.remove es O(1) en IndexedDB pero O(n) en
-     dbMemory; con mas de REMOVE_BULK_THRESHOLD inserts el rollback usa la via
-     rapida list+filter+clear+saveAll (los registros conservados se re-sellan
-     con updatedAt nuevo; createdAt/autorias intactas).
+    - Rendimiento del rollback: repo.remove es O(1) en IndexedDB pero O(n) en
+      dbMemory; con mas de REMOVE_BULK_THRESHOLD inserts el rollback usa la via
+      rapida list+filter+clear+saveAll (los registros conservados se re-sellan
+      con updatedAt nuevo; createdAt/autorias intactas).
+    - Concurrencia (G2, mutex por store): los lotes de escritura de run() y el
+      rollback COMPLETO se serializan por nombre de store con una cola de
+      promesas (withStoreLock). Sin ella, dos operaciones masivas
+      list→clear→saveAll concurrentes interleavean y resucitan/perdian
+      registros ajenos. Los diarios con rolledBack:true quedan fuera de
+      journalDocsFor: revertir el mismo journal dos veces es NO-OP con
+      COMMIT_NO_JOURNAL. Consecuencia: importaciones concurrentes al MISMO
+      store se serializan por lote (correcto; algo mas lento por espera).
    - quality ADITIVO en inserts: {...calidad del draft, mark, sourceFile,
      importId}. Los updates NO tocan quality ni campos fuera del plan.
    - store.stamp solo pone createdAt/updatedAt: commit escribe
@@ -81,6 +89,35 @@
 
   function yieldLoop() {
     return new Promise(function (resolve) { setTimeout(resolve, 0); });
+  }
+
+  // --- mutex cooperativo por store (G2) ---------------------------------------
+  /* Cola de promesas por nombre de store, sin librerias externas (~20 lineas):
+     serializa los LOTES de escritura de run() con el ROLLBACK COMPLETO del
+     MISMO store. Sin ella, dos operaciones masivas list→filter→clear→saveAll
+     concurrentes toman su snapshot ANTES del clear rival y al re-salvar
+     resucitan registros ya revertidos o pierden los que el rival re-salvo
+     (perdida de 120 seeds del demo reproducida en navegador). Consecuencia
+     aceptada: importaciones concurrentes al mismo store se serializan por
+     lote (correcto; algo mas lento por espera). NO es reentrante: fn nunca
+     debe adquirir el lock del mismo store dentro de si. La cola vive en el
+     MODULO (no por instancia de repo) porque los dos rollbacks comparten el
+     storeName pero cada llamador trae su propio repo. */
+  var storeLocks = new Map();
+  var UNKNOWN_STORE_LOCK = 'commit:store-desconocido';
+
+  function withStoreLock(storeName, fn) {
+    var key = String(storeName);
+    var prev = storeLocks.get(key) || Promise.resolve();
+    var result = prev.then(fn);
+    // tail: nunca rechaza, asi un fallo ajeno no rompe la cola.
+    var tail = result.then(function () { return null; }, function () { return null; });
+    storeLocks.set(key, tail);
+    // liberar el mapa cuando este pedido es el ultimo de la cola.
+    tail.then(function () {
+      if (storeLocks.get(key) === tail) { storeLocks.delete(key); }
+    });
+    return result;
   }
 
   function copy(rec) {
@@ -292,10 +329,19 @@
     return Promise.resolve(docs).then(function (d) { return Array.isArray(d) ? d : []; });
   }
 
-  async function journalDocsFor(importLogRepo, journalId) {
+  /* Docs VIGENTES del diario de un journal: batchNo numerico y rolledBack !==
+     true (rollbackCore marca los docs tras revertir; la marca sobrevive el
+     round-trip por importLogRepo.saveAll→list/get, verificado en tests). Con
+     esto, revertir el MISMO journal dos veces es NO-OP: el segundo rollback
+     ve 0 docs y lanza COMMIT_NO_JOURNAL (o tolerance 0). clearSession pasa
+     includeRolledBack=true para purgar tambien la historia ya revertida. */
+  async function journalDocsFor(importLogRepo, journalId, includeRolledBack) {
     var all = await listDocs(await importLogRepo.list());
     return all
-      .filter(function (d) { return d && d.importId === journalId && typeof d.batchNo === 'number'; })
+      .filter(function (d) {
+        if (!d || d.importId !== journalId || typeof d.batchNo !== 'number') { return false; }
+        return includeRolledBack || d.rolledBack !== true;
+      })
       .sort(function (a, b) { return a.batchNo - b.batchNo; });
   }
 
@@ -536,6 +582,14 @@
     async function flushBatch() {
       ops = ops.filter(function (o) { return !o.dead; });
       if (ops.length === 0) { return; }
+      // El lote completo (datos + diario + checkpoint) dentro del mutex del
+      // store: un rollback concurrente no puede interleavear su clear+saveAll
+      // entre mitades del lote. Run ya era secuencial por lote POR DISENO; el
+      // lock ademas serializa IMPORTS concurrentes al mismo store entre si.
+      await withStoreLock(storeName, flushBatchLocked);
+    }
+
+    async function flushBatchLocked() {
       var newRecs = [];
       var changeDocs = [];
       var updateOps = [];
@@ -670,13 +724,30 @@
   }
 
   // --- rollback ----------------------------------------------------------------
+  /* rollbackCore corre COMPLETO dentro del mutex del store (G2): la via rapida
+     list+filter+clear+saveAll deja de ser segura si dos rollbacks del mismo
+     store interleavean, y el diario re-leido DENTRO del lock ve las marcas
+     rolledBack que haya escrito un rollback concurrente (doble rollback del
+     mismo journal = NO-OP con COMMIT_NO_JOURNAL). El store se descubre con una
+     pre-lectura fuera del lock SOLO para elegir la llave: si no hay docs
+     vigentes no hay nada que proteger y el NO-OP/NO_JOURNAL se decide igual
+     dentro del lock con la re-lectura. */
   async function rollbackCore(opts) {
     var repo = requireRemoverRepo(opts.repo, 'repo');
     var importLogRepo = requireRemoverRepo(opts.importLogRepo, 'importLogRepo');
-    var meta = metaApi(opts.metaRepo);
-    var onProgress = typeof opts.onProgress === 'function' ? opts.onProgress : null;
     var journalId = opts.journalId ? String(opts.journalId) : null;
     if (!journalId) { throw iwError(CODE_BAD_OPTS, 'commit.rollback: requiere journalId'); }
+
+    var probe = await journalDocsFor(importLogRepo, journalId);
+    var lockKey = (probe[0] && probe[0].storeName) || UNKNOWN_STORE_LOCK;
+    return withStoreLock(lockKey, function () {
+      return rollbackLocked(opts, repo, importLogRepo, journalId);
+    });
+  }
+
+  async function rollbackLocked(opts, repo, importLogRepo, journalId) {
+    var meta = metaApi(opts.metaRepo);
+    var onProgress = typeof opts.onProgress === 'function' ? opts.onProgress : null;
 
     var docs = await journalDocsFor(importLogRepo, journalId);
     if (docs.length === 0) {
@@ -714,6 +785,9 @@
     if (allIds.length > REMOVE_BULK_THRESHOLD) {
       // via rapida para dbMemory (remove es O(n) ahi): reconstruir el store sin
       // los ids del diario. Nota: saveAll re-sella updatedAt de los conservados.
+      // SEGURA: corre DENTRO del mutex del store (rollbackLocked) — ningun otro
+      // clear/saveAll o lote de run puede interleavear entre list y saveAll.
+      // El umbral se mantiene igual.
       var idSet = new Set(allIds);
       var all = await repo.list();
       var kept = all.filter(function (r) { return !idSet.has(r.id); });
@@ -826,7 +900,9 @@
     var meta = metaApi(opts.metaRepo);
     var journalId = opts.journalId ? String(opts.journalId) : null;
     if (!journalId) { throw iwError(CODE_BAD_OPTS, 'commit.clearSession: requiere journalId'); }
-    var docs = await journalDocsFor(importLogRepo, journalId);
+    // includeRolledBack=true: clearSession purga TAMBIEN la historia ya
+    // revertida (journalDocsFor ahora solo devuelve docs vigentes).
+    var docs = await journalDocsFor(importLogRepo, journalId, true);
     var removedDocs = 0;
     for (var i = 0; i < docs.length; i += 250) {
       var chunk = docs.slice(i, i + 250);
