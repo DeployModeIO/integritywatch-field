@@ -130,6 +130,100 @@
 
   function pipelineAssessmentApi() { return (root.IW && root.IW.calc) ? root.IW.calc.pipelineAssessment : null; }
 
+  // ------------------------------------------------------------- export (tarjeta)
+  // Native: los campos que la propia vista y seed.js manejan. La cabecera de
+  // columna es el NOMBRE CRUDO del campo — misma convención de 'ids crudos' de
+  // src/export/templates.js y cero claves i18n nuevas (t('code') devuelve la
+  // propia clave por passthrough). PHMSA/B31.8S: solo via
+  // IW.export.templates.phmsa.performance; el B31G nunca se recalcula en la
+  // plantilla: llega precomputado por buildAssessmentMap con los MISMOS
+  // parametros de renderIliPanel (Su catalogo/414, D=dnIn*25.4, t, 0.72, op).
+  var EXPORT_ROW_GUARD = 50000; // mas filas: xlsx/docx/pdf se bloquean (csv/json/xml pasan)
+  var EXPORT_BASENAME = { pipelineSystems: 'ducto', lineAssets: 'activos', lineInspections: 'insp', iliAnomalies: 'ili' };
+  var EXPORT_ENTITIES = ['pipelineSystems', 'lineAssets', 'lineInspections', 'iliAnomalies'];
+  var EXPORT_ENTITY_LABEL_KEYS = {
+    pipelineSystems: 'pipelines.systems', lineAssets: 'pipelines.lineAssets',
+    lineInspections: 'pipelines.inspections', iliAnomalies: 'pipelines.iliAnomalies'
+  };
+  var NATIVE_FIELDS = {
+    pipelineSystems: ['id', 'name', 'operator', 'product', 'dnIn', 'wallThicknessMm', 'material',
+      'coating', 'lengthKm', 'stationFromKm', 'stationToKm', 'opPressureMpa', 'notes'],
+    lineAssets: ['id', 'systemId', 'code', 'name', 'type', 'stationKm', 'side', 'certExpiryISO', 'notes'],
+    lineInspections: ['id', 'systemId', 'type', 'date', 'lineAssetId', 'fromKm', 'toKm', 'severity',
+      'findings', 'reportRef'],
+    iliAnomalies: ['id', 'assetId', 'systemId', 'stationKm', 'depthPct', 'lengthMm', 'widthMm', 'type',
+      'inspectionId', 'date']
+  };
+
+  // Puro: modelo de hoja unica con las columnas nativas de la entidad.
+  function nativeTableModel(entity, records) {
+    var fields = NATIVE_FIELDS[entity] || [];
+    return {
+      sections: [{
+        type: 'table',
+        titleKey: EXPORT_ENTITY_LABEL_KEYS[entity] || entity,
+        columns: fields.map(function (f) { return { key: f, labelKey: f }; }),
+        rows: (records || []).map(function (rec) {
+          var row = {};
+          fields.forEach(function (f) {
+            row[f] = rec && rec[f] !== undefined && rec[f] !== null ? rec[f] : '';
+          });
+          return row;
+        })
+      }]
+    };
+  }
+
+  // Puro: {sheets:[{sheetName,headers,rows:[array]}]} de templates → modelo de
+  // DOS secciones table (una por hoja). titleKey = sheetName crudo; celdas c0..cN.
+  function phmsaTableModel(phmsaOut) {
+    var sheets = (phmsaOut && phmsaOut.sheets) || [];
+    return {
+      sections: sheets.map(function (sh) {
+        var headers = (sh && sh.headers) || [];
+        return {
+          type: 'table',
+          titleKey: (sh && sh.sheetName) || 'tabla',
+          columns: headers.map(function (h, i) { return { key: 'c' + i, labelKey: String(h) }; }),
+          rows: ((sh && sh.rows) || []).map(function (r) {
+            var row = {};
+            headers.forEach(function (h, i) {
+              row['c' + i] = r[i] === undefined || r[i] === null ? '' : r[i];
+            });
+            return row;
+          })
+        };
+      })
+    };
+  }
+
+  // Puro-con-dependencias: id→{pAllow,exceeds} para PRES_ADMISIBLE_B31G,
+  // reusando IW.calc.pipelineAssessment. Sin el modulo devuelve null (la
+  // columna queda '' segun el contrato de templates).
+  function buildAssessmentMap(systems, anomalies) {
+    var pa = pipelineAssessmentApi();
+    if (!pa || typeof pa.assessAnomalies !== 'function') { return null; }
+    var mats = root.IW.data && root.IW.data.materials;
+    var map = {};
+    (systems || []).forEach(function (sys) {
+      if (!sys || sys.dnIn == null || sys.wallThicknessMm == null || !sys.material) { return; }
+      var Su = 414;
+      if (mats && mats.byId) {
+        var m = mats.byId(sys.material);
+        if (m && m.smysMpa) { Su = m.smysMpa; }
+      }
+      var sysAnoms = (anomalies || []).filter(function (a) { return a && a.systemId === sys.id; });
+      if (!sysAnoms.length) { return; }
+      pa.assessAnomalies([], sysAnoms, {
+        Su: Su, D: sys.dnIn * 25.4, t: sys.wallThicknessMm, designFactor: 0.72,
+        opPressure: sys.opPressureMpa != null ? sys.opPressureMpa : 0
+      }).forEach(function (r) {
+        map[r.id] = { pAllow: r.pAllow, exceeds: r.exceeds };
+      });
+    });
+    return map;
+  }
+
   // IW.components.scan es OPCIONAL (mismo criterio que signaturePad/mapa): sin
   // el módulo los botones de GPS y foto con EXIF no se crean y el flujo de
   // inspección sigue funcionando igual.
@@ -309,9 +403,159 @@
           ];
           tableHost.appendChild(u.table({ columns: columns, rows: rows, captionKey: 'pipelines.systems', emptyKey: 'pipelines.noSystems' }));
         }
+
+        renderExportCard();
       }).catch(function (err) {
         if (_session && _session.active) { container.textContent = ''; container.appendChild(banner(err)); }
       });
+    }
+
+    // Tarjeta de exportacion (misma familia que la barra de la vista Informes):
+    // entidad × plantilla × alcance × formato. Guard de modulo ausente: si
+    // IW.export.reportFormats no está cargado la tarjeta sencillamente no se
+    // crea. La opcion PHMSA exige ademas IW.export.templates.phmsa.performance
+    // y solo aparece con Sistemas o Anomalías ILI (las dos entidades que nutren
+    // las hojas 'medidas_desempeno' y 'hallazgos_ili').
+    function renderExportCard() {
+      var fmts = root.IW.export && root.IW.export.reportFormats;
+      if (!fmts || typeof fmts.produce !== 'function') { return; }
+      var csvMod = root.IW.export && root.IW.export.csvWriter;
+      var tpls = root.IW.export && root.IW.export.templates;
+      var hasPhmsa = !!(tpls && tpls.phmsa && typeof tpls.phmsa.performance === 'function');
+
+      var entitySel = el('select', { class: 'select', attrs: { 'aria-label': t('pipelines.title') } });
+      EXPORT_ENTITIES.forEach(function (e) {
+        entitySel.appendChild(el('option', { attrs: { value: e }, text: t(EXPORT_ENTITY_LABEL_KEYS[e]) }));
+      });
+      entitySel.value = 'pipelineSystems';
+
+      var targetSel = el('select', { class: 'select', attrs: { 'aria-label': t('export.target') } });
+      function paintTargetOptions() {
+        var phmsaAllowed = hasPhmsa && (entitySel.value === 'iliAnomalies' || entitySel.value === 'pipelineSystems');
+        targetSel.textContent = '';
+        targetSel.appendChild(el('option', { attrs: { value: 'native' }, text: t('export.targetNative') }));
+        if (phmsaAllowed) {
+          targetSel.appendChild(el('option', { attrs: { value: 'phmsa' }, text: t('export.targetPhmsa') }));
+        }
+        targetSel.value = 'native';
+      }
+      entitySel.addEventListener('change', paintTargetOptions);
+      paintTargetOptions();
+
+      var scopeSel = el('select', { class: 'select', attrs: { 'aria-label': t('export.scope') } });
+      scopeSel.appendChild(el('option', { attrs: { value: 'filtered' }, text: t('export.scopeFiltered') }));
+      scopeSel.appendChild(el('option', { attrs: { value: 'all' }, text: t('export.scopeAll') }));
+      scopeSel.value = 'filtered';
+
+      var fmtSel = el('select', { class: 'select', attrs: { 'aria-label': t('export.format') } });
+      (typeof fmts.formatsFor === 'function' ? fmts.formatsFor() : fmts.FORMATS).forEach(function (f) {
+        fmtSel.appendChild(el('option', { attrs: { value: f }, text: String(f).toUpperCase() }));
+      });
+      fmtSel.value = 'csv';
+
+      var genBtn = el('button', { class: 'btn btn-primary', attrs: { 'data-perm': 'export' }, on: { click: function () { doExport(); } } },
+        icon('download', 18), el('span', { text: t('export.generate') }));
+
+      var card = el('section', { class: 'card' });
+      card.appendChild(el('h2', { class: 'section-title', text: t('export.title') }));
+      card.appendChild(el('div', { class: 'page-toolbar' }, entitySel, targetSel, scopeSel, fmtSel, genBtn));
+      container.appendChild(card);
+
+      // produce('pdf') no trae bytes: se monta el modelo en pantalla con el
+      // renderer de informes y se lanza el print propio (precedente
+      // views/reports.js: host print-host dentro del contenedor de la vista).
+      function printModel(model) {
+        var rend = root.IW.reports && root.IW.reports.renderer;
+        if (!rend || typeof rend.render !== 'function' ||
+          typeof window === 'undefined' || typeof window.print !== 'function') { return false; }
+        var host = el('div', { attrs: { id: 'print-host' } });
+        container.appendChild(host);
+        host.appendChild(rend.render(model, t));
+        if (document.body && document.body.classList) { document.body.classList.add('print-mode'); }
+        var cleanup = function () {
+          if (document.body && document.body.classList) { document.body.classList.remove('print-mode'); }
+          if (host.parentNode) { host.parentNode.removeChild(host); }
+        };
+        if (typeof window.addEventListener === 'function') {
+          window.addEventListener('afterprint', cleanup, { once: true });
+        }
+        window.print();
+        setTimeout(cleanup, 1500);
+        return true;
+      }
+
+      function deliver(res, model) {
+        if (!res) { return false; }
+        if (res.action === 'print') { return printModel(model); }
+        if (!csvMod) { return false; }
+        if (typeof res.data === 'string') { return !!(csvMod.downloadText && csvMod.downloadText(res.filename, res.data, res.mime)); }
+        return !!(csvMod.downloadBytes && csvMod.downloadBytes(res.filename, res.data, res.mime));
+      }
+
+      function doExport() {
+        requirePerm('export').then(function () {
+          var entity = entitySel.value;
+          var target = targetSel.value === 'phmsa' && hasPhmsa ? 'phmsa' : 'native';
+          var fmt = fmtSel.value;
+          var scopeAll = scopeSel.value === 'all';
+          u.toast('export.generating', { severity: 'info' });
+          Promise.all([
+            repos.pipelineSystems.list(), repos.lineAssets.list(),
+            repos.lineInspections.list(), repos.iliAnomalies.list()
+          ]).then(function (res) {
+            var systems = res[0] || [];
+            var pools = { pipelineSystems: systems, lineAssets: res[1] || [], lineInspections: res[2] || [], iliAnomalies: res[3] || [] };
+            var q = (_session.search || '').trim().toLowerCase();
+            var selSystems = scopeAll ? systems : systems.filter(function (s) {
+              if (!q) { return true; }
+              return (String(s.name || '').toLowerCase().indexOf(q) !== -1) ||
+                (String(s.operator || '').toLowerCase().indexOf(q) !== -1);
+            });
+            var inSel = {};
+            selSystems.forEach(function (s) { inSel[s.id] = true; });
+            function withinSys(r) { return scopeAll || (r && inSel[r.systemId]); }
+
+            var model;
+            var rowCount;
+            var base;
+            var out;
+            if (target === 'phmsa') {
+              var phAnoms = pools.iliAnomalies.filter(withinSys);
+              var phInsps = pools.lineInspections.filter(withinSys);
+              var map = buildAssessmentMap(selSystems, phAnoms);
+              out = tpls.phmsa.performance(selSystems, phInsps, phAnoms, map ? { assessmentByAnomalyId: map } : undefined);
+              model = phmsaTableModel(out);
+              rowCount = model.sections.reduce(function (n, sh) { return n + sh.rows.length; }, 0);
+              base = 'phmsa';
+            } else {
+              var records = entity === 'pipelineSystems' ? selSystems : pools[entity].filter(withinSys);
+              model = nativeTableModel(entity, records);
+              rowCount = records.length;
+              base = EXPORT_BASENAME[entity] || 'export';
+            }
+
+            if (rowCount > EXPORT_ROW_GUARD && fmt !== 'csv' && fmt !== 'json' && fmt !== 'xml') {
+              u.toast('export.tooManyRows', { severity: 'warning' });
+              return null;
+            }
+            var fecha = new Date().toISOString().slice(0, 10);
+            var locale = (root.IW.i18n && typeof root.IW.i18n.getLocale === 'function') ? root.IW.i18n.getLocale() : 'es';
+            return fmts.produce(model, fmt, { t: t, locale: locale, filename: base + '_' + fecha })
+              .then(function (r) { return { res: r, model: model }; });
+          }).then(function (outPair) {
+            if (!outPair) { return null; }
+            return deliver(outPair.res, outPair.model);
+          }).then(function (ok) {
+            if (ok === null) { return; }
+            u.toast(ok ? 'export.done' : 'export.failed', { severity: ok ? 'info' : 'critical' });
+          }).catch(function () {
+            u.toast('export.failed', { severity: 'critical' });
+          });
+        }).catch(function (err) {
+          if (isForbidden(err)) { forbiddenToast(err); return; }
+          consoleError(err);
+        });
+      }
     }
 
     function systemActions(system, locked) {
@@ -1354,6 +1598,9 @@
     icon: 'pipeline',
     render: render,
     groupCampaigns: groupCampaigns,
-    duplicatePresetValues: duplicatePresetValues
+    duplicatePresetValues: duplicatePresetValues,
+    nativeTableModel: nativeTableModel,
+    phmsaTableModel: phmsaTableModel,
+    buildAssessmentMap: buildAssessmentMap
   };
 });

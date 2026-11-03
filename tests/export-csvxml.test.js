@@ -225,3 +225,103 @@ test('witsmlOut → formats.readRows(witsml): 12 filas [code, fecha, valor, unid
     assert.deepStrictEqual(r.row, [mpCodeByMpId[readings[i].mpId], readings[i].date, readings[i].value, 'mpy', 'import']);
   });
 });
+
+// ---------------------------------------------------------------------------
+// csvWriter.downloadBytes — espejo de downloadText para payloads binarios
+// ---------------------------------------------------------------------------
+
+// Stub DOM mínimo (el dom-shim de helpers no trae body/click/Blob/URL):
+// graba anclas creadas, blobs, y revokeObjectURL. Aisla y restaura los
+// globales en finally tras dejar correr el setTimeout(0) de la revocación.
+async function withDownloadStub(fn) {
+  const hadDoc = Object.prototype.hasOwnProperty.call(globalThis, 'document');
+  const savedDoc = globalThis.document;
+  const savedBlob = globalThis.Blob;
+  const savedURL = globalThis.URL;
+  const made = [];
+  const blobs = [];
+  const revoked = [];
+  let urlSeq = 0;
+  globalThis.document = {
+    createElement(tag) {
+      const el = {
+        tagName: String(tag).toUpperCase(), href: '', download: '', clicks: 0,
+        click() { this.clicks += 1; }
+      };
+      made.push(el);
+      return el;
+    },
+    body: {
+      kids: [],
+      appendChild(el) { this.kids.push(el); return el; },
+      removeChild(el) {
+        const i = this.kids.indexOf(el);
+        if (i !== -1) { this.kids.splice(i, 1); }
+        return el;
+      }
+    }
+  };
+  globalThis.Blob = function BlobStub(parts, opts) {
+    this.parts = parts;
+    this.type = (opts && opts.type) || '';
+    blobs.push(this);
+  };
+  globalThis.URL = {
+    createObjectURL(blob) { return 'blob:stub-' + (++urlSeq); },
+    revokeObjectURL(u) { revoked.push(u); }
+  };
+  // El revoke va en setTimeout(...,0): dejarlo correr ANTES de los asserts
+  // (el timer de csvWriter se registró primero → dispara antes que este).
+  const flush = function () { return new Promise(function (r) { setTimeout(r, 10); }); };
+  try {
+    const result = await fn({ made: made, blobs: blobs, revoked: revoked, flush: flush });
+    await flush();
+    return result;
+  } finally {
+    if (hadDoc) { globalThis.document = savedDoc; } else { delete globalThis.document; }
+    globalThis.Blob = savedBlob;
+    globalThis.URL = savedURL;
+  }
+}
+
+test('csvWriter: downloadBytes con stub DOM → ancla descargada, nombre saneado y MIME aplicado', async function () {
+  await withDownloadStub(async function (s) {
+    const bytes = new Uint8Array([0x50, 0x4b, 0x03, 0x04]);
+    const ok = csvWriter.downloadBytes('informe.xlsx', bytes, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    assert.strictEqual(ok, true, 'stub DOM completo → dispara la descarga');
+    assert.strictEqual(s.made.length, 1);
+    const a = s.made[0];
+    assert.strictEqual(a.tagName, 'A');
+    assert.strictEqual(a.download, 'informe.xlsx', 'filename crudo String() (mismo saneado que downloadText)');
+    assert.ok(a.href.startsWith('blob:stub-'), 'href = URL.createObjectURL del blob');
+    assert.strictEqual(a.clicks, 1, 'a.click() invocado');
+    assert.strictEqual(s.blobs.length, 1);
+    assert.strictEqual(s.blobs[0].type, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'MIME propagado al Blob');
+    assert.strictEqual(s.blobs[0].parts[0], bytes, 'los bytes llegan tal cual al Blob');
+    await s.flush();
+    assert.deepStrictEqual(s.revoked, [a.href], 'revokeObjectURL tras el tick del setTimeout');
+  });
+});
+
+test('csvWriter: downloadBytes sanea filename como downloadText (String + default) y acepta ArrayBuffer/string con default octet-stream', async function () {
+  await withDownloadStub(async function (s) {
+    const buf = new ArrayBuffer(4);
+    assert.strictEqual(csvWriter.downloadBytes(42, buf), true, 'filename numérico → String()');
+    assert.strictEqual(s.made[0].download, '42');
+    assert.strictEqual(s.made[0].clicks, 1);
+    assert.strictEqual(s.blobs[0].parts[0], buf, 'ArrayBuffer llega tal cual');
+    assert.strictEqual(s.blobs[0].type, 'application/octet-stream', 'mime undefined → octet-stream');
+    assert.strictEqual(csvWriter.downloadBytes('', 'hola', 'text/plain;charset=utf-8'), true, 'filename vacío → default');
+    assert.strictEqual(s.made[1].download, 'export.bin', 'default binario documentado');
+    assert.strictEqual(s.blobs[1].parts[0], 'hola', 'string también vale como payload');
+    assert.strictEqual(s.blobs[1].type, 'text/plain;charset=utf-8');
+    await s.flush();
+    assert.strictEqual(s.revoked.length, 2, 'ambas URLs revocadas tras el tick');
+  });
+});
+
+test('csvWriter: downloadBytes sin document (Node) → false, nunca lanza', function () {
+  assert.strictEqual(typeof globalThis.document, 'undefined', 'los stubs anteriores restauraron el entorno');
+  assert.strictEqual(csvWriter.downloadBytes('a.zip', new Uint8Array([1, 2])), false);
+  assert.strictEqual(csvWriter.downloadBytes('a.zip', 'texto'), false);
+});

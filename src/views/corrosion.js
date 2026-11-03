@@ -1483,15 +1483,16 @@
       });
       var existingCodes = points.map(function (p) { return p.code; });
       container.textContent = '';
-      container.appendChild(buildList(h, points, latest, existingCodes, series));
+      container.appendChild(buildList(h, points, latest, existingCodes, series, readings));
     }).catch(function (err) {
       container.textContent = '';
       container.appendChild(errorNode(h, err));
     });
   }
 
-  function buildList(h, points, latest, existingCodes, series) {
+  function buildList(h, points, latest, existingCodes, series, readings) {
     series = series || {};
+    readings = readings || [];
     var frag = document.createDocumentFragment();
 
     var header = h.ui.el('div', { class: 'page-header' });
@@ -1623,6 +1624,12 @@
     }
 
     redraw();
+
+    // Tarjeta de exportacion aditiva: al final del listado, sin tocar la
+    // tabla/paginacion/filtros de arriba. Sin IW.export.* no se construye.
+    var exportCard = buildExportCard(h, points, readings, [], filtered);
+    if (exportCard) { frag.appendChild(exportCard); }
+
     return frag;
   }
 
@@ -1694,4 +1701,245 @@
       return renderList(h, container);
     }
   };
+
+  // ---- Exportacion de tablas (tarjeta 'export.title' del listado) -----------
+  // Capa PURAMENTE ADITIVA sobre los escritores hermanos: IW.export.report-
+  // Formats.produce aplana el mini-modelo {sections:[table]} y produce el
+  // archivo; IW.export.csvWriter lo descarga. NO toca calculos, paginacion ni
+  // filtros: la tarjeta se cuelga al final del fragmento de buildList.
+  // Guard de arranque: sin IW.export.* (o sin sus funciones) la tarjeta no se
+  // construye y el render sigue igual.
+
+  function reportFormatsApi() { return root.IW.export && root.IW.export.reportFormats; }
+  function csvWriterApi() { return root.IW.export && root.IW.export.csvWriter; }
+  function reportModelApi() { return root.IW.reports && root.IW.reports.model; }
+
+  // Sin transformador CMMS: campos planos nativos (code/sector/material/
+  // date/crMpy mpy/...); los Date van como ISO cruda y produce los formatea.
+  function exportTableSection(M, titleKey, cols, rows) {
+    return M.table({
+      titleKey: titleKey,
+      columns: cols.map(function (c) { return { key: c.k, labelKey: c.l }; }),
+      rows: rows,
+      emptyKey: 'common.empty'
+    });
+  }
+
+  function exportDataFor(entity, scope, points, readings, coupons, filteredFn) {
+    var M = reportModelApi();
+    if (!M || typeof M.table !== 'function') { return null; }
+    function filteredPoints() { return filteredFn ? filteredFn() : points; }
+    if (entity === 'points') {
+      var src = scope === 'filtered' ? filteredPoints() : points;
+      return {
+        titleKey: 'corrosion.points',
+        section: exportTableSection(M, 'corrosion.points', [
+          { k: 'code', l: 'corrosion.pointCode' },
+          { k: 'name', l: 'corrosion.pointName' },
+          { k: 'sector', l: 'common.sector' },
+          { k: 'material', l: 'corrosion.material' },
+          { k: 'sensorType', l: 'corrosion.sensorType' }
+        ], src.map(function (mp) {
+          return {
+            code: mp.code, name: mp.name, sector: mp.sector,
+            material: mp.material, sensorType: mp.sensorType
+          };
+        }))
+      };
+    }
+    if (entity === 'readings') {
+      // scope 'filtered' sin contexto de punto == all (definicion pedida);
+      // si el sector del listado recorta puntos, las lecturas se recortan
+      // a las de esos puntos.
+      var srcPts = scope === 'filtered' ? filteredPoints() : points;
+      var keep = scope === 'filtered' ? (function () {
+        var s = {};
+        srcPts.forEach(function (p) { s[p.id] = true; });
+        return s;
+      })() : null;
+      var codeById = {};
+      points.forEach(function (p) { codeById[p.id] = p.code; });
+      var rows = readings.filter(function (r) {
+        return !keep || keep[r.mpId];
+      }).map(function (r) {
+        return {
+          code: codeById[r.mpId] || r.mpId || '',
+          date: r.date, crMpy: r.crMpy, source: r.source, note: r.note
+        };
+      });
+      return {
+        titleKey: 'corrosion.readings',
+        section: exportTableSection(M, 'corrosion.readings', [
+          { k: 'code', l: 'corrosion.pointCode' },
+          { k: 'date', l: 'common.date' },
+          { k: 'crMpy', l: 'corrosion.crMpy' },
+          { k: 'source', l: 'corrosion.sensorType' },
+          { k: 'note', l: 'common.note' }
+        ], rows)
+      };
+    }
+    if (entity === 'coupons') {
+      var cSrc = scope === 'filtered' ? filteredPoints() : points;
+      var cKeep = scope === 'filtered' ? (function () {
+        var s = {};
+        cSrc.forEach(function (p) { s[p.id] = true; });
+        return s;
+      })() : null;
+      var cCodeById = {};
+      points.forEach(function (p) { cCodeById[p.id] = p.code; });
+      var cRows = coupons.filter(function (c) {
+        return !cKeep || cKeep[c.mpId];
+      }).map(function (c) {
+        var m = materialById(c.material);
+        return {
+          code: cCodeById[c.mpId] || c.mpId || '',
+          role: c.role, pair: c.pairId,
+          material: m ? m.name : (c.material || ''),
+          crMpy: c.crMpy, status: c.status
+        };
+      });
+      return {
+        titleKey: 'corrosion.coupons',
+        section: exportTableSection(M, 'corrosion.coupons', [
+          { k: 'code', l: 'corrosion.pointCode' },
+          { k: 'role', l: 'corrosion.couponRole' },
+          { k: 'pair', l: 'corrosion.pair' },
+          { k: 'material', l: 'corrosion.material' },
+          { k: 'crMpy', l: 'corrosion.crMpy' },
+          { k: 'status', l: 'common.status' }
+        ], cRows)
+      };
+    }
+    return null;
+  }
+
+  // Las filas solo se materializan para pasarlas a produce(); el guard de
+  // volumen peek-ear la fuente (data.rows), no las filas construidas.
+  function exportRowsCount(data) {
+    return (data && data.section && Array.isArray(data.section.rows)) ? data.section.rows.length : 0;
+  }
+
+  // Impresion PDF: misma ruta que reports.js (clase print-mode + afterprint).
+  function doPrintExport() {
+    if (typeof window === 'undefined' || !document.body || !document.body.classList) { return; }
+    document.body.classList.add('print-mode');
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('afterprint', function () {
+        if (document.body && document.body.classList) { document.body.classList.remove('print-mode'); }
+      }, { once: true });
+    }
+    if (typeof window.print === 'function') { window.print(); }
+    setTimeout(function () {
+      if (document.body && document.body.classList) { document.body.classList.remove('print-mode'); }
+    }, 1500);
+  }
+
+  function buildExportCard(h, points, readings, coupons, filteredPointsFn) {
+    var fmts = reportFormatsApi();
+    var csv = csvWriterApi();
+    if (!fmts || typeof fmts.produce !== 'function' || !csv ||
+        typeof csv.downloadText !== 'function' || typeof csv.downloadBytes !== 'function') {
+      return null;
+    }
+    var c = card(h, 'export.title');
+
+    function exportSelect(labelKey, options, onChange) {
+      var wrap = h.ui.el('div', { class: 'field filter-field' });
+      wrap.appendChild(h.ui.el('label', { class: 'field-label', text: h.t(labelKey) }));
+      var sel = h.ui.el('select', { class: 'select', attrs: { 'aria-label': h.t(labelKey) } });
+      options.forEach(function (o) {
+        var opt = h.ui.el('option', { attrs: { value: o.value } });
+        opt.textContent = o.labelKey ? h.t(o.labelKey) : (o.label !== undefined ? o.label : String(o.value));
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', function () { onChange(sel.value); });
+      // default explicito: en navegadores la primera opcion queda seleccionada
+      // sola; se fija igualmente para que el valor sea siempre valido (shims
+      // de test no replican ese comportamiento).
+      if (!sel.value && options.length) { sel.value = String(options[0].value); }
+      wrap.appendChild(sel);
+      return { wrap: wrap, control: sel };
+    }
+
+    function exportRadio(name, value, label, checked) {
+      var wrap = h.ui.el('label', { class: 'field-label' });
+      var input = h.ui.el('input', { attrs: { type: 'radio', name: name, value: value } });
+      if (checked) { input.checked = true; }
+      wrap.appendChild(input);
+      wrap.appendChild(h.ui.el('span', { text: label }));
+      return { wrap: wrap, input: input };
+    }
+
+    var entSel = exportSelect('corrosion.points', [
+      { value: 'points', labelKey: 'corrosion.points' },
+      { value: 'readings', labelKey: 'corrosion.readings' },
+      { value: 'coupons', labelKey: 'corrosion.coupons' }
+    ], function () { /* se lee al generar */ });
+    c.appendChild(entSel.wrap);
+
+    var rawFormats = (typeof fmts.formatsFor === 'function' ? fmts.formatsFor() : (fmts.FORMATS || []));
+    var fmtSel = exportSelect('export.format', rawFormats.map(function (f) {
+      return { value: f, label: String(f) };
+    }), function () { /* se lee al generar */ });
+    c.appendChild(fmtSel.wrap);
+
+    var scopeRow = h.ui.el('div', { class: 'row' });
+    var scopeAll = exportRadio('exp-scope', 'all', h.t('export.scopeAll'), true);
+    var scopeFiltered = exportRadio('exp-scope', 'filtered', h.t('export.scopeFiltered'), false);
+    scopeRow.appendChild(scopeAll.wrap);
+    scopeRow.appendChild(scopeFiltered.wrap);
+    c.appendChild(scopeRow);
+
+    function generate() {
+      var entity = entSel.control.value;
+      var format = fmtSel.control.value;
+      var scope = (scopeFiltered.input.checked && !scopeAll.input.checked) ? 'filtered' : 'all';
+      // El listado no tiene los cupones en mano (solo puntos y lecturas): se
+      // leen del repo AL GENERAR, con cache por generacion. Sin repo, se usan
+      // los cupones recibidos en el constructor.
+      var couponsCache = coupons;
+      function buildData() {
+        if (entity !== 'coupons' || !h.repos || !h.repos.coupons || typeof h.repos.coupons.list !== 'function') {
+          return exportDataFor(entity, scope, points, readings, couponsCache, filteredPointsFn);
+        }
+        return Promise.resolve(h.repos.coupons.list()).then(function (all) {
+          return exportDataFor(entity, scope, points, readings, all || [], filteredPointsFn);
+        });
+      }
+      function failToast() {
+        if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('export.failed'), { severity: 'critical' }); }
+      }
+      var stem = 'export_' + entity + '_' + new Date().toISOString().slice(0, 10);
+      Promise.resolve().then(buildData)
+        .then(function (data) {
+          if (!data) { failToast(); return; }
+          var count = exportRowsCount(data);
+          if (count > 50000 && (format === 'xlsx' || format === 'docx')) {
+            if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('export.tooManyRows'), { severity: 'warning' }); }
+            return;
+          }
+          if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('export.generating'), { severity: 'info' }); }
+          return Promise.resolve()
+            .then(function () { return fmts.produce({ sections: [data.section] }, format, { t: h.t, locale: (i18nApi() && typeof i18nApi().getLocale === 'function') ? i18nApi().getLocale() : 'es', filename: stem }); })
+            .then(function (res) {
+              if (!res) { return false; }
+              if (res.action === 'print') { doPrintExport(); return true; }
+              if (typeof res.data === 'string') { return csv.downloadText(res.filename, res.data, res.mime); }
+              return csv.downloadBytes(res.filename, res.data, res.mime);
+            })
+            .then(function (ok) {
+              if (h.ui && typeof h.ui.toast === 'function') {
+                h.ui.toast(h.t(ok ? 'export.done' : 'export.failed'), { severity: ok ? 'info' : 'critical' });
+              }
+            });
+        })
+        .catch(function () { failToast(); });
+    }
+
+    var btnRow = h.ui.el('div', { class: 'row' });
+    btnRow.appendChild(h.ui.el('button', { class: 'btn btn-primary', on: { click: generate } },
+      h.ui.icon('download', 18), h.ui.el('span', { text: h.t('export.generate') })));
+    c.appendChild(btnRow);
+    return c;
+  }
 });

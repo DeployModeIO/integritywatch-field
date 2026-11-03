@@ -1289,6 +1289,7 @@
       targetPhmsa: "PHMSA / ASME B31.8S",
       packaging: "جارٍ تجميع الأدلة…",
       packDone: "تم إنشاء الحزمة الموقعة",
+      tooManyRows: "عدد الصفوف كبير على هذا التنسيق؛ استخدم CSV أو JSON أو XML",
       verify: "التحقق من الحزمة",
       verifyOk: "الحزمة سليمة: SHA-256 مطابق",
       verifyFail: "لم تجتز الحزمة فحص SHA-256"

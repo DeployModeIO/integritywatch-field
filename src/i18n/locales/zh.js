@@ -1365,6 +1365,7 @@
       targetPhmsa: "PHMSA / ASME B31.8S",
       packaging: "正在打包证据…",
       packDone: "已生成签名包",
+      tooManyRows: "行数过多，无法生成此格式；请使用 CSV、JSON 或 XML",
       verify: "验证包",
       verifyOk: "包完整：SHA-256 匹配",
       verifyFail: "包未通过 SHA-256 验证"

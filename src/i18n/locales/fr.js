@@ -1026,6 +1026,7 @@
       targetPhmsa: "PHMSA / ASME B31.8S",
       packaging: "Empaquetage des preuves…",
       packDone: "Paquet signé généré",
+      tooManyRows: "Trop de lignes pour ce format ; utilisez CSV, JSON ou XML",
       verify: "Vérifier le paquet",
       verifyOk: "Paquet intègre : SHA-256 conforme",
       verifyFail: "Le paquet échoue à la vérification SHA-256"

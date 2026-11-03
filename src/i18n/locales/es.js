@@ -1100,6 +1100,7 @@ R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({
       targetPhmsa: 'PHMSA / ASME B31.8S',
       targetSap: 'SAP PM',
       title: 'Exportar',
+      tooManyRows: 'Demasiadas filas para este formato; use CSV, JSON o XML',
       verify: 'Verificar paquete',
       verifyFail: 'El paquete no supera la verificación SHA-256',
       verifyOk: 'Paquete íntegro: SHA-256 conforme'

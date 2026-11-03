@@ -659,6 +659,7 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
       targetPhmsa: 'PHMSA / ASME B31.8S',
       targetSap: 'SAP PM',
       title: 'Export',
+      tooManyRows: 'Too many rows for this format; use CSV, JSON or XML',
       verify: 'Verify package',
       verifyFail: 'Package fails SHA-256 verification',
       verifyOk: 'Package intact: SHA-256 matches'

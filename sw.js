@@ -4,7 +4,7 @@
 
 // BUMP THIS VERSION ON EVERY RELEASE: node tools/bump-cache.cjs
 // With cache-first, clients keep serving the previous cached assets until this string changes.
-const CACHE_NAME = 'iw-v21';
+const CACHE_NAME = 'iw-v22';
 
 const PRECACHE = [
   './',
@@ -72,6 +72,14 @@ const PRECACHE = [
   './src/ingest/mapping.js',
   './src/ingest/formats.js',
   './src/ingest/commit.js',
+  './src/export/zip.js',
+  './src/export/csvWriter.js',
+  './src/export/xmlWriter.js',
+  './src/export/xlsxWriter.js',
+  './src/export/docxWriter.js',
+  './src/export/reportFormats.js',
+  './src/export/templates.js',
+  './src/export/evidencePack.js',
   './src/components/icons.js',
   './src/components/symbols.js',
   './src/components/symbol-map.js',
@@ -86,6 +94,18 @@ const PRECACHE = [
   './src/reports/model-datasheet.js',
   './src/reports/renderer.js',
   './src/reports/registry.js',
+  './src/reports/model-t01.js',
+  './src/reports/model-t02.js',
+  './src/reports/model-t03.js',
+  './src/reports/model-t04.js',
+  './src/reports/model-t05.js',
+  './src/reports/model-t06.js',
+  './src/reports/model-t07.js',
+  './src/reports/model-t08.js',
+  './src/reports/model-t09.js',
+  './src/reports/model-t10.js',
+  './src/reports/model-t11.js',
+  './src/reports/model-t12.js',
   './src/reports/quarterly.js',
   './src/reports/dossier.js',
   './src/reports/datasheet.js',

@@ -92,9 +92,31 @@
     return true;
   }
 
+  // Mirror of downloadText for binary payloads (xlsx/docx/zip): data is a
+  // Uint8Array, ArrayBuffer or string handed straight to the Blob. Same
+  // guards and same filename sanitising (String() + default); default mime
+  // is application/octet-stream and default name 'export.bin'. Returns true
+  // when the download was triggered, false when there is no DOM — never throws.
+  function downloadBytes(filename, data, mime) {
+    if (typeof document === 'undefined' || !document.createElement) { return false; }
+    if (typeof Blob === 'undefined' || typeof URL === 'undefined' ||
+        typeof URL.createObjectURL !== 'function') { return false; }
+    var blob = new Blob([data], { type: mime || 'application/octet-stream' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = String(filename || 'export.bin');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+    return true;
+  }
+
   return {
     toText: toText,
     downloadText: downloadText,
+    downloadBytes: downloadBytes,
     formatCell: formatCell
   };
 });

@@ -355,6 +355,109 @@
     return { node: wrap, getPof: function () { return pof; }, getCof: function () { return cof; }, setSelection: setSelection };
   }
 
+  // ---- Export card (plantillas CMMS / ISO 14224) ------------------------------
+  // Reúne IW.export.*: templates (sapPm.equipment / maximo.asset /
+  // iso14224.events), reportFormats.produce y csvWriter.downloadText/
+  // downloadBytes. Si falta alguno, la tarjeta se omite y el resto de la vista
+  // queda intacta (degradación igual que psv.js y reports.js).
+  function exportApis() {
+    var exp = root.IW.export;
+    var tpl = exp && exp.templates;
+    var fmts = exp && exp.reportFormats;
+    var csv = exp && exp.csvWriter;
+    if (!tpl || !tpl.sapPm || typeof tpl.sapPm.equipment !== 'function' ||
+        !tpl.maximo || typeof tpl.maximo.asset !== 'function' ||
+        !tpl.iso14224 || typeof tpl.iso14224.events !== 'function' ||
+        !fmts || typeof fmts.produce !== 'function' || typeof fmts.formatsFor !== 'function' ||
+        !csv || typeof csv.downloadText !== 'function' || typeof csv.downloadBytes !== 'function') {
+      return null;
+    }
+    return { tpl: tpl, fmts: fmts, csv: csv };
+  }
+
+  var MAX_EXPORT_ROWS = 50000; // tope practico de xlsxWriter/docxWriter
+
+  function localeOf() {
+    var i18n = root.IW.i18n;
+    return (i18n && typeof i18n.getLocale === 'function') ? i18n.getLocale() : 'es';
+  }
+
+  // Espejo del doPrint de reports.js y psv.js: print-mode en el body y limpieza
+  // tras el print. Sin window es un no-op (Node/smoke).
+  function doPrintExport() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') { return false; }
+    document.body.classList.add('print-mode');
+    var cleanup = function () { document.body.classList.remove('print-mode'); };
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('afterprint', cleanup, { once: true });
+    }
+    if (typeof window.print === 'function') { window.print(); }
+    setTimeout(cleanup, 1500);
+    return true;
+  }
+
+  // Tabla "nativa" de activos: columnas del registro con cabeceras i18n
+  // existentes. Salida con la misma forma pactada que las plantillas CMMS; lo
+  // ausente va '' (regla de honestidad de templates.js: nunca inventar).
+  var ASSET_NATIVE_COLS = [
+    ['apm.assetCode', function (a) { return a.code; }],
+    ['apm.name', function (a) { return a.name; }],
+    ['apm.category', function (a) { return a.category; }],
+    ['common.sector', function (a) { return a.sector; }],
+    ['apm.criticality', function (a) { return a.criticality; }],
+    ['apm.assetStatus', function (a) { return a.status; }],
+    ['apm.iso14224.failureMode', function (a) { return (a.iso14224 || {}).failureMode; }],
+    ['apm.iso14224.failureConsequence', function (a) { return (a.iso14224 || {}).failureConsequence; }],
+    ['apm.pof', function (a) { return (a.rbi || {}).pof; }],
+    ['apm.cof', function (a) { return (a.rbi || {}).cof; }],
+    ['apm.riskBand', function (a) { return (a.rbi || {}).band; }],
+    ['apm.inspectionBase', function (a) { return (a.rbi || {}).inspectionBaseMonths; }],
+    ['apm.nextInspection', function (a) { return (a.rbi || {}).nextInspectionISO; }],
+    ['common.notes', function (a) { return a.notes; }]
+  ];
+
+  // Tabla "nativa" de eventos: el activo se referencia por su code cuando se
+  // puede resolver (assetsById); si no, el assetId crudo — nunca se inventa.
+  var EVENT_NATIVE_COLS = [
+    ['apm.assetCode', function (e, byId) { var a = byId && byId[e.assetId]; return (a && a.code) || e.assetId; }],
+    ['apm.eventType', function (e) { return e.type; }],
+    ['apm.start', function (e) { return e.start; }],
+    ['apm.end', function (e) { return e.end; }],
+    ['apm.downtime', function (e) { return e.downtimeH; }],
+    ['common.notes', function (e) { return e.description; }],
+    ['apm.workOrderRef', function (e) { return e.workOrderRef; }]
+  ];
+
+  function nativeTable(list, cols, sheetName, nativeTitleKey, extra) {
+    var headers = cols.map(function (c) { return c[0]; });
+    var rows = (list || []).map(function (rec) {
+      var r = rec || {};
+      return cols.map(function (c) {
+        var v = c[1](r, extra);
+        return (v === null || v === undefined) ? '' : v;
+      });
+    });
+    return { sheetName: sheetName, headers: headers, rows: rows, native: true, nativeTitleKey: nativeTitleKey };
+  }
+
+  // Mini-modelo {sections:[table]} que consume reportFormats.produce.
+  // Las cabeceras viajan como labelKey: tr() devuelve la clave cruda si no
+  // existe (EQUNR, ASSETNUM... salen literales; apm.* salen traducidos).
+  function exportModel(out) {
+    var cols = (out.headers || []).map(function (hd, i) {
+      return { key: 'k' + i, labelKey: String(hd) };
+    });
+    var rows = (out.rows || []).map(function (r) {
+      var o = {};
+      for (var i = 0; i < cols.length; i++) { o[cols[i].key] = r ? r[i] : ''; }
+      return o;
+    });
+    var sec = { type: 'table', columns: cols, rows: rows };
+    if (out.native) { sec.titleKey = out.nativeTitleKey; }
+    else { sec.title = out.sheetName; }
+    return { sections: [sec] };
+  }
+
   function render(container, ctx) {
     var u = ui();
     if (!u || typeof u.el !== 'function' || !container) { return; }
@@ -430,10 +533,165 @@
           { id: 'downstream', labelKey: 'common.downstream', render: function () { return panelFor('downstream'); } },
           { id: 'all', labelKey: 'common.all', render: function () { return panelFor('all'); } }
         ];
-        container.appendChild(u.tabs(tabs));
+        var tabsWrap = u.tabs(tabs);
+        container.appendChild(tabsWrap);
+
+        // Export card: only when all IW.export siblings are loaded; otherwise
+        // the rest of the view renders exactly as before (psv.js pattern).
+        var exportApisReady = exportApis();
+        if (exportApisReady) {
+          container.appendChild(buildExportCard(exportApisReady, tabsWrap, assets, events));
+        }
       }).catch(function (err) {
         if (_session && _session.active) { container.textContent = ''; container.appendChild(banner(err)); }
       });
+    }
+
+    // ------------------------------------------------------------- export card
+    // Sector of the active tab: u.tabs has no change hook, so the tab click is
+    // tracked from the wrapper (delegation, same ids u.tabs assigns:
+    // 'tab-<sector>'). Defaults to the first tab, as u.tabs does.
+    function buildExportCard(apis, tabsWrap, assets, events) {
+      var activeSector = 'upstream';
+      if (typeof tabsWrap.addEventListener === 'function') {
+        tabsWrap.addEventListener('click', function (e) {
+          var id = (e && e.target && e.target.id) || '';
+          var m = /^tab-(upstream|midstream|downstream|all)$/.exec(id);
+          if (m) { activeSector = m[1]; }
+        });
+      }
+
+      var c = el('section', { class: 'card' });
+      c.appendChild(el('h2', { class: 'section-title', text: t('export.title') }));
+
+      function field(labelKey, control) {
+        var w = el('div', { class: 'field' });
+        w.appendChild(el('label', { class: 'field-label', text: t(labelKey) }));
+        w.appendChild(control);
+        return w;
+      }
+
+      var entitySel = el('select', { class: 'select' });
+      [['assets', 'common.assets'], ['events', 'apm.events']].forEach(function (o) {
+        entitySel.appendChild(el('option', { attrs: { value: o[0] }, text: t(o[1]) }));
+      });
+      c.appendChild(field('export.title', entitySel));
+
+      var ASSET_TARGETS = [
+        ['native', 'export.targetNative'], ['sap', 'export.targetSap'], ['maximo', 'export.targetMaximo']
+      ];
+      var EVENT_TARGETS = [
+        ['native', 'export.targetNative'], ['iso14224', 'export.targetIso14224']
+      ];
+      var targetSel = el('select', { class: 'select' });
+      function fillTargets() {
+        targetSel.textContent = '';
+        (entitySel.value === 'events' ? EVENT_TARGETS : ASSET_TARGETS).forEach(function (o) {
+          targetSel.appendChild(el('option', { attrs: { value: o[0] }, text: t(o[1]) }));
+        });
+        targetSel.value = 'native';
+      }
+      entitySel.addEventListener('change', fillTargets);
+      fillTargets();
+      c.appendChild(field('export.target', targetSel));
+
+      var fmtSel = el('select', { class: 'select' });
+      apis.fmts.formatsFor().forEach(function (f) {
+        fmtSel.appendChild(el('option', { attrs: { value: f }, text: String(f).toUpperCase() }));
+      });
+      c.appendChild(field('export.format', fmtSel));
+
+      var scopeWrap = el('div', { class: 'field' });
+      scopeWrap.appendChild(el('label', { class: 'field-label', text: t('export.scope') }));
+      var filteredRadio = el('input', { attrs: { type: 'radio', name: 'apm-export-scope', value: 'filtered', checked: '' } });
+      var allRadio = el('input', { attrs: { type: 'radio', name: 'apm-export-scope', value: 'all' } });
+      filteredRadio.checked = true;
+      scopeWrap.appendChild(el('label', { class: 'field-label' }, filteredRadio, el('span', { text: t('export.scopeFiltered') })));
+      scopeWrap.appendChild(el('label', { class: 'field-label' }, allRadio, el('span', { text: t('export.scopeAll') })));
+      c.appendChild(scopeWrap);
+
+      // Scope filtered = the active tab's sector (the tab IS the list filter);
+      // 'all' tab or scope all → the whole store. Events resolve their asset.
+      var assetsById = {};
+      (assets || []).forEach(function (a) { if (a && a.id) { assetsById[a.id] = a; } });
+      function scopeLists() {
+        var sector = allRadio.checked ? 'all' : activeSector;
+        var listAssets = sector === 'all' ? (assets || []) : (assets || []).filter(function (a) { return a.sector === sector; });
+        var listEvents = sector === 'all' ? (events || []) : (events || []).filter(function (e) {
+          var a = assetsById[e.assetId];
+          return !!a && a.sector === sector;
+        });
+        return { assets: listAssets, events: listEvents };
+      }
+
+      function toast(key, severity) {
+        if (u && typeof u.toast === 'function') { u.toast(key, { severity: severity || 'info' }); }
+      }
+
+      function sheetFor(entity, list) {
+        var target = targetSel.value;
+        if (entity === 'events') {
+          return target === 'iso14224'
+            ? apis.tpl.iso14224.events(list, assetsById)
+            : nativeTable(list, EVENT_NATIVE_COLS, 'eventos', 'apm.events', assetsById);
+        }
+        return target === 'sap' ? apis.tpl.sapPm.equipment(list)
+          : target === 'maximo' ? apis.tpl.maximo.asset(list)
+          : nativeTable(list, ASSET_NATIVE_COLS, 'activos', 'nav.apm');
+      }
+
+      function finish(res) {
+        if (!res) { toast('export.failed', 'critical'); return; }
+        if (res.action === 'print') {
+          doPrintExport();
+          toast('export.done');
+          return;
+        }
+        var ok = typeof res.data === 'string'
+          ? apis.csv.downloadText(res.filename, res.data, res.mime)
+          : apis.csv.downloadBytes(res.filename, res.data, res.mime);
+        toast(ok ? 'export.done' : 'export.failed', ok ? 'info' : 'critical');
+      }
+
+      function run(list) {
+        var entity = entitySel.value;
+        var format = fmtSel.value;
+        var out = sheetFor(entity, list);
+        if ((format === 'xlsx' || format === 'docx') && out.rows.length > MAX_EXPORT_ROWS) {
+          toast('export.tooManyRows', 'warning');
+          return;
+        }
+        toast('export.generating');
+        // native → prefijo 'apm|eventos_<fecha>'; con plantilla → '..._<target>_<fecha>'.
+        var fecha = new Date().toISOString().slice(0, 10);
+        var base = entity === 'events' ? 'eventos' : 'apm';
+        if (targetSel.value !== 'native') { base += '_' + targetSel.value; }
+        return Promise.resolve()
+          .then(function () {
+            return apis.fmts.produce(exportModel(out), format, { t: t, locale: localeOf(), filename: base + '_' + fecha });
+          })
+          .then(finish)
+          .catch(function () { toast('export.failed', 'critical'); });
+      }
+
+      // Scope all refetches the full store from repos (psv.js pattern);
+      // filtered exports exactly what the active sector tab shows.
+      var btn = el('button', {
+        class: 'btn btn-primary',
+        on: {
+          click: function () {
+            var entity = entitySel.value;
+            if (allRadio.checked) {
+              var src = entity === 'events' ? repos.apmEvents.list() : repos.apmAssets.list();
+              Promise.resolve(src).catch(function () { return []; }).then(function (fresh) { run(fresh || []); });
+            } else {
+              run(entity === 'events' ? scopeLists().events : scopeLists().assets);
+            }
+          }
+        }
+      }, icon('export', 18), el('span', { text: t('export.generate') }));
+      c.appendChild(btn);
+      return c;
     }
 
     // Category cell: icon + localized label. Fire categories (firePump/fireSystem)

@@ -184,6 +184,179 @@
     return c;
   }
 
+  // ---- Export card (plantillas CMMS) ------------------------------------------
+  // Reúne IW.export.*: templates.psv (sapPm/maximo), reportFormats.produce y
+  // csvWriter.downloadText/downloadBytes. Si falta alguno, la tarjeta se omite
+  // y el resto de la vista queda intacta (degradación igual que reports.js).
+  function exportApis() {
+    var exp = root.IW.export;
+    var tpl = exp && exp.templates && exp.templates.psv;
+    var fmts = exp && exp.reportFormats;
+    var csv = exp && exp.csvWriter;
+    if (!tpl || typeof tpl.sapPm !== 'function' || typeof tpl.maximo !== 'function' ||
+        !fmts || typeof fmts.produce !== 'function' || typeof fmts.formatsFor !== 'function' ||
+        !csv || typeof csv.downloadText !== 'function' || typeof csv.downloadBytes !== 'function') {
+      return null;
+    }
+    return { tpl: tpl, fmts: fmts, csv: csv };
+  }
+
+  var MAX_EXPORT_ROWS = 50000; // tope practico de xlsxWriter/docxWriter
+
+  function localeOf() {
+    var i18n = i18nApi();
+    return (i18n && typeof i18n.getLocale === 'function') ? i18n.getLocale() : 'es';
+  }
+
+  // Espejo del doPrint de reports.js: print-mode en el body y limpieza tras
+  // el print. Sin window es un no-op (Node/smoke).
+  function doPrintExport() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') { return false; }
+    document.body.classList.add('print-mode');
+    var cleanup = function () { document.body.classList.remove('print-mode'); };
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('afterprint', cleanup, { once: true });
+    }
+    if (typeof window.print === 'function') { window.print(); }
+    setTimeout(cleanup, 1500);
+    return true;
+  }
+
+  // Tabla "nativa": columnas del registro PSV con cabeceras i18n existentes.
+  // Salida con la misma forma pactada que las plantillas CMMS; lo ausente va
+  // '' (regla de honestidad de templates.js: nunca inventar).
+  var PSV_NATIVE_COLS = [
+    ['psv.tag', function (p) { return p.tag; }],
+    ['psv.location', function (p) { return p.location; }],
+    ['psv.valveType', function (p) { return p.valveType; }],
+    ['psv.fluid', function (p) { var f = p.fluid || {}; return f.name || p.fluidId || ''; }],
+    ['common.status', function (p) { return p.status; }],
+    ['psv.setPressure', function (p) { return p.setPressurePsig; }],
+    ['psv.temperature', function (p) { return p.operatingTempF; }],
+    ['psv.backPressure', function (p) { return p.backPressurePsig; }],
+    ['psv.selectedOrifice', function (p) { return p.orificeLetter; }],
+    ['psv.lastTest', function (p) { return p.lastTestDate; }],
+    ['psv.nextTest', function (p) { return p.nextTestDate; }],
+    ['psv.nextInspDue', function (p) { return p.inspNext; }],
+    ['psv.inspResult', function (p) { return p.inspResult; }]
+  ];
+
+  function psvNativeTable(psvs) {
+    var headers = PSV_NATIVE_COLS.map(function (c) { return c[0]; });
+    var rows = (psvs || []).map(function (p) {
+      var rec = p || {};
+      return PSV_NATIVE_COLS.map(function (c) {
+        var v = c[1](rec);
+        return (v === null || v === undefined) ? '' : v;
+      });
+    });
+    return { sheetName: 'psv', headers: headers, rows: rows, native: true };
+  }
+
+  // Mini-modelo {sections:[table]} que consume reportFormats.produce.
+  // Las cabeceras viajan como labelKey: tr() devuelve la clave cruda si no
+  // existe (EQUNR, ASSETNUM... salen literales; psv.* salen traducidos).
+  function exportModel(out) {
+    var cols = (out.headers || []).map(function (hd, i) {
+      return { key: 'k' + i, labelKey: String(hd) };
+    });
+    var rows = (out.rows || []).map(function (r) {
+      var o = {};
+      for (var i = 0; i < cols.length; i++) { o[cols[i].key] = r ? r[i] : ''; }
+      return o;
+    });
+    var sec = { type: 'table', columns: cols, rows: rows };
+    if (out.native) { sec.titleKey = 'psv.registry'; }
+    else { sec.title = out.sheetName; }
+    return { sections: [sec] };
+  }
+
+  function buildExportCard(h, apis, filteredFn) {
+    var c = card(h, 'export.title');
+
+    function field(labelKey, control) {
+      var w = h.ui.el('div', { class: 'field' });
+      w.appendChild(h.ui.el('label', { class: 'field-label', text: h.t(labelKey) }));
+      w.appendChild(control);
+      return w;
+    }
+
+    // Entidad fija: esta vista solo exporta PSV (select decorativo, disabled).
+    var entitySel = h.ui.el('select', { class: 'select', attrs: { disabled: '' } });
+    entitySel.appendChild(h.ui.el('option', { attrs: { value: 'psv' }, text: h.t('psv.title') }));
+    c.appendChild(field('psv.title', entitySel));
+
+    var targetSel = h.ui.el('select', { class: 'select' });
+    [['native', 'export.targetNative'], ['sap', 'export.targetSap'], ['maximo', 'export.targetMaximo']]
+      .forEach(function (o) {
+        targetSel.appendChild(h.ui.el('option', { attrs: { value: o[0] }, text: h.t(o[1]) }));
+      });
+    c.appendChild(field('export.target', targetSel));
+
+    var fmtSel = h.ui.el('select', { class: 'select' });
+    apis.fmts.formatsFor().forEach(function (f) {
+      fmtSel.appendChild(h.ui.el('option', { attrs: { value: f }, text: String(f).toUpperCase() }));
+    });
+    c.appendChild(field('export.format', fmtSel));
+
+    var scopeWrap = h.ui.el('div', { class: 'field' });
+    scopeWrap.appendChild(h.ui.el('label', { class: 'field-label', text: h.t('export.scope') }));
+    var filteredRadio = h.ui.el('input', { attrs: { type: 'radio', name: 'psv-export-scope', value: 'filtered', checked: '' } });
+    var allRadio = h.ui.el('input', { attrs: { type: 'radio', name: 'psv-export-scope', value: 'all' } });
+    scopeWrap.appendChild(h.ui.el('label', { class: 'field-label' }, filteredRadio, h.ui.el('span', { text: h.t('export.scopeFiltered') })));
+    scopeWrap.appendChild(h.ui.el('label', { class: 'field-label' }, allRadio, h.ui.el('span', { text: h.t('export.scopeAll') })));
+    c.appendChild(scopeWrap);
+
+    function toast(key, severity) {
+      if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t(key), { severity: severity || 'info' }); }
+    }
+
+    function finish(res) {
+      if (!res) { toast('export.failed', 'critical'); return; }
+      if (res.action === 'print') {
+        doPrintExport();
+        toast('export.done');
+        return;
+      }
+      var ok = typeof res.data === 'string'
+        ? apis.csv.downloadText(res.filename, res.data, res.mime)
+        : apis.csv.downloadBytes(res.filename, res.data, res.mime);
+      toast(ok ? 'export.done' : 'export.failed', ok ? 'info' : 'critical');
+    }
+
+    function run(psvs) {
+      var target = targetSel.value;
+      var format = fmtSel.value;
+      var out = target === 'sap' ? apis.tpl.sapPm(psvs)
+        : target === 'maximo' ? apis.tpl.maximo(psvs)
+        : psvNativeTable(psvs);
+      if ((format === 'xlsx' || format === 'docx') && out.rows.length > MAX_EXPORT_ROWS) {
+        toast('export.tooManyRows', 'warning');
+        return;
+      }
+      toast('export.generating');
+      // native → prefijo 'psv_<fecha>'; sap/maximo → 'psv_<target>_<fecha>'.
+      var fecha = new Date().toISOString().slice(0, 10);
+      var base = target === 'native' ? 'psv' : 'psv_' + target;
+      return Promise.resolve()
+        .then(function () {
+          return apis.fmts.produce(exportModel(out), format, { t: h.t, locale: localeOf(), filename: base + '_' + fecha });
+        })
+        .then(finish)
+        .catch(function () { toast('export.failed', 'critical'); });
+    }
+
+    var btn = h.ui.el('button', { class: 'btn btn-primary', on: { click: function () {
+      if (allRadio.checked) {
+        Promise.resolve(h.repos.psvs.list()).catch(function () { return []; }).then(run);
+      } else {
+        run(filteredFn() || []);
+      }
+    } } }, h.ui.icon('export', 18), h.ui.el('span', { text: h.t('export.generate') }));
+    c.appendChild(btn);
+    return c;
+  }
+
   function buildInspHistory(h, psv) {
     var panel = card(h, 'psv.inspHistory');
     var nowMs = Date.now();
@@ -796,6 +969,13 @@
     filters.appendChild(h.ui.el('button', { class: 'btn btn-ghost', on: { click: function () { state.q = ''; state.type = ''; state.status = ''; state.page = 1; searchInput.value = ''; typeSel.querySelector('select').value = ''; statusSel.querySelector('select').value = ''; redraw(); } } }, h.ui.icon('close', 18), h.ui.el('span', { text: h.t('common.clear') })));
 
     frag.appendChild(filters);
+
+    // Export card: only when all IW.export siblings are loaded; otherwise the
+    // rest of the view renders exactly as before.
+    var exportApisReady = exportApis();
+    if (exportApisReady) {
+      frag.appendChild(buildExportCard(h, exportApisReady, filtered));
+    }
 
     var tableHost = h.ui.el('div');
     frag.appendChild(tableHost);
