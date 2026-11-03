@@ -262,6 +262,72 @@
   font-size: 10px;
 }
 
+/* ---- charts.js (IW.reports.charts) SVG primitives: matrix/trend/bullet/cusum ----
+   Colour carries meaning only (ISA-101): neutral grey for the chrome, severity
+   tokens for risk cells and status bands. The --sev-* tokens flip with
+   [data-theme="dark"], so these rules hold in both schemes without a dark block. */
+.ch-label {
+  fill: var(--muted);
+}
+
+.ch-grid {
+  stroke: var(--border);
+  opacity: .4;
+}
+
+.ch-axis {
+  stroke: var(--border);
+}
+
+.ch-line {
+  stroke: var(--accent);
+}
+
+.ch-point {
+  fill: var(--accent);
+}
+
+.ch-target {
+  stroke: var(--muted);
+}
+
+.ch-bar {
+  fill: var(--accent);
+}
+
+/* trend / bullet status bands (charts.js status: 'ok' | 'crit') */
+.ch-band {
+  opacity: .2;
+}
+
+.ch-band-ok {
+  fill: var(--sev-low);
+}
+
+.ch-band-crit {
+  fill: var(--alert-critical);
+}
+
+/* 5×5 RBI risk-matrix cells (charts.js level: low | med | high). Pastel
+   severity fill + strong severity stroke, mirroring the .badge-* pattern. */
+.ch-risk-low {
+  fill: var(--sev-low-bg);
+  stroke: var(--sev-low);
+  stroke-width: .3;
+}
+
+.ch-risk-med {
+  fill: var(--sev-moderate-bg);
+  stroke: var(--sev-moderate);
+  stroke-width: .3;
+}
+
+.ch-risk-high {
+  fill: var(--sev-severe-bg);
+  stroke: var(--alert-critical);
+  stroke-width: .3;
+}
+
 .report-coupons {
   display: flex;
   flex-direction: column;
