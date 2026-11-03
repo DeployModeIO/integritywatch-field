@@ -45,6 +45,37 @@
 
   function isFireCategory(cat) { return FIRE_CATEGORIES.indexOf(cat) !== -1; }
 
+  // Manufacturer catalog scope (IW.data.manufacturers.list) mapped from the
+  // asset category. null = no filter, the full list feeds the datalist.
+  var PUMP_CATEGORIES = ['centrifugalPump', 'reciprocatingPump', 'pump', 'firePump'];
+  var COMPRESSOR_CATEGORIES = ['compressor', 'compressorStation', 'wellheadCompression'];
+
+  function manufacturerScope(cat) {
+    if (!cat) { return null; }
+    if (PUMP_CATEGORIES.indexOf(cat) !== -1) { return 'bomba-api610'; }
+    if (COMPRESSOR_CATEGORIES.indexOf(cat) !== -1) { return 'compresor-api618'; }
+    if (/psv|valve|valvul/i.test(String(cat))) { return 'psv-api526'; }
+    return null;
+  }
+
+  function scanApi() { return root.IW && root.IW.components && root.IW.components.scan; }
+  function manufacturersApi() { return root.IW && root.IW.data && root.IW.data.manufacturers; }
+
+  // Shallow copy for "duplicate from existing asset": drops identity, audit and
+  // estimate fields so stamp()/save treat it as brand new; code starts empty
+  // (required field forces the operator to set the new tag).
+  var COPY_DROP_FIELDS = ['id', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'quality', '__quality', 'rbi'];
+
+  function assetCopy(asset) {
+    var copy = {};
+    for (var k in asset) {
+      if (Object.prototype.hasOwnProperty.call(asset, k)) { copy[k] = asset[k]; }
+    }
+    COPY_DROP_FIELDS.forEach(function (d) { delete copy[d]; });
+    copy.code = '';
+    return copy;
+  }
+
   var _session = null;
 
   function teardown() {
@@ -457,9 +488,10 @@
 
     function assetActions(asset, locked) {
       var editBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(asset); } } }, icon('edit', 18));
+      var dupBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'data-perm': 'assetWrite' }, on: { click: function () { openAssetForm(assetCopy(asset), { duplicate: true }); } } }, el('span', { text: t('duplo2.duplicateBtn') }));
       var delBtn = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(asset); } } }, icon('trash', 18));
       delBtn.disabled = locked;
-      return el('div', { class: 'row' }, editBtn, delBtn);
+      return el('div', { class: 'row' }, editBtn, dupBtn, delBtn);
     }
 
     function deleteAsset(asset) {
@@ -780,7 +812,8 @@
 
     // ------------------------------------------------------------ forms
 
-    function openAssetForm(asset) {
+    function openAssetForm(asset, opts) {
+      var isDup = !!(opts && opts.duplicate);
       var sector = asset ? asset.sector : 'upstream';
       var fields = [
         { name: 'code', labelKey: 'apm.assetCode', type: 'text', required: true },
@@ -789,6 +822,7 @@
         { name: 'category', labelKey: 'apm.category', type: 'select', options: categoryOptions(sector) },
         { name: 'criticality', labelKey: 'apm.criticality', type: 'select', options: CRITICALITIES.map(function (c) { return { value: c, labelKey: 'apm.crit.' + c }; }) },
         { name: 'status', labelKey: 'apm.assetStatus', type: 'select', options: STATUSES.map(function (s) { return { value: s, labelKey: 'apm.statuses.' + s }; }) },
+        { name: 'manufacturer', labelKey: 'duplo2.catalogBtn', type: 'text' },
         { name: 'isoFailureMode', labelKey: 'apm.iso14224.failureMode', type: 'select', options: [
           { value: '', labelKey: 'common.none' },
           { value: 'mechanical', labelKey: 'apm.iso14224.failureModes.mechanical' },
@@ -821,14 +855,18 @@
         pof: (asset.rbi && asset.rbi.pof) || 1,
         cof: (asset.rbi && asset.rbi.cof) || 1, inspectionBaseMonths: (asset.rbi && asset.rbi.inspectionBaseMonths) || 24,
         nextInspectionISO: toDateInput((asset.rbi && asset.rbi.nextInspectionISO)),
-        availabilityOverridePct: asset.availabilityOverridePct, notes: asset.notes
+        availabilityOverridePct: asset.availabilityOverridePct, notes: asset.notes,
+        manufacturer: asset.manufacturer
       } : { sector: 'upstream', category: (SECTOR_CATEGORIES.upstream[0]), criticality: 'C', status: 'running', pof: 1, cof: 1, inspectionBaseMonths: 24 };
       var f = u.form(fields, values);
+      var dialogTitleKey = isDup ? 'duplo2.fromTemplate' : (asset ? 'apm.editAsset' : 'apm.newAsset');
 
       // Live RBI band + interval suggestion.
       var bandEl = el('span', { class: 'badge badge-neutral', text: t('apm.bands.low') });
       var suggestEl = el('span', { class: 'pill' });
-      var body = el('div', null, f.node, el('div', { class: 'row' }, el('span', { text: t('apm.riskBand') }), bandEl, suggestEl));
+      var body = el('div', null,
+        isDup ? el('p', { class: 'muted', text: t('duplo2.copiedMsg') }) : null,
+        f.node, el('div', { class: 'row' }, el('span', { text: t('apm.riskBand') }), bandEl, suggestEl));
 
       function syncLive() {
         var apm = calcApm();
@@ -863,11 +901,58 @@
             if (opts.length) { catSel.value = opts[0].value; }
           });
         }
+        // QR nameplate button next to the code field. Guarded: without
+        // IW.components.scan the button is hidden (display:none) with an
+        // unsupported caption instead of crashing; the field stays editable.
+        var scan = scanApi();
+        var hasScan = !!(scan && typeof scan.scanNameplate === 'function');
+        var codeInput = f.node.querySelector('#fld-code');
+        if (codeInput && codeInput.parentNode) {
+          var qrBtn = el('button', { class: 'btn btn-ghost', attrs: { type: 'button', 'aria-label': t('scan2.qrBtn') } }, icon('search', 16), el('span', { text: t('scan2.qrBtn') }));
+          if (hasScan) {
+            qrBtn.addEventListener('click', function () {
+              Promise.resolve(scan.scanNameplate({})).then(function (res) {
+                if (!res || res.value == null) { return; }
+                codeInput.value = scan.qrTextToValue(res.value);
+                u.toast('scan2.qrManual', { severity: 'info' });
+              }, function (err) {
+                var code = err && err.code;
+                if (code === 'SCAN_TIMEOUT' || code === 'SCAN_CANCELLED') { return; }
+                u.toast('scan2.qrUnsupported', { severity: 'warning' });
+              });
+            });
+          } else {
+            qrBtn.setAttribute('style', 'display:none');
+          }
+          codeInput.parentNode.appendChild(qrBtn);
+          if (!hasScan) {
+            codeInput.parentNode.appendChild(el('span', { class: 'muted', text: t('scan2.qrUnsupported') }));
+          }
+        }
+        // Optional manufacturer field backed by the API catalog datalist,
+        // scoped by category; skipped entirely if the data module is absent.
+        var mfrInput = f.node.querySelector('#fld-manufacturer');
+        var mfrData = manufacturersApi();
+        if (mfrInput && mfrData && typeof mfrData.list === 'function') {
+          var dl = el('datalist', { attrs: { id: 'mfr-list' } });
+          var catSel = f.node.querySelector('#fld-category');
+          function fillMfrOptions() {
+            dl.textContent = '';
+            var scope = manufacturerScope(catSel ? catSel.value : values.category);
+            (mfrData.list(scope) || []).forEach(function (m) {
+              dl.appendChild(el('option', { attrs: { value: m.name } }));
+            });
+          }
+          mfrInput.setAttribute('list', 'mfr-list');
+          f.node.appendChild(dl);
+          fillMfrOptions();
+          if (catSel) { catSel.addEventListener('change', fillMfrOptions); }
+        }
         syncLive();
       }, 0);
 
       var dlg = u.dialog({
-        titleKey: asset ? 'apm.editAsset' : 'apm.newAsset',
+        titleKey: dialogTitleKey,
         bodyNode: body,
         actions: [
           { labelKey: 'common.cancel', kind: 'ghost', onClick: function () { return true; } },
@@ -875,9 +960,11 @@
             labelKey: 'common.save', kind: 'primary', onClick: function () {
               if (!f.validate()) { return false; }
               var v = f.getValues();
+              var mfr = String(v.manufacturer || '').trim();
               var rec = {
-                id: asset ? asset.id : newId('apm'),
+                id: (asset && !isDup) ? asset.id : newId('apm'),
                 code: v.code, name: v.name, sector: v.sector || 'upstream',
+                manufacturer: mfr || undefined,
                 category: v.category || (SECTOR_CATEGORIES[v.sector || 'upstream'][0]),
                 criticality: v.criticality || 'C', status: v.status || 'running',
                 iso14224: (v.isoFailureMode || v.isoFailureConsequence) ? {
@@ -900,7 +987,7 @@
                 rec.rbi.score = r.score;
               }
               requirePerm('assetWrite').then(function () {
-                return stampRec(repos.meta, rec, asset);
+                return stampRec(repos.meta, rec, isDup ? null : asset);
               }).then(function (stamped) {
                 return repos.apmAssets.save(stamped);
               }).then(function () { dlg.close(); }).catch(function (err) {

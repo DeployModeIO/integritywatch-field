@@ -4,7 +4,7 @@
 
 // BUMP THIS VERSION ON EVERY RELEASE: node tools/bump-cache.cjs
 // With cache-first, clients keep serving the previous cached assets until this string changes.
-const CACHE_NAME = 'iw-v20';
+const CACHE_NAME = 'iw-v21';
 
 const PRECACHE = [
   './',
@@ -38,6 +38,7 @@ const PRECACHE = [
   './src/data/fluids.js',
   './src/data/glossary.js',
   './src/data/standards.js',
+  './src/data/manufacturers.js',
   './src/data/seed.js',
   './src/i18n/locales/en.js',
   './src/i18n/locales/es.js',
@@ -77,6 +78,7 @@ const PRECACHE = [
   './src/components/ui.js',
   './src/components/signaturePad.js',
   './src/components/inspectionEvidence.js',
+  './src/components/scan.js',
   './src/reports/model.js',
   './src/reports/charts.js',
   './src/reports/model-quarterly.js',

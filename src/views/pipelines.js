@@ -129,6 +129,44 @@
 
   function pipelineAssessmentApi() { return (root.IW && root.IW.calc) ? root.IW.calc.pipelineAssessment : null; }
 
+  // IW.components.scan es OPCIONAL (mismo criterio que signaturePad/mapa): sin
+  // el módulo los botones de GPS y foto con EXIF no se crean y el flujo de
+  // inspección sigue funcionando igual.
+  function scanApi() { return (root.IW && root.IW.components) ? root.IW.components.scan : null; }
+  function hasGpsCapture() {
+    var s = scanApi();
+    return !!(s && typeof s.captureGps === 'function');
+  }
+  function hasPhotoExifReader() {
+    var s = scanApi();
+    return !!(s && typeof s.readPhotoExif === 'function');
+  }
+
+  // Campos de identidad/autoría/ingesta que NO viajan al duplicar un activo
+  // (mismo criterio que views/apm.js).
+  var COPY_DROP_FIELDS = ['id', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'quality', '__quality'];
+
+  // Puro: copia superficial del activo menos los campos de identidad, con
+  // code='' (el código es la clave de negocio y debe quedar libre para el
+  // alta) y certExpiryISO en formato de input date. Devuelve solo los valores
+  // que el formulario de línea conoce.
+  function duplicatePresetValues(asset) {
+    var shallow = {};
+    Object.keys(asset || {}).forEach(function (k) {
+      if (COPY_DROP_FIELDS.indexOf(k) === -1) { shallow[k] = asset[k]; }
+    });
+    shallow.code = '';
+    return {
+      code: '',
+      name: shallow.name,
+      type: shallow.type,
+      stationKm: shallow.stationKm,
+      side: shallow.side,
+      certExpiryISO: toDateInput(shallow.certExpiryISO),
+      notes: shallow.notes
+    };
+  }
+
   // Pure: group inspections into campaigns by type + month (YYYY-MM).
   function groupCampaigns(inspections) {
     var map = {};
@@ -766,7 +804,10 @@
           var li = lastInspectionFor(a.id, inspections);
           tr.appendChild(el('td', { text: li ? fmtDate(li) : t('common.none') }));
           tr.appendChild(el('td', null, certBadge(a.certExpiryISO, t, Date.now())));
+          // icons.js no trae 'copy': el duplicado es botón de texto con el
+          // mismo guardián (data-perm assetWrite) que el alta de línea.
           var actTd = el('td', null, el('div', { class: 'row' },
+            el('button', { class: 'btn btn-ghost touch', attrs: { 'data-perm': 'assetWrite', 'aria-label': t('duplo2.duplicateBtn') }, on: { click: function () { duplicateAsset(system, a, assets); } } }, el('span', { text: t('duplo2.duplicateBtn') })),
             el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(system, a, assets); } } }, icon('edit', 18)),
             (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(a); } } }, icon('trash', 18)); b.disabled = locked; return b; })()));
           tr.appendChild(actTd);
@@ -908,7 +949,11 @@
       });
     }
 
-    function openAssetForm(system, asset, assets) {
+    // opts (opcional, aditivo): { values: prellenado del formulario,
+    // duplicate: true } — con duplicate el formulario es de ALTA (id nuevo,
+    // sello de autoría nuevo) y se avisa de que los campos son copia.
+    function openAssetForm(system, asset, assets, opts) {
+      opts = opts || {};
       var fields = [
         { name: 'code', labelKey: 'pipelines.assetCode', type: 'text', required: true },
         { name: 'name', labelKey: 'pipelines.assetName', type: 'text' },
@@ -918,14 +963,15 @@
         { name: 'certExpiryISO', labelKey: 'pipelines.certExpiry', type: 'date' },
         { name: 'notes', labelKey: 'common.notes', type: 'textarea' }
       ];
-      var values = asset ? {
+      var values = opts.values || (asset ? {
         code: asset.code, name: asset.name, type: asset.type, stationKm: asset.stationKm,
         side: asset.side, certExpiryISO: toDateInput(asset.certExpiryISO), notes: asset.notes
-      } : { type: 'sectionValve', side: 'center' };
+      } : { type: 'sectionValve', side: 'center' });
       var f = u.form(fields, values);
+      var dupNote = opts.duplicate ? el('p', { class: 'muted', text: t('duplo2.copiedMsg') }) : null;
       var dlg = u.dialog({
-        titleKey: asset ? 'pipelines.editLineAsset' : 'pipelines.newLineAsset',
-        bodyNode: f.node,
+        titleKey: opts.duplicate ? 'duplo2.fromTemplate' : (asset ? 'pipelines.editLineAsset' : 'pipelines.newLineAsset'),
+        bodyNode: dupNote ? el('div', null, dupNote, f.node) : f.node,
         actions: [
           { labelKey: 'common.cancel', kind: 'ghost', onClick: function () { return true; } },
           {
@@ -960,6 +1006,14 @@
           }
         ]
       });
+    }
+
+    // Duplicar un activo de línea: abre el alta prellenada con la copia
+    // superficial (sin id/autoría/quality y con code vacío). Usa el MISMO
+    // guardián que 'nuevo activo de línea' (data-perm assetWrite + requirePerm
+    // en el guardado de openAssetForm).
+    function duplicateAsset(system, asset, assets) {
+      openAssetForm(system, null, assets, { duplicate: true, values: duplicatePresetValues(asset) });
     }
 
     function openInspectionForm(system, assets, inspection) {
@@ -1024,14 +1078,14 @@
       }
       if (existingPhotos.length > 0) { updatePhotoPreview(); }
 
-      photoInput.addEventListener('change', function () {
-        var files = photoInput.files;
-        if (!files || files.length === 0) { return; }
+      // Ruta ÚNICA de fotos del formulario (dataURL recortado + EXIF de
+      // IW.calc.exif): la consume tanto el input clásico de evidencia como el
+      // botón de foto de IW.components.scan. true = aceptadas, false = tope 6.
+      function ingestPhotoFiles(files) {
         var total = existingPhotos.length + pendingPhotos.length + files.length;
         if (total > 6) {
           u.toast('evidence.photos.tooMany', { severity: 'warning' });
-          photoInput.value = '';
-          return;
+          return false;
         }
         var exifMod = root.IW.calc && root.IW.calc.exif;
         var spMod = root.IW.components && root.IW.components.signaturePad;
@@ -1077,8 +1131,97 @@
           };
           reader.readAsArrayBuffer(file);
         });
+        return true;
+      }
+
+      photoInput.addEventListener('change', function () {
+        var files = photoInput.files;
+        if (!files || files.length === 0) { return; }
+        ingestPhotoFiles(files);
         photoInput.value = '';
       });
+
+      // --- Evidencia aditiva (IW.components.scan): GPS y foto con EXIF ---
+      // rec.gps / rec.photoMeta son campos NUEVOS que ninguna vista lee hoy.
+      var capturedGps = (isEdit && inspection.gps) ? inspection.gps : null;
+      var existingPhotoMeta = (isEdit && inspection.photoMeta) ? inspection.photoMeta.slice() : [];
+      var pendingPhotoMeta = [];
+      var gpsCaption = null;
+
+      function setGpsCaption(g) {
+        if (!gpsCaption) { return; }
+        var acc = (g && typeof g.accuracyM === 'number') ? Math.round(g.accuracyM) : '—';
+        gpsCaption.textContent = t('scan2.gpsOk', { acc: acc });
+        gpsCaption.hidden = false;
+      }
+
+      if (hasGpsCapture()) {
+        var gpsBtn = el('button', { class: 'btn', on: { click: function () { captureGpsIntoForm(); } } },
+          el('span', { text: t('scan2.gpsBtn') }));
+        gpsCaption = el('p', { class: 'field-hint', text: '' });
+        gpsCaption.hidden = true;
+        evidenceSection.appendChild(el('div', { class: 'row' }, gpsBtn));
+        evidenceSection.appendChild(gpsCaption);
+      }
+
+      function captureGpsIntoForm() {
+        var s = scanApi();
+        if (!s || typeof s.captureGps !== 'function') { return; }
+        var p;
+        try { p = s.captureGps(); } catch (e) { p = Promise.reject(e); }
+        Promise.resolve(p).then(function (g) {
+          capturedGps = { lat: g.lat, lon: g.lon, accuracyM: g.accuracyM, tsIso: g.tsIso };
+          setGpsCaption(g);
+        }, function () {
+          // SCAN_UNSUPPORTED / SCAN_GPS_DENIED / timeout: el GPS de la placa
+          // no llegó; la inspección se puede guardar igual.
+          u.toast('scan2.gpsFail', { severity: 'warning' });
+        });
+      }
+
+      if (hasPhotoExifReader()) {
+        var scanPhotoInput = el('input', { attrs: { type: 'file', accept: 'image/*', capture: 'environment', hidden: '' } });
+        var scanPhotoCaption = el('div', { class: 'field-hint' });
+        scanPhotoCaption.hidden = true;
+        var scanPhotoBtn = el('button', { class: 'btn', on: { click: function () { scanPhotoInput.click(); } } },
+          el('span', { text: t('scan2.photoBtn') }));
+        evidenceSection.appendChild(el('div', { class: 'row' }, scanPhotoBtn));
+        evidenceSection.appendChild(scanPhotoCaption);
+        evidenceSection.appendChild(scanPhotoInput);
+        scanPhotoInput.addEventListener('change', function () {
+          var files = scanPhotoInput.files;
+          if (!files || files.length === 0) { return; }
+          var accepted = ingestPhotoFiles(files);
+          scanPhotoInput.value = '';
+          if (!accepted) { return; }
+          var s = scanApi();
+          Array.prototype.forEach.call(files, function (file) {
+            var p;
+            try { p = s.readPhotoExif(file); } catch (e) { p = Promise.reject(e); }
+            Promise.resolve(p).then(function (res) {
+              var ok = !!(res && res.ok);
+              var line = ok
+                ? t('scan2.photoExif', { date: res.dateIso ? fmtDate(res.dateIso) : '—', camera: res.camera || '—' })
+                : t('scan2.photoNoExif');
+              scanPhotoCaption.hidden = false;
+              scanPhotoCaption.appendChild(el('p', { class: 'field-hint', text: file.name + ': ' + line }));
+              pendingPhotoMeta.push({
+                file: file.name,
+                exif: ok ? {
+                  camera: res.camera || null,
+                  dateIso: res.dateIso || null,
+                  lat: (res.lat === undefined || res.lat === null) ? null : res.lat,
+                  lon: (res.lon === undefined || res.lon === null) ? null : res.lon
+                } : null
+              });
+            }, function () {
+              scanPhotoCaption.hidden = false;
+              scanPhotoCaption.appendChild(el('p', { class: 'field-hint', text: file.name + ': ' + t('scan2.photoNoExif') }));
+              pendingPhotoMeta.push({ file: file.name, exif: null });
+            });
+          });
+        });
+      }
 
       // Sketch (croquis)
       var sketchContainer = el('div');
@@ -1131,6 +1274,12 @@
               if (pendingPhotos.length > 0 || existingPhotos.length > 0) {
                 rec.photos = existingPhotos.concat(pendingPhotos);
               } else if (isEdit && inspection.photos) { rec.photos = inspection.photos; }
+              // Captura del escáner (aditivo: estas claves no estaban en el
+              // registro y ninguna vista las lee hoy).
+              if (capturedGps) { rec.gps = capturedGps; }
+              if (pendingPhotoMeta.length > 0 || existingPhotoMeta.length > 0) {
+                rec.photoMeta = existingPhotoMeta.concat(pendingPhotoMeta);
+              }
               if (sketchPad && !sketchPad.isEmpty()) { rec.sketch = sketchPad.toDataURL(); }
               else if (isEdit && inspection.sketch) { rec.sketch = inspection.sketch; }
               // Clean up signature/sketch if cleared
@@ -1160,6 +1309,7 @@
     titleKey: 'nav.pipelines',
     icon: 'pipeline',
     render: render,
-    groupCampaigns: groupCampaigns
+    groupCampaigns: groupCampaigns,
+    duplicatePresetValues: duplicatePresetValues
   };
 });
