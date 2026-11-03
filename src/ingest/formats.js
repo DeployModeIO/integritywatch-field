@@ -9,6 +9,12 @@
    Contract de `source`: la interfaz minima de chunked
      { name?: string, size: number(bytes), slice(start,end) ->
          string | Uint8Array | ArrayBuffer | Blob | Promise-de-algo-de-eso }
+   Un File/Blob del navegador cumple este contract NATIVAMENTE (slice()
+   devuelve Blob y la fuente misma trae arrayBuffer()/text()): las ramas de
+   texto (csv/tsv/jsonl via chunked; json/xml/witsml via sliceToText) ya
+   convertian las tajadas Blob; la rama de bytes (xlsx) normaliza la fuente
+   via arrayBuffer() en readWholeBytes, asi que FILE/BLOB ESTAN SOPORTADOS
+   en TODOS los formatos sin adaptadores en la UI.
 
    readRows es ASYNC porque debe FIJAR meta.headers antes de entregar las
    filas: csv consume cabecera + primer dato como sonda; jsonl abre una
@@ -142,8 +148,18 @@
     return stripBom(text);
   }
 
-  async function readWholeBytes(source, isCanceled) {
+   async function readWholeBytes(source, isCanceled) {
     checkCanceled(isCanceled, 'inicio');
+    // File/Blob del navegador: la fuente misma trae arrayBuffer() propio y su
+    // slice() devuelve Blob (no bytes crudos), lo que rompia xlsx con
+    // FORMATS_BAD_SOURCE. Se normaliza la fuente: si expose arrayBuffer() se
+    // toman sus bytes directos; si no, la tajada de slice() se convierte igual
+    // que en sliceToText (Blob -> await .arrayBuffer()).
+    if (typeof source.arrayBuffer === 'function') {
+      var fab = await source.arrayBuffer();
+      checkCanceled(isCanceled, 'tras la lectura');
+      return fab instanceof Uint8Array ? fab : new Uint8Array(fab);
+    }
     var size = isFinite(source.size) && source.size >= 0 ? source.size : null;
     if (size === null) {
       throw iwError(CODE_BAD_SOURCE, 'xlsx requiere source.size numerico en bytes');
@@ -154,6 +170,10 @@
     if (raw instanceof Uint8Array) { return raw; }
     if (raw instanceof ArrayBuffer) { return new Uint8Array(raw); }
     if (typeof SharedArrayBuffer !== 'undefined' && raw instanceof SharedArrayBuffer) { return new Uint8Array(raw); }
+    if (raw && typeof raw.arrayBuffer === 'function') { // Blob: tajada del navegador
+      var bab = await raw.arrayBuffer();
+      return bab instanceof Uint8Array ? bab : new Uint8Array(bab);
+    }
     throw iwError(CODE_BAD_SOURCE,
       'xlsx necesita BYTES: source.slice(0,size) debe devolver Uint8Array/ArrayBuffer/Blob (la interfaz File del navegador lo hace nativamente), no string');
   }

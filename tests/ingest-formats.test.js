@@ -45,6 +45,42 @@ function makeBytesFileLike(name, buf) {
   };
 }
 
+// FAKE Blob del navegador: slice() devuelve un OBJETO Blob (no una Promise),
+// con arrayBuffer() y text() como en la spec File/Blob real.
+function makeFakeBlob(bytes) {
+  return {
+    size: bytes.length,
+    type: '',
+    arrayBuffer() {
+      return Promise.resolve(new Uint8Array(bytes).buffer); // ArrayBuffer independiente
+    },
+    text() {
+      return Promise.resolve(Buffer.from(bytes).toString('utf8'));
+    }
+  };
+}
+
+// FAKE File del navegador: {name,size,type,slice(start,end)->Blob,
+// arrayBuffer()->Promise<ArrayBuffer>}. Imite EXACTAMENTE la interfaz que
+// llega desde <input type=file> (slices sincronos devolviendo Blob).
+// Acepta Buffer o string (se codifica UTF-8 como haria el navegador).
+function makeFakeFile(name, content) {
+  const buf = Buffer.isBuffer(content) ? content : Buffer.from(String(content), 'utf8');
+  return {
+    name: name,
+    size: buf.length,
+    type: '',
+    slice(start, end) {
+      const a = Math.max(0, start | 0);
+      const b = end === undefined ? buf.length : Math.min(buf.length, end | 0);
+      return makeFakeBlob(buf.subarray(a, Math.max(a, b)));
+    },
+    arrayBuffer() {
+      return Promise.resolve(new Uint8Array(buf).buffer);
+    }
+  };
+}
+
 async function collect(iter) {
   const out = [];
   for await (const rec of iter) out.push(rec);
@@ -316,4 +352,43 @@ test('formato no soportado -> FORMATS_UNSUPPORTED_FORMAT; formats se auto-regist
     }
   );
   assert.equal(globalThis.IW.ingest.formats, formats);
+});
+
+// ---------------------------------------------------------------------------
+// File/Blob del navegador (regresión del bug Forms_bad_source en la UI)
+// Un File real cumple {name,size,slice->Blob} + arrayBuffer(): chunked ya
+// convertia las tajadas Blob via .text()/.arrayBuffer(), pero la rama xlsx
+// exijo bytes DIRECTOS y fallaba con FORMATS_BAD_SOURCE.
+// ---------------------------------------------------------------------------
+
+test('fake File (navegador) xlsx: readRows da las mismas 10 filas de dedupe-3', async () => {
+  const src = makeFakeFile('dedupe-3.xlsx', FIX('dedupe-3.xlsx'));
+  const out = await formats.readAllRows(src, { format: 'xlsx' });
+  assert.equal(out.meta.format, 'xlsx');
+  assert.equal(out.meta.sheetName, 'Coupons');
+  assert.deepEqual(out.meta.headers, ['Cupón', 'Fecha de extracción', 'Pérdida de masa (g/m²)', 'Material']);
+  assert.equal(out.rows.length, 10);
+  assert.deepEqual(out.rows[0], { row: ['CP-01', '2026-03-01', 12.5, 'Acero al carbón'], rowNo: 2 });
+  assert.deepEqual(out.rows[9].row, ['CP-06', '2026-04-01', 15.2, 'Monel 400']);
+  assert.deepEqual(out.meta.warnings, []);
+});
+
+test('fake File (navegador): detectFormat sigue funcionando (por extension y por contenido via tajadas Blob)', async () => {
+  assert.equal(await formats.detectFormat(makeFakeFile('dedupe-3.xlsx', FIX('dedupe-3.xlsx'))), 'xlsx');
+  assert.equal(await formats.detectFormat(makeFakeFile('muestra.txt', FIX_TXT('sample-comma.csv'))), 'csv');
+  // sin extension util: la sonda de contenido lee tajadas Blob -> csv
+  assert.equal(await formats.detectFormat(makeFakeFile('subido-sin-extension', FIX_TXT('sample-comma.csv'))), null);
+  // xml por contenido sobre fake File
+  assert.equal(await formats.detectFormat(makeFakeFile('r.xml', '<WITSML><Well</WITSML>')), 'witsml');
+});
+
+test('fake File (navegador): ramas texto csv/json/xml via tajadas Blob sin regresiones', async () => {
+  const csvOut = await formats.readAllRows(makeFakeFile('sample-comma.csv', FIX_TXT('sample-comma.csv')));
+  assert.equal(csvOut.meta.format, 'csv');
+  assert.equal(csvOut.rows.length, 5);
+  const jsonOut = await formats.readAllRows(makeFakeFile('datos.json', '[{"a":1},{"a":2}]'));
+  assert.deepEqual(jsonOut.meta.headers, ['a']);
+  assert.equal(jsonOut.rows.length, 2);
+  const xmlOut = await formats.readAllRows(makeFakeFile('inspecciones.xml', FIX_TXT('inspecciones-generico.xml')));
+  assert.equal(xmlOut.rows.length, 3);
 });
