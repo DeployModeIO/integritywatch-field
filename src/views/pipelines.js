@@ -1256,6 +1256,34 @@
         side: asset.side, certExpiryISO: toDateInput(asset.certExpiryISO), notes: asset.notes
       } : { type: 'sectionValve', side: 'center' });
       var f = u.form(fields, values);
+      // QR nameplate button next to the code field. Guarded: without
+      // IW.components.scan the button is hidden (display:none) with an
+      // unsupported caption instead of crashing; the field stays editable.
+      var scan = scanApi();
+      var hasScan = !!(scan && typeof scan.scanNameplate === 'function');
+      var codeInput = f.node.querySelector('#fld-code');
+      if (codeInput && codeInput.parentNode) {
+        var qrBtn = el('button', { class: 'btn btn-ghost', attrs: { type: 'button', 'aria-label': t('scan2.qrBtn') } }, icon('search', 16), el('span', { text: t('scan2.qrBtn') }));
+        if (hasScan) {
+          qrBtn.addEventListener('click', function () {
+            Promise.resolve(scan.scanNameplate({})).then(function (res) {
+              if (!res || res.value == null) { return; }
+              codeInput.value = scan.qrTextToValue(res.value);
+              u.toast('scan2.qrManual', { severity: 'info' });
+            }, function (err) {
+              var code = err && err.code;
+              if (code === 'SCAN_TIMEOUT' || code === 'SCAN_CANCELLED') { return; }
+              u.toast('scan2.qrUnsupported', { severity: 'warning' });
+            });
+          });
+        } else {
+          qrBtn.setAttribute('style', 'display:none');
+        }
+        codeInput.parentNode.appendChild(qrBtn);
+        if (!hasScan) {
+          codeInput.parentNode.appendChild(el('span', { class: 'muted', text: t('scan2.qrUnsupported') }));
+        }
+      }
       var dupNote = opts.duplicate ? el('p', { class: 'muted', text: t('duplo2.copiedMsg') }) : null;
       var dlg = u.dialog({
         titleKey: opts.duplicate ? 'duplo2.fromTemplate' : (asset ? 'pipelines.editLineAsset' : 'pipelines.newLineAsset'),

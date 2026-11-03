@@ -16,6 +16,7 @@
   function fluids() { return root.IW.data && root.IW.data.fluids; }
   function lock() { return root.IW.security && root.IW.security.lock; }
   function permissions() { return root.IW.security && root.IW.security.permissions; }
+  function scanApi() { return root.IW.components && root.IW.components.scan; }
   function guardFor(meta) {
     var perm = permissions();
     return (perm && typeof perm.guard === 'function') ? perm.guard(meta) : null;
@@ -567,6 +568,35 @@
         if (ref.G != null) { form.getControl('G').value = String(ref.G); }
         if (ref.viscCp != null) { form.getControl('viscCp').value = String(ref.viscCp); }
       });
+    }
+
+    // QR nameplate button next to the tag field. Mirrors apm.js: guarded so
+    // that without IW.components.scan the button is hidden (display:none) and
+    // the field stays editable; success fills the tag via qrTextToValue.
+    var scan = scanApi();
+    var hasScan = !!(scan && typeof scan.scanNameplate === 'function');
+    var tagInput = form.getControl('tag');
+    if (tagInput && tagInput.parentNode) {
+      var qrBtn = h.ui.el('button', { class: 'btn btn-ghost', attrs: { type: 'button', 'aria-label': h.t('scan2.qrBtn') } }, h.ui.icon('search', 16), h.ui.el('span', { text: h.t('scan2.qrBtn') }));
+      if (hasScan) {
+        qrBtn.addEventListener('click', function () {
+          Promise.resolve(scan.scanNameplate({})).then(function (res) {
+            if (!res || res.value == null) { return; }
+            tagInput.value = scan.qrTextToValue(res.value);
+            if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('scan2.qrManual'), { severity: 'info' }); }
+          }, function (err) {
+            var code = err && err.code;
+            if (code === 'SCAN_TIMEOUT' || code === 'SCAN_CANCELLED') { return; }
+            if (h.ui && typeof h.ui.toast === 'function') { h.ui.toast(h.t('scan2.qrUnsupported'), { severity: 'warning' }); }
+          });
+        });
+      } else {
+        qrBtn.setAttribute('style', 'display:none');
+      }
+      tagInput.parentNode.appendChild(qrBtn);
+      if (!hasScan) {
+        tagInput.parentNode.appendChild(h.ui.el('span', { class: 'muted', text: h.t('scan2.qrUnsupported') }));
+      }
     }
   }
 

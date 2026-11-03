@@ -785,6 +785,7 @@
           st.op = null;
           st.progress = null;
           paint(st);
+          if (resume && st.run && st.run.status === 'done') { refreshSessions(); }
         });
       }
 
