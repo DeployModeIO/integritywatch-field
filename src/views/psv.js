@@ -749,7 +749,11 @@
     header.appendChild(actions);
     frag.appendChild(header);
 
-    var state = { q: '', type: '', status: '' };
+    // The registry list paginates at 50 rows. Filters and search reset the
+    // page to 1; the full `psvs` list is never mutated, so per-record sizing
+    // and status calculations stay intact.
+    var PAGE_SIZE = 50;
+    var state = { q: '', type: '', status: '', page: 1 };
 
     var filters = h.ui.el('div', { class: 'filter-bar' });
     var searchId = 'psv-search';
@@ -778,7 +782,7 @@
       { value: 'conventional', labelKey: 'psv.types.conventional' },
       { value: 'balanced', labelKey: 'psv.types.balanced' },
       { value: 'pilot', labelKey: 'psv.types.pilot' }
-    ], function (v) { state.type = v; redraw(); });
+    ], function (v) { state.type = v; state.page = 1; redraw(); });
     filters.appendChild(typeSel);
 
     var statusSel = makeSelect('common.status', [
@@ -786,17 +790,17 @@
       { value: 'ok', labelKey: 'common.ok' },
       { value: 'due', labelKey: 'common.due' },
       { value: 'overdue', labelKey: 'common.overdue' }
-    ], function (v) { state.status = v; redraw(); });
+    ], function (v) { state.status = v; state.page = 1; redraw(); });
     filters.appendChild(statusSel);
 
-    filters.appendChild(h.ui.el('button', { class: 'btn btn-ghost', on: { click: function () { state.q = ''; state.type = ''; state.status = ''; searchInput.value = ''; typeSel.querySelector('select').value = ''; statusSel.querySelector('select').value = ''; redraw(); } } }, h.ui.icon('close', 18), h.ui.el('span', { text: h.t('common.clear') })));
+    filters.appendChild(h.ui.el('button', { class: 'btn btn-ghost', on: { click: function () { state.q = ''; state.type = ''; state.status = ''; state.page = 1; searchInput.value = ''; typeSel.querySelector('select').value = ''; statusSel.querySelector('select').value = ''; redraw(); } } }, h.ui.icon('close', 18), h.ui.el('span', { text: h.t('common.clear') })));
 
     frag.appendChild(filters);
 
     var tableHost = h.ui.el('div');
     frag.appendChild(tableHost);
 
-    searchInput.addEventListener('input', function () { state.q = searchInput.value; redraw(); });
+    searchInput.addEventListener('input', function () { state.q = searchInput.value; state.page = 1; redraw(); });
 
     function filtered() {
       return (psvs || []).filter(function (p) {
@@ -827,6 +831,8 @@
           orifice: p.orificeLetter || '', nextTest: p.nextTestDate, _p: p
         };
       });
+      var pg = h.ui.paginate(rows, state.page, PAGE_SIZE);
+      state.page = pg.page;
       tableHost.appendChild(h.ui.table({
         captionKey: 'psv.registry',
         emptyKey: 'common.empty',
@@ -849,8 +855,16 @@
           { key: 'nextTest', labelKey: 'psv.nextTest', render: function (v) { return v ? fmtDate(v, { dateStyle: 'short' }) : '—'; } },
           { key: '_actions', labelKey: 'common.actions', render: function (v, row) { return rowActions(row._p); } }
         ],
-        rows: rows
+        rows: pg.items
       }));
+      if (pg.total > PAGE_SIZE) {
+        tableHost.appendChild(h.ui.pager({
+          total: pg.total,
+          page: pg.page,
+          size: PAGE_SIZE,
+          onGoto: function (p) { state.page = p; redraw(); }
+        }));
+      }
     }
 
     redraw();

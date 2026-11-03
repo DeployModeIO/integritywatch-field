@@ -18,6 +18,7 @@
   var SIDES = ['left', 'right', 'center'];
   var ANOMALY_TYPES = ['metalLoss', 'crack', 'dent'];
   var DAY_MS = 86400000;
+  var PAGE_SIZE = 50;
 
   var _session = null;
   var _pendingScrollAsset = null;
@@ -612,61 +613,77 @@
       if (anomalies.length === 0) {
         panel.appendChild(el('p', { class: 'empty-state', text: t('pipelines.noIli') }));
       } else {
-        var wrap = el('div', { class: 'table-wrap' });
-        var tbl = el('table', { class: 'data' });
-        var thead = el('thead');
-        var htr = el('tr');
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.stationKm') }));
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.anomalyType') }));
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.depthPct') }));
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.failurePressure') }));
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.safePressure') }));
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.status') }));
-        thead.appendChild(htr);
-        tbl.appendChild(thead);
-        var tbody = el('tbody');
+        // Paginacion (P2e): anomalyItems y assessed se conservan COMPLETOS
+        // (chip de resumen y recuento de excedencias sobre todas las
+        // anomalías, que pueden ser decenas de miles); solo se pagina el
+        // render de filas, ya filtradas por sistema en drawDetail.
+        var tableHost = el('div');
+        panel.appendChild(tableHost);
+        var page = 1;
+        function paintTable() {
+          tableHost.textContent = '';
+          var p = u.paginate(anomalyItems, page, PAGE_SIZE);
+          page = p.page;
+          var wrap = el('div', { class: 'table-wrap' });
+          var tbl = el('table', { class: 'data' });
+          var thead = el('thead');
+          var htr = el('tr');
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.stationKm') }));
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.anomalyType') }));
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.depthPct') }));
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.failurePressure') }));
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.safePressure') }));
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.status') }));
+          thead.appendChild(htr);
+          tbl.appendChild(thead);
+          var tbody = el('tbody');
 
-        anomalyItems.forEach(function (item) {
-          var tr = el('tr');
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.stationKm, 2) })));
+          p.items.forEach(function (item) {
+            var tr = el('tr');
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.stationKm, 2) })));
 
-          // Type badge with LED style
-          var typeClass = 'badge badge-neutral';
-          if (item.type === 'metalLoss') { typeClass = 'badge badge-moderate'; }
-          else if (item.type === 'crack') { typeClass = 'badge badge-severe'; }
-          var typeTd = el('td');
-          typeTd.appendChild(el('span', { class: typeClass, text: t('pipelines.' + item.type) }));
-          tr.appendChild(typeTd);
+            // Type badge with LED style
+            var typeClass = 'badge badge-neutral';
+            if (item.type === 'metalLoss') { typeClass = 'badge badge-moderate'; }
+            else if (item.type === 'crack') { typeClass = 'badge badge-severe'; }
+            var typeTd = el('td');
+            typeTd.appendChild(el('span', { class: typeClass, text: t('pipelines.' + item.type) }));
+            tr.appendChild(typeTd);
 
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.depthPct, 1) + ' %' })));
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(item.depthPct, 1) + ' %' })));
 
-          var pfText = item.Pf != null && item.Pf > 0 ? fmtNum(item.Pf, 1) + ' MPa' : '—';
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: pfText })));
+            var pfText = item.Pf != null && item.Pf > 0 ? fmtNum(item.Pf, 1) + ' MPa' : '—';
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: pfText })));
 
-          var safeText = item.pAllow != null && item.pAllow > 0 ? fmtNum(item.pAllow, 1) + ' MPa' : '—';
-          if (hasOpPressure && item.exceeds) {
-            tr.appendChild(el('td', null, el('span', { class: 'badge badge-severe', text: safeText })));
-          } else {
-            tr.appendChild(el('td', null, el('span', { class: 'num', text: safeText })));
+            var safeText = item.pAllow != null && item.pAllow > 0 ? fmtNum(item.pAllow, 1) + ' MPa' : '—';
+            if (hasOpPressure && item.exceeds) {
+              tr.appendChild(el('td', null, el('span', { class: 'badge badge-severe', text: safeText })));
+            } else {
+              tr.appendChild(el('td', null, el('span', { class: 'num', text: safeText })));
+            }
+
+            var statusTd = el('td');
+            if (hasOpPressure && item.exceeds) {
+              statusTd.appendChild(el('span', { class: 'led led-crit', attrs: { 'aria-label': t('pipelines.exceeds'), 'data-led': 'crit' } }));
+              statusTd.appendChild(el('span', { class: 'badge badge-severe', text: 'EXCEEDS' }));
+            } else if (assessed.length > 0) {
+              statusTd.appendChild(el('span', { class: 'led led-ok', attrs: { 'aria-label': t('common.ok'), 'data-led': 'ok' } }));
+              statusTd.appendChild(el('span', { class: 'pill', text: t('common.ok') }));
+            } else {
+              statusTd.appendChild(el('span', { class: 'muted', text: '—' }));
+            }
+            tr.appendChild(statusTd);
+            tbody.appendChild(tr);
+          });
+
+          tbl.appendChild(tbody);
+          wrap.appendChild(tbl);
+          tableHost.appendChild(wrap);
+          if (p.pages > 1) {
+            tableHost.appendChild(u.pager({ total: p.total, page: p.page, size: PAGE_SIZE, onGoto: function (next) { page = next; paintTable(); } }));
           }
-
-          var statusTd = el('td');
-          if (hasOpPressure && item.exceeds) {
-            statusTd.appendChild(el('span', { class: 'led led-crit', attrs: { 'aria-label': t('pipelines.exceeds'), 'data-led': 'crit' } }));
-            statusTd.appendChild(el('span', { class: 'badge badge-severe', text: 'EXCEEDS' }));
-          } else if (assessed.length > 0) {
-            statusTd.appendChild(el('span', { class: 'led led-ok', attrs: { 'aria-label': t('common.ok'), 'data-led': 'ok' } }));
-            statusTd.appendChild(el('span', { class: 'pill', text: t('common.ok') }));
-          } else {
-            statusTd.appendChild(el('span', { class: 'muted', text: '—' }));
-          }
-          tr.appendChild(statusTd);
-          tbody.appendChild(tr);
-        });
-
-        tbl.appendChild(tbody);
-        wrap.appendChild(tbl);
-        panel.appendChild(wrap);
+        }
+        paintTable();
       }
       container.appendChild(panel);
     }
@@ -766,96 +783,123 @@
         var kb = (typeof b.stationKm === 'number') ? b.stationKm : Number(b.stationKm) || 0;
         return _session.sortDir === 'asc' ? ka - kb : kb - ka;
       });
-      host.textContent = '';
-      var wrap = el('div', { class: 'table-wrap' });
-      var tbl = el('table', { class: 'data' });
-      tbl.appendChild(el('caption', { text: t('pipelines.lineAssets') }));
-      var thead = el('thead');
-      var htr = el('tr');
-      var thKm = el('th', { attrs: { scope: 'col' } }, el('button', { class: 'sortable-th', text: t('pipelines.stationKm') + (_session.sortDir === 'asc' ? ' ↑' : ' ↓'), on: { click: function () { _session.sortDir = _session.sortDir === 'asc' ? 'desc' : 'asc'; renderAssetsTable(system, assets, inspections, host, locked); } } }));
-      htr.appendChild(thKm);
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetCode') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetName') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetType') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.side') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.severity') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.lastInspection') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.certExpiry') }));
-      htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.actions') }));
-      thead.appendChild(htr);
-      tbl.appendChild(thead);
-      var tbody = el('tbody');
-      if (sorted.length === 0) {
-        tbody.appendChild(el('tr', null, el('td', { class: 'empty-state', attrs: { colspan: '8' }, text: t('pipelines.noAssets') })));
-      } else {
-        sorted.forEach(function (a) {
-          var dim = !matchesFilter(a, _session.filters);
-          var tr = el('tr', { dataset: { assetRow: a.id, assetCode: a.code || '' } });
-          if (dim) { tr.classList.add('dimmed'); }
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(a.stationKm, 2) })));
-          tr.appendChild(el('td', { text: a.code || '' }));
-          tr.appendChild(el('td', { text: a.name || '' }));
-          tr.appendChild(el('td', { text: t('pipelines.types.' + (a.type || 'sectionValve')) }));
-          tr.appendChild(el('td', { text: t('pipelines.sides.' + (a.side || 'center')) }));
-          var sevTd = el('td');
-          if (a.integritySeverity) { sevTd.appendChild(u.severityBadge(a.integritySeverity)); }
-          else { sevTd.appendChild(el('span', { class: 'badge badge-neutral', text: t('common.none') })); }
-          tr.appendChild(sevTd);
-          var li = lastInspectionFor(a.id, inspections);
-          tr.appendChild(el('td', { text: li ? fmtDate(li) : t('common.none') }));
-          tr.appendChild(el('td', null, certBadge(a.certExpiryISO, t, Date.now())));
-          // icons.js no trae 'copy': el duplicado es botón de texto con el
-          // mismo guardián (data-perm assetWrite) que el alta de línea.
-          var actTd = el('td', null, el('div', { class: 'row' },
-            el('button', { class: 'btn btn-ghost touch', attrs: { 'data-perm': 'assetWrite', 'aria-label': t('duplo2.duplicateBtn') }, on: { click: function () { duplicateAsset(system, a, assets); } } }, el('span', { text: t('duplo2.duplicateBtn') })),
-            el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(system, a, assets); } } }, icon('edit', 18)),
-            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(a); } } }, icon('trash', 18)); b.disabled = locked; return b; })()));
-          tr.appendChild(actTd);
-          tbody.appendChild(tr);
-        });
+      // Paginacion (P2e): solo el render de filas; orden, filtros de mapa,
+      // KPIs y certificados siguen operando sobre la lista completa. Si el
+      // salto viene del mapa, la pagina inicial es la que contiene el activo
+      // buscado (sin eso el scroll a data-asset-code no tendria fila).
+      var page = 1;
+      if (_pendingScrollAsset) {
+        for (var pi = 0; pi < sorted.length; pi++) {
+          if ((sorted[pi].code || '') === _pendingScrollAsset) { page = Math.floor(pi / PAGE_SIZE) + 1; break; }
+        }
       }
-      tbl.appendChild(tbody);
-      wrap.appendChild(tbl);
-      host.appendChild(wrap);
+      function paint() {
+        host.textContent = '';
+        var p = u.paginate(sorted, page, PAGE_SIZE);
+        page = p.page;
+        var wrap = el('div', { class: 'table-wrap' });
+        var tbl = el('table', { class: 'data' });
+        tbl.appendChild(el('caption', { text: t('pipelines.lineAssets') }));
+        var thead = el('thead');
+        var htr = el('tr');
+        var thKm = el('th', { attrs: { scope: 'col' } }, el('button', { class: 'sortable-th', text: t('pipelines.stationKm') + (_session.sortDir === 'asc' ? ' ↑' : ' ↓'), on: { click: function () { _session.sortDir = _session.sortDir === 'asc' ? 'desc' : 'asc'; renderAssetsTable(system, assets, inspections, host, locked); } } }));
+        htr.appendChild(thKm);
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetCode') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetName') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.assetType') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.side') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.severity') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.lastInspection') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('pipelines.certExpiry') }));
+        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t('common.actions') }));
+        thead.appendChild(htr);
+        tbl.appendChild(thead);
+        var tbody = el('tbody');
+        if (p.total === 0) {
+          tbody.appendChild(el('tr', null, el('td', { class: 'empty-state', attrs: { colspan: '8' }, text: t('pipelines.noAssets') })));
+        } else {
+          p.items.forEach(function (a) {
+            var dim = !matchesFilter(a, _session.filters);
+            var tr = el('tr', { dataset: { assetRow: a.id, assetCode: a.code || '' } });
+            if (dim) { tr.classList.add('dimmed'); }
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: fmtNum(a.stationKm, 2) })));
+            tr.appendChild(el('td', { text: a.code || '' }));
+            tr.appendChild(el('td', { text: a.name || '' }));
+            tr.appendChild(el('td', { text: t('pipelines.types.' + (a.type || 'sectionValve')) }));
+            tr.appendChild(el('td', { text: t('pipelines.sides.' + (a.side || 'center')) }));
+            var sevTd = el('td');
+            if (a.integritySeverity) { sevTd.appendChild(u.severityBadge(a.integritySeverity)); }
+            else { sevTd.appendChild(el('span', { class: 'badge badge-neutral', text: t('common.none') })); }
+            tr.appendChild(sevTd);
+            var li = lastInspectionFor(a.id, inspections);
+            tr.appendChild(el('td', { text: li ? fmtDate(li) : t('common.none') }));
+            tr.appendChild(el('td', null, certBadge(a.certExpiryISO, t, Date.now())));
+            // icons.js no trae 'copy': el duplicado es botón de texto con el
+            // mismo guardián (data-perm assetWrite) que el alta de línea.
+            var actTd = el('td', null, el('div', { class: 'row' },
+              el('button', { class: 'btn btn-ghost touch', attrs: { 'data-perm': 'assetWrite', 'aria-label': t('duplo2.duplicateBtn') }, on: { click: function () { duplicateAsset(system, a, assets); } } }, el('span', { text: t('duplo2.duplicateBtn') })),
+              el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openAssetForm(system, a, assets); } } }, icon('edit', 18)),
+              (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteAsset(a); } } }, icon('trash', 18)); b.disabled = locked; return b; })()));
+            tr.appendChild(actTd);
+            tbody.appendChild(tr);
+          });
+        }
+        tbl.appendChild(tbody);
+        wrap.appendChild(tbl);
+        host.appendChild(wrap);
+        if (p.pages > 1) {
+          host.appendChild(u.pager({ total: p.total, page: p.page, size: PAGE_SIZE, onGoto: function (next) { page = next; paint(); } }));
+        }
+      }
+      paint();
     }
 
     function renderInspections(system, assets, inspections, host, locked) {
       var sorted = inspections.slice().sort(function (a, b) { return (a.date < b.date) ? 1 : -1; });
-      host.textContent = '';
-      var wrap = el('div', { class: 'table-wrap' });
-      var tbl = el('table', { class: 'data' });
-      tbl.appendChild(el('caption', { text: t('pipelines.inspections') }));
-      var thead = el('thead');
-      var htr = el('tr');
-      ['pipelines.inspectionType', 'common.date', 'pipelines.fromKm', 'pipelines.toKm', 'common.severity', 'pipelines.findings', 'common.actions'].forEach(function (k) {
-        htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t(k) }));
-      });
-      thead.appendChild(htr);
-      tbl.appendChild(thead);
-      var tbody = el('tbody');
-      if (sorted.length === 0) {
-        tbody.appendChild(el('tr', null, el('td', { class: 'empty-state', attrs: { colspan: '7' }, text: t('pipelines.noInspections') })));
-      } else {
-        sorted.forEach(function (i) {
-          var tr = el('tr');
-          tr.appendChild(el('td', { text: t('pipelines.inspTypes.' + (i.type || 'visual')) }));
-          tr.appendChild(el('td', { text: fmtDate(i.date) }));
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: i.fromKm == null ? '—' : fmtNum(i.fromKm, 2) })));
-          tr.appendChild(el('td', null, el('span', { class: 'num', text: i.toKm == null ? '—' : fmtNum(i.toKm, 2) })));
-          var sevTd = el('td');
-          if (i.severity) { sevTd.appendChild(u.severityBadge(i.severity)); }
-          else { sevTd.appendChild(el('span', { class: 'muted', text: t('common.none') })); }
-          tr.appendChild(sevTd);
-          tr.appendChild(el('td', { text: i.findings || '' }));
-          tr.appendChild(el('td', null, el('div', { class: 'row' },
-            el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openInspectionForm(system, assets, i); } } }, icon('edit', 18)),
-            (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteInspection(i); } } }, icon('trash', 18)); b.disabled = locked; return b; })())));
-          tbody.appendChild(tr);
+      var page = 1;
+      function paint() {
+        host.textContent = '';
+        var p = u.paginate(sorted, page, PAGE_SIZE);
+        page = p.page;
+        var wrap = el('div', { class: 'table-wrap' });
+        var tbl = el('table', { class: 'data' });
+        tbl.appendChild(el('caption', { text: t('pipelines.inspections') }));
+        var thead = el('thead');
+        var htr = el('tr');
+        ['pipelines.inspectionType', 'common.date', 'pipelines.fromKm', 'pipelines.toKm', 'common.severity', 'pipelines.findings', 'common.actions'].forEach(function (k) {
+          htr.appendChild(el('th', { attrs: { scope: 'col' }, text: t(k) }));
         });
+        thead.appendChild(htr);
+        tbl.appendChild(thead);
+        var tbody = el('tbody');
+        if (p.total === 0) {
+          tbody.appendChild(el('tr', null, el('td', { class: 'empty-state', attrs: { colspan: '7' }, text: t('pipelines.noInspections') })));
+        } else {
+          p.items.forEach(function (i) {
+            var tr = el('tr');
+            tr.appendChild(el('td', { text: t('pipelines.inspTypes.' + (i.type || 'visual')) }));
+            tr.appendChild(el('td', { text: fmtDate(i.date) }));
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: i.fromKm == null ? '—' : fmtNum(i.fromKm, 2) })));
+            tr.appendChild(el('td', null, el('span', { class: 'num', text: i.toKm == null ? '—' : fmtNum(i.toKm, 2) })));
+            var sevTd = el('td');
+            if (i.severity) { sevTd.appendChild(u.severityBadge(i.severity)); }
+            else { sevTd.appendChild(el('span', { class: 'muted', text: t('common.none') })); }
+            tr.appendChild(sevTd);
+            tr.appendChild(el('td', { text: i.findings || '' }));
+            tr.appendChild(el('td', null, el('div', { class: 'row' },
+              el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.edit') }, on: { click: function () { openInspectionForm(system, assets, i); } } }, icon('edit', 18)),
+              (function () { var b = el('button', { class: 'btn btn-ghost touch', attrs: { 'aria-label': t('common.delete') }, on: { click: function () { deleteInspection(i); } } }, icon('trash', 18)); b.disabled = locked; return b; })())));
+            tbody.appendChild(tr);
+          });
+        }
+        tbl.appendChild(tbody);
+        wrap.appendChild(tbl);
+        host.appendChild(wrap);
+        if (p.pages > 1) {
+          host.appendChild(u.pager({ total: p.total, page: p.page, size: PAGE_SIZE, onGoto: function (next) { page = next; paint(); } }));
+        }
       }
-      tbl.appendChild(tbody);
-      wrap.appendChild(tbl);
-      host.appendChild(wrap);
+      paint();
     }
 
     function deleteAsset(asset) {

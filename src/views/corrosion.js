@@ -1316,6 +1316,38 @@
     });
   }
 
+  // Paginacion de RENDER para una tabla: envuelve la lista COMPLETA de filas
+  // (makeRows) con un estado de pagina local {page,size:50} y devuelve un host
+  // para la tabla y otro para la barra ui.pager. draw() re-pinta SOLO esos dos
+  // hosts (cambiar de pagina NO reconstruye toda la vista, patron quirurgico
+  // igual al redraw() de la lista). Los calculos externos (KPIs, trend, fichas)
+  // siguen sobre la lista completa: aqui solo cambia que se pintan 50 filas.
+  function paginatedTableHost(h, makeRows, tableOpts) {
+    var state = { page: 1, size: 50 };
+    var host = h.ui.el('div');
+    var pagerHost = h.ui.el('div');
+    function draw() {
+      var all = makeRows();
+      var pag = h.ui.paginate(all, state.page, state.size);
+      state.page = pag.page;
+      host.textContent = '';
+      var opts = {};
+      for (var k in tableOpts) {
+        if (Object.prototype.hasOwnProperty.call(tableOpts, k)) { opts[k] = tableOpts[k]; }
+      }
+      opts.rows = pag.items;
+      host.appendChild(h.ui.table(opts));
+      pagerHost.textContent = '';
+      if (pag.pages > 1) {
+        pagerHost.appendChild(h.ui.pager({
+          total: pag.total, page: pag.page, size: state.size,
+          onGoto: function (p) { state.page = p; draw(); }
+        }));
+      }
+    }
+    return { host: host, pagerHost: pagerHost, draw: draw };
+  }
+
   function buildDetail(h, mp, readings, coupons, existingCodes) {
     var frag = document.createDocumentFragment();
 
@@ -1356,7 +1388,7 @@
         var origIdx = readings.length - 1 - revIdx;
         return { date: r.date, crMpy: r.crMpy, source: r.source, note: r.note, _outlier: !!outlierSet[origIdx] };
       });
-      var readingTable = h.ui.table({
+      var readingsPage = paginatedTableHost(h, function () { return readingRows; }, {
         captionKey: 'corrosion.readings',
         emptyKey: 'corrosion.noReadings',
         columns: [
@@ -1371,10 +1403,11 @@
             } },
           { key: 'source', labelKey: 'common.status', render: function (v) { return h.ui.el('span', { class: 'pill', text: v || '' }); } },
           { key: 'note', labelKey: 'common.note' }
-        ],
-        rows: readingRows
+        ]
       });
-      readingsCard.appendChild(readingTable);
+      readingsPage.draw();
+      readingsCard.appendChild(readingsPage.host);
+      readingsCard.appendChild(readingsPage.pagerHost);
     } else {
       readingsCard.appendChild(emptyState(h, 'corrosion.noReadings'));
     }
@@ -1388,7 +1421,7 @@
       var m = materialById(cp.material);
       return { coupon: cp, role: cp.role, pairId: cp.pairId, material: m ? m.name : (cp.material || ''), crMpy: cp.crMpy, status: cp.status, sev: sev };
     });
-    couponsCard.appendChild(h.ui.table({
+    var couponsPage = paginatedTableHost(h, function () { return couponRows; }, {
       captionKey: 'corrosion.coupons',
       emptyKey: 'common.empty',
       columns: [
@@ -1404,9 +1437,11 @@
               openCouponForm(h, mp.id, function () { renderDetail(h, h.container, mp.id); }, row.coupon);
             } } }, h.ui.icon('edit', 16), h.ui.el('span', { text: h.t('common.edit') }));
           } }
-      ],
-      rows: couponRows
-    }));
+      ]
+    });
+    couponsPage.draw();
+    couponsCard.appendChild(couponsPage.host);
+    couponsCard.appendChild(couponsPage.pagerHost);
     frag.appendChild(couponsCard);
 
     // Remaining life faceplate.
@@ -1466,7 +1501,7 @@
     header.appendChild(actions);
     frag.appendChild(header);
 
-    var state = { q: '', sector: 'all', system: '', sensor: '' };
+    var state = { q: '', sector: 'all', system: '', sensor: '', page: 1, size: 50 };
 
     var filters = h.ui.el('div', { class: 'filter-bar' });
 
@@ -1491,26 +1526,28 @@
       return wrap;
     }
 
-    var sectorSel = makeSelect('common.sector', [{ value: 'all', labelKey: 'common.all' }, { value: 'upstream', labelKey: 'common.upstream' }, { value: 'midstream', labelKey: 'common.midstream' }, { value: 'downstream', labelKey: 'common.downstream' }], function (v) { state.sector = v; redraw(); });
+    var sectorSel = makeSelect('common.sector', [{ value: 'all', labelKey: 'common.all' }, { value: 'upstream', labelKey: 'common.upstream' }, { value: 'midstream', labelKey: 'common.midstream' }, { value: 'downstream', labelKey: 'common.downstream' }], function (v) { state.sector = v; state.page = 1; redraw(); });
     filters.appendChild(sectorSel);
 
     var systems = [];
     points.forEach(function (p) { if (p.systemId && systems.indexOf(p.systemId) === -1) { systems.push(p.systemId); } });
-    var systemSel = makeSelect('corrosion.system', [{ value: '', labelKey: 'common.all' }].concat(systems.map(function (s) { return { value: s, label: s }; })), function (v) { state.system = v; redraw(); });
+    var systemSel = makeSelect('corrosion.system', [{ value: '', labelKey: 'common.all' }].concat(systems.map(function (s) { return { value: s, label: s }; })), function (v) { state.system = v; state.page = 1; redraw(); });
     filters.appendChild(systemSel);
 
     var sensorOpts = ['couponGravimetric', 'erProbe', 'lprProbe', 'h2Probe', 'utInspection', 'visual'];
-    var sensorSel = makeSelect('corrosion.sensorType', [{ value: '', labelKey: 'common.all' }].concat(sensorOpts.map(function (s) { return { value: s, labelKey: 'corrosion.sensorTypes.' + s }; })), function (v) { state.sensor = v; redraw(); });
+    var sensorSel = makeSelect('corrosion.sensorType', [{ value: '', labelKey: 'common.all' }].concat(sensorOpts.map(function (s) { return { value: s, labelKey: 'corrosion.sensorTypes.' + s }; })), function (v) { state.sensor = v; state.page = 1; redraw(); });
     filters.appendChild(sensorSel);
 
-    filters.appendChild(h.ui.el('button', { class: 'btn btn-ghost', on: { click: function () { state.q = ''; state.sector = 'all'; state.system = ''; state.sensor = ''; searchInput.value = ''; sectorSel.querySelector('select').value = 'all'; systemSel.querySelector('select').value = ''; sensorSel.querySelector('select').value = ''; redraw(); } } }, h.ui.icon('close', 18), h.ui.el('span', { text: h.t('common.clear') })));
+    filters.appendChild(h.ui.el('button', { class: 'btn btn-ghost', on: { click: function () { state.q = ''; state.sector = 'all'; state.system = ''; state.sensor = ''; state.page = 1; searchInput.value = ''; sectorSel.querySelector('select').value = 'all'; systemSel.querySelector('select').value = ''; sensorSel.querySelector('select').value = ''; redraw(); } } }, h.ui.icon('close', 18), h.ui.el('span', { text: h.t('common.clear') })));
 
     frag.appendChild(filters);
 
     var tableHost = h.ui.el('div');
     frag.appendChild(tableHost);
+    var hostPager = h.ui.el('div');
+    frag.appendChild(hostPager);
 
-    searchInput.addEventListener('input', function () { state.q = searchInput.value; redraw(); });
+    searchInput.addEventListener('input', function () { state.q = searchInput.value; state.page = 1; redraw(); });
 
     function filtered() {
       return points.filter(function (mp) {
@@ -1535,12 +1572,15 @@
 
     function redraw() {
       tableHost.textContent = '';
-      var rows = filtered().map(function (mp) {
+      hostPager.textContent = '';
+      var allRows = filtered().map(function (mp) {
         var r = latest[mp.id];
         var mpy = r && typeof r.crMpy === 'number' ? r.crMpy : null;
         var ser = (series[mp.id] || []).map(function (x) { return x.crMpy; });
         return { id: mp.id, code: mp.code, name: mp.name, sector: mp.sector, material: mp.material, sensorType: mp.sensorType, lastMpy: mpy, _series: ser, _mp: mp };
       });
+      var pag = h.ui.paginate(allRows, state.page, state.size);
+      state.page = pag.page;
       tableHost.appendChild(h.ui.table({
         captionKey: 'corrosion.points',
         emptyKey: 'common.empty',
@@ -1572,8 +1612,14 @@
             } },
           { key: '_actions', labelKey: 'common.actions', render: function (v, row) { return rowActions(row._mp); } }
         ],
-        rows: rows
+        rows: pag.items
       }));
+      if (pag.pages > 1) {
+        hostPager.appendChild(h.ui.pager({
+          total: pag.total, page: pag.page, size: state.size,
+          onGoto: function (p) { state.page = p; redraw(); }
+        }));
+      }
     }
 
     redraw();

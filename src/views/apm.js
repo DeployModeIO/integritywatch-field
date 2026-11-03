@@ -17,6 +17,7 @@
   var CRITICALITIES = ['A', 'B', 'C'];
   var DAY_MS = 86400000;
   var HOUR_MS = 3600000;
+  var PAGE_SIZE = 50;
   var SVG_NS = 'http://www.w3.org/2000/svg';
 
   var SECTOR_CATEGORIES = {
@@ -483,7 +484,17 @@
         } },
         { key: 'actions', labelKey: 'common.actions', render: function (v, row) { return assetActions(row, locked); } }
       ];
-      return u.table({ columns: columns, rows: list, captionKey: 'apm.assetsBySector', emptyKey: 'apm.noAssets' });
+      var host = el('div');
+      var page = 1;
+      function paint() {
+        host.textContent = '';
+        var p = u.paginate(list, page, PAGE_SIZE);
+        page = p.page;
+        host.appendChild(u.table({ columns: columns, rows: p.items, captionKey: 'apm.assetsBySector', emptyKey: 'apm.noAssets' }));
+        host.appendChild(u.pager({ total: p.total, page: p.page, size: PAGE_SIZE, onGoto: function (next) { page = next; paint(); } }));
+      }
+      paint();
+      return host;
     }
 
     function assetActions(asset, locked) {
@@ -782,7 +793,6 @@
 
     function renderEvents(events, host, locked) {
       var sorted = events.slice().sort(function (a, b) { return (a.start < b.start) ? 1 : -1; });
-      host.textContent = '';
       var columns = [
         { key: 'type', labelKey: 'apm.eventType', render: function (v) { return document.createTextNode(t('apm.eventTypes.' + (v || 'maintenance'))); } },
         { key: 'start', labelKey: 'apm.start', render: function (v) { return document.createTextNode(fmtDate(v)); } },
@@ -795,7 +805,15 @@
           return b;
         } }
       ];
-      host.appendChild(u.table({ columns: columns, rows: sorted, captionKey: 'apm.events', emptyKey: 'apm.noEvents' }));
+      var page = 1;
+      function paint() {
+        host.textContent = '';
+        var p = u.paginate(sorted, page, PAGE_SIZE);
+        page = p.page;
+        host.appendChild(u.table({ columns: columns, rows: p.items, captionKey: 'apm.events', emptyKey: 'apm.noEvents' }));
+        host.appendChild(u.pager({ total: p.total, page: p.page, size: PAGE_SIZE, onGoto: function (next) { page = next; paint(); } }));
+      }
+      paint();
     }
 
     function deleteEvent(ev) {

@@ -445,20 +445,141 @@
     return wrap;
   }
 
+  // ---- Paginacion ------------------------------------------------------------
+  // Tamano de pagina por defecto (50) acotado a [5, 500] para que un opts
+  // defectuoso nunca congele la UI con paginas gigantes ni micro-paginas.
+  function normSize(size) {
+    var s = Math.floor(Number(size));
+    if (!isFinite(s) || s <= 0) { s = 50; }
+    if (s < 5) { s = 5; }
+    if (s > 500) { s = 500; }
+    return s;
+  }
+
+  // Clamping compartido entre paginate() y pager(): pagina dentro de [1, pages].
+  function clampPage(page, pages) {
+    var p = Math.floor(Number(page));
+    if (!isFinite(p) || p < 1) { p = 1; }
+    if (p > pages) { p = pages; }
+    return p;
+  }
+
+  // Paginacion pura, sin DOM y tolerante: null/undefined se trata como lista
+  // vacia; pagina fuera de rango se clampea; from/to son 1-based y en lista
+  // vacia valen 0.
+  function paginate(list, page, size) {
+    var arr = Array.isArray(list) ? list : [];
+    var total = arr.length;
+    var sz = normSize(size);
+    var pages = Math.max(1, Math.ceil(total / sz));
+    var p = clampPage(page, pages);
+    return {
+      items: arr.slice((p - 1) * sz, p * sz),
+      page: p,
+      pages: pages,
+      total: total,
+      from: total === 0 ? 0 : (p - 1) * sz + 1,
+      to: Math.min(p * sz, total)
+    };
+  }
+
+  // Icono con respaldo: usa el set SVG de icons.js cuando esta disponible
+  // (navegador); si el entorno no puede materializar el SVG (p. ej. el shim
+  // de pruebas sin template.content) pinta el glifo textual pasado como
+  // respaldo, de modo que la barra nunca quede vacia ni lance errores.
+  function iconOrText(name, fallback, size) {
+    try {
+      var set = icons();
+      if (set && typeof set.svg === 'function' && typeof set.svgNode === 'function' && set.svg(name)) {
+        var node = set.svgNode(name, size);
+        if (node) { return node; }
+      }
+    } catch (e) { /* sin SVG en este entorno: glifo textual */ }
+    return txt(fallback);
+  }
+
+  // Opciones del <select> de salto directo: hasta 200 paginas se listan
+  // todas; por encima, las primeras 100 y las ultimas 98 con un hueco '…'
+  // en medio, y la pagina actual intercalada si cae en el hueco (asi el
+  // select siempre puede reflejar el estado). Total de <option>: <= 200.
+  var PAGE_OPTIONS_MAX = 200;
+  var PAGE_OPTIONS_HEAD = 100;
+  var PAGE_OPTIONS_TAIL = 98;
+  function pageOptions(pages, current) {
+    var out = [];
+    var i;
+    if (pages <= PAGE_OPTIONS_MAX) {
+      for (i = 1; i <= pages; i++) { out.push(i); }
+      return out;
+    }
+    for (i = 1; i <= PAGE_OPTIONS_HEAD; i++) { out.push(i); }
+    out.push(null); // hueco '…' (option deshabilitada, no navegable)
+    if (current > PAGE_OPTIONS_HEAD && current <= pages - PAGE_OPTIONS_TAIL) {
+      out.push(current);
+    }
+    for (i = pages - PAGE_OPTIONS_TAIL + 1; i <= pages; i++) { out.push(i); }
+    return out;
+  }
+
+  // Barra de paginacion: ‹ | X–Y de TOTAL | › y, solo cuando la barra
+  // larga (total > 5*size), un <select> de salto directo. Reutiliza clases
+  // existentes (.pager/.pager-info de components.css, .btn .btn-ghost,
+  // .select) y claves i18n existentes: los aria-label de los botones usan
+  // common.back / common.next, que ya estan en los 7 locales. El aria-label
+  // del select va literal en espanol porque ninguna clave de common./a11y.
+  // significa "ir a pagina", y anadirla exigiría replicarla en los 7 locales
+  // (lo prohibe la politica de paridad T3); el coste queda acotado a un
+  // atributo accesible. opts = {total, page, size, onGoto(page), labelFn?}.
   function pager(opts) {
     opts = opts || {};
-    var page = opts.page || 1;
-    var pageCount = opts.pageCount || 1;
-    var onChange = opts.onChange || function () {};
+    var total = Math.max(0, Math.floor(Number(opts.total)) || 0);
+    var sz = normSize(opts.size);
+    var pages = Math.max(1, Math.ceil(total / sz));
+    var page = clampPage(opts.page, pages);
+    var onGoto = typeof opts.onGoto === 'function' ? opts.onGoto : function () {};
+    var from = total === 0 ? 0 : (page - 1) * sz + 1;
+    var to = Math.min(page * sz, total);
+    var label = typeof opts.labelFn === 'function'
+      ? String(opts.labelFn({ page: page, pages: pages, total: total, from: from, to: to, size: sz }))
+      : from + '–' + to + ' de ' + total;
+
     var nav = el('nav', { class: 'pager' });
-    var prev = el('button', { class: 'btn btn-ghost', text: tt('common.back'), on: { click: function () { if (page > 1) { onChange(page - 1); } } } });
+    var prev = el('button', {
+      class: 'btn btn-ghost',
+      attrs: { 'aria-label': tt('common.back') },
+      on: { click: function () { if (page > 1) { onGoto(page - 1); } } }
+    }, iconOrText('chevron-left', '‹', 16));
     prev.disabled = page <= 1;
-    var info = el('span', { class: 'pager-info', text: String(page) + ' / ' + String(pageCount) });
-    var next = el('button', { class: 'btn btn-ghost', text: tt('common.next'), on: { click: function () { if (page < pageCount) { onChange(page + 1); } } } });
-    next.disabled = page >= pageCount;
+    var info = el('span', { class: 'pager-info', text: label });
+    var next = el('button', {
+      class: 'btn btn-ghost',
+      attrs: { 'aria-label': tt('common.next') },
+      on: { click: function () { if (page < pages) { onGoto(page + 1); } } }
+    }, iconOrText('chevron-right', '›', 16));
+    next.disabled = page >= pages;
     nav.appendChild(prev);
     nav.appendChild(info);
     nav.appendChild(next);
+
+    if (total > 5 * sz) {
+      var sel = el('select', {
+        class: 'select',
+        attrs: { 'aria-label': 'Ir a página' },
+        on: { change: function () {
+          var v = Math.floor(Number(sel.value));
+          if (isFinite(v) && v >= 1 && v <= pages && v !== page) { onGoto(v); }
+        } }
+      });
+      pageOptions(pages, page).forEach(function (p) {
+        if (p === null) {
+          sel.appendChild(el('option', { attrs: { value: '', disabled: 'disabled' }, text: '…' }));
+        } else {
+          sel.appendChild(el('option', { attrs: { value: String(p) }, text: String(p) }));
+        }
+      });
+      sel.value = String(page);
+      nav.appendChild(sel);
+    }
     return nav;
   }
 
@@ -887,6 +1008,7 @@
     keyValueTable: keyValueTable,
     severityBadge: severityBadge,
     tabs: tabs,
+    paginate: paginate,
     pager: pager,
     svgEl: svgEl,
     trendChart: trendChart,
