@@ -263,3 +263,173 @@ test('hash ignora metadatos del repo (createdAt/updatedAt) y cubre entityStore',
   assert.equal(res.breaks[0].id, 'aud-000001');
   assert.equal(res.breaks[0].kind, 'hash');
 });
+
+/* ── Multi-pestaña (bug real navegador 2026-11-03) ─────────────────────
+   La cola FIFO de record() es POR PÁGINA: dos pestañas que leen
+   'audit.head' concurrentemente calculaban el mismo seq y un aud-N pisaba
+   al otro → verifyChain 'CADENA ROTA'. Fix: sección crítica envuelta en
+   navigator.locks('iwf-audit-head', exclusive) + reparación defensiva del
+   head contra los docs (repairHead: adopta el hash del doc del head y
+   avanza hasta el máximo seq existente) + read-check antes de persistir.
+   Se simulan DOS PESTAÑAS como dos closures del módulo (require fresh con
+   delete require.cache) compartiendo el MISMO par de repos — análogo al
+   IndexedDB compartido entre pestañas. */
+
+function freshAuditlogModule() {
+  const p = require.resolve('../src/security/auditlog.js');
+  delete require.cache[p];
+  return require(p);
+}
+
+// El getter global de navigator (Node >= 21) no tiene setter → redefinir la
+// propiedad y restaurar el descriptor original al terminar (también el
+// registro UMD globalThis.IW.security.auditlog que el require fresh pisa).
+function withNavigatorOverride(mock, fn) {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  const iwSecurity = (globalThis.IW && globalThis.IW.security) ? globalThis.IW.security : null;
+  const iwAuditBefore = iwSecurity ? iwSecurity.auditlog : undefined;
+  Object.defineProperty(globalThis, 'navigator', {
+    configurable: true, enumerable: true, writable: true, value: mock
+  });
+  return Promise.resolve().then(fn).finally(() => {
+    if (original) {
+      Object.defineProperty(globalThis, 'navigator', original);
+    } else {
+      delete globalThis.navigator;
+    }
+    if (!iwSecurity) { return; }
+    if (iwAuditBefore !== undefined) { iwSecurity.auditlog = iwAuditBefore; }
+    else { delete iwSecurity.auditlog; }
+  });
+}
+
+// Cola simple FIFO que serializa callbacks: imita Web Locks exclusive entre
+// dos "pestañas" del mismo proceso.
+function makeLockQueue() {
+  const state = { tail: Promise.resolve(), name: null, calls: 0 };
+  const locks = {
+    request(name, opts, fn) {
+      state.name = name;
+      state.calls += 1;
+      const result = state.tail.then(fn);
+      state.tail = result.then(() => undefined, () => undefined);
+      return result;
+    }
+  };
+  return { locks, state };
+}
+
+function tabSetup(mod, d) {
+  return mod.init({
+    auditRepo: d.auditRepo,
+    metaRepo: d.metaRepo,
+    actorFn: () => ({ user: 'oper1', role: 'operator' })
+  });
+}
+
+test('multi-pestaña SIN locks (navigator.locks null): 2×10 records concurrentes → cadena intacta (reparación #2)', async () => {
+  const d = freshDeps();
+  await withNavigatorOverride({ locks: null }, async () => {
+    const modA = freshAuditlogModule();
+    const modB = freshAuditlogModule();
+    await tabSetup(modA, d);
+    await tabSetup(modB, d);
+    const [ra, rb] = await Promise.all([
+      Promise.all(Array.from({ length: 10 }, (_, i) => modA.record({ action: 'update', store: 'rules', entityId: 'tabA' + i }))),
+      Promise.all(Array.from({ length: 10 }, (_, i) => modB.record({ action: 'update', store: 'rules', entityId: 'tabB' + i })))
+    ]);
+    assert.equal(ra.length, 10);
+    assert.equal(rb.length, 10);
+
+    const docs = await d.auditRepo.list();
+    const ids = new Set(docs.map((x) => x.id));
+    assert.equal(ids.size, docs.length, 'sin ids duplicados en lo persistido');
+    const seqs = docs.map((x) => x.seq).sort((a, b) => a - b);
+    assert.deepEqual(seqs, Array.from({ length: seqs.length }, (_, i) => i + 1), 'seqs contiguos 1..M sin huecos');
+    assert.ok(docs.length >= 10 && docs.length <= 20, 'persistidos entre 10 y 20 (sin locks puede haber pisadas)');
+
+    const res = await modA.verifyChain();
+    assert.equal(res.ok, true, 'breaks: ' + JSON.stringify(res.breaks));
+
+    // La Reparación #2 al rescate: meta es caché, los docs mandan. Inyectar a
+    // mano un head OBSOLETO (seq/hash de un doc viejo como si la otra pestaña
+    // hubiera adelantado sin setear meta) → el siguiente record debe avanzar
+    // hasta el máximo seq existente y encadenar desde su hash, sin pisar nada.
+    const headNow = await d.metaRepo.get('audit.head');
+    assert.ok(headNow.seq >= 2);
+    const stale = await d.auditRepo.get('aud-' + String(headNow.seq - 1).padStart(6, '0'));
+    await d.metaRepo.set('audit.head', { hash: stale.hash, seq: stale.seq, lastAt: stale.at });
+    const e = await modA.record({ action: 'create', store: 'rules', entityId: 'post-stale' });
+    assert.equal(e.seq, docs.length + 1, 'repara el head rezagado y escribe tras el último doc');
+    assert.equal(e.prevHash, (await d.auditRepo.get('aud-' + String(docs.length).padStart(6, '0'))).hash);
+
+    const postStale = await modA.verifyChain();
+    assert.equal(postStale.ok, true);
+    assert.equal(postStale.checked, docs.length + 1);
+  });
+});
+
+test('multi-pestaña CON locks exclusivas: 2×10 records → seqs 1..20 exactos, sin duplicados, sin huecos', async () => {
+  const d = freshDeps();
+  const { locks, state } = makeLockQueue();
+  await withNavigatorOverride({ locks }, async () => {
+    const modA = freshAuditlogModule();
+    const modB = freshAuditlogModule();
+    await tabSetup(modA, d);
+    await tabSetup(modB, d);
+    const [ra, rb] = await Promise.all([
+      Promise.all(Array.from({ length: 10 }, (_, i) => modA.record({ action: 'update', store: 'rules', entityId: 'tabA' + i }))),
+      Promise.all(Array.from({ length: 10 }, (_, i) => modB.record({ action: 'update', store: 'rules', entityId: 'tabB' + i })))
+    ]);
+    const all = ra.concat(rb);
+    const seqs = all.map((e) => e.seq).sort((a, b) => a - b);
+    assert.deepEqual(seqs, Array.from({ length: 20 }, (_, i) => i + 1), 'seqs 1..20 exactos sin duplicados');
+    assert.equal(new Set(all.map((e) => e.id)).size, 20);
+    assert.equal(state.name, auditlog.EAL_LOCK_NAME, 'lock exclusivo global: iwf-audit-head');
+    assert.equal(state.calls, 20, 'un request por record');
+
+    const res = await modA.verifyChain();
+    assert.equal(res.ok, true);
+    assert.equal(res.checked, 20);
+    const docs = await d.auditRepo.list();
+    assert.equal(docs.length, 20);
+  });
+});
+
+test('head rezagado SIN locks: repairHead avanza al máximo seq existente y el siguiente doc encaja', async () => {
+  const d = freshDeps();
+  await withNavigatorOverride({ locks: null }, async () => {
+    const mod = freshAuditlogModule();
+    await tabSetup(mod, d);
+    const e1 = await mod.record({ action: 'create', store: 'psvs', entityId: 'v1' });
+    const e2 = await mod.record({ action: 'update', store: 'psvs', entityId: 'v1' });
+    const e3 = await mod.record({ action: 'delete', store: 'psvs', entityId: 'v1' });
+    // otra pestaña dejó meta con el head viejo (seq 1) y se cayó antes de setear
+    await d.metaRepo.set('audit.head', { hash: e1.hash, seq: 1, lastAt: e1.at });
+    const e4 = await mod.record({ action: 'create', store: 'psvs', entityId: 'v2' });
+    assert.equal(e4.seq, 4, 'avanzó sobre los docs existentes hasta 3');
+    assert.equal(e4.prevHash, e3.hash, 'prevHash = hash del doc seq 3 (head reparado desde los docs)');
+    const head = await d.metaRepo.get('audit.head');
+    assert.equal(head.seq, 4);
+    const res = await mod.verifyChain();
+    assert.equal(res.ok, true);
+    assert.equal(res.checked, 4);
+  });
+});
+
+test('navigator.locks rechaza → el error propaga al llamador y NO rompe la cola FIFO', async () => {
+  const d = freshDeps();
+  const boom = new Error('boom-locks');
+  await withNavigatorOverride({
+    locks: { request: () => Promise.reject(boom) }
+  }, async () => {
+    await init(d);
+    await assert.rejects(() => auditlog.record({ action: 'read', store: 'psvs' }),
+      (err) => err === boom);
+    // cola intacta: record OK sin locks
+    await withNavigatorOverride({ locks: null }, async () => {
+      const e = await auditlog.record({ action: 'read', store: 'psvs' });
+      assert.equal(e.seq, 1);
+    });
+  });
+});

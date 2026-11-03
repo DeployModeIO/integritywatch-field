@@ -41,9 +41,30 @@
      '…trunc' (exactamente 2000). Sin truncar si <=2000.
    - Claves meta exclusivas: 'audit.head' ({hash, seq, lastAt}) y
      'audit.lastExport'. NO invade users.* ni lock.*.
-   - sha256Hex: mismo patrón que export.evidencePack — globalThis.crypto.subtle
-     (Node >= 19 y navegador en contexto seguro). Sin fallback JS: si falta,
-     EAL_NO_CRYPTO, nunca un hash falso. Hex siempre minúsculas, 64 dígitos. */
+    - sha256Hex: mismo patrón que export.evidencePack — globalThis.crypto.subtle
+      (Node >= 19 y navegador en contexto seguro). Sin fallback JS: si falta,
+      EAL_NO_CRYPTO, nunca un hash falso. Hex siempre minúsculas, 64 dígitos.
+    - MULTI-PESTAÑA (bug real 2026-11-03): la cola FIFO de record() es POR
+      PÁGINA. Dos pestañas de la app leían 'audit.head' a la vez, calculaban el
+      mismo seq y un aud-N pisaba al otro → verifyChain 'CADENA ROTA'. Capa 1:
+      la sección crítica (leer head → calcular seq/prevHash → escribir doc →
+      actualizar meta) se envuelve en navigator.locks.request('iwf-audit-head',
+      {mode:'exclusive'}) cuando Web Locks existe (navegadores). La FIFO interna
+      queda como capa 2 (mismo documento) y como camino cuando no hay Web Locks
+      (Node/dbMemory/tests, navegadores viejos). Si locks RECHAZA o lanza, el
+      error propaga al llamador de record() como con cualquier fallo de repo:
+      este módulo es best-effort, no silencia.
+    - REPARACIÓN DEFENSIVA (cierra el hueco aunque falte/falle Web Locks):
+      'audit.head' en meta es solo CACHÉ — los docs son la cadena autoritativa.
+      Antes de calcular seq, repairHead() (a) re-lee el doc aud-<head.seq> y, si
+      existe con hash válido distinto, ADOPTA el del doc (el caché quedó
+      obsoleto por una escritura rival); (b) avanza mientras exista
+      aud-<head.seq+1> (otra pestaña escribió y su meta set se perdió o llegó
+      después), con tope MAX_HEAD_ADVANCE para no recorrer una colección huérfana.
+      record() además hace read-check justo antes de persistir (sin pedir locks
+      de nuevo — re-entrante deadlockaría): si el head se movió durante el
+      digest, reintenta hasta EAL_HEAD_CAS_TRIES y entonces persiste de todas
+      formas (best-effort, igual que antes del fix). */
 (function (root, factory) {
   'use strict';
   var api = factory(root);
@@ -64,6 +85,12 @@
   var PAD_LEN = 6;
   var CELL_MAX = 2000;
   var TRUNC_MARK = '…trunc';
+  // Web Locks (multi-pestaña): una sola sección crítica global en la app.
+  var HEAD_LOCK_NAME = 'iwf-audit-head';
+  // Re-chequeo del head antes de persistir cuando NO hay Web Locks (ver cabecera).
+  var MAX_HEAD_CAS_TRIES = 60;
+  // Tope del sondeo de docs tras un head rezagado (no recorrer una colección huérfana).
+  var MAX_HEAD_ADVANCE = 500;
 
   // Campos que entran al hash canónico (excluyendo 'hash' del propio doc).
   var HASH_FIELDS = ['action', 'after', 'at', 'count', 'entityId', 'entityStore',
@@ -183,6 +210,115 @@
     }
   }
 
+  // Web Locks solo cuando existe de verdad (navegador; Node 21+ expone un
+  // Navigator sin locks → fallback). request() se llama CON optiones objeto:
+  // mocks antiguos estilo callback devuelven undefined y rompen el then.
+  function locksApi() {
+    var nav = (typeof globalThis !== 'undefined') ? globalThis.navigator : null;
+    if (nav && nav.locks && typeof nav.locks.request === 'function') { return nav.locks; }
+    return null;
+  }
+
+  // Envuelve fn() (debe devolver promesa) en la sección crítica con lock
+  // exclusivo 'iwf-audit-head'. Sin Web Locks → fn() directo: la cola FIFO
+  // interna de record() es la que serializa, y repairHead() cubre el hueco
+  // multi-origen. Si locks rechaza/lanza, el error propaga (best-effort del
+  // llamador de record: la FIFO captura el fallo sin romper la cola).
+  function withHeadLock(fn) {
+    var locks = locksApi();
+    if (locks) { return Promise.resolve(locks.request(HEAD_LOCK_NAME, { mode: 'exclusive' }, fn)); }
+    return Promise.resolve().then(fn);
+  }
+
+  // Doc de cadena sano: seq coherente con su id (aud-<seq>) y hash presente.
+  function isChainDoc(d, expectedSeq) {
+    return !!d && typeof d === 'object' && d.seq === expectedSeq &&
+      typeof d.hash === 'string' && d.hash !== '';
+  }
+
+  // Reparación defensiva del head contra los docs (meta es solo caché; los
+  // docs son la cadena autoritativa). Dos pasos en TODO punto de lectura del
+  // head: (a) si el doc aud-<head.seq> existe con hash válido, adoptar su hash
+  // (otra pestaña pisó el doc tras nuestro set, o su set se perdió); (b)
+  // avanzar mientras exista aud-<head.seq+1> — huecos = escrituras rivales con
+  // meta rezagado — adoptando cada hash. Tope MAX_HEAD_ADVANCE de sondeos.
+  // Solo lee; nunca escribe meta aquí (evita pisar un head rival más nuevo).
+  function repairHead(head) {
+    var auditRepo = _deps.auditRepo;
+    function advancePast(h, probes) {
+      if (probes >= MAX_HEAD_ADVANCE) { return Promise.resolve(h); }
+      return auditRepo.get(entryId(h.seq + 1)).then(function (d) {
+        if (!isChainDoc(d, h.seq + 1)) { return h; }
+        return advancePast({ hash: d.hash, seq: d.seq }, probes + 1);
+      });
+    }
+    if (head.seq <= 0) { return advancePast(head, 0); }
+    return auditRepo.get(entryId(head.seq)).then(function (d) {
+      var base = isChainDoc(d, head.seq) ? { hash: d.hash, seq: d.seq } : head;
+      return advancePast(base, 0);
+    });
+  }
+
+  // Doc sin hash a partir de head reparado + actor resuelto + entry validada.
+  // Campos opcionales solo si presentes (undefined NO entra al payload).
+  function buildDoc(entry, head, seq, actor) {
+    var doc = {
+      id: entryId(seq),
+      seq: seq,
+      at: (typeof entry.at === 'string' && entry.at !== '') ? entry.at : new Date().toISOString(),
+      user: actor.user,
+      role: actor.role,
+      action: entry.action,
+      store: entry.store,
+      entityStore: entry.store,
+      prevHash: head.hash
+    };
+    if (entry.entityId !== undefined) { doc.entityId = entry.entityId; }
+    if (entry.before !== undefined) { doc.before = entry.before; }
+    if (entry.after !== undefined) { doc.after = entry.after; }
+    if (entry.count !== undefined) { doc.count = entry.count; }
+    if (entry.importId !== undefined) { doc.importId = entry.importId; }
+    return doc;
+  }
+
+  // Persistir el doc y actualizar el caché meta (último paso de la sección
+  // crítica). set con doc.hash/doc.seq: lo que se acaba de escribir.
+  function persistDoc(doc) {
+    var auditRepo = _deps.auditRepo;
+    var metaRepo = _deps.metaRepo;
+    return auditRepo.save(doc).then(function () {
+      return metaRepo.set(HEAD_KEY, { hash: doc.hash, seq: doc.seq, lastAt: doc.at });
+    }).then(function () {
+      return doc;
+    });
+  }
+
+  // Un intento de escribir: leer+reparar head → construir doc → digest →
+  // read-check (re-leer y reparar de nuevo) → persistir o reintentar. El
+  // read-check cierra la ventana digest (el head se movió durante el hash).
+  // repairHead NO pide locks (re-entrante deadlockaría con Web Locks real).
+  // Tras MAX_HEAD_CAS_TRIES inconsistentes se persiste igual (best-effort).
+  function recordAttempt(entry, actor, attempt) {
+    var metaRepo = _deps.metaRepo;
+    return metaRepo.get(HEAD_KEY).then(function (raw) {
+      return repairHead(normalizeHead(raw)).then(function (head) {
+        var doc = buildDoc(entry, head, head.seq + 1, actor);
+        return sha256Hex(hashPayload(doc)).then(function (hash) {
+          doc.hash = hash;
+          if (attempt >= MAX_HEAD_CAS_TRIES) { return persistDoc(doc); }
+          return metaRepo.get(HEAD_KEY).then(function (raw2) {
+            return repairHead(normalizeHead(raw2)).then(function (fresh) {
+              if (fresh.seq !== head.seq || fresh.hash !== head.hash) {
+                return recordAttempt(entry, actor, attempt + 1);
+              }
+              return persistDoc(doc);
+            });
+          });
+        });
+      });
+    });
+  }
+
   function doRecord(entry) {
     requireDeps();
     if (!entry || typeof entry !== 'object') {
@@ -194,44 +330,19 @@
     if (typeof entry.store !== 'string' || entry.store === '') {
       return Promise.reject(ealError(CODE_BAD_INPUT, 'record(entry): store debe ser cadena no vacía'));
     }
-    var auditRepo = _deps.auditRepo;
-    var metaRepo = _deps.metaRepo;
-    var actor = { user: '?', role: '?' };
-    var head = { hash: GENESIS, seq: 0 };
-    return Promise.all([resolveActor(), metaRepo.get(HEAD_KEY)]).then(function (res) {
-      actor = res[0];
-      head = normalizeHead(res[1]);
-      var seq = head.seq + 1;
-      var doc = {
-        id: entryId(seq),
-        seq: seq,
-        at: (typeof entry.at === 'string' && entry.at !== '') ? entry.at : new Date().toISOString(),
-        user: actor.user,
-        role: actor.role,
-        action: entry.action,
-        store: entry.store,
-        entityStore: entry.store,
-        prevHash: head.hash
-      };
-      if (entry.entityId !== undefined) { doc.entityId = entry.entityId; }
-      if (entry.before !== undefined) { doc.before = entry.before; }
-      if (entry.after !== undefined) { doc.after = entry.after; }
-      if (entry.count !== undefined) { doc.count = entry.count; }
-      if (entry.importId !== undefined) { doc.importId = entry.importId; }
-      return sha256Hex(hashPayload(doc)).then(function (hash) {
-        doc.hash = hash;
-        return auditRepo.save(doc).then(function () {
-          return metaRepo.set(HEAD_KEY, { hash: hash, seq: seq, lastAt: doc.at });
-        }).then(function () {
-          return doc;
-        });
-      });
+    // El actor NO es parte de la sección crítica multi-página: se resuelve
+    // antes de tomar el lock (sigue siendo "al momento de escribir", igual
+    // que antes del fix).
+    return resolveActor().then(function (actor) {
+      return withHeadLock(function () { return recordAttempt(entry, actor, 0); });
     });
   }
 
-  // record(entry) → Promise<doc persistido>. Serializado por cola FIFO interna
-  // (ver cabecera): los llamadores concurrentes entran en orden de llamada y
-  // nunca leen el mismo head a la vez.
+  // record(entry) → Promise<doc persistido>. Serialización en DOS capas:
+  // cola FIFO interna (orden de llamada en el documento actual) + lock
+  // exclusivo 'iwf-audit-head' vía Web Locks cuando existe (entre pestañas),
+  // con reparación defensiva del head contra los docs cuando no. Ver
+  // Decisiones documentadas en la cabecera.
   function record(entry) {
     var run = _chain.then(function () { return doRecord(entry); });
     _chain = run.then(function () { return undefined; }, function () { return undefined; });
@@ -420,6 +531,9 @@
     HEAD_KEY: HEAD_KEY,
     LAST_EXPORT_KEY: LAST_EXPORT_KEY,
     GENESIS: GENESIS,
+    EAL_LOCK_NAME: HEAD_LOCK_NAME,
+    EAL_HEAD_CAS_TRIES: MAX_HEAD_CAS_TRIES,
+    EAL_MAX_HEAD_ADVANCE: MAX_HEAD_ADVANCE,
     HASH_FIELDS: HASH_FIELDS,
     CELL_MAX: CELL_MAX,
     TRUNC_MARK: TRUNC_MARK,
