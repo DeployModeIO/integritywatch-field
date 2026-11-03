@@ -11,6 +11,7 @@
   'use strict';
 
   var DATA_STORES = ['monitoringPoints', 'readings', 'coupons', 'psvs', 'pipelineSystems', 'lineAssets', 'lineInspections', 'apmAssets', 'apmEvents', 'recommendations', 'importLog', 'mutationQueue'];
+  var DEMO_RESET_STORES = ['monitoringPoints', 'readings', 'coupons', 'psvs', 'pipelineSystems', 'lineAssets', 'lineInspections', 'iliAnomalies', 'apmAssets', 'apmEvents', 'recommendations'];
 
   function ui() { return root.IW.ui; }
   function lock() { return root.IW.security ? root.IW.security.lock : null; }
@@ -819,11 +820,16 @@
         return requirePerm('admin').then(function () {
           return ui().confirmDialog({ titleKey: 'admin.resetDemo', bodyKey: 'admin.resetDemoConfirm', danger: true }).then(function (ok) {
             if (!ok) { return; }
-            var seed = root.IW.data && root.IW.data.seed;
-            var doSeed = (seed && typeof seed.demo === 'function') ? seed.demo(repos) : Promise.resolve({ counts: {} });
-            return doSeed.then(function () {
-              return repos.meta.set('demoLoaded', true);
-            }).then(function () { toast('admin.demoLoaded', 'info'); });
+            var clears = DEMO_RESET_STORES.map(function (name) {
+              return repos[name] && typeof repos[name].clear === 'function' ? repos[name].clear() : Promise.resolve();
+            });
+            return Promise.all(clears).then(function () {
+              var seed = root.IW.data && root.IW.data.seed;
+              var doSeed = (seed && typeof seed.demo === 'function') ? seed.demo(repos) : Promise.resolve({ counts: {} });
+              return doSeed.then(function () {
+                return repos.meta.set('demoLoaded', true);
+              }).then(function () { toast('admin.demoLoaded', 'info'); });
+            });
           });
         }).catch(function (err) {
           if (isForbidden(err)) { forbiddenToast(err); }
