@@ -1029,11 +1029,7 @@
     admin: {
       title: "الإدارة",
       about: "حول",
-      alarmSoundEnable: "التشغيل عند الإنذارات الحرجة (الحمراء)",
-      alarmSoundHint: "يحتاج المتصفح إلى نقرة أولى على الصفحة قبل التشغيل التلقائي",
-      alarmSoundSection: "صوت الإنذار",
-      alarmSoundTest: "اختبار الصوت",
-      alarmSoundVolume: "مستوى الصوت",
+      
       version: "الإصدار",
       appearance: "المظهر",
       locale: "اللغة",

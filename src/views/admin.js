@@ -22,7 +22,6 @@
   function syncQueue() { return root.IW.core ? root.IW.core.syncQueue : null; }
   function theme() { return root.IW.app ? root.IW.app.theme : null; }
   function i18n() { return root.IW.i18n; }
-  function alarmSound() { return root.IW.core ? root.IW.core.alarmSound : null; }
 
   function el(tag, attrs) {
     var u = ui();
@@ -79,7 +78,8 @@
 
       // --- About --------------------------------------------------------------
       var about = sectionCard(t('admin.about'), []);
-      var versionRow = el('p', { text: t('admin.version') + ': ' + '1.0.0' });
+      var cf = caseFile();
+      var versionRow = el('p', { text: t('admin.version') + ': ' + (cf && cf.APP_VERSION ? cf.APP_VERSION : '1.4.1') });
       about.appendChild(versionRow);
       grid.appendChild(about);
 
@@ -131,33 +131,6 @@
       });
       var saveRulesBtn = el('button', { class: 'btn btn-primary', on: { click: onSaveRules } }, icon('check', 18), el('span', { text: t('common.save') }));
       rulesCard.appendChild(saveRulesBtn);
-      var alarmEnableCb, alarmVolumeInput;
-      var asnd = alarmSound();
-      if (asnd) {
-        alarmEnableCb = el('input', { attrs: { type: 'checkbox', id: 'admin-alarm-enable' } });
-        alarmEnableCb.addEventListener('change', function () {
-          var checked = alarmEnableCb.checked;
-          repos.meta.set('alarmSoundOn', checked).catch(function () {});
-          alarmSound().configure({ enabled: checked });
-        });
-        rulesCard.appendChild(el('div', { class: 'field' },
-          el('label', { class: 'field-label', attrs: { for: 'admin-alarm-enable' }, text: t('admin.alarmSoundEnable') }),
-          alarmEnableCb,
-          el('p', { class: 'field-hint', text: t('admin.alarmSoundHint') })));
-        alarmVolumeInput = el('input', { class: 'input', attrs: { type: 'number', min: '0', max: '100', id: 'admin-alarm-volume' } });
-        alarmVolumeInput.addEventListener('change', function () {
-          var val = Number(alarmVolumeInput.value);
-          if (isNaN(val)) { return; }
-          repos.meta.set('alarmSoundVolume', val).catch(function () {});
-          alarmSound().configure({ volume: val / 100 });
-        });
-        rulesCard.appendChild(el('div', { class: 'field' },
-          el('label', { class: 'field-label', attrs: { for: 'admin-alarm-volume' }, text: t('admin.alarmSoundVolume') }),
-          alarmVolumeInput));
-        var alarmTestBtn = el('button', { class: 'btn', on: { click: function () { alarmSound().testBlip(); } } },
-          icon('volume', 18), el('span', { text: t('admin.alarmSoundTest') }));
-        rulesCard.appendChild(el('div', { class: 'field' }, alarmTestBtn));
-      }
       grid.appendChild(rulesCard);
 
       // --- Data management --------------------------------------------------------
@@ -1100,19 +1073,7 @@
           ruleFields.forEach(function (f, i) {
             if (vals[i] !== undefined && vals[i] !== null) { ruleInputs[f[0]].value = String(vals[i]); }
           });
-          if (alarmEnableCb) {
-            return Promise.all([
-              repos.meta.get('alarmSoundOn').catch(function () { return undefined; }),
-              repos.meta.get('alarmSoundVolume').catch(function () { return undefined; })
-            ]).then(function (alarmVals) {
-              var alarmOn = alarmVals[0];
-              var alarmVol = alarmVals[1];
-              alarmEnableCb.checked = (alarmOn !== undefined && alarmOn !== null) ? !!alarmOn : true;
-              alarmVolumeInput.value = (alarmVol !== undefined && alarmVol !== null) ? String(alarmVol) : '60';
-              alarmSound().configure({ enabled: alarmEnableCb.checked, volume: Number(alarmVolumeInput.value) / 100 });
-            });
-          }
-        });
+          });
       }
 
       // Apply current theme to radios.

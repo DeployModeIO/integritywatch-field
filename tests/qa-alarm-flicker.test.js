@@ -1,8 +1,7 @@
 /* IntegrityWatch Field — QA alarm flicker (node:test + assert/strict, CJS)
    Verifica que el fix del bug ~97 repintados/tick mantiene coalescing estricto:
    un solo evento data:changed por barrido bulk, debounce 250ms en vistas que
-   evita repintados en rafaga, filtro de meta que no vacia el dashboard, y
-   coherencia del sonido de alarma con el contador real de criticas.
+   evita repintados en rafaga, y filtro de meta que no vacia el dashboard.
 
    ANTI-PATTERN CORREGIDO:
    - engine.sweep emitia 1 data:changed por cada rec guardada individualmente
@@ -10,8 +9,7 @@
    - Las vistas se suscribian a data:changed sin debounce, causando repintados
      por cada evento individual.
    - data:changed:meta disparaba reload completo del dashboard aunque solo
-     cambiara lastRulesRunISO.
-   - alarmSound.setActive se llamaba con el contador incorrecto. */
+     cambiara lastRulesRunISO. */
 'use strict';
 
 const { test, after, beforeEach } = require('node:test');
@@ -35,9 +33,8 @@ require('../src/components/ui.js');
 const engine = require('../src/rules/engine.js');
 require('../src/rules/definitions.js');
 
-/* ── DOM shim + alarmSound ─────────────────────────────────────────────────── */
+/* ── DOM shim ──────────────────────────────────────────────────────────────── */
 const dom = require('./helpers/dom-shim.js');
-const alarmSound = require('../src/core/alarmSound.js');
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
 const HOUR = 3600000;
@@ -396,64 +393,3 @@ test('T4 recommendations view coalesce: 5 eventos → <= 2 vaciados del listWrap
   listSpy.restore();
 });
 
-/* ══════════════════════════════════════════════════════════════════════════════
-   T5 — alarmSound start/stop coherente con criticas abiertas
-   ══════════════════════════════════════════════════════════════════════════════ */
-test('T5 alarmSound start/stop coherente con criticas abiertas', function () {
-  /* Resetear el modulo antes de empezar. */
-  alarmSound.stopNow();
-  alarmSound.configure({ enabled: true, volume: 0.6 });
-  alarmSound.setActive(false);
-  alarmSound.__setAudioFactoryForTest(null);
-
-  /* Mock AudioContext sencillo (igual que alarm-sound.test.js). */
-  function makeMock() {
-    var gainObj = { value: 0 };
-    var calls = { createOscillator: 0, createGain: 0 };
-    var ctx = {
-      createOscillator: function () {
-        calls.createOscillator++;
-        return {
-          start: function () {},
-          stop: function () {},
-          frequency: { value: 0 },
-          connect: function () {}
-        };
-      },
-      createGain: function () {
-        calls.createGain++;
-        return { gain: gainObj, connect: function () {} };
-      },
-      destination: {},
-      currentTime: 0,
-      resume: function () { return Promise.resolve(); },
-      state: 'running'
-    };
-    return { ctx: ctx, calls: calls, gain: gainObj };
-  }
-
-  var mock = makeMock();
-  alarmSound.__setAudioFactoryForTest(function () { return mock.ctx; });
-
-  /* Caso 1: hay criticas abiertas → sonido activo. */
-  alarmSound.setActive(true);
-  alarmSound.configure({ enabled: true });
-
-  var count = alarmSound.__tickForTest();
-  assert.equal(count, 2, 'con criticas activas, __tickForTest crea 2 osciladores');
-
-  /* Caso 2: se ackean todas las criticas → sonido inactivo. */
-  alarmSound.setActive(false);
-
-  var countOff = alarmSound.__tickForTest();
-  assert.equal(countOff, 0, 'sin criticas activas, __tickForTest no crea osciladores');
-
-  /* Caso 3: vuelven a aparecer criticas → sonido reactivado. */
-  alarmSound.setActive(true);
-  var countRe = alarmSound.__tickForTest();
-  assert.equal(countRe, 2, 'reactivacion tras nuevas criticas crea 2 osciladores');
-
-  /* Limpiar. */
-  alarmSound.setActive(false);
-  alarmSound.__setAudioFactoryForTest(null);
-});

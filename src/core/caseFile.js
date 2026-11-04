@@ -13,7 +13,7 @@
 
   var FNV_OFFSET = 0x811c9dc5;
   var FNV_PRIME = 0x01000193;
-  var APP_VERSION = '1.4.0';
+  var APP_VERSION = '1.4.1';
 
   // Recursive canonical JSON stringifier: keys sorted lexicographically.
   function canonicalStringify(obj) {

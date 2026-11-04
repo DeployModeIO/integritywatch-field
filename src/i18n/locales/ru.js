@@ -1029,11 +1029,7 @@
     admin: {
       title: "Администрирование",
       about: "О приложении",
-      alarmSoundEnable: "Звучать при критических (красных) тревогах",
-      alarmSoundHint: "Браузеру нужен первый клик по странице перед воспроизведением",
-      alarmSoundSection: "Звук тревоги",
-      alarmSoundTest: "Проверить звук",
-      alarmSoundVolume: "Громкость",
+      
       version: "Версия",
       appearance: "Внешний вид",
       locale: "Язык",

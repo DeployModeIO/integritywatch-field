@@ -1053,11 +1053,7 @@
     admin: {
       title: 'Admin',
       about: 'Sobre',
-      alarmSoundEnable: 'Sinal sonoro em alarmas críticas (vermelhas)',
-      alarmSoundHint: 'O navegador precisa de um primeiro clique na página antes de reproduzir áudio',
-      alarmSoundSection: 'Som de alarme',
-      alarmSoundTest: 'Testar som',
-      alarmSoundVolume: 'Volume',
+      
       version: 'Versão',
       appearance: 'Aparência',
       locale: 'Idioma',

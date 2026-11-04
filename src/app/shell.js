@@ -633,16 +633,12 @@
       syncBadgeLabel();
       renderAlarmBanner(critical, warning);
       updateSysBanner();
-      var snd = root.IW.core && root.IW.core.alarmSound;
-      if (snd && typeof snd.setActive === 'function') { try { snd.setActive(critical > 0); } catch (e) {} }
       return { critical: critical, warning: warning };
     }).catch(function (err) {
       if (typeof console !== 'undefined' && typeof console.warn === 'function') { console.warn('[shell] recommendations list failed', err); }
       if (_badgeEl) { _badgeEl.hidden = true; }
       renderAlarmBanner(0, 0);
       updateSysBanner();
-      var snd = root.IW.core && root.IW.core.alarmSound;
-      if (snd && typeof snd.setActive === 'function') { try { snd.setActive(false); } catch (e) {} }
       return { critical: 0, warning: 0 };
     });
   }
@@ -691,7 +687,7 @@
 
   function loadSettings() {
     if (!_repos || !_repos.meta) { startScheduler(); return refreshRecs(); }
-    var keys = ['rulesIntervalSec', 'residualBandPct', 'availabilityThresholdPct', 'stuckSensorCount', 'zScoreThreshold', 'sector', 'alarmSoundOn', 'alarmSoundVolume'];
+    var keys = ['rulesIntervalSec', 'residualBandPct', 'availabilityThresholdPct', 'stuckSensorCount', 'zScoreThreshold', 'sector'];
     var jobs = keys.map(function (k) { return _repos.meta.get(k).catch(function () { return undefined; }); });
     return Promise.all(jobs).then(function (vals) {
       if (vals[0] != null) { _settings.rulesIntervalSec = vals[0]; }
@@ -703,8 +699,6 @@
       if (_sectorSelect) {
         _sectorSelect.value = (SECTORS.indexOf(_sector) !== -1) ? _sector : 'all';
       }
-      var snd = root.IW.core && root.IW.core.alarmSound;
-      if (snd && typeof snd.configure === 'function') { try { snd.configure({ enabled: (vals[6] == null ? true : vals[6] !== false), volume: (typeof vals[7] === 'number' ? vals[7] / 100 : 0.6) }); snd.unlock(); } catch (e) {} }
       startScheduler();
       updateRulesStatus();
       return refreshRecs();

@@ -1134,11 +1134,7 @@
     admin: {
       title: "管理",
       about: "关于",
-      alarmSoundEnable: "在严重（红色）报警时发声",
-      alarmSoundHint: "浏览器需要先在页面上单击一次才能播放",
-      alarmSoundSection: "报警声音",
-      alarmSoundTest: "测试声音",
-      alarmSoundVolume: "音量",
+      
       version: "版本",
       appearance: "外观",
       locale: "语言",

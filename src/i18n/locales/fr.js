@@ -1052,11 +1052,7 @@
     admin: {
       title: "Administration",
       about: "À propos",
-      alarmSoundEnable: "Sonner sur les alarmes critiques (rouges)",
-      alarmSoundHint: "Le navigateur exige un premier clic sur la page avant la lecture automatique",
-      alarmSoundSection: "Sonnerie d\u2019alarme",
-      alarmSoundTest: "Tester le son",
-      alarmSoundVolume: "Volume",
+      
       version: "Version",
       appearance: "Apparence",
       locale: "Langue",
