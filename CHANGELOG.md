@@ -2,6 +2,14 @@
 
 Historial de versiones. Antes de 1.3.0 el detalle vive en la historia de git (`git log`, tags `v1.0.1` y posterior).
 
+## [1.4.1] — 2026-11-03 · release `v1.4.1-portable` (vigente)
+
+- Ejecutable Electron: `IntegrityWatch Field 1.4.1.exe` · 74.762.520 B · SHA-256 `487921CFBCE37D54D828DBA84507E9EC23B15F19CD82E17A37022856A476A4CF` (mismo digest publicado por GitHub; release marcado Latest; v1.4.0 y v1.3.0 quedan disponibles como anteriores).
+- **Retirada del sonido de alarma por solicitud del cliente**: eliminados `src/core/alarmSound.js` y sus 9 tests, la UI de Admin (activar/volumen/probar), las 5 claves i18n en los 7 idiomas, el script en `index.html` y la entrada de precache. Verificado dentro del exe: 0 osciladores, sin UI de sonido. **Se conservan íntegros todos los fixes antititileo de 1.4.0** (motor en bloque, debounce, filtro de meta, toast solo con alarmas nuevas, badge/banner instantáneos al reconocer).
+- **Fix Admin**: «Acerca de → Versión» mostraba un número fijo desactualizado (`1.0.0` hardcodeado); ahora lee `APP_VERSION` del sello interno del expediente (1.4.1) y nunca volverá a desincronizarse.
+- Tests: 997 → **987** en verde (−10 de la función de sonido retirada; la regresión antititileo conserva sus 4 tests).
+- Caché del service worker: `iw-v27`.
+
 ## [1.4.0] — 2026-11-03 · release `v1.4.0-portable`
 
 - Ejecutable Electron: `IntegrityWatch Field 1.4.0.exe` · 74.763.677 B · SHA-256 `D92403CA86663A3D13D4002215B424DDAEAE8CA55A34FCED62AEBE0C5BAEFB82` (mismo digest publicado en el release de GitHub, marcado Latest). `v1.3.0-portable` queda disponible como versión anterior.

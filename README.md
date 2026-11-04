@@ -14,7 +14,7 @@ IntegrityWatch Field is an application that runs **completely on your computer o
 
 **Value proposition:** Offline-first integrity and compliance operations center for oil & gas field work
 
-**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![997 tests](https://img.shields.io/badge/997%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
+**Badges:** ![Offline-first](https://img.shields.io/badge/Offline--first-007acc) ![7 languages](https://img.shields.io/badge/7%20languages-007acc) ![987 tests](https://img.shields.io/badge/987%20tests-28a745) ![PWA](https://img.shields.io/badge/PWA-007acc) ![No dependencies](https://img.shields.io/badge/Sin%20dependencias-runtime-007acc) [![License: MIT](https://img.shields.io/badge/License-MIT-007acc.svg)](LICENSE)
 
 **Engineering disclaimer:** Support tool. Always validate against current editions of standards and manufacturer data. Calculation results are indicative and must be reviewed by qualified personnel.
 
@@ -482,7 +482,7 @@ Serve the project folder with any static server.
 2. `npm start` for development
 3. `npm run dist` for packaging
 
-**Result:** `electron/dist/IntegrityWatch Field 1.4.0.exe` (portable, no installation; this folder is git-ignored by design — the exe ships through GitHub Releases, not the repo)
+**Result:** `electron/dist/IntegrityWatch Field 1.4.1.exe` (portable, no installation; this folder is git-ignored by design — the exe ships through GitHub Releases, not the repo)
 
 ### **PWA installation**
 
@@ -541,23 +541,28 @@ Printable full manual (Spanish): [DOCX](docs/manual/IntegrityWatch-Field-Manual-
 
 ## Portable package
 
-**IntegrityWatch-Field-Portable v1.4.0** — a single executable, no installation and no internet
+**IntegrityWatch-Field-Portable v1.4.1** — a single executable, no installation and no internet
 required. It bundles the whole application (vanilla JS, service worker, manifest) and the
 Electron shell that serves it locally.
 
-**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.4.0-portable
+**Download (GitHub Release):** https://github.com/DeployModeIO/integritywatch-field/releases/tag/v1.4.1-portable
 
 | File | Size | SHA-256 |
 |------|------|---------|
-| [`IntegrityWatch.Field.1.4.0.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.4.0-portable/IntegrityWatch.Field.1.4.0.exe) | 71.3 MB (74,763,677 B) | `D92403CA86663A3D13D4002215B424DDAEAE8CA55A34FCED62AEBE0C5BAEFB82` |
+| [`IntegrityWatch.Field.1.4.1.exe`](https://github.com/DeployModeIO/integritywatch-field/releases/download/v1.4.1-portable/IntegrityWatch.Field.1.4.1.exe) | 71.3 MB (74,762,520 B) | `487921CFBCE37D54D828DBA84507E9EC23B15F19CD82E17A37022856A476A4CF` |
 
 > Releases `v1.2.0-portable` (and the earlier split RAR volumes `v1.0.0-portable`) were
-> **removed** with client approval. `v1.3.0-portable` remains available as previous version.
+> **removed** with client approval. `v1.4.0` and `v1.3.0` remain available as previous versions.
+
+**What is new in 1.4.1**
+- **Alarm sound fully removed at client request** (module, Admin UI, i18n keys, precache entry). The app is silent by design; all anti-flicker fixes from 1.4.0 are kept intact.
+- **Admin "About → Version" fix:** it showed a stale hardcoded `1.0.0`; it now reads the real `APP_VERSION` from the case-file stamp and can never drift again.
+- Test suite: **987 green** (997 − 10 tests of the removed sound feature; the anti-flicker regression keeps its 4).
 
 **What is new in 1.4.0**
 - **Flicker fix (user-reported, measured live in the exe):** the automatic rules scheduler used to rewrite every open recommendation one by one every 60 s, and each write wiped and rebuilt the whole screen (measured: ~97 repaints and 48 events per tick inside the exe). Now the engine writes in bulk (`saveAll`), the dashboard/APM/recommendations views coalesce refreshes with a 250 ms debounce (measured after fix: 4 repaints, 5 events), and the `lastRulesRunISO` stamp no longer repaints the dashboard.
 - **Notification dedupe:** the "new critical recommendation" toast fires only when alarms are actually created, not every minute with the same open ones.
-- **NEW — critical alarm sound:** double beep (880/659 Hz) every 2.5 s while at least one critical (red) alarm is open; stops the moment you acknowledge, resolve or delete it (badge/banner/sound now refresh instantly on those actions). Configurable in Admin (enable / volume 0–100 / test button), persisted across sessions. Pure Web Audio, zero files, zero dependencies; unlocks with the first click (autoplay policy). Available in all 7 languages.
+- ~~**NEW — critical alarm sound:** double beep (880/659 Hz) every 2.5 s while at least one critical (red) alarm is open.~~ **Removed in 1.4.1 at client request** — the app is silent; badge/banner still refresh instantly on acknowledge/resolve/delete.
 - Test suite: **997 green** (982 + 15 new: 9 sound, 5 anti-flicker regression, 1 bulk engine).
 
 **What is new in 1.3.0**
@@ -581,19 +586,19 @@ Electron shell that serves it locally.
 - **Security model**: persistent admin/engineer/operator sessions (15-minute inactivity window), permission guard on every write path, authorship stamping on all records, SHA-256 signed case files (V2 envelope) with downgrade-attack rejection, import schema validation, file size limits, and a hardened sync endpoint (https-only outside localhost, optional bearer token). Verified end-to-end: 8 forms saved under an admin session, V2 export with `signedBy: admin`, and session expiry returning a null role.
 
 **How to install (1 minute):**
-1. Download `IntegrityWatch.Field.1.4.0.exe`.
+1. Download `IntegrityWatch.Field.1.4.1.exe`.
 2. Run it. Windows SmartScreen may warn about an unsigned build: choose **More info → Run anyway**.
 3. The app opens on its own local server; no browser setup and no network required.
 
 **Verify the download (optional):**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.4.0.exe SHA256
+certutil -hashfile IntegrityWatch.Field.1.4.1.exe SHA256
 ```
 The hash must match the table above.
 
 **Contents:**
 - Complete application (vanilla JS, service worker, manifest)
-- `IntegrityWatch.Field.1.4.0.exe` (Electron portable container, no installation)
+- `IntegrityWatch.Field.1.4.1.exe` (Electron portable container, no installation)
 - All `docs/`: user guide, standards, technical manuals, and **user manuals in 7 languages** (`docs/manual/MANUAL.en|es|fr|pt|ru|zh|ar.md`, plus DOCX/HTML printable manual)
 - `datos-prueba/` (CSV and JSON for validation)
 - `THIRD-PARTY-NOTICES.md`
@@ -601,8 +606,8 @@ The hash must match the table above.
 
 **Verification:**
 ```bash
-certutil -hashfile IntegrityWatch.Field.1.4.0.exe SHA256
-# must match: D92403CA86663A3D13D4002215B424DDAEAE8CA55A34FCED62AEBE0C5BAEFB82
+certutil -hashfile IntegrityWatch.Field.1.4.1.exe SHA256
+# must match: 487921CFBCE37D54D828DBA84507E9EC23B15F19CD82E17A37022856A476A4CF
 ```
 
 ---
@@ -715,7 +720,7 @@ certutil -hashfile IntegrityWatch.Field.1.4.0.exe SHA256
 **Desktop wrapper:** `electron/`
 
 **Features:**
-- `IntegrityWatch.Field.1.4.0.exe` (portable, no installation, ~71.3 MB)
+- `IntegrityWatch.Field.1.4.1.exe` (portable, no installation, ~71.3 MB)
 - Loads the application from local HTTP server
 - No Node.js runtime required (only for development)
 - Same logic as web version (functional parity)
@@ -724,7 +729,7 @@ certutil -hashfile IntegrityWatch.Field.1.4.0.exe SHA256
 
 ## Quality and testing
 
-**997 tests** (Node >=20, CJS, `node:assert/strict`)
+**987 tests** (Node >=20, CJS, `node:assert/strict`)
 
 **Coverage ≥80%** in engines (`src/calc/**`, `src/rules/**`)
 
@@ -732,7 +737,7 @@ certutil -hashfile IntegrityWatch.Field.1.4.0.exe SHA256
 
 | Type | Coverage | Command | Result |
 |------|----------|---------|--------|
-| **Unit (engines)** | corrosion 100%, PSV 98%, APM 93%, units 90%, rules 96–98% | `node --test` | **997/997 green** (full suite; engines grew from 300) |
+| **Unit (engines)** | corrosion 100%, PSV 98%, APM 93%, units 90%, rules 96–98% | `node --test` | **987/987 green** (full suite; engines grew from 300) |
 | **Data/ingestion** | CSV parse + validation + 12 aliases + boundaries; WITSML-lite; store/repos; export/import; syncQueue; lock PBKDF2; seed; glossary; i18n parity 7 locales | 119 tests `qa-*.test.js` | ✅ |
 | **Integration (no DOM)** | pipeline CSV→repos→rules→recommendations; cycle ack→resolve→reopen; deduplication; store hooks | `qa-rules-sweep`, `qa-data-integrity` | ✅ |
 | **Browser (manual, MCP chrome-devtools)** | 12 views rendered; RTL Arabic; dark theme; hot-switch i18n; keyboard map; A4 report; 0 console errors | captures `docs/evidence/*.png` (26) | ✅ |
