@@ -175,20 +175,25 @@
       var criticals = findings.filter(function (f) { return f.severity === 'critical'; }).length;
 
       var writes = [];
-      plan.toCreate.forEach(function (rec) { writes.push(repos.recommendations.save(rec, nowISO)); });
-      plan.toUpdate.forEach(function (rec) { writes.push(repos.recommendations.save(rec, nowISO)); });
-      plan.toReopen.forEach(function (rec) { writes.push(repos.recommendations.save(rec, nowISO)); });
+      var allRecs = plan.toCreate.concat(plan.toUpdate).concat(plan.toReopen);
+      if (allRecs.length > 0) {
+        writes.push(repos.recommendations.saveAll(allRecs));
+      }
 
       // Refresh PSV status (ok/due/overdue) from nextTestDate.
+      var psvChanged = [];
       data[3].forEach(function (p) {
         var st = psvStatus(p.nextTestDate, nowISO);
         if (p.status !== st) {
           var c = {};
           for (var k in p) { if (Object.prototype.hasOwnProperty.call(p, k)) { c[k] = p[k]; } }
           c.status = st;
-          writes.push(repos.psvs.save(c, nowISO));
+          psvChanged.push(c);
         }
       });
+      if (psvChanged.length > 0) {
+        writes.push(repos.psvs.saveAll(psvChanged));
+      }
 
       // Refresh lineAsset integrity severity = worst severity of its inspections.
       var inspectionsByAsset = {};
@@ -198,6 +203,7 @@
         if (!inspectionsByAsset[id]) { inspectionsByAsset[id] = []; }
         inspectionsByAsset[id].push(insp.severity);
       });
+      var laChanged = [];
       data[7].forEach(function (asset) {
         var worst = worstSeverity(inspectionsByAsset[asset.id]);
         var newVal = worst === null ? null : worst;
@@ -207,9 +213,12 @@
           for (var k2 in asset) { if (Object.prototype.hasOwnProperty.call(asset, k2)) { c[k2] = asset[k2]; } }
           if (newVal === null) { delete c.integritySeverity; }
           else { c.integritySeverity = newVal; }
-          writes.push(repos.lineAssets.save(c, nowISO));
+          laChanged.push(c);
         }
       });
+      if (laChanged.length > 0) {
+        writes.push(repos.lineAssets.saveAll(laChanged));
+      }
 
       writes.push(repos.meta.set('lastRulesRunISO', nowISO));
 

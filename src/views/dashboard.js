@@ -378,6 +378,7 @@
 
   // Live subscription handle shared across renders of this module.
   var _live = null;
+  var _rdTimer = null, _rdAgain = false;
 
   function disposeLive() {
     if (_live) {
@@ -386,6 +387,8 @@
       _live.offs = [];
       _live = null;
     }
+    if (_rdTimer) { clearTimeout(_rdTimer); _rdTimer = null; }
+    _rdAgain = false;
   }
 
   function subscribe(h, live, evt, fn) {
@@ -435,17 +438,41 @@
         });
       }
 
+      function scheduleReload() {
+        if (_rdTimer) { _rdAgain = true; return; }
+        _rdTimer = setTimeout(function () {
+          _rdTimer = null;
+          var again = _rdAgain;
+          _rdAgain = false;
+          reload().then(function () {
+            if (again) { scheduleReload(); }
+          });
+        }, 250);
+      }
+
       // Tear down when another view takes over.
       subscribe(h, live, 'route:changed', function (d) {
         if (!d || d.viewId !== 'dashboard') { disposeLive(); }
       });
       // Live re-render on any relevant data change.
-      subscribe(h, live, 'data:changed:monitoringPoints', reload);
-      subscribe(h, live, 'data:changed:readings', reload);
-      subscribe(h, live, 'data:changed:psvs', reload);
-      subscribe(h, live, 'data:changed:apmAssets', reload);
-      subscribe(h, live, 'data:changed:recommendations', reload);
-      subscribe(h, live, 'data:changed:meta', reload);
+      subscribe(h, live, 'data:changed:monitoringPoints', scheduleReload);
+      subscribe(h, live, 'data:changed:readings', scheduleReload);
+      subscribe(h, live, 'data:changed:psvs', scheduleReload);
+      subscribe(h, live, 'data:changed:apmAssets', scheduleReload);
+      subscribe(h, live, 'data:changed:recommendations', scheduleReload);
+      subscribe(h, live, 'data:changed:meta', function (pl) {
+        if (pl && pl.key === 'lastRulesRunISO') {
+          var lbl = container.querySelector('.rules-last-run');
+          if (lbl) {
+            h.repos.meta.get('lastRulesRunISO').then(function (iso) {
+              if (live.dead || !container.isConnected) { return; }
+              lbl.textContent = h.t('dashboard.lastRulesRun') + ': ' + (iso ? fmtDate(iso, { dateStyle: 'short', timeStyle: 'short' }) : h.t('common.none'));
+            }).catch(function () {});
+          }
+          return;
+        }
+        scheduleReload();
+      });
 
       return loadData(h).then(function (data) {
         if (live.dead || !container.isConnected) { return; }

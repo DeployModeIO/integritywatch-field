@@ -1126,6 +1126,11 @@ R17: '{{code}}: anomalía ILI requiere presión por encima del límite seguro ({
     admin: {
       title: 'Admin',
       about: 'Acerca de',
+      alarmSoundEnable: 'Sonar en alarmas críticas (rojas)',
+      alarmSoundHint: 'La app necesita un primer clic en la página antes de sonar (política de autorreproducción)',
+      alarmSoundSection: 'Sonido de alarma',
+      alarmSoundTest: 'Probar sonido',
+      alarmSoundVolume: 'Volumen',
       version: 'Versión',
       appearance: 'Apariencia',
       locale: 'Idioma',

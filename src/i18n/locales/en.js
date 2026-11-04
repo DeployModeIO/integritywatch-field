@@ -675,7 +675,7 @@ alarmBannerCritical: '{{n}} critical alarms active · {{total}} open recommendat
     },
 
     admin: {
-      title: 'Admin', about: 'About', version: 'Version', appearance: 'Appearance', locale: 'Language',
+      title: 'Admin', about: 'About', alarmSoundEnable: 'Sound on critical (red) alarms', alarmSoundHint: 'The browser needs a first click on the page before playing (autoplay policy)', alarmSoundSection: 'Alarm sound', alarmSoundTest: 'Test sound', alarmSoundVolume: 'Volume', version: 'Version', appearance: 'Appearance', locale: 'Language',
       rulesConfig: 'Rules configuration', intervalSec: 'Sweep interval (s)', thresholds: 'Thresholds',
       residualBand: 'Residual band (%)', availabilityThreshold: 'Availability threshold (%)',
       stuckSensor: 'Stuck sensor count', zScore: 'Z-score threshold', dataManagement: 'Data management',

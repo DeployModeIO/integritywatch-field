@@ -310,18 +310,30 @@
         var settings = state.settings || { residualBandPct: 20, availabilityThresholdPct: 90, stuckSensorCount: 10, zScoreThreshold: 3 };
         return eng.sweep(repos, settings, actor()).then(function (summary) {
           summary = summary || {};
-          if (summary.criticals > 0) { ui().toast('rules.newCriticalToast', { severity: 'critical' }); }
+          if (summary.created > 0 && summary.criticals > 0) { ui().toast('rules.newCriticalToast', { severity: 'critical' }); }
           return loadData();
         }).catch(function (err) {
           ui().toast(t('common.error') + ': ' + (err && err.message ? err.message : err), { severity: 'critical' });
         });
       }
 
-      // Re-render on recommendation changes while the view is still mounted.
+      // Re-render on recommendation changes while the view is still mounted (debounced 250 ms).
+      var _ldTimer = null, _ldAgain = false;
+      function scheduleLoad() {
+        if (_ldTimer) { _ldAgain = true; return; }
+        _ldTimer = setTimeout(function () {
+          _ldTimer = null;
+          var again = _ldAgain;
+          _ldAgain = false;
+          loadData().then(function () {
+            if (again) { scheduleLoad(); }
+          });
+        }, 250);
+      }
       var off = null;
       if (bus && typeof bus.on === 'function') {
         off = bus.on('data:changed:recommendations', function () {
-          if (container.isConnected) { loadData(); }
+          if (container.isConnected) { scheduleLoad(); }
         });
       }
 

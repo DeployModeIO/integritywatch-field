@@ -78,6 +78,7 @@
   }
 
   var _session = null;
+  var _rdTimer = null, _rdAgain = false;
 
   function teardown() {
     if (_session) {
@@ -85,6 +86,8 @@
       (_session.offs || []).forEach(function (off) { if (typeof off === 'function') { off(); } });
       _session = null;
     }
+    if (_rdTimer) { clearTimeout(_rdTimer); _rdTimer = null; }
+    _rdAgain = false;
   }
 
   function subscribe(bus, events, fn) {
@@ -462,6 +465,7 @@
     var u = ui();
     if (!u || typeof u.el !== 'function' || !container) { return; }
     teardown();
+    _rdTimer = null; _rdAgain = false;
     _session = { active: true, container: container, offs: [], params: ctx.params || {} };
     var t = (typeof ctx.i18n === 'function') ? ctx.i18n : function (k) { return k; };
     var repos = ctx.repos;
@@ -488,13 +492,24 @@
       if (typeof console !== 'undefined' && typeof console.error === 'function') { console.error(err); }
     }
 
+    function scheduleReload() {
+      if (_rdTimer) { _rdAgain = true; return; }
+      _rdTimer = setTimeout(function () {
+        _rdTimer = null;
+        var again = _rdAgain;
+        _rdAgain = false;
+        reload();
+        if (again) { scheduleReload(); }
+      }, 250);
+    }
+
     function reload() {
       if (!_session || !_session.active) { return; }
       var id = _session.params && _session.params.id;
       if (id) { drawDetail(id); } else { drawList(); }
     }
 
-    subscribe(bus, ['data:changed:apmAssets', 'data:changed:apmEvents', 'data:changed:recommendations'], reload);
+    subscribe(bus, ['data:changed:apmAssets', 'data:changed:apmEvents', 'data:changed:recommendations'], scheduleReload);
 
     function banner(err) {
       return el('div', { class: 'error-banner', attrs: { role: 'alert' }, text: t('common.error') + ': ' + (err && err.message ? err.message : String(err)) });

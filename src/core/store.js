@@ -12,10 +12,12 @@
 
   var DAY_MS = 86400000;
 
-  function emitChanged(storeName, type) {
+  function emitChanged(storeName, type, extra) {
     var bus = root.IW.core && root.IW.core.bus;
     if (bus && typeof bus.emit === 'function') {
-      bus.emit('data:changed:' + storeName, { store: storeName, type: type });
+      var payload = { store: storeName, type: type };
+      if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) payload[k] = extra[k]; } }
+      bus.emit('data:changed:' + storeName, payload);
     }
   }
 
@@ -242,7 +244,7 @@
       },
       set: function (key, value) {
         return adapter.put('meta', { key: key, value: value }).then(function () {
-          emitChanged('meta', 'put');
+          emitChanged('meta', 'put', { key: key });
         });
       },
       list: repo.list

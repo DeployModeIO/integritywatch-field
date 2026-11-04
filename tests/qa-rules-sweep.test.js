@@ -297,3 +297,27 @@ test('12) fingerprint is stable across sweeps and messageKey follows rules.msg.R
     assert.equal(r.messageKey, 'rules.msg.' + r.ruleId);
   });
 });
+
+test('13) sweep emite UN solo data:changed por almacen afectado (bulk)', async () => {
+  const s = freshStore();
+  await seedCore(s, Date.now());
+
+  let recChangedCount = 0;
+  const off = bus.on('data:changed:recommendations', function () { recChangedCount++; });
+  try {
+    await engine.sweep(s, {}, 'local');
+  } finally {
+    off();
+  }
+  assert.equal(recChangedCount, 1, 'first sweep with 3 new recs emits 1 bulk event');
+
+  // Second sweep: all 3 are still open and should update in a single bulk
+  let recChangedCount2 = 0;
+  const off2 = bus.on('data:changed:recommendations', function () { recChangedCount2++; });
+  try {
+    await engine.sweep(s, {}, 'local');
+  } finally {
+    off2();
+  }
+  assert.equal(recChangedCount2, 1, 'second sweep with 3 updated recs emits 1 bulk event');
+});
