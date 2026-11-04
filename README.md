@@ -1,5 +1,7 @@
 # IntegrityWatch Field
 
+**Idioma / Language:** [English](README.md) · [Español (Latinoamérica)](README.es.md)
+
 **Integrity and compliance operations center, offline-first, for oil & gas field work.**
 
 IntegrityWatch Field is an application that runs **completely on your computer or device, without internet and without a mandatory server**. It brings together the most common integrity tasks for a field: corrosion, pressure relief valves, pipelines, asset management, inspections, recommendations, and reports. Everything is stored locally in your browser (IndexedDB) and you can install it as a Progressive Web App (PWA) to use it offline.
