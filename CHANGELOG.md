@@ -2,6 +2,28 @@
 
 Historial de versiones. Antes de 1.3.0 el detalle vive en la historia de git (`git log`, tags `v1.0.1` y posterior).
 
+## [1.4.0] — 2026-11-03 · release `v1.4.0-portable`
+
+- Ejecutable Electron: `IntegrityWatch Field 1.4.0.exe` · 74.763.677 B · SHA-256 `D92403CA86663A3D13D4002215B424DDAEAE8CA55A34FCED62AEBE0C5BAEFB82` (mismo digest publicado en el release de GitHub, marcado Latest). `v1.3.0-portable` queda disponible como versión anterior.
+- Tests: 982 → **997** en verde.
+
+### Fix P1 — titileo de pantalla y pérdida de trabajo al llegar notificaciones (reportado por el usuario, medido en vivo dentro del exe)
+
+El inspector automático de alarmas (cada 60 s) re-escribía las recomendaciones una por una; cada escritura vaciaba y reconstruía la pantalla completa: **≈97 repintados/tick y 48 eventos medidos en el exe 1.3.0**. Correcciones:
+
+1. `engine.js`: guardado **en bloque** (`saveAll`) de recomendaciones/PSV/activos de línea → 1 evento por almacén.
+2. `dashboard.js`, `apm.js`, `recommendations.js`: **debounce 250 ms** que coalesce la ráfaga en un ciclo de repintado (medido post-fix: 4 repintados/tick, 5 eventos).
+3. `store.js` + `dashboard.js`: el evento de `meta` ahora lleva la **clave**; `lastRulesRunISO` actualiza solo su etiqueta y **no vacía el panel**.
+4. `shell.js`: el toast automático salta **solo con alarmas realmente nuevas** (`created > 0`), no cada minuto con las mismas críticas abiertas.
+5. `shell.js:730`: badge/banner/sonido se recalculan **al instante** al reconocer/aceptar/eliminar (antes esperaban al siguiente barrido).
+
+### feat — sonido de alarma crítica (`src/core/alarmSound.js`, nuevo)
+
+- Pitido doble 880/659 Hz cada 2,5 s **solo mientras haya alarmas críticas (rojas) abiertas**; se detiene al reconocer, aceptar o eliminar (verificado end-to-end con clic real).
+- Admin: activar/desactivar, volumen 0-100 y botón Probar sonido; persiste en `meta` (`alarmSoundOn`, `alarmSoundVolume`).
+- Web Audio puro, cero archivos ni dependencias; se desbloquea con el primer gesto (política de autoplay). i18n en los 7 idiomas (paridad verificada).
+- Caché del service worker `iw-v25 → iw-v26` con el módulo en precache.
+
 ## [1.3.0] — 2026-11-03 · release `v1.3.0-portable`
 
 - Ejecutable Electron: `IntegrityWatch Field 1.3.0.exe` · 74.760.829 B · SHA-256 `16A9BBF27C423EB15A5C2D5FFDD2DDAA14875ABE32766C3F136A8ED1D126638B` (mismo digest publicado en el release de GitHub).

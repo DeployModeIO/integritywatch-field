@@ -1,6 +1,6 @@
 # Manual extendido en español latino — IntegrityWatch Field
 
-**Versión:** 1.3.0 · **Fecha de validación:** 3 de noviembre de 2026 (las capturas provienen de la campaña de campo del 1.° de noviembre)
+**Versión:** 1.4.0 · **Fecha de validación:** 3 de noviembre de 2026 (las capturas provienen de la campaña de campo del 1.° de noviembre)
 **Audiencia:** operadores de oleoducto, ingenieros de integridad y administradores del sistema
 **Modo de uso:** tablet Android en horizontal (1280×800) — válido también en escritorio
 **Datos de las capturas:** escenario de oleoducto con atributos reales de NSTA y detalles derivados (ver §2)
@@ -200,6 +200,19 @@ inhibidor, PSV vencidas, MTBF, disponibilidad…). En la validación generó **2
 a partir de los datos del oleoducto.
 
 ![Recomendaciones](../manual-tablet-es-2026-11-01/21-recomendaciones.png)
+
+### 9.1 Alarma sonora para críticas (rojas) — desde v1.4.0
+
+Mientras exista **al menos una recomendación crítica abierta**, la app emite un pitido
+doble (880/659 Hz) cada 2,5 segundos. El sonido **se detiene en el momento** en que la
+crítica se **reconoce, se acepta o se elimina** (igual que el banner rojo del encabezado).
+
+- **Admin → Sonido de alarma**: casilla *Sonar en alarmas críticas (rojas)*, *Volumen*
+  (0 a 100) y botón *Probar sonido*. La preferencia queda guardada en el dispositivo.
+- El navegador/exe exige **un primer clic en la pantalla** antes de reproducir audio
+  (política de autorreproducción); después de ese gesto, la alarma suena sola.
+- Sin archivos de audio ni dependencias: el tono se genera en el propio equipo,
+  funciona 100 % sin conexión.
 
 ---
 
