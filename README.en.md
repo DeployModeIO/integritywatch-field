@@ -867,9 +867,12 @@ integritywatch-field/
 
 ## Licenses and attribution
 
-**IntegrityWatch Field — MIT License · Copyright © 2026 DeployModeIO.** Full text in [`LICENSE`](LICENSE).
+**⚠️ License change (starting with version 1.4.1):** IntegrityWatch Field is now distributed under a **Closed Proprietary Personal and Commercial License — All Rights Reserved · Copyright © 2026 DeployModeIO.** Full text in [`LICENSE`](LICENSE).
 
-**ISC/MIT (third-party):** Lucide (icons), Tabler (glyphs)
+- The **source code, deployment scripts (Podman/Qdrant), connectors and future enhancements** are the exclusive property of the author. Copying, modification, redistribution or commercial use without written authorization is prohibited.
+- **Historical versions:** versions prior to 1.4.1 (v1.0.1 – v1.4.0) published under the **MIT License retain their previous condition** — recipients of those releases keep the rights MIT granted them for those copies. This reservation does **not** apply to version 1.4.1 or any later version.
+
+**ISC/MIT (third-party):** Lucide (icons), Tabler (glyphs) — still covered by their original licenses.
 
 **Third-Party:** `THIRD-PARTY-NOTICES.md`
 

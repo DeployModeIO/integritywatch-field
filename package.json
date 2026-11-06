@@ -2,9 +2,9 @@
   "name": "integritywatch-field",
   "version": "1.4.1",
   "private": true,
-  "description": "Offline-first integrity & compliance operations center for oil & gas field use",
+  "description": "Offline-first integrity & compliance operations center for oil & gas field use — Enterprise / Production Release",
   "author": "DeployModeIO",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "homepage": "https://github.com/DeployModeIO/integritywatch-field#readme",
   "repository": {
     "type": "git",

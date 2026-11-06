@@ -3,7 +3,8 @@
   "productName": "IntegrityWatch Field",
   "version": "1.4.1",
   "private": true,
-  "description": "Electron desktop wrapper for IntegrityWatch Field (offline-first PWA). Serves the project root over a local HTTP server.",
+  "license": "UNLICENSED",
+  "description": "Electron desktop wrapper for IntegrityWatch Field (offline-first PWA). Serves the project root over a local HTTP server. Enterprise / Production Release.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

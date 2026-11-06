@@ -1,21 +1,84 @@
-MIT License
+INTEGRITYWATCH FIELD — PROPRIETARY SOFTWARE LICENSE
+Licencia Propietaria Personal y Comercial Cerrada
+=====================================================================
 
-Copyright (c) 2026 DeployModeIO
+Applicable to: IntegrityWatch Field version 1.4.1 and every subsequent
+version, build or derivative ("the Software").
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Copyright (c) 2026 DeployModeIO.
+ALL RIGHTS RESERVED.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. OWNERSHIP
+   The Software — including, without limitation, all source code, the
+   offline-first PWA, the Electron desktop container, deployment scripts
+   (Podman/Qdrant tooling), data connectors, documentation, assets and
+   all future releases and enhancements ("evolutivos") — is and shall
+   remain the exclusive property of the author (DeployModeIO). This is
+   not a sale; no title or intellectual property rights are transferred.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. RESTRICTED LICENSE GRANT
+   The author grants the end user a personal, non-exclusive,
+   non-transferable, revocable license to install and run the Software
+   in binary form for personal use, and, under a separate written
+   commercial agreement, for commercial use. Any use not expressly
+   granted here is reserved.
+
+3. PROHIBITIONS
+   Unless prior written authorization is obtained from the author, the
+   licensee may NOT: (a) reproduce, distribute, sublicense, sell, rent
+   or publish the Software or any of its source code; (b) modify,
+   adapt, translate or create derivative works; (c) reverse engineer,
+   decompile or disassemble the Software, except where such restriction
+   is prohibited by applicable mandatory law; (d) remove or alter any
+   proprietary notice, watermark or version stamp embedded in the
+   Software (including the APP_VERSION case-file seal).
+
+4. GRANDFATHERING — HISTORICAL MIT VERSIONS
+   Releases of IntegrityWatch Field published BEFORE this version
+   (v1.0.1 through v1.4.0) were distributed under the MIT License.
+   Those historical versions retain their prior condition: recipients
+   of those specific prior releases keep the rights the MIT License
+   granted them for those copies. This reservation does NOT apply to
+   version 1.4.1 or any later version, nor to new works derived from
+   the Software after the effective date of this license.
+
+5. THIRD-PARTY COMPONENTS
+   Bundled third-party components (e.g., Lucide icons — ISC; Tabler
+   glyphs — MIT) remain covered by their original licenses, as detailed
+   in THIRD-PARTY-NOTICES.md. Nothing in this license restricts those
+   components' own licenses.
+
+6. NO WARRANTY — LIMITATION OF LIABILITY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+   CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+7. TERM AND TERMINATION
+   This license is effective until terminated. It terminates
+   automatically upon breach of any of its terms, upon which the
+   licensee must cease all use and destroy all copies of the Software.
+
+8. CONTACT
+   Commercial licensing, permissions and inquiries: DeployModeIO.
+   https://github.com/DeployModeIO/integritywatch-field
+
+=====================================================================
+RESUMEN EN ESPAÑOL (informativo; prevalece el texto en inglés)
+=====================================================================
+Copyright (c) 2026 DeployModeIO. TODOS LOS DERECHOS RESERVADOS.
+
+Este software y todo su código fuente, scripts de despliegue
+(Podman/Qdrant), conectores y evolutivos futuros son de propiedad
+exclusiva del autor. Se concede una licencia personal limitada de uso
+en forma binaria; el uso comercial requiere acuerdo comercial por
+escrito. Queda prohibido copiar, modificar, redistribuir, vender o
+realizar ingeniería inversa sin autorización previa por escrito.
+
+NOTA SOBRE VERSIONES HISTÓRICAS: las versiones anteriores a la 1.4.1
+(v1.0.1 – v1.4.0) fueron publicadas bajo Licencia MIT y conservan su
+condición previa; quienes descargaron esas ediciones conservan los
+derechos que la MIT les otorgaba sobre esas copias concretas. Esta
+reserva NO aplica a la versión 1.4.1 ni a ninguna versión posterior.
